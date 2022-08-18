@@ -42,7 +42,7 @@ as  evaluated  by  Pierre L'Ecuyer  and Richard Simard in their famous paper
 (ACM Trans. Math. Softw. Vol. 33 N.4, August 2007 -  see reference [1].  The 
 reader will take benefit reading L'Ecuyer & Simard's paper.
 
-Each of the Pseudo  Random  Generator (PRG)implemented in CppRandLib is self 
+Each of thePseudo  Random  Generator (PRG) implemented in CppRandLib is self 
 documented.  Names of classes directly refer to the kind of PRG they implem-
 ent augmented with some number  characterizing  their  periodicity.  All  of 
 their randomness characteristics are explained in every related module.
