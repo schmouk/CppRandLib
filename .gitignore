@@ -1,3 +1,12 @@
+# Visual Studio
+.vs
+*vcxproj*
+*.sln
+Release
+Debug
+x64
+[Ww]in32
+
 # Prerequisites
 *.d
 
@@ -30,3 +39,4 @@
 *.exe
 *.out
 *.app
+c++11/c++11.cpp
