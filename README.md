@@ -66,7 +66,7 @@ generated pseudo-randomness than the Mersenne twister PRG.
 
 
 ## Installation
-<next to come>
+...next to come...
 
 
 
