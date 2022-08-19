@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 /*
 MIT License
 Copyright (c) 2022 Philippe Schmouker, ph.schmouker (at) gmail.com
@@ -373,7 +373,41 @@ public:
     const double expovariate(const double lambda);
     
 
-    /** @brief Uniform distribution. */
+    /** @brief Gamma distribution. This is NOT the gamma function!
+    *
+    * The probability distribution function is :
+    *            x^(alpha - 1) * std::exp(-x / beta)
+    *   pdf(x) = -----------------------------------
+    *              std::tgamma(alpha) * beta^alpha
+    * where:
+    *   pdf is the probability density function
+    *   a^b is std::pow(a, b)
+    *   std::tgamma() is the Gamma funtion as implemented in the c++ math library.
+    * (see https://en.wikipedia.org/wiki/Gamma_distribution)
+    * 
+    * The Gamma function is the below integral summation from 0 to Infinity:
+    *   Γ(x) = ∫0∞ t^(x−1) * std::exp(−t) dt
+    * 
+    * @arg alpha : double, the shape parameter - must be greater than 0.0.
+    * @arg beta : double, the scale parameter - must be greater than 0.0.
+    *   With these two arguments: mean is alpha * beta and variance is alpha * beta * beta
+    *
+    * Important notice:  the implemented code is a translation from Python
+    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++. 
+    * As such, some comments present in the Python original code have been
+    * copied as is in this c++ implementation, naming then the authors of 
+    * the related parts of code.
+    */
+    const double gammavariate(const double alpha, const double beta);
+
+
+    /** @brief Uniform distribution (0.0, 1.0). */
+    inline const double uniform()
+    {
+        return uniform(0.0, 1.0);
+    }
+
+    /** @brief Uniform distribution (min and max values). */
     template<typename T>
     inline const T uniform(const T min, const T max)
     {
@@ -385,6 +419,15 @@ public:
 protected:
     //---   Attributes   ----------------------------------------------------
     SeedStateType _seed;  //!< The internal current state of this PRNG
+
+
+    //---   Constants   -----------------------------------------------------
+    const double BPF          { 53 };  // Number of bits in a float
+    const double E            { std::exp(1.0) };
+    const double LOG4         { std::log(4.0) };
+    const double NV_MAGICCONST{ 4 * std::exp(-0.5) / std::sqrt(2.0) };
+    const double RECIP_BPF    { std::exp2(-BPF) };
+    const double SG_MAGICCONST{ 1.0 + std::log(4.5) };
 };
 
 
