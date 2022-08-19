@@ -21,6 +21,7 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <stdexcept>
 #include <vector>
 
 
@@ -345,6 +346,20 @@ public:
 
 
     //---   Random distribution functions   ---------------------------------
+    /** @brief Beta distribution.
+    *
+    * @arg alpha: double, must be greater than 0
+    * @arg beta: double, must be greater than 0
+    * @return a value in interval [0.0, 1.0].
+    * 
+    * Important  notice:  the implemented  code  is  a  translation  from 
+    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++. 
+    * The original code is due to Janne Sinkkonen and matches all the std 
+    * texts (e.g., Knuth Vol 2 Ed 3 pg 134 "the beta distribution").
+    */
+    const double betavariate(const double alpha, const double beta) const;
+
+
     /** @brief Uniform distribution. */
     template<typename T>
     inline const T uniform(const T min, const T max)
