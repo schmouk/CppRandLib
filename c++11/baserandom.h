@@ -401,15 +401,36 @@ public:
     const double gammavariate(const double alpha, const double beta);
 
 
+    /** @brief Default Gaussian distribution (mean=0.0, stdev=1.0).
+    *
+    * This is slightly faster than the normalvariate() function.
+    * Notice: not thread-safe without a lock around calls.
+    */
+    inline const double gauss()
+    {
+        return gauss(0.0, 1.0);
+    }
+
+
+    /** @brief Gaussian distribution (mean=mu, stdev=sigma).
+    *
+    * mu is the mean, and sigma is the standard deviation.
+    * This is slightly faster than the normalvariate() function.
+    *
+    * Notice: not thread-safe without a lock around calls.
+    */
+    const double gauss(const double mu, const double sigma);
+
+
     /** @brief Uniform distribution (0.0, 1.0). */
     inline const double uniform()
     {
         return uniform(0.0, 1.0);
     }
 
-    /** @brief Uniform distribution (min and max values). */
+    /** @brief Uniform distribution (min and max values).*/
     template<typename T>
-    inline const T uniform(const T min, const T max)
+    const T uniform(const T min, const T max)
     {
         //TODO: implement this method - current code is for compilation tests purpose only
         return max;
@@ -417,17 +438,21 @@ public:
 
 
 protected:
-    //---   Attributes   ----------------------------------------------------
-    SeedStateType _seed;  //!< The internal current state of this PRNG
-
-
     //---   Constants   -----------------------------------------------------
     const double BPF          { 53 };  // Number of bits in a float
     const double E            { std::exp(1.0) };
     const double LOG4         { std::log(4.0) };
     const double NV_MAGICCONST{ 4 * std::exp(-0.5) / std::sqrt(2.0) };
+    const double GAUSS_NULL   { -1.0 };
+    const double PI           { 3.14159265358979323846 };
     const double RECIP_BPF    { std::exp2(-BPF) };
     const double SG_MAGICCONST{ 1.0 + std::log(4.5) };
+    const double TWO_PI       { 2.0 * PI };
+
+
+    //---   Attributes   ----------------------------------------------------
+    SeedStateType _seed;               //!< The internal current state of this PRNG
+    double _gauss_next{ GAUSS_NULL };  //!< smart optimization for Gaussian distribution computation
 };
 
 
