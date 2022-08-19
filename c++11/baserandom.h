@@ -1,19 +1,15 @@
 #pragma once
 /*
 MIT License
-
 Copyright (c) 2022 Philippe Schmouker, ph.schmouker (at) gmail.com
-
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
 in the Software without restriction,  including without limitation the  rights
 to use,  copy,  modify,  merge,  publish,  distribute, sublicense, and/or sell
 copies of the Software,  and  to  permit  persons  to  whom  the  Software  is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS",  WITHOUT WARRANTY OF ANY  KIND,  EXPRESS  OR
 IMPLIED,  INCLUDING  BUT  NOT  LIMITED  TO  THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT  SHALL  THE
@@ -33,11 +29,9 @@ SOFTWARE.
 *
 *
     This module is part of library CppRandLib.
-
     Copyright (c) 2022 Philippe Schmouker
     See FastRand32 for a 2^32 (i.e. 4.3e+9) period LC-Generator and  FastRand63  for a
     2^63 (i.e. about 9.2e+18) period LC-Generator with low computation time.
-
     See MRGRand287 for a short period  MR-Generator (2^287,  i.e. 2.49e+86)  with  low
     computation time but 256 integers memory consumption.
     See MRGRand1457 for a  longer  period  MR-Generator  (2^1457,  i.e. 4.0e+438)  and
@@ -46,7 +40,6 @@ SOFTWARE.
     See MRGRand49507 for a far  longer  period  (2^49507,  i.e. 1.2e+14903)  with  low
     computation  time  too  (31-bits  modulus)  but  use  of  more  memory space (1597
     integers).
-
     See LFibRand78, LFibRand116, LFibRand668 and LFibRand1340  for  long  period  LFib
     generators  (resp.  2^78,  2^116,  2^668  and 2^1340 periods,  i.e. resp. 3.0e+23,
     8.3e+34, 1.2e+201 and 2.4e+403 periods) while same computation time and far higher
@@ -54,20 +47,16 @@ SOFTWARE.
     1279 integers).
     Python built-in class random.Random is subclassed here to use  a  different  basic
     generator of our own devising: in that case, overriden methods are:
-
       random(), seed(), getstate(), and setstate().
-
     Furthermore this class and all its inheriting sub-classes are callable. Example:
       rand = BaseRandom()
       std::cout << rand();   // prints a uniform pseudo-random value within [0.0, 1.0)
       std::cout << rand(a);  // prints a uniform pseudo-random value within [0.0, a)
       std::cout << rand(a,b);// prints a uniform pseudo-random value within [a  , b)
-
     Please notice that for simulating the roll of a dice you should program:
       diceRoll = UFastRandom();
       std::cout << int(diceRoll(1, 7)); // prints a uniform roll within {1, ..., 6}.
-
-    Conforming to the former version PyRandLib  of  this  library,  next  methods  are 
+    Conforming to the former version PyRandLib  of  this  library,  next  methods  are
     available:
      |
      |  betavariate(self, alpha, beta)
@@ -253,36 +242,105 @@ public:
     //---   Calling operators   ---------------------------------------------
     /** @brief Empty Call operator.
     *
-    * @return a value that is uniformaly contained within the interval [0.0, 1.0].
+    * @return a value that is uniformly contained within the interval [0.0, 1.0).
     */
     inline const double operator() ()
     {
-        return operator()(1.0);
+        return operator()(0.0, 1.0);
     }
 
-    /** @brief Valued call operator (1 scalar max).
+    /** @brief Valued call operator (1 scalar).
     *
-    * @return a value that is uniformaly contained within the interval [0; max].
+    * @return a value that is uniformly contained within the interval [0; max).
     */
     template<typename T>
     inline const T operator() (const T max)
     {
-        return uniform(T(0), max);
+        return operator()(T(0), max);
     }
 
-    /** @brief Valued call operator (many scalars).
+    /**@brief Valued call operator (min and max scalars).
     *
-    * @return a vector of value that are uniformaly contained within the
-    *   interval [0; max[i]] - i being the index of the value in the
+    * @return a value that is uniformly contained within the interval [min; max).
+    */
+    template<typename T>
+    inline const T operator() (const T min, const T max)
+    {
+        return uniform(min, max);
+    }
+
+    /** @brief Valued call operator (1 vector of scalars).
+    *
+    * @return a vector of value that are uniformly contained within the
+    *   interval  [0; max[i])  -  i  being the index of the value in the
     *   returned vector.
     */
     template<typename T>
-    inline std::vector<T> operator() (const std::vector<T> max)
+    std::vector<T> operator() (const std::vector<T> max)
     {
         std::vector<T> ret;
+        ret.reserve(max.size());
         for (T m : max)
             ret.emplace_back(operator()(m));
         return ret;
+    }
+
+    /** @brief Valued call operator (2 vectors of scalars).
+    *
+    * @return a vector of value that are uniformly contained within  the
+    *   interval [min[i]; max[i]) - i being the index of the value in the
+    *   returned vector.
+    */
+    template<typename T>
+    std::vector<T> operator() (const std::vector<T> min, const std::vector<T> max)
+    {
+        std::vector<T> ret;
+        ret.reserve(std::min(min.size(), max.size()));
+        for (auto min_it = min.cbegin(), max_it = max.cbegin(); min_it != min.cend() && max_it != max.cend(); ++min_it, ++max_it)
+            ret.emplace_back(operator()(*min_it, *max_it));
+        return ret;
+    }
+
+
+    //---   Operations   ----------------------------------------------------
+    /** @brief Returns n values that are uniformly contained within the interval [0.0, 1.0). */
+    inline void n_evaluate(size_t n, std::vector<double>& out)
+    {
+        n_evaluate(n, out, 0.0, 1.0);
+    }
+
+    /** @brief Returns n values that are uniformly contained within the interval [0, max). */
+    template<typename T>
+    inline void n_evaluate(size_t n, std::vector<T>& out, const T max)
+    {
+        n_evaluate(n, out, T(0), max);
+    }
+
+    /** @brief Returns n values that are uniformly contained within the interval [min, max). */
+    template<typename T>
+    inline void n_evaluate(size_t n, std::vector<T>& out, const T min, const T max)
+    {
+        out.reserve(n);
+        while (n-- > 0)
+            out.emplace_back(operator()(min, max));
+    }
+
+    /** @brief Returns n vectors of values that are uniformly contained within the interval [0; max[i]) */
+    template<typename T>
+    inline void n_evaluate(size_t n, std::vector<std::vector<T>>& out, const std::vector<T> max)
+    {
+        out.reserve(n);
+        while (n-- > 0)
+            out.emplace_back(operator()(max));
+    }
+
+    /** @brief Returns n vectors of values that are uniformly contained within the interval [min[i]; max[i]) */
+    template<typename T>
+    inline void n_evaluate(size_t n, std::vector<std::vector<T>>& out, const std::vector<T> min, const std::vector<T> max)
+    {
+        out.reserve(n);
+        while (n-- > 0)
+            out.emplace_back(operator()(min, max));
     }
 
 
@@ -291,64 +349,14 @@ public:
     template<typename T>
     inline const T uniform(const T min, const T max)
     {
+        //TODO: implement this method - current code is for compilation tests purpose only
         return max;
     }
-
 
 
 protected:
     //---   Attributes   ----------------------------------------------------
     SeedStateType _seed;  //!< The internal current state of this PRNG
-
-
-private:
-
 };
 
-/*** /
 
-
-#=============================================================================
-class BaseRandom( Random ):
-    """This is the base class for all pseudo-random numbers generators.
-
-    """
-
-
-    #------------------------------------------------------------------------=
-    def __call__(self, _max : Union[Numerical,
-                                    Tuple[Numerical],
-                                    List[Numerical]] = 1.0,
-                       times: int                    = 1   ) -> Numerical:
-        """This class's instances are callable.
-
-        The returned value is uniformly contained within the
-        interval [0.0 : _max].  When times is set, a list of
-        iterated pseudo-random values is  returned.  'times'
-        must  be an integer.  If less than 1 it is forced to
-        be 1.
-        '_max' may be a list or a tuple of values,  in which
-        case  a  list  of  related  pseudo-random  values is
-        returned with entries of the same type than the same
-        indexed entry in '_max'.
-        """
-        assert isinstance( times, int )
-        if times < 1:
-            times =  1
-
-        if isinstance( _max, int ):
-            ret = [ self.randint(0, _max) for _ in range(times) ]
-        elif isinstance( _max, float ):
-            ret = [ self.uniform( 0.0, _max ) for _ in range(times) ]
-        else:
-            try:
-                if times == 1:
-                    ret = [ self(m,1) for m in _max]
-                else:
-                    ret = [ [self(m,1) for m in _max] for _ in range(times) ]
-            except:
-                ret = [ self.__call__(times=1) ]
-
-        return ret[0] if len(ret) == 1 else ret
-
-#=====   end of module   baserandom.py   =====================================/***/
