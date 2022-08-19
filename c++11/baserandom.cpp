@@ -150,6 +150,14 @@ const double BaseRandom<SeedStateType>::gauss(const double mu, const double sigm
 }
 
 
-/*** /
+/** Pareto distribution. */
+template<typename SeedStateType>
+const double BaseRandom<SeedStateType>::paretorvariate(const double alpha)
+{
+    if (alpha <= 0.0)
+        throw std::invalid_argument("shape argument alpha must not be 0.0, current value is.");
 
-/***/
+    // Jain, pg. 495
+    return std::pow(1.0 - uniform(), -1.0 / alpha);
+}
+

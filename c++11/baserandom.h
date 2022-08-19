@@ -479,6 +479,13 @@ public:
     }
 
 
+    /** @brief Pareto distribution.
+    *
+    * @arg alpha: double, the shape parameter. Cannot be 0.0.
+    */
+    const double paretorvariate(const double alpha);
+
+
     /** @brief Uniform distribution (0.0, 1.0). */
     inline const double uniform()
     {
