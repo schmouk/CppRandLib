@@ -352,13 +352,26 @@ public:
     * @arg beta: double, must be greater than 0
     * @return a value in interval [0.0, 1.0].
     * 
-    * Important  notice:  the implemented  code  is  a  translation  from 
-    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++. 
+    * Important notice: the implemented code is a translation from Python
+    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     * The original code is due to Janne Sinkkonen and matches all the std 
     * texts (e.g., Knuth Vol 2 Ed 3 pg 134 "the beta distribution").
     */
-    const double betavariate(const double alpha, const double beta) const;
+    const double betavariate(const double alpha, const double beta);
 
+
+    /** @brief Exponential distribution.
+    *
+    * @arg lambda: double, this should get the value (1.0 / desired_mean).
+    *   It cannot be 0.0.
+    * @return a value in range [0.0, Infinity) if lambda is  positive,  or
+    *   a value in range (-Infinity, 0.0] if lambda is negative.
+    * 
+    * Important notice:  the implemented code is a translation from Python
+    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++. 
+    */
+    const double expovariate(const double lambda);
+    
 
     /** @brief Uniform distribution. */
     template<typename T>

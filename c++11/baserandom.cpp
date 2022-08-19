@@ -20,6 +20,7 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <cmath>
 #include <cstring>
 #include <format>
 #include <stdexcept>
@@ -31,7 +32,7 @@ SOFTWARE.
 //===========================================================================
 /** Beta distribution. */
 template<typename SeedStateType>
-const double BaseRandom<SeedStateType>::betavariate(const double alpha, const double beta) const
+const double BaseRandom<SeedStateType>::betavariate(const double alpha, const double beta)
 {
     constexpr char* fmt = "%s value must be greater than 0.0 (currently is %g)";
     constexpr int MAX_SIZE = 80;
@@ -51,3 +52,13 @@ const double BaseRandom<SeedStateType>::betavariate(const double alpha, const do
     return (y == 0.0) ? 0.0 : (y / y + gammavariate(beta, 1.0));
 }
 
+
+/** Exponential distribution. */
+template<typename SeedStateType>
+const double BaseRandom<SeedStateType>::expovariate(const double lambda)
+{
+    if (lambda == 0.0)
+        throw std::invalid_argument("lambda value cannot be 0.0 (currently is)");
+    
+    return -std::log(1.0 - uniform());
+}
