@@ -134,6 +134,9 @@ const double BaseRandom<SeedStateType>::gammavariate(const double alpha, const d
 template<typename SeedStateType>
 const double BaseRandom<SeedStateType>::gauss(const double mu, const double sigma)
 {
+    if (sigma <= 0.0)
+        throw std::invalid_argument("value for argument sigma must be greater than 0.0, current value is not");
+
     double z = _gauss_next;
     _gauss_next = GAUSS_NULL;
     if (z == GAUSS_NULL) {
@@ -145,6 +148,7 @@ const double BaseRandom<SeedStateType>::gauss(const double mu, const double sigm
 
     return mu + z * sigma;
 }
+
 
 /*** /
 

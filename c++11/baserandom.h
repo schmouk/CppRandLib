@@ -415,11 +415,36 @@ public:
     /** @brief Gaussian distribution (mean=mu, stdev=sigma).
     *
     * mu is the mean, and sigma is the standard deviation.
+    * mu can be any value, sigma must be greater than 0.0.
     * This is slightly faster than the normalvariate() function.
     *
     * Notice: not thread-safe without a lock around calls.
     */
     const double gauss(const double mu, const double sigma);
+
+
+    /** @brief Default Log normal distribution (mean=0.0, stdev=1.0).
+    *
+    * If you take the natural logarithm of this distribution, you'll get 
+    * a normal distribution with mean 0.0 and standard deviation 1.0.
+    */
+    inline const double lognormvariate()
+    {
+        return lognormvariate(0.0, 1.0);
+    }
+
+
+    /** @brief Log normal distribution (mean=mu, stdev=sigma).
+    *
+    * If you take the natural logarithm of this distribution, you'll get 
+    * a normal distribution with mean mu and standard deviation sigma.
+    * mu can have any value, and sigma must be greater than zero.
+    */
+    inline const double lognormvariate(const double mu, const double sigma)
+    {
+        return std::exp(gauss(mu, sigma));
+    }
+
 
 
     /** @brief Uniform distribution (0.0, 1.0). */
