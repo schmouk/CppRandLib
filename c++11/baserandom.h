@@ -446,6 +446,38 @@ public:
     }
 
 
+    /** @brief Normal distribution (mean=0.0, stdev=1.0).
+    *
+    * The Python version of this method uses Kindermanand Monahan  method.
+    * Reference: Kinderman, A.J.and Monahan, J.F., "Computer generation of 
+    * random variables using the ratio of  uniform  deviates",  ACM  Trans
+    * Math Software, 3, (1977), pp257 - 260.
+    * This method is slightlly slower than the gauss  method,  so  we  call 
+    * gauss() instead here, in CRandLib.
+    */
+    inline const double normalvariate()
+    {
+        return gauss();
+    }
+
+
+    /** @brief Normal distribution (mean=mu, stdev=sigma).
+    *
+    * mu is the mean, and sigma is the standard deviation.
+    * mu can be any value, sigma must be greater than 0.0.
+    *
+    * The Python version of this method uses Kindermanand Monahan  method.
+    * Reference: Kinderman, A.J.and Monahan, J.F., "Computer generation of
+    * random variables using the ratio of  uniform  deviates",  ACM  Trans
+    * Math Software, 3, (1977), pp257 - 260.
+    * This method is slightlly slower than the gauss  method,  so  we  call
+    * gauss() instead here, in CRandLib.
+    */
+    inline const double normalvariate(const double mu, const double sigma)
+    {
+        return gauss(mu, sigma);
+    }
+
 
     /** @brief Uniform distribution (0.0, 1.0). */
     inline const double uniform()
