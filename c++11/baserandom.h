@@ -224,12 +224,12 @@ public:
     * to initialize their related PRNG.
     */
     inline BaseRandom() noexcept
-        : _seed{}
+        : _state{}
     {}
 
     /** @brief Value Constructor. */
     inline BaseRandom(const SeedStateType& seed) noexcept
-        :_seed{ seed }
+        :_state{ seed }
     {}
 
     /** @brief Default Copy Constructor. */
@@ -382,10 +382,10 @@ public:
     }
 
 
-    /** @brief Returns the internal state; can be passed to setstate() later. */
+    /** @brief Returns the internal state of this PRNG; can be passed to setstate() later. */
     SeedStateType getstate() const noexcept
     {
-        return SeedStateType(_gauss_next);
+        return SeedStateType(*this, _gauss_next);
     }
 
 
@@ -602,6 +602,14 @@ public:
     {
         setstate(seed_state);
         _gauss_next = GAUSS_NULL;
+    }
+
+
+    /** @brief Restores the internal state of this PRNG from object returned by getstate(). */
+    inline void setstate(const SeedStateType& state)
+    {
+        _state = state;
+        _gauss_next = state.gauss_next;
     }
 
 
@@ -878,7 +886,7 @@ protected:
 
 
     //---   Attributes   ----------------------------------------------------
-    SeedStateType _seed;                      //!< The internal current state of this PRNG
+    SeedStateType _state;                     //!< The internal current state of this PRNG
     double        _gauss_next{ GAUSS_NULL };  //!< smart optimization for Gaussian distribution computation
 
 
