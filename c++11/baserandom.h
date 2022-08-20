@@ -21,6 +21,7 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <array>
 #include <limits>
 #include <random>
 #include <stdexcept>
@@ -324,6 +325,56 @@ public:
 
 
     //---   Operations   ----------------------------------------------------
+    /** @brief Chooses a random element from a non-empty sequence (std::vector<>). */
+    template<typename T>
+    T& choice(const std::vector<T>& seq)
+    {
+        const size_t size{ seq.size };
+        if (size == 0)
+            throw std::invalid_argument("cannot make a choice from an empty sequence");
+        return seq[random(size)];
+    }
+
+
+    /** @brief Chooses a random element from a non-empty sequence (std::array<>). */
+    template<typename T, const size_t S>
+    T& choice(const std::array<T, S>& seq)
+    {
+        if (S == 0)
+            throw std::invalid_argument("cannot make a choice from an empty sequence");
+        return seq[random(S)];
+    } 
+
+
+    /** @brief Chooses a random element from a non-empty sequence (buffer_ptr). */
+    template<typename T>
+    T& choice(const size_t size, const T* buffer_ptr)
+    {
+        if (size == 0)
+            throw std::invalid_argument("cannot make a choice from an empty sequence");
+        if (buffer_ptr == nullptr)
+            throw std::invalid_argument("cannot make a choice from a null sequence");
+        return buffer_ptr[random(size)];
+    }
+
+
+    /** @brief Chooses a random element from a non-empty sequence (templated container type).
+    *
+    * Important notice: the ContainerType class MUST provide method '.size()'.
+    * It  may  also  provide  the  type of the contained objects or values via 
+    * class attribute '::value_type', in which case the template argument  'T'
+    * may be ommitted.
+    */
+    template<typename ContainerType, typename T = typenameContainerType::value_type>
+    T& choice(const ContainerType& seq)
+    {
+        const size_t size{ seq.size };
+        if (size == 0)
+            throw std::invalid_argument("cannot make a choice from an empty sequence");
+        return seq[random(size)];
+    }
+
+
     /** @brief Returns n values that are uniformly contained within the interval [0.0, 1.0). */
     inline void n_evaluate(size_t n, std::vector<double>& out)
     {
