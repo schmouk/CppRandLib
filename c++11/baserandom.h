@@ -22,6 +22,7 @@ SOFTWARE.
 
 //===========================================================================
 #include <array>
+#include <chrono>
 #include <limits>
 #include <random>
 #include <stdexcept>
@@ -225,12 +226,16 @@ public:
     */
     inline BaseRandom() noexcept
         : _state{}
-    {}
+    {
+        setstate();
+    }
 
     /** @brief Value Constructor. */
     inline BaseRandom(const SeedStateType& seed) noexcept
-        :_state{ seed }
-    {}
+        :_state{}
+    {
+        setstate(seed);
+    }
 
     /** @brief Default Copy Constructor. */
     BaseRandom(const BaseRandom&) noexcept = default;
@@ -250,7 +255,7 @@ public:
     */
     virtual inline const double random()
     {
-        return double(m_mt19937()) / MAX_64;
+        return double(m_mt19937_64()) / MAX_64;
     }
 
 
@@ -339,7 +344,7 @@ public:
         const size_t size{ seq.size };
         if (size == 0)
             throw std::invalid_argument("cannot make a choice from an empty sequence");
-        return seq[random(size)];
+        return seq[uniform(size)];
     }
 
 
@@ -349,7 +354,7 @@ public:
     {
         if (S == 0)
             throw std::invalid_argument("cannot make a choice from an empty sequence");
-        return seq[random(S)];
+        return seq[uniform(S)];
     } 
 
 
@@ -361,7 +366,7 @@ public:
             throw std::invalid_argument("cannot make a choice from an empty sequence");
         if (buffer_ptr == nullptr)
             throw std::invalid_argument("cannot make a choice from a null sequence");
-        return buffer_ptr[random(size)];
+        return buffer_ptr[uniform(size)];
     }
 
 
@@ -378,14 +383,14 @@ public:
         const size_t size{ seq.size };
         if (size == 0)
             throw std::invalid_argument("cannot make a choice from an empty sequence");
-        return seq[random(size)];
+        return seq[uniform(size)];
     }
 
 
     /** @brief Returns the internal state of this PRNG; can be passed to setstate() later. */
-    SeedStateType getstate() const noexcept
+    struct _InternalState& getstate() const noexcept
     {
-        return SeedStateType(*this, _gauss_next);
+        return _state;
     }
 
 
@@ -505,8 +510,7 @@ public:
         for (int i = 0; i < k; ++i) {
             const size_t index = uniform(i, n - i);
             out[i] = population[index];
-            if (i != index)
-                std::swap(population[i], population[index]);
+            std::swap(population[i], population[index]);
         }
     }
 
@@ -592,24 +596,61 @@ public:
     inline void seed() noexcept
     {
         setstate();
-        _gauss_next = GAUSS_NULL;
     }
 
 
-    /** @brief Initializes internal state from a seed (empty signature). */
+    /** @brief Initializes internal state from a seed state. */
     template<typename SeedStateType>
-    inline void seed(const SeedStateType& seed_state) noexcept
+    inline void seed(const SeedStateType& seed_) noexcept
     {
-        setstate(seed_state);
-        _gauss_next = GAUSS_NULL;
+        setstate(seed_);
+    }
+
+
+    /** @brief Initializes internal state from a long integer. */
+    inline void seed(const unsigned long seed_) noexcept
+    {
+        setstate(seed_);
+    }
+
+
+    /** @brief Sets the internal state of this PRNG from current time (empty signature). */
+    inline void setstate()
+    {
+         const size_t ticks = std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::nanoseconds>().count;
+         setstate(((ticks & 0x0000'0000'ffff'ffff) << 32) +
+                  ((ticks & 0xff00'0000'0000'0000) >> 56) +
+                  ((ticks & 0x00ff'0000'0000'0000) >> 40) +
+                  ((ticks & 0x0000'ff00'0000'0000) >> 24) +
+                  ((ticks & 0x0000'00ff'0000'0000) >> 8));
+    }
+
+
+    /** @brief Sets the internal state of this PRNG with an integral size_t value.
+    *
+    * Notice: this is the implementation for the base class. It may be overriden
+    *   in inheriting classes.
+    */
+    virtual inline void setstate(const size_t seed_value)
+    {
+        _state.seed = (SeedStateType)seed_value;
+        _state.gauss_next = GAUSS_NULL;
+        m_mt19937_64.seed(seed_value);
+    }
+
+
+    /** @brief Restores the internal state of this PRNG from seed and gauss_next. */
+    inline void setstate(const SeedStateType& seed, const double gauss_next = BaseRandom::GAUSS_NULL)
+    {
+        _state.seed = seed;
+        _state.gauss_next = gauss_next;
     }
 
 
     /** @brief Restores the internal state of this PRNG from object returned by getstate(). */
-    inline void setstate(const SeedStateType& state)
+    inline void setstate(const _InternalState& state)
     {
         _state = state;
-        _gauss_next = state.gauss_next;
     }
 
 
@@ -873,19 +914,6 @@ public:
     */
     const double weibullvariate(const double alpha, const double beta);
 
-    /*** /
-
-    def weibullvariate(self, alpha, beta):
-        """Weibull distribution.
-        alpha is the scale parameter and beta is the shape parameter.
-        """
-        # Jain, pg. 499; bug fix courtesy Bill Arms
-
-        u = 1.0 - self.random()
-        return alpha * (-_log(u)) ** (1.0 / beta)
-
-    /***/
-
 
 protected:
     //---   Constants   -----------------------------------------------------
@@ -893,19 +921,26 @@ protected:
     const double E            { std::exp(1.0) };
     const double LOG4         { std::log(4.0) };
     const double NV_MAGICCONST{ 4 * std::exp(-0.5) / std::sqrt(2.0) };
-    const double GAUSS_NULL   { -1.0 };
     const double PI           { 3.14159265358979323846 };
     const double RECIP_BPF    { std::exp2(-BPF) };
     const double SG_MAGICCONST{ 1.0 + std::log(4.5) };
     const double TWO_PI       { 2.0 * PI };
 
+    static const double GAUSS_NULL;
 
     //---   Attributes   ----------------------------------------------------
-    SeedStateType _state;                     //!< The internal current state of this PRNG
-    double        _gauss_next{ GAUSS_NULL };  //!< smart optimization for Gaussian distribution computation
+    struct _InternalState
+    {
+        SeedStateType seed;                      //!< The internal current state of this PRNG
+        double        gauss_next{ GAUSS_NULL };  //!< smart optimization for Gaussian distribution computation
+    } _state;
 
 
 private:
-    std::mt19937_64 m_mt19937{};  //!< this base class internal PRNG
+    std::mt19937_64 m_mt19937_64{};  //!< this base class internal PRNG
     const double MAX_64{ (double(std::numeric_limits<uint_fast64_t>::max()) + 1.0) };
 };
+
+//---------------------------------------------------------------------------
+template<typename SeedStateType>
+const double BaseRandom<SeedStateType>::GAUSS_NULL = -1.0;

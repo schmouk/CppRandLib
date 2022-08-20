@@ -137,13 +137,13 @@ const double BaseRandom<SeedStateType>::gauss(const double mu, const double sigm
     if (sigma <= 0.0)
         throw std::invalid_argument("value for argument sigma must be greater than 0.0, current value is not");
 
-    double z = _gauss_next;
-    _gauss_next = GAUSS_NULL;
+    double z = _state.gauss_next;
+    _state.gauss_next = GAUSS_NULL;
     if (z == GAUSS_NULL) {
         const double u{ uniform(TWO_PI) };
         const double g{ std::sqrt(-2.0 * std::log(1.0 - random())) };
         z = std::cos(u) * g;
-        _gauss_next = std::sin(u) * g;
+        _state.gauss_next = std::sin(u) * g;
     }
 
     return mu + z * sigma;
