@@ -21,6 +21,8 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <limits>
+#include <random>
 #include <stdexcept>
 #include <vector>
 
@@ -60,35 +62,39 @@ SOFTWARE.
     Conforming to the former version PyRandLib  of  this  library,  next  methods  are
     available:
      |
-     |  betavariate(self, alpha, beta)
+     |  betavariate(alpha, beta)
      |      Beta distribution.
+     |      https://en.wikipedia.org/wiki/Beta_distribution
      |
      |      Conditions on the parameters are alpha > 0 and beta > 0.
      |      Returned values range between 0 and 1.
      |
      |
-     |  choice(self, seq)
+     |  choice(seq)
      |      Choose a random element from a non-empty sequence.
      |
      |
-     |  expovariate(self, lambd)
+     |  expovariate(lambda)
      |      Exponential distribution.
+     |      https://en.wikipedia.org/wiki/Exponential_distribution
      |
-     |      lambd is 1.0 divided by the desired mean.  It should be
-     |      nonzero.  (The parameter would be called "lambda", but that is
-     |      a reserved word in Python.)  Returned values range from 0 to
-     |      positive infinity if lambd is positive, and from negative
-     |      infinity to 0 if lambd is negative.
+     |      lambda is 1.0 divided by the desired mean.  It should be
+     |      nonzero.
+     |      Returned values range from 0 to
+     |      positive infinity if lambda is positive, and from negative
+     |      infinity to 0 if lambda is negative.
      |
      |
-     |  gammavariate(self, alpha, beta)
+     |  gammavariate(alpha, beta)
      |      Gamma distribution.  Not the gamma function!
+     |      https://en.wikipedia.org/wiki/Gamma_distribution
      |
      |      Conditions on the parameters are alpha > 0 and beta > 0.
      |
      |
-     |  gauss(self, mu, sigma)
+     |  gauss(mu, sigma)
      |      Gaussian distribution.
+     |      https://en.wikipedia.org/wiki/Normal_distribution
      |
      |      mu is the mean, and sigma is the standard deviation.  This is
      |      slightly faster than the normalvariate() function.
@@ -96,42 +102,43 @@ SOFTWARE.
      |      Not thread-safe without a lock around calls.
      |
      |
-     |  getstate(self)
+     |  getstate()
      |      Return internal state; can be passed to setstate() later.
      |
      |
-     |  lognormvariate(self, mu, sigma)
+     |  lognormvariate(mu, sigma)
      |      Log normal distribution.
+     |      https://en.wikipedia.org/wiki/Log-normal_distribution
      |
      |      If you take the natural logarithm of this distribution, you'll get a
      |      normal distribution with mean mu and standard deviation sigma.
      |      mu can have any value, and sigma must be greater than zero.
      |
      |
-     |  normalvariate(self, mu, sigma)
+     |  normalvariate(mu, sigma)
      |      Normal distribution.
+     |      https://en.wikipedia.org/wiki/Normal_distribution
      |
      |      mu is the mean, and sigma is the standard deviation.
      |
      |
-     |  paretovariate(self, alpha)
+     |  paretovariate(alpha)
      |      Pareto distribution.  alpha is the shape parameter.
+     |      https://en.wikipedia.org/wiki/Pareto_distribution
      |
      |
-     |  randint(self, a, b)
+     |  randint(a, b)
      |      Return random integer in range [a, b], including both end points.
      |
      |
-     |  randrange(self, start, stop=None, step=1, int=<class 'int'>)
+     |  randrange(start, stop, step=1)
      |      Choose a random item from range(start, stop[, step]).
      |
      |      This fixes the problem with randint() which includes the
-     |      endpoint; in Python this is usually not what you want.
-     |
-     |      Do not supply the 'int' argument.
+     |      endpoint.
      |
      |
-     |  sample(self, population, k)
+     |  sample(population, k)
      |      Chooses k unique random elements from a population sequence or set.
      |
      |      Returns a new list containing elements from the population while
@@ -149,44 +156,42 @@ SOFTWARE.
      |      large population:   sample(range(10000000), 60)
      |
      |
-     |  seed(self, a=None, version=2)
-     |      Initialize internal state from hashable object.
-     |
-     |      None or no argument seeds from current time or from an operating
-     |      system specific randomness source if available.
-     |
-     |      For version 2 (the default), all of the bits are used if *a *is a str,
-     |      bytes, or bytearray.  For version 1, the hash() of *a* is used instead.
-     |
+     |  seed()
+     |  seed(a)
+     |      Initialize internal state.
+     |      No argument seeds from current time.
      |      If *a* is an int, all bits are used.
      |
      |
-     |  setstate(self, state)
+     |  setstate(state)
      |      Restore internal state from object returned by getstate().
      |
      |
-     |  shuffle(self, x, random=None, int=<class 'int'>)
-     |      x, random=random.random -> shuffle list x in place; return None.
-     |
-     |      Optional arg random is a 0-argument function returning a random
-     |      float in [0.0, 1.0); by default, the standard random.random.
+     |  shuffle(x)
+     |      x-> shuffle vector x in place.
      |
      |
-     |  triangular(self, low=0.0, high=1.0, mode=None)
+     |  triangular()
+     |  triangular(low, high)
+     |  triangular(low, high, mode)
      |      Triangular distribution.
+     |      http://en.wikipedia.org/wiki/Triangular_distribution
      |
      |      Continuous distribution bounded by given lower and upper limits,
      |      and having a given mode value in-between.
+     |      When missing, low = 0.0, high = 1.0, mode = (low + high) / 2
      |
-     |      http://en.wikipedia.org/wiki/Triangular_distribution
      |
-     |
-     |  uniform(self, a, b)
+     |  uniform()
+     |  uniform(b)
+     |  uniform(a, b)
      |      Get a random number in the range [a, b) or [a, b] depending on rounding.
+     |      When missing, a = 0.0 and b = 1.0
      |
      |
-     |  vonmisesvariate(self, mu, kappa)
+     |  vonmisesvariate(mu, kappa)
      |      Circular data distribution.
+     |      https://en.wikipedia.org/wiki/Von_Mises_distribution
      |
      |      mu is the mean angle, expressed in radians between 0 and 2*pi, and
      |      kappa is the concentration parameter, which must be greater than or
@@ -194,8 +199,9 @@ SOFTWARE.
      |      to a uniform random angle over the range 0 to 2*pi.
      |
      |
-     |  weibullvariate(self, alpha, beta)
+     |  weibullvariate(alpha, beta)
      |      Weibull distribution.
+     |      https://en.wikipedia.org/wiki/Weibull_distribution
      |
      |      alpha is the scale parameter and beta is the shape parameter.
 */
@@ -209,11 +215,13 @@ public:
     * Inheriting classes use a shuffled value of the local time as a seed
     * to initialize their related PRNG.
     */
-    BaseRandom() noexcept;
+    inline BaseRandom() noexcept
+        : _seed{}
+    {}
 
     /** @brief Value Constructor. */
     inline BaseRandom(const SeedStateType& seed) noexcept
-        :_seed(seed)
+        :_seed{ seed }
     {}
 
     /** @brief Default Copy Constructor. */
@@ -224,6 +232,18 @@ public:
 
     /** @brief Default Destructor. */
     virtual ~BaseRandom() noexcept = default;
+
+
+    //---   Internal PRNG   -------------------------------------------------
+    /** @brief The internal PRNG algorithm.
+    *
+    * This method must be overriden in inheriting classes.
+    * @return a double value uniformly contained within the interval [0.0, 1.0).
+    */
+    virtual inline const double random()
+    {
+        return double(m_mt19937()) / MAX_64;
+    }
 
 
     //---   Assignments operators   -----------------------------------------
@@ -247,7 +267,7 @@ public:
     */
     inline const double operator() ()
     {
-        return operator()(0.0, 1.0);
+        return uniform();
     }
 
     /** @brief Valued call operator (1 scalar).
@@ -257,7 +277,7 @@ public:
     template<typename T>
     inline const T operator() (const T max)
     {
-        return operator()(T(0), max);
+        return uniform(T(0), max);
     }
 
     /**@brief Valued call operator (min and max scalars).
@@ -272,8 +292,8 @@ public:
 
     /** @brief Valued call operator (1 vector of scalars).
     *
-    * @return a vector of value that are uniformly contained within the
-    *   interval  [0; max[i])  -  i  being the index of the value in the
+    * @return  a vector of value that are uniformly contained within the
+    *   interval [0; max[i])  --  i  being the index of the value in the
     *   returned vector.
     */
     template<typename T>
@@ -282,7 +302,7 @@ public:
         std::vector<T> ret;
         ret.reserve(max.size());
         for (T m : max)
-            ret.emplace_back(operator()(m));
+            ret.emplace_back(uniform(m));
         return ret;
     }
 
@@ -298,7 +318,7 @@ public:
         std::vector<T> ret;
         ret.reserve(std::min(min.size(), max.size()));
         for (auto min_it = min.cbegin(), max_it = max.cbegin(); min_it != min.cend() && max_it != max.cend(); ++min_it, ++max_it)
-            ret.emplace_back(operator()(*min_it, *max_it));
+            ret.emplace_back(uniform(*min_it, *max_it));
         return ret;
     }
 
@@ -323,7 +343,7 @@ public:
     {
         out.reserve(n);
         while (n-- > 0)
-            out.emplace_back(operator()(min, max));
+            out.emplace_back(uniform(min, max));
     }
 
     /** @brief Returns n vectors of values that are uniformly contained within the interval [0; max[i]) */
@@ -332,7 +352,7 @@ public:
     {
         out.reserve(n);
         while (n-- > 0)
-            out.emplace_back(operator()(max));
+            out.emplace_back(uniform(max));
     }
 
     /** @brief Returns n vectors of values that are uniformly contained within the interval [min[i]; max[i]) */
@@ -341,7 +361,7 @@ public:
     {
         out.reserve(n);
         while (n-- > 0)
-            out.emplace_back(operator()(min, max));
+            out.emplace_back(uniform(min, max));
     }
 
 
@@ -383,7 +403,6 @@ public:
     *   pdf is the probability density function
     *   a^b is std::pow(a, b)
     *   std::tgamma() is the Gamma funtion as implemented in the c++ math library.
-    * (see https://en.wikipedia.org/wiki/Gamma_distribution)
     * 
     * The Gamma function is the below integral summation from 0 to Infinity:
     *   Γ(x) = ∫0∞ t^(x−1) * std::exp(−t) dt
@@ -405,6 +424,9 @@ public:
     *
     * This is slightly faster than the normalvariate() function.
     * Notice: not thread-safe without a lock around calls.
+    *
+    * Important notice:  the implemented code is a translation from Python
+    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
     inline const double gauss()
     {
@@ -418,7 +440,10 @@ public:
     * mu can be any value, sigma must be greater than 0.0.
     * This is slightly faster than the normalvariate() function.
     *
-    * Notice: not thread-safe without a lock around calls.
+    * Notice: not thread-safe without a mutex around calls.
+    *
+    * Important notice:  the implemented code is a translation from Python
+    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
     const double gauss(const double mu, const double sigma);
 
@@ -427,6 +452,9 @@ public:
     *
     * If you take the natural logarithm of this distribution, you'll get 
     * a normal distribution with mean 0.0 and standard deviation 1.0.
+    *
+    * Important notice:  the implemented code is a translation from Python
+    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
     inline const double lognormvariate()
     {
@@ -439,6 +467,9 @@ public:
     * If you take the natural logarithm of this distribution, you'll get 
     * a normal distribution with mean mu and standard deviation sigma.
     * mu can have any value, and sigma must be greater than zero.
+    *
+    * Important notice:  the implemented code is a translation from Python
+    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
     inline const double lognormvariate(const double mu, const double sigma)
     {
@@ -454,6 +485,9 @@ public:
     * Math Software, 3, (1977), pp257 - 260.
     * This method is slightlly slower than the gauss  method,  so  we  call 
     * gauss() instead here, in CRandLib.
+    *
+    * Important notice:  the implemented code is a translation from Python
+    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
     inline const double normalvariate()
     {
@@ -472,6 +506,9 @@ public:
     * Math Software, 3, (1977), pp257 - 260.
     * This method is slightlly slower than the gauss  method,  so  we  call
     * gauss() instead here, in CRandLib.
+    *
+    * Important notice:  the implemented code is a translation from Python
+    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
     inline const double normalvariate(const double mu, const double sigma)
     {
@@ -482,22 +519,67 @@ public:
     /** @brief Pareto distribution.
     *
     * @arg alpha: double, the shape parameter. Cannot be 0.0.
+    *
+    * Important notice:  the implemented code is a translation from Python
+    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
     const double paretorvariate(const double alpha);
+
+
+    /** @brief Triangular distribution (low=0.0, high=1.0, mode=0.5). */
+    inline const double triangular()
+    {
+        return triangular(0.0, 1.0, 0.5);
+    }
+
+
+    /** @brief Triangular distribution (low, high, default mode). */
+    template<typename T>
+    const T triangular(const T low, const T high)
+    {
+        return triangular(low, high, (low + high) / 2);
+    }
+
+
+    /** @briefTriangular distribution (low, high, mode). */
+    template<typename T>
+    const T triangular(T low, T high, const T mode)
+    {
+        if (high == low)
+            return high;
+        
+        const double u{ random() };
+        const double c{ double(mode - low) / double(high - low) };
+        if (u > c) {
+            u = 1.0 - u;
+            c = 1.0 - c;
+            std::swap(low, high);
+        }
+
+        return T(double(low) + double(high - low) * std::sqrt(u * c));
+    }
 
 
     /** @brief Uniform distribution (0.0, 1.0). */
     inline const double uniform()
     {
-        return uniform(0.0, 1.0);
+        return random();
     }
+
+
+    /** @brief Uniform distribution (0.0, max). */
+    template<typename T>
+    inline const T uniform(const T max)
+    {
+        return T(max * random());
+    }
+
 
     /** @brief Uniform distribution (min and max values).*/
     template<typename T>
     const T uniform(const T min, const T max)
     {
-        //TODO: implement this method - current code is for compilation tests purpose only
-        return max;
+        return min + T(double(max - min) * random());
     }
 
 
@@ -515,8 +597,11 @@ protected:
 
 
     //---   Attributes   ----------------------------------------------------
-    SeedStateType _seed;               //!< The internal current state of this PRNG
-    double _gauss_next{ GAUSS_NULL };  //!< smart optimization for Gaussian distribution computation
+    SeedStateType _seed;                      //!< The internal current state of this PRNG
+    double        _gauss_next{ GAUSS_NULL };  //!< smart optimization for Gaussian distribution computation
+
+
+private:
+    std::mt19937_64 m_mt19937{};  //!< this base class internal PRNG
+    const double MAX_64{ (double(std::numeric_limits<uint_fast64_t>::max()) + 1.0) };
 };
-
-

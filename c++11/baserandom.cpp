@@ -59,7 +59,7 @@ const double BaseRandom<SeedStateType>::expovariate(const double lambda)
     if (lambda == 0.0)
         throw std::invalid_argument("lambda value cannot be 0.0 (currently is)");
     
-    return -std::log(1.0 - uniform());
+    return -std::log(1.0 - random());
 }
 
 
@@ -91,9 +91,9 @@ const double BaseRandom<SeedStateType>::gammavariate(const double alpha, const d
         const double     C{ alpha + INV_A };
 
         while (true) {
-            const double u1{ uniform() };
+            const double u1{ random() };
             if (EPSILON < u1 && u1 < 1.0 - EPSILON) {
-                const double u2{ 1.0 - uniform() };
+                const double u2{ 1.0 - random() };
                 const double v{ std::log(u1 / (1.0 - u1)) / INV_A };
                 const double x{ alpha - std::exp(v) };
                 const double z{ u1 * u1 * u2 };
@@ -106,18 +106,18 @@ const double BaseRandom<SeedStateType>::gammavariate(const double alpha, const d
     }
     else if (alpha == 1.0) {
         // this is exponential distribution with lambda = 1 / beta
-        return -std::log(1.0 - uniform()) * beta;
+        return -std::log(1.0 - random()) * beta;
     }
     else {
         // alpha is between 0 and 1 (exclusive)
         // so, uses ALGORITHM GS of Statistical Computing - Kennedy & Gentle
         double x, u;
         while (true) {
-            u = uniform();
+            u = random();
             const double b{ (E + alpha) / E };
             const double p{ b * u };
             x = p <= 1.0 ? std::pow(p, 1.0 / alpha) : -std::log((b - p) / alpha);
-            u = uniform();
+            u = random();
             if (p <= 1.0) {
                 if (u <= std::exp(-x))
                     break;
@@ -141,7 +141,7 @@ const double BaseRandom<SeedStateType>::gauss(const double mu, const double sigm
     _gauss_next = GAUSS_NULL;
     if (z == GAUSS_NULL) {
         const double u{ uniform(TWO_PI) };
-        const double g{ std::sqrt(-2.0 * std::log(1.0 - uniform())) };
+        const double g{ std::sqrt(-2.0 * std::log(1.0 - random())) };
         z = std::cos(u) * g;
         _gauss_next = std::sin(u) * g;
     }
@@ -158,6 +158,6 @@ const double BaseRandom<SeedStateType>::paretorvariate(const double alpha)
         throw std::invalid_argument("shape argument alpha must not be 0.0, current value is.");
 
     // Jain, pg. 495
-    return std::pow(1.0 - uniform(), -1.0 / alpha);
+    return std::pow(1.0 - random(), -1.0 / alpha);
 }
 
