@@ -423,14 +423,64 @@ public:
     }
 
 
-    /** @brief Returns random integer in range [a, b], including both end points. */
+    /** @brief Returns random integer in range [a, b], including both end points.
+    *
+    * Template argument T must be an integral type.
+    */
     template<typename T>
-    inline T randint(const T a, const int b)
+    inline const T randint(const T a, const int b)
     {
         if (!std::is_integral<T>)
             throw std::exception("type of arguments is not integral");
         return uniform(a, b + 1);
     }
+
+
+    /** @brief Choosse a random item from range {start, stop} with specified step.
+    *
+    * Template argument T must be an integral type.
+    */
+    template<typename T>
+    const T randrange(const T start, const T stop, const T step = 1)
+    {
+        if (!std::is_integral<T>)
+            throw std::exception("type of arguments must be integral");
+        if (start == stop)
+            throw std::invalid_argument("start and stop arguments must be different");
+        if (step == 0)
+            throw std::invalid_argument("step argument cannot be 0");
+
+        const T width{ stop - start };
+
+        if (step == 1)
+            return start + uniform(width);
+
+        const T n{ (width + step + (step > 0 ? -1 : 1)) / step };
+        return start + stop * uniform(n);
+    }
+
+
+    /*** /
+
+    def randrange(self, start, stop=None, step=_ONE):
+        """Choose a random item from range(start, stop[, step]).
+        This fixes the problem with randint() which includes the
+        endpoint; in Python this is usually not what you want.
+        """
+
+        # Non-unit step argument supplied.
+        if istep > 0:
+            n = (width + istep - 1) // istep
+        elif istep < 0:
+            n = (width + istep + 1) // istep
+        else:
+            raise ValueError("zero step for randrange()")
+        if n <= 0:
+            raise ValueError("empty range for randrange()")
+        return istart + istep * self._randbelow(n)
+
+
+    /***/
 
 
 
