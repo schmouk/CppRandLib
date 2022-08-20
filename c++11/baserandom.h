@@ -372,7 +372,7 @@ public:
     * class attribute '::value_type', in which case the template argument  'T'
     * may be ommitted.
     */
-    template<typename ContainerType, typename T = typenameContainerType::value_type>
+    template<typename ContainerType, typename T = ContainerType::value_type>
     T& choice(const ContainerType& seq)
     {
         const size_t size{ seq.size };
@@ -430,13 +430,13 @@ public:
     template<typename T>
     inline const T randint(const T a, const int b)
     {
-        if (!std::is_integral<T>)
+        if (!std::is_integral_v<T>)
             throw std::exception("type of arguments is not integral");
         return uniform(a, b + 1);
     }
 
 
-    /** @brief Choosse a random item from range {start, stop} with specified step.
+    /** @brief Chooses a random item from range {start, stop} with specified step.
     *
     * Template argument T must be an integral type.
     */
@@ -460,24 +460,166 @@ public:
     }
 
 
+    /** @brief Chooses k unique random elements from a population sequence (default counts = 1).
+    *
+    * Evaluates a vector containing  elements  from  the  population  while
+    * leaving  the  original  population  unchanged.  The resulting list is
+    * in selection order so that all sub-slices will also be  valid  random
+    * samples.  This  allows  raffle winners (the sample) to be partitioned
+    * into grand prize and second place winners (the subslices).
+    * 
+    * Members of the population need not be  hashable  or  unique.  If  the
+    * population  contains  repeats,  then  each  occurrence  is a possible
+    * selection in the sample.
+    * 
+    * Repeated elements can be specified one at a time or with the optional
+    * counts parameter.  For example:
+    *     sample(['red', 'blue'], counts=[4, 2], k=5);
+    * is equivalent to:
+    *     sample(['red', 'red', 'red', 'red', 'blue', 'blue'], k=5);
+    * 
+    * To choose a sample from a range of  integers,  use  range()  for  the
+    * population  argument.  This  is  especially  fast and space efficient
+    * for sampling from a large population:
+    *     sample(range(10000000), 60);
+    * 
+    * Important notice: the ContainerType class MUST provide method '.size()'.
+    */
+    template<typename ContainerType>
+    inline void sample(ContainerType&       out,
+                       const ContainerType& population,
+                       const size_t         k)
+    {
+        size_t n{ population.size() };
+
+        if (out.size() != n)
+            throw std::invalid_argument("sizes of arguments 'out' and 'population' must be the same.");
+
+        for (int i = 0; i < k; ++i) {
+            const size_t index = uniform(i, n - i);
+            out[i] = population[index];
+            if (i != index)
+                std::swap(population[i], population[index]);
+        }
+    }
+
+
+    /** @brief Chooses k unique random elements from a population sequence.
+    *
+    * Evaluates a vector containing  elements  from  the  population  while
+    * leaving  the  original  population  unchanged.  The resulting list is
+    * in selection order so that all sub-slices will also be  valid  random
+    * samples.  This  allows  raffle winners (the sample) to be partitioned
+    * into grand prize and second place winners (the subslices).
+    *
+    * Members of the population need not be  hashable  or  unique.  If  the
+    * population  contains  repeats,  then  each  occurrence  is a possible
+    * selection in the sample.
+    *
+    * Repeated elements can be specified one at a time or with the optional
+    * counts parameter.  For example:
+    *     sample(['red', 'blue'], counts=[4, 2], k=5);
+    * is equivalent to:
+    *     sample(['red', 'red', 'red', 'red', 'blue', 'blue'], k=5);
+    *
+    * To choose a sample from a range of  integers,  use  range()  for  the
+    * population  argument.  This  is  especially  fast and space efficient
+    * for sampling from a large population:
+    *     sample(range(10000000), 60);
+    * 
+    * The implemented algorithm in CRandLib is NOT the one that is implemented
+    * in Python 3.11 library Random.  In CRandLib, we use a simpler form which
+    * should be more efficient as long as population's items are movable (i.e.
+    * Move Constructor and maybe Move assignment are defined).
+    * 
+    * Important notice: the ContainerType class MUST provide method '.size()'.
+    * It  may  also  provide  the  type of the contained objects or values via 
+    * class attribute '::value_type', in which case the template argument  'T'
+    * may be ommitted.
+    * This is true also for CountsType. Furthermore, sizes of 'population' and
+    * 'counts' must be the same.
+    */
+    template<typename ContainerType, typename CountsType, typename T = ContainerType::value_type>
+    inline void sample(ContainerType&       out,
+                       const ContainerType& population,
+                       const size_t         k, 
+                       const CountsType&    counts)
+    {
+        const size_t n{ population.size() };
+
+        if (counts.size() != n)
+            throw std::invalid_argument("sizes of arguments 'population' and 'counts' must be the same.");
+        if (out.size() != n)
+            throw std::invalid_argument("sizes of arguments 'out' and 'population' must be the same.");
+        if (!std::is_integral_v<CountsType::value_type>)
+            throw std::exception("type of 'counts' values must be integral.");
+
+        size_t samples_count{ 0 };
+        for (auto& c : counts)
+            samples_count += c;
+        if (k > samples_count)
+            throw std::invalid_argument("cannot sample a number of items that is greater than the overall population.");
+
+        std::vector<T> samples;
+        samples.reserve(samples_count);
+        size_t i = 0;
+        for (T& p : population) {
+            for (size_t j = counts[i]; j > 0; --j)
+                samples.emplace_back(p);
+            i++;
+        }
+
+        for (i = 0; i < k; ++i) {
+            const size_t index = uniform(i, samples_count - i);
+            out[i] = samples[index];
+            if (i != index)
+                std::swap(samples[i], samples[index]);
+        }
+    }
+
+
+
     /*** /
 
-    def randrange(self, start, stop=None, step=_ONE):
-        """Choose a random item from range(start, stop[, step]).
-        This fixes the problem with randint() which includes the
-        endpoint; in Python this is usually not what you want.
-        """
-
-        # Non-unit step argument supplied.
-        if istep > 0:
-            n = (width + istep - 1) // istep
-        elif istep < 0:
-            n = (width + istep + 1) // istep
+    def sample(self, population, k, *, counts=None):
+        n = len(population)
+        if counts is not None:
+            cum_counts = list(_accumulate(counts))
+            if len(cum_counts) != n:
+                raise ValueError('The number of counts does not match the population')
+            total = cum_counts.pop()
+            if not isinstance(total, int):
+                raise TypeError('Counts must be integers')
+            if total <= 0:
+                raise ValueError('Total of counts must be greater than zero')
+            selections = self.sample(range(total), k=k)
+            bisect = _bisect
+            return [population[bisect(cum_counts, s)] for s in selections]
+        randbelow = self._randbelow
+        if not 0 <= k <= n:
+            raise ValueError("Sample larger than population or is negative")
+        result = [None] * k
+        setsize = 21        # size of a small set minus size of an empty list
+        if k > 5:
+            setsize += 4 ** _ceil(_log(k * 3, 4))  # table size for big sets
+        if n <= setsize:
+            # An n-length list is smaller than a k-length set.
+            # Invariant:  non-selected at pool[0 : n-i]
+            pool = list(population)
+            for i in range(k):
+                j = randbelow(n - i)
+                result[i] = pool[j]
+                pool[j] = pool[n - i - 1]  # move non-selected item into vacancy
         else:
-            raise ValueError("zero step for randrange()")
-        if n <= 0:
-            raise ValueError("empty range for randrange()")
-        return istart + istep * self._randbelow(n)
+            selected = set()
+            selected_add = selected.add
+            for i in range(k):
+                j = randbelow(n)
+                while j in selected:
+                    j = randbelow(n)
+                selected_add(j)
+                result[i] = population[j]
+        return result
 
 
     /***/
