@@ -613,6 +613,21 @@ public:
     }
 
 
+    /** @brief Shuffles specified sequence in place.
+    *
+    * The container type must provide method '.size()'.
+    */
+    template<typename ContainerType>
+    void shuffle(ContainerType& seq)
+    {
+        const size_t n{ seq.size() };
+        for (size_t i = 0; i < n - 1; ++i) {
+            const size_t index = uniform(i);
+            std::swap(seq[i], seq[index]);
+        }
+    }
+
+
     //---   Random distribution functions   ---------------------------------
     /** @brief Beta distribution.
     *
