@@ -541,7 +541,11 @@ public:
     }
 
 
-    /** @briefTriangular distribution (low, high, mode). */
+    /** @briefTriangular distribution (low, high, mode).
+    *
+    * Important notice:  the implemented code is a translation from Python
+    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
+    */
     template<typename T>
     const T triangular(T low, T high, const T mode)
     {
@@ -581,6 +585,65 @@ public:
     {
         return min + T(double(max - min) * random());
     }
+
+
+    /** @brief Circular data distribution.
+    * 
+    * @arg mu is the mean angle, expressed in radians between 0 and 2*pi
+    * @arg kappa is the concentration parameter, which must be greater than or
+    *   equal to zero.  If kappa is equal to zero, this distribution reduces
+    *   to a uniform random angle over the range 0 to 2*pi.
+    *
+    * Important notice:  the implemented code is a translation from Python
+    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++. 
+    * As such, some comments present in the Python original code have been
+    * copied as is in this c++ implementation, naming then the authors of 
+    * the related parts of code.
+    */
+    const double vonmisesvariate(const double mu, const double kappa);
+    /*** /
+
+    def vonmisesvariate(self, mu, kappa):
+        """Circular data distribution.
+        mu is the mean angle, expressed in radians between 0 and 2*pi, and
+        kappa is the concentration parameter, which must be greater than or
+        equal to zero.  If kappa is equal to zero, this distribution reduces
+        to a uniform random angle over the range 0 to 2*pi.
+        """
+        # Based upon an algorithm published in: Fisher, N.I.,
+        # "Statistical Analysis of Circular Data", Cambridge
+        # University Press, 1993.
+
+        # Thanks to Magnus Kessler for a correction to the
+        # implementation of step 4.
+
+        random = self.random
+        if kappa <= 1e-6:
+            return TWOPI * random()
+
+        s = 0.5 / kappa
+        r = s + _sqrt(1.0 + s * s)
+
+        while True:
+            u1 = random()
+            z = _cos(_pi * u1)
+
+            d = z / (r + z)
+            u2 = random()
+            if u2 < 1.0 - d * d or u2 <= (1.0 - d) * _exp(d):
+                break
+
+        q = 1.0 / r
+        f = (q + z) / (1.0 + q * z)
+        u3 = random()
+        if u3 > 0.5:
+            theta = (mu + _acos(f)) % TWOPI
+        else:
+            theta = (mu - _acos(f)) % TWOPI
+
+        return theta
+
+    /***/
 
 
 protected:

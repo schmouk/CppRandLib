@@ -161,3 +161,37 @@ const double BaseRandom<SeedStateType>::paretorvariate(const double alpha)
     return std::pow(1.0 - random(), -1.0 / alpha);
 }
 
+
+/** Circular data distribution. */
+template<typename SeedStateType>
+const double BaseRandom<SeedStateType>::vonmisesvariate(const double mu, const double kappa)
+{
+    // Based upon an algorithm published in : Fisher, N.I.,
+    // "Statistical Analysis of Circular Data", Cambridge University Press, 1993.
+    //
+    // Thanks to Magnus Kessler for a correction to the implementation of step 4.
+
+    if (kappa <= 1e-6)
+        return uniform(TWO_PI);
+
+    const double s = 0.5 / kappa;
+    const double r = s + std::sqrt(1.0 + s * s);
+    double z;
+
+    while (true) {
+        z = std::cos(uniform(PI));
+        const double d{ z / (r + z) };
+        const double u{ random() };
+        if (u < 1.0 - d * d || u < (1.0 - d) * std::exp(d))
+            break;
+    }
+
+    const double q{ 1.0 / r };
+    const double f{ (q + z) / (1.0 + q * z) };
+    if (random() >= 0.5)
+        return (mu + std::acos(f)) % TWO_PI;
+    else
+        return (mu - std::acos(f)) % TWO_PI;
+}
+
+
