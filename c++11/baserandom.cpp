@@ -189,9 +189,18 @@ const double BaseRandom<SeedStateType>::vonmisesvariate(const double mu, const d
     const double q{ 1.0 / r };
     const double f{ (q + z) / (1.0 + q * z) };
     if (random() >= 0.5)
-        return (mu + std::acos(f)) % TWO_PI;
+        return std::fmod(mu + std::acos(f), TWO_PI);
     else
-        return (mu - std::acos(f)) % TWO_PI;
+        return std::fmod(mu - std::acos(f), TWO_PI);
 }
 
 
+/** Weibull distribution. */
+template<typename SeedStateType>
+const double BaseRandom<SeedStateType>::weibullvariate(const double alpha, const double beta)
+{
+    if (beta <= 0.0)
+        throw std::invalid_argument("shape argument beta must not be 0.0, current value is.");
+
+    return alpha * std::pow(-std::log(1.0 - random()), 1.0 / beta);
+}

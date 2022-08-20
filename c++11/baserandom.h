@@ -601,47 +601,25 @@ public:
     * the related parts of code.
     */
     const double vonmisesvariate(const double mu, const double kappa);
+
+
+    /** @brief Weibull distribution.
+    *
+    * @arg alpha: double, the scale parameter.
+    * @arg beta: double, the shape parameter. Must be non null.
+    */
+    const double weibullvariate(const double alpha, const double beta);
+
     /*** /
 
-    def vonmisesvariate(self, mu, kappa):
-        """Circular data distribution.
-        mu is the mean angle, expressed in radians between 0 and 2*pi, and
-        kappa is the concentration parameter, which must be greater than or
-        equal to zero.  If kappa is equal to zero, this distribution reduces
-        to a uniform random angle over the range 0 to 2*pi.
+    def weibullvariate(self, alpha, beta):
+        """Weibull distribution.
+        alpha is the scale parameter and beta is the shape parameter.
         """
-        # Based upon an algorithm published in: Fisher, N.I.,
-        # "Statistical Analysis of Circular Data", Cambridge
-        # University Press, 1993.
+        # Jain, pg. 499; bug fix courtesy Bill Arms
 
-        # Thanks to Magnus Kessler for a correction to the
-        # implementation of step 4.
-
-        random = self.random
-        if kappa <= 1e-6:
-            return TWOPI * random()
-
-        s = 0.5 / kappa
-        r = s + _sqrt(1.0 + s * s)
-
-        while True:
-            u1 = random()
-            z = _cos(_pi * u1)
-
-            d = z / (r + z)
-            u2 = random()
-            if u2 < 1.0 - d * d or u2 <= (1.0 - d) * _exp(d):
-                break
-
-        q = 1.0 / r
-        f = (q + z) / (1.0 + q * z)
-        u3 = random()
-        if u3 > 0.5:
-            theta = (mu + _acos(f)) % TWOPI
-        else:
-            theta = (mu - _acos(f)) % TWOPI
-
-        return theta
+        u = 1.0 - self.random()
+        return alpha * (-_log(u)) ** (1.0 / beta)
 
     /***/
 
