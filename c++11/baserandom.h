@@ -578,53 +578,24 @@ public:
     }
 
 
-
-    /*** /
-
-    def sample(self, population, k, *, counts=None):
-        n = len(population)
-        if counts is not None:
-            cum_counts = list(_accumulate(counts))
-            if len(cum_counts) != n:
-                raise ValueError('The number of counts does not match the population')
-            total = cum_counts.pop()
-            if not isinstance(total, int):
-                raise TypeError('Counts must be integers')
-            if total <= 0:
-                raise ValueError('Total of counts must be greater than zero')
-            selections = self.sample(range(total), k=k)
-            bisect = _bisect
-            return [population[bisect(cum_counts, s)] for s in selections]
-        randbelow = self._randbelow
-        if not 0 <= k <= n:
-            raise ValueError("Sample larger than population or is negative")
-        result = [None] * k
-        setsize = 21        # size of a small set minus size of an empty list
-        if k > 5:
-            setsize += 4 ** _ceil(_log(k * 3, 4))  # table size for big sets
-        if n <= setsize:
-            # An n-length list is smaller than a k-length set.
-            # Invariant:  non-selected at pool[0 : n-i]
-            pool = list(population)
-            for i in range(k):
-                j = randbelow(n - i)
-                result[i] = pool[j]
-                pool[j] = pool[n - i - 1]  # move non-selected item into vacancy
-        else:
-            selected = set()
-            selected_add = selected.add
-            for i in range(k):
-                j = randbelow(n)
-                while j in selected:
-                    j = randbelow(n)
-                selected_add(j)
-                result[i] = population[j]
-        return result
+    /** @brief Initializes internal state (empty signature).
+    *
+    * The seed value is evaluated from current time.
+    */
+    inline void seed() noexcept
+    {
+        setstate();
+        _gauss_next = GAUSS_NULL;
+    }
 
 
-    /***/
-
-
+    /** @brief Initializes internal state from a seed (empty signature). */
+    template<typename SeedStateType>
+    inline void seed(const SeedStateType& seed_state) noexcept
+    {
+        setstate(seed_state);
+        _gauss_next = GAUSS_NULL;
+    }
 
 
     //---   Random distribution functions   ---------------------------------
