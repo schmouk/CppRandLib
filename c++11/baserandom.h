@@ -382,6 +382,13 @@ public:
     }
 
 
+    /** @brief Returns the internal state; can be passed to setstate() later. */
+    SeedStateType getstate() const noexcept
+    {
+        return SeedStateType(_gauss_next);
+    }
+
+
     /** @brief Returns n values that are uniformly contained within the interval [0.0, 1.0). */
     inline void n_evaluate(size_t n, std::vector<double>& out)
     {
