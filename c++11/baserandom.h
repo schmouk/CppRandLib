@@ -33,33 +33,40 @@ SOFTWARE.
 *
 *
     This module is part of library CppRandLib.
+
     Copyright (c) 2022 Philippe Schmouker
+
     See FastRand32 for a 2^32 (i.e. 4.3e+9) period LC-Generator and  FastRand63  for a
     2^63 (i.e. about 9.2e+18) period LC-Generator with low computation time.
+
     See MRGRand287 for a short period  MR-Generator (2^287,  i.e. 2.49e+86)  with  low
     computation time but 256 integers memory consumption.
+
     See MRGRand1457 for a  longer  period  MR-Generator  (2^1457,  i.e. 4.0e+438)  and
     longer  computation  time  (2^31-1  modulus  calculations)  but  less memory space
     consumption (47 integers).
+
     See MRGRand49507 for a far  longer  period  (2^49507,  i.e. 1.2e+14903)  with  low
     computation  time  too  (31-bits  modulus)  but  use  of  more  memory space (1597
     integers).
+
     See LFibRand78, LFibRand116, LFibRand668 and LFibRand1340  for  long  period  LFib
     generators  (resp.  2^78,  2^116,  2^668  and 2^1340 periods,  i.e. resp. 3.0e+23,
     8.3e+34, 1.2e+201 and 2.4e+403 periods) while same computation time and far higher
     precision  (64-bits  calculations) but memory consumption (resp. 17,  55,  607 and
     1279 integers).
-    Python built-in class random.Random is subclassed here to use  a  different  basic
-    generator of our own devising: in that case, overriden methods are:
-      random(), seed(), getstate(), and setstate().
+
     Furthermore this class and all its inheriting sub-classes are callable. Example:
       rand = BaseRandom()
       std::cout << rand();   // prints a uniform pseudo-random value within [0.0, 1.0)
       std::cout << rand(a);  // prints a uniform pseudo-random value within [0.0, a)
       std::cout << rand(a,b);// prints a uniform pseudo-random value within [a  , b)
-    Please notice that for simulating the roll of a dice you should program:
+
+    Please notice that for simulating the roll of a dice you may use any of:
       diceRoll = UFastRandom();
-      std::cout << int(diceRoll(1, 7)); // prints a uniform roll within {1, ..., 6}.
+      std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within {1, ..., 6}.
+      std::cout << diceRoll.randint(1, 6) << std::endl; // idem
+
     Conforming to the former version PyRandLib  of  this  library,  next  methods  are
     available:
      |
@@ -414,6 +421,18 @@ public:
         while (n-- > 0)
             out.emplace_back(uniform(min, max));
     }
+
+
+    /** @brief Returns random integer in range [a, b], including both end points. */
+    template<typename T>
+    inline T randint(const T a, const int b)
+    {
+        if (!std::is_integral<T>)
+            throw std::exception("type of arguments is not integral");
+        return uniform(a, b + 1);
+    }
+
+
 
 
     //---   Random distribution functions   ---------------------------------
