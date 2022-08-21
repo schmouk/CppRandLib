@@ -23,7 +23,6 @@ SOFTWARE.
 //===========================================================================
 #include <array>
 #include <chrono>
-#include <limits>
 #include <random>
 #include <stdexcept>
 #include <vector>
@@ -225,14 +224,12 @@ public:
     * to initialize their related PRNG.
     */
     inline BaseRandom() noexcept
-        : _state{}
     {
         setstate();
     }
 
     /** @brief Value Constructor. */
     inline BaseRandom(const SeedStateType& seed) noexcept
-        :_state{}
     {
         setstate(seed);
     }
@@ -255,7 +252,7 @@ public:
     */
     virtual inline const double random()
     {
-        return double(m_mt19937_64()) / MAX_64;
+        return 0.5;
     }
 
 
@@ -339,9 +336,10 @@ public:
     //---   Operations   ----------------------------------------------------
     /** @brief Chooses a random element from a non-empty sequence (std::vector<>). */
     template<typename T>
-    T& choice(const std::vector<T>& seq)
+    //T choice(std::vector<T> seq)
+    const T& choice(const std::vector<T>& seq)
     {
-        const size_t size{ seq.size };
+        const size_t size{ seq.size() };
         if (size == 0)
             throw std::invalid_argument("cannot make a choice from an empty sequence");
         return seq[uniform(size)];
@@ -350,7 +348,7 @@ public:
 
     /** @brief Chooses a random element from a non-empty sequence (std::array<>). */
     template<typename T, const size_t S>
-    T& choice(const std::array<T, S>& seq)
+    const T& choice(const std::array<T, S>& seq)
     {
         if (S == 0)
             throw std::invalid_argument("cannot make a choice from an empty sequence");
@@ -360,7 +358,7 @@ public:
 
     /** @brief Chooses a random element from a non-empty sequence (buffer_ptr). */
     template<typename T>
-    T& choice(const size_t size, const T* buffer_ptr)
+    const T& choice(const size_t size, const T* buffer_ptr)
     {
         if (size == 0)
             throw std::invalid_argument("cannot make a choice from an empty sequence");
@@ -378,9 +376,9 @@ public:
     * may be ommitted.
     */
     template<typename ContainerType, typename T = ContainerType::value_type>
-    T& choice(const ContainerType& seq)
+    const T& choice(const ContainerType& seq)
     {
-        const size_t size{ seq.size };
+        const size_t size{ seq.size() };
         if (size == 0)
             throw std::invalid_argument("cannot make a choice from an empty sequence");
         return seq[uniform(size)];
@@ -399,6 +397,7 @@ public:
     {
         n_evaluate(n, out, 0.0, 1.0);
     }
+
 
     /** @brief Returns n values that are uniformly contained within the interval [0, max). */
     template<typename T>
@@ -442,20 +441,20 @@ public:
     template<typename T>
     inline const T randint(const T a, const int b)
     {
-        if (!std::is_integral_v<T>)
-            throw std::exception("type of arguments is not integral");
+        if (!std::is_integral<T>::value)
+            throw std::exception("type of arguments must be integral");
         return uniform(a, b + 1);
     }
 
 
-    /** @brief Chooses a random item from range {start, stop} with specified step.
+    /** @brief Chooses a random item from range [start, stop) with specified step.
     *
     * Template argument T must be an integral type.
     */
     template<typename T>
     const T randrange(const T start, const T stop, const T step = 1)
     {
-        if (!std::is_integral<T>)
+        if (!std::is_integral<T>::value)
             throw std::exception("type of arguments must be integral");
         if (start == stop)
             throw std::invalid_argument("start and stop arguments must be different");
@@ -468,49 +467,91 @@ public:
             return start + uniform(width);
 
         const T n{ (width + step + (step > 0 ? -1 : 1)) / step };
-        return start + stop * uniform(n);
+        return start + step * uniform(n);
     }
 
 
-    /** @brief Chooses k unique random elements from a population sequence (default counts = 1).
+    /** @brief Chooses k unique random elements from a population sequence (out std::vector<>, in container, default counts = 1).
     *
     * Evaluates a vector containing  elements  from  the  population  while
     * leaving  the  original  population  unchanged.  The resulting list is
     * in selection order so that all sub-slices will also be  valid  random
     * samples.  This  allows  raffle winners (the sample) to be partitioned
     * into grand prize and second place winners (the subslices).
-    * 
+    *
     * Members of the population need not be  hashable  or  unique.  If  the
     * population  contains  repeats,  then  each  occurrence  is a possible
     * selection in the sample.
-    * 
+    *
     * Repeated elements can be specified one at a time or with the optional
     * counts parameter.  For example:
     *     sample(['red', 'blue'], counts=[4, 2], k=5);
     * is equivalent to:
     *     sample(['red', 'red', 'red', 'red', 'blue', 'blue'], k=5);
-    * 
+    *
     * To choose a sample from a range of  integers,  use  range()  for  the
     * population  argument.  This  is  especially  fast and space efficient
     * for sampling from a large population:
     *     sample(range(10000000), 60);
-    * 
+    *
     * Important notice: the ContainerType class MUST provide method '.size()'.
     */
-    template<typename ContainerType>
-    inline void sample(ContainerType&       out,
-                       const ContainerType& population,
-                       const size_t         k)
+    template<typename T>
+    void sample(std::vector<T>& out, const std::vector<T>& population, const size_t k)
     {
-        size_t n{ population.size() };
+        const size_t n{ population.size() };
+        if (k > n)
+            throw std::invalid_argument(_SAMPLE_K_ERROR_MSG.c_str());
 
-        if (out.size() != n)
-            throw std::invalid_argument("sizes of arguments 'out' and 'population' must be the same.");
+        out.clear();
+        out.reserve(k);
+        std::vector<T> samples{ population };
 
-        for (int i = 0; i < k; ++i) {
-            const size_t index = uniform(i, n - i);
-            out[i] = population[index];
-            std::swap(population[i], population[index]);
+        for (size_t i = 0; i < k; ++i) {
+            const size_t index = uniform(i, n);
+            out.emplace_back(samples[index]);
+            std::swap(samples[i], samples[index]);
+        }
+    }
+
+
+    /** @brief Chooses k unique random elements from a population sequence (out std::vector<>, in container, default counts = 1).
+    *
+    * Evaluates a vector containing  elements  from  the  population  while
+    * leaving  the  original  population  unchanged.  The resulting list is
+    * in selection order so that all sub-slices will also be  valid  random
+    * samples.  This  allows  raffle winners (the sample) to be partitioned
+    * into grand prize and second place winners (the subslices).
+    *
+    * Members of the population need not be  hashable  or  unique.  If  the
+    * population  contains  repeats,  then  each  occurrence  is a possible
+    * selection in the sample.
+    *
+    * Repeated elements can be specified one at a time or with the optional
+    * counts parameter.  For example:
+    *     sample(['red', 'blue'], counts=[4, 2], k=5);
+    * is equivalent to:
+    *     sample(['red', 'red', 'red', 'red', 'blue', 'blue'], k=5);
+    *
+    * To choose a sample from a range of  integers,  use  range()  for  the
+    * population  argument.  This  is  especially  fast and space efficient
+    * for sampling from a large population:
+    *     sample(range(10000000), 60);
+    *
+    * Important notice: the ContainerType class MUST provide method '.size()'.
+    */
+    template<typename T, const size_t k, const size_t n>
+    void sample(std::array<T, k>& out, const std::array<T, n>& population)
+    {
+        if (k > n)
+            throw std::invalid_argument(_SAMPLE_K_ERROR_MSG.c_str());
+
+        std::array<T, n> samples{ population };
+
+        for (size_t i = 0; i < k; ++i) {
+            const size_t index = uniform(i, n);
+            out[i] = samples[index];
+            std::swap(samples[i], samples[index]);
         }
     }
 
@@ -537,47 +578,107 @@ public:
     * population  argument.  This  is  especially  fast and space efficient
     * for sampling from a large population:
     *     sample(range(10000000), 60);
-    * 
+    *
     * The implemented algorithm in CRandLib is NOT the one that is implemented
     * in Python 3.11 library Random.  In CRandLib, we use a simpler form which
     * should be more efficient as long as population's items are movable (i.e.
     * Move Constructor and maybe Move assignment are defined).
-    * 
+    *
     * Important notice: the ContainerType class MUST provide method '.size()'.
-    * It  may  also  provide  the  type of the contained objects or values via 
+    * It  may  also  provide  the  type of the contained objects or values via
     * class attribute '::value_type', in which case the template argument  'T'
     * may be ommitted.
     * This is true also for CountsType. Furthermore, sizes of 'population' and
     * 'counts' must be the same.
     */
-    template<typename ContainerType, typename CountsType, typename T = ContainerType::value_type>
-    inline void sample(ContainerType&       out,
-                       const ContainerType& population,
-                       const size_t         k, 
-                       const CountsType&    counts)
+    template<typename T, typename C>
+    inline void sample(std::vector<T>& out, const std::vector<T>& population, const std::vector<C>& counts, const size_t k)
     {
-        const size_t n{ population.size() };
-
-        if (counts.size() != n)
-            throw std::invalid_argument("sizes of arguments 'population' and 'counts' must be the same.");
-        if (out.size() != n)
-            throw std::invalid_argument("sizes of arguments 'out' and 'population' must be the same.");
-        if (!std::is_integral_v<CountsType::value_type>)
-            throw std::exception("type of 'counts' values must be integral.");
+        if (counts.size() != population.size())
+            throw std::invalid_argument(_SAMPLE_SIZES_ERROR_MSG.c_str());
+        if (!std::is_integral<C>::value)
+            throw std::exception(_SAMPLE_COUNTS_TYPES_ERROR_MSG.c_str());
 
         size_t samples_count{ 0 };
         for (auto& c : counts)
             samples_count += c;
         if (k > samples_count)
-            throw std::invalid_argument("cannot sample a number of items that is greater than the overall population.");
+            throw std::invalid_argument(_SAMPLE_K_ERROR_MSG.c_str());
 
         std::vector<T> samples;
         samples.reserve(samples_count);
         size_t i = 0;
-        for (T& p : population) {
-            for (size_t j = counts[i]; j > 0; --j)
+        for (auto& p : population) {
+            for (size_t j = size_t(counts[i]); j > 0; --j)
                 samples.emplace_back(p);
-            i++;
+            ++i;
+        }
+
+        out.clear();
+        out.reserve(k);
+        for (i = 0; i < k; ++i) {
+            const size_t index = uniform(i, samples_count);
+            out.emplace_back(samples[index]);
+            if (i != index)
+                std::swap(samples[i], samples[index]);
+        }
+    }
+
+
+    /** @brief Chooses k unique random elements from a population sequence.
+    *
+    * Evaluates a vector containing  elements  from  the  population  while
+    * leaving  the  original  population  unchanged.  The resulting list is
+    * in selection order so that all sub-slices will also be  valid  random
+    * samples.  This  allows  raffle winners (the sample) to be partitioned
+    * into grand prize and second place winners (the subslices).
+    *
+    * Members of the population need not be  hashable  or  unique.  If  the
+    * population  contains  repeats,  then  each  occurrence  is a possible
+    * selection in the sample.
+    *
+    * Repeated elements can be specified one at a time or with the optional
+    * counts parameter.  For example:
+    *     sample(['red', 'blue'], counts=[4, 2], k=5);
+    * is equivalent to:
+    *     sample(['red', 'red', 'red', 'red', 'blue', 'blue'], k=5);
+    *
+    * To choose a sample from a range of  integers,  use  range()  for  the
+    * population  argument.  This  is  especially  fast and space efficient
+    * for sampling from a large population:
+    *     sample(range(10000000), 60);
+    *
+    * The implemented algorithm in CRandLib is NOT the one that is implemented
+    * in Python 3.11 library Random.  In CRandLib, we use a simpler form which
+    * should be more efficient as long as population's items are movable (i.e.
+    * Move Constructor and maybe Move assignment are defined).
+    *
+    * Important notice: the ContainerType class MUST provide method '.size()'.
+    * It  may  also  provide  the  type of the contained objects or values via
+    * class attribute '::value_type', in which case the template argument  'T'
+    * may be ommitted.
+    * This is true also for CountsType. Furthermore, sizes of 'population' and
+    * 'counts' must be the same.
+    */
+    template<typename T, typename C, const size_t k, const size_t n>
+    inline void sample(std::array<T, k>& out, const std::array<T, n>& population, const std::array<C, n>& counts)
+    {
+        if (!std::is_integral<C>::value)
+            throw std::exception(_SAMPLE_COUNTS_TYPES_ERROR_MSG.c_str());
+
+        size_t samples_count{ 0 };
+        for (auto& c : counts)
+            samples_count += c;
+        if (k > samples_count)
+            throw std::invalid_argument(_SAMPLE_K_ERROR_MSG.c_str());
+
+        std::vector<T> samples;
+        samples.reserve(samples_count);
+        size_t i = 0;
+        for (auto& p : population) {
+            for (size_t j = size_t(counts[i]); j > 0; --j)
+                samples.emplace_back(p);
+            ++i;
         }
 
         for (i = 0; i < k; ++i) {
@@ -615,27 +716,16 @@ public:
 
 
     /** @brief Sets the internal state of this PRNG from current time (empty signature). */
-    inline void setstate()
+    void setstate()
     {
-         const size_t ticks = std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::nanoseconds>().count;
-         setstate(((ticks & 0x0000'0000'ffff'ffff) << 32) +
-                  ((ticks & 0xff00'0000'0000'0000) >> 56) +
-                  ((ticks & 0x00ff'0000'0000'0000) >> 40) +
-                  ((ticks & 0x0000'ff00'0000'0000) >> 24) +
-                  ((ticks & 0x0000'00ff'0000'0000) >> 8));
-    }
+        const unsigned long long ticks = std::chrono::duration_cast<std::chrono::nanoseconds>(
+            std::chrono::high_resolution_clock::now().time_since_epoch()).count();
 
-
-    /** @brief Sets the internal state of this PRNG with an integral size_t value.
-    *
-    * Notice: this is the implementation for the base class. It may be overriden
-    *   in inheriting classes.
-    */
-    virtual inline void setstate(const size_t seed_value)
-    {
-        _state.seed = (SeedStateType)seed_value;
-        _state.gauss_next = GAUSS_NULL;
-        m_mt19937_64.seed(seed_value);
+        setstate(((ticks & 0x0000'0000'ffff'ffff) << 32) +
+                 ((ticks & 0xff00'0000'0000'0000) >> 56) +
+                 ((ticks & 0x00ff'0000'0000'0000) >> 40) +
+                 ((ticks & 0x0000'ff00'0000'0000) >> 24) +
+                 ((ticks & 0x0000'00ff'0000'0000) >> 8));
     }
 
 
@@ -663,7 +753,7 @@ public:
     {
         const size_t n{ seq.size() };
         for (size_t i = 0; i < n - 1; ++i) {
-            const size_t index = uniform(i);
+            const size_t index = uniform(i, n);
             std::swap(seq[i], seq[index]);
         }
     }
@@ -681,7 +771,26 @@ public:
     * The original code is due to Janne Sinkkonen and matches all the std 
     * texts (e.g., Knuth Vol 2 Ed 3 pg 134 "the beta distribution").
     */
-    const double betavariate(const double alpha, const double beta);
+    const double betavariate(const double alpha, const double beta)
+    {
+        constexpr char fmt[] = "%s value must be greater than 0.0 (currently is %g)";
+        constexpr int MAX_SIZE = 80;
+        char err_msg[MAX_SIZE];
+
+        if (alpha <= 0.0) {
+            snprintf(err_msg, MAX_SIZE, fmt, "alpha", alpha);
+            throw std::invalid_argument(err_msg);
+        }
+
+        if (beta <= 0.0) {
+            std::snprintf(err_msg, MAX_SIZE, fmt, "beta", beta);
+            throw std::invalid_argument(err_msg);
+        }
+
+        const double y = gammavariate(alpha, 1.0);
+        return (y == 0.0) ? 0.0 : (y / y + gammavariate(beta, 1.0));
+    }
+
 
 
     /** @brief Exponential distribution.
@@ -694,7 +803,14 @@ public:
     * Important notice:  the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++. 
     */
-    const double expovariate(const double lambda);
+    const double expovariate(const double lambda)
+    {
+        if (lambda == 0.0)
+            throw std::invalid_argument("lambda value cannot be 0.0 (currently is)");
+
+        return -std::log(1.0 - random());
+    }
+
     
 
     /** @brief Gamma distribution. This is NOT the gamma function!
@@ -721,7 +837,69 @@ public:
     * copied as is in this c++ implementation, naming then the authors of 
     * the related parts of code.
     */
-    const double gammavariate(const double alpha, const double beta);
+    const double gammavariate(const double alpha, const double beta)
+    {
+        constexpr char fmt[] = "%s value must be greater than 0.0 (currently is %g)";
+        constexpr int MAX_SIZE = 80;
+        char err_msg[MAX_SIZE];
+
+        if (alpha <= 0.0) {
+            snprintf(err_msg, MAX_SIZE, fmt, "alpha", alpha);
+            throw std::invalid_argument(err_msg);
+        }
+
+        if (beta <= 0.0) {
+            std::snprintf(err_msg, MAX_SIZE, fmt, "beta", beta);
+            throw std::invalid_argument(err_msg);
+        }
+
+        if (alpha > 1.0) {
+            // Uses R.C.H.Cheng paper
+            // "The generation of Gamma variables with non - integral shape parameters",
+            // Applied Statistics, (1977), 26, No. 1, p71 - 74
+            constexpr double EPSILON{ 1e-7 };
+            const double     INV_A{ std::sqrt(2.0 * alpha - 1.0) };
+            const double     B{ alpha - LOG4 };
+            const double     C{ alpha + INV_A };
+
+            while (true) {
+                const double u1{ random() };
+                if (EPSILON < u1 && u1 < 1.0 - EPSILON) {
+                    const double u2{ 1.0 - random() };
+                    const double v{ std::log(u1 / (1.0 - u1)) / INV_A };
+                    const double x{ alpha - std::exp(v) };
+                    const double z{ u1 * u1 * u2 };
+                    const double r{ B + C * v - x };
+                    if (r + SG_MAGICCONST - 4.5 * z >= 0.0 || r >= std::log(z))
+                        // this will eventually happen
+                        return x * beta;
+                }
+            }
+        }
+        else if (alpha == 1.0) {
+            // this is exponential distribution with lambda = 1 / beta
+            return -std::log(1.0 - random()) * beta;
+        }
+        else {
+            // alpha is between 0 and 1 (exclusive)
+            // so, uses ALGORITHM GS of Statistical Computing - Kennedy & Gentle
+            double x, u;
+            while (true) {
+                u = random();
+                const double b{ (E + alpha) / E };
+                const double p{ b * u };
+                x = p <= 1.0 ? std::pow(p, 1.0 / alpha) : -std::log((b - p) / alpha);
+                u = random();
+                if (p <= 1.0) {
+                    if (u <= std::exp(-x))
+                        break;
+                }
+                else if (u <= std::pow(x, alpha - 1.0))
+                    break;
+            }
+            return x * beta;
+        }
+    }
 
 
     /** @brief Default Gaussian distribution (mean=0.0, stdev=1.0).
@@ -749,7 +927,22 @@ public:
     * Important notice:  the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
-    const double gauss(const double mu, const double sigma);
+    const double gauss(const double mu, const double sigma)
+    {
+        if (sigma <= 0.0)
+            throw std::invalid_argument("value for argument sigma must be greater than 0.0, current value is not");
+
+        double z = _state.gauss_next;
+        _state.gauss_next = GAUSS_NULL;
+        if (z == GAUSS_NULL) {
+            const double u{ uniform(TWO_PI) };
+            const double g{ std::sqrt(-2.0 * std::log(1.0 - random())) };
+            z = std::cos(u) * g;
+            _state.gauss_next = std::sin(u) * g;
+        }
+
+        return mu + z * sigma;
+    }
 
 
     /** @brief Default Log normal distribution (mean=0.0, stdev=1.0).
@@ -827,7 +1020,14 @@ public:
     * Important notice:  the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
-    const double paretorvariate(const double alpha);
+    const double paretovariate(const double alpha)
+    {
+        if (alpha <= 0.0)
+            throw std::invalid_argument("shape argument alpha must not be 0.0, current value is.");
+
+        // Jain, pg. 495
+        return std::pow(1.0 - random(), -1.0 / alpha);
+    }
 
 
     /** @brief Triangular distribution (low=0.0, high=1.0, mode=0.5). */
@@ -856,8 +1056,8 @@ public:
         if (high == low)
             return high;
         
-        const double u{ random() };
-        const double c{ double(mode - low) / double(high - low) };
+        double u{ random() };
+        double c{ double(mode - low) / double(high - low) };
         if (u > c) {
             u = 1.0 - u;
             c = 1.0 - c;
@@ -885,7 +1085,7 @@ public:
 
     /** @brief Uniform distribution (min and max values).*/
     template<typename T>
-    const T uniform(const T min, const T max)
+    inline const T uniform(const T min, const T max)
     {
         return min + T(double(max - min) * random());
     }
@@ -904,7 +1104,36 @@ public:
     * copied as is in this c++ implementation, naming then the authors of 
     * the related parts of code.
     */
-    const double vonmisesvariate(const double mu, const double kappa);
+    const double vonmisesvariate(const double mu, const double kappa)
+    {
+        // Python 3.11 comments:
+        // Based upon an algorithm published in : Fisher, N.I.,
+        // "Statistical Analysis of Circular Data", Cambridge University Press, 1993.
+        //
+        // Thanks to Magnus Kessler for a correction to the implementation of step 4.
+
+        if (kappa <= 1e-6)
+            return uniform(TWO_PI);
+
+        const double s = 0.5 / kappa;
+        const double r = s + std::sqrt(1.0 + s * s);
+        double z;
+
+        while (true) {
+            z = std::cos(uniform(PI));
+            const double d{ z / (r + z) };
+            const double u{ random() };
+            if (u < 1.0 - d * d || u < (1.0 - d) * std::exp(d))
+                break;
+        }
+
+        const double q{ 1.0 / r };
+        const double f{ (q + z) / (1.0 + q * z) };
+        if (random() >= 0.5)
+            return std::fmod(mu + std::acos(f), TWO_PI);
+        else
+            return std::fmod(mu - std::acos(f), TWO_PI);
+    }
 
 
     /** @brief Weibull distribution.
@@ -912,21 +1141,33 @@ public:
     * @arg alpha: double, the scale parameter.
     * @arg beta: double, the shape parameter. Must be non null.
     */
-    const double weibullvariate(const double alpha, const double beta);
+    const double weibullvariate(const double alpha, const double beta)
+    {
+        if (beta <= 0.0)
+            throw std::invalid_argument("shape argument beta must not be 0.0, current value is.");
+
+        return alpha * std::pow(-std::log(1.0 - random()), 1.0 / beta);
+    }
+
 
 
 protected:
     //---   Constants   -----------------------------------------------------
-    const double BPF          { 53 };  // Number of bits in a float
-    const double E            { std::exp(1.0) };
-    const double LOG4         { std::log(4.0) };
-    const double NV_MAGICCONST{ 4 * std::exp(-0.5) / std::sqrt(2.0) };
-    const double PI           { 3.14159265358979323846 };
-    const double RECIP_BPF    { std::exp2(-BPF) };
-    const double SG_MAGICCONST{ 1.0 + std::log(4.5) };
-    const double TWO_PI       { 2.0 * PI };
+    static const double BPF;
+    static const double E;
+    static const double LOG4;
+    static const double NV_MAGICCONST;
+    static const double PI;
+    static const double RECIP_BPF;
+    static const double SG_MAGICCONST;
+    static const double TWO_PI;
 
     static const double GAUSS_NULL;
+
+    static const std::string _SAMPLE_K_ERROR_MSG;
+    static const std::string _SAMPLE_SIZES_ERROR_MSG;
+    static const std::string _SAMPLE_COUNTS_TYPES_ERROR_MSG;
+
 
     //---   Attributes   ----------------------------------------------------
     struct _InternalState
@@ -934,13 +1175,48 @@ protected:
         SeedStateType seed;                      //!< The internal current state of this PRNG
         double        gauss_next{ GAUSS_NULL };  //!< smart optimization for Gaussian distribution computation
     } _state;
-
-
-private:
-    std::mt19937_64 m_mt19937_64{};  //!< this base class internal PRNG
-    const double MAX_64{ (double(std::numeric_limits<uint_fast64_t>::max()) + 1.0) };
 };
 
 //---------------------------------------------------------------------------
 template<typename SeedStateType>
 const double BaseRandom<SeedStateType>::GAUSS_NULL = -1.0;
+
+template<typename SeedStateType>
+const double BaseRandom<SeedStateType>::BPF{ 53 };  // Number of bits in a float
+
+template<typename SeedStateType>
+const double BaseRandom<SeedStateType>::E{ std::exp(1.0) };
+
+template<typename SeedStateType>
+const double BaseRandom<SeedStateType>::LOG4{ std::log(4.0) };
+
+template<typename SeedStateType>
+const double BaseRandom<SeedStateType>::NV_MAGICCONST{ 4 * std::exp(-0.5) / std::sqrt(2.0) };
+
+template<typename SeedStateType>
+const double BaseRandom<SeedStateType>::PI{ 3.14159265358979323846 };
+
+template<typename SeedStateType>
+const double BaseRandom<SeedStateType>::RECIP_BPF{ std::exp2(-BPF) };
+
+template<typename SeedStateType>
+const double BaseRandom<SeedStateType>::SG_MAGICCONST{ 1.0 + std::log(4.5) };
+
+template<typename SeedStateType>
+const double BaseRandom<SeedStateType>::TWO_PI{ 2.0 * BaseRandom<SeedStateType>::PI };
+
+template<typename SeedStateType>
+const std::string BaseRandom<SeedStateType>::_SAMPLE_K_ERROR_MSG{
+    "cannot sample a number of items that is greater than the overall population."
+};
+
+template<typename SeedStateType>
+const std::string BaseRandom<SeedStateType>::_SAMPLE_SIZES_ERROR_MSG{
+    "sizes of arguments 'population' and 'counts' must be the same."
+};
+
+template<typename SeedStateType>
+const std::string BaseRandom<SeedStateType>::_SAMPLE_COUNTS_TYPES_ERROR_MSG{
+    "type of 'counts' values must be integral."
+};
+
