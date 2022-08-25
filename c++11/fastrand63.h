@@ -99,9 +99,14 @@ public:
         setstate();
     }
 
-    /** @brief Valued construtor. */
+    /** @brief Valued constructor - integer. */
     inline FastRand63(const uint64_t seed) noexcept
         : MyBaseClass(seed)
+    {}
+
+    /** @brief Valued constructor - double. */
+    inline FastRand63(const double seed) noexcept
+        : MyBaseClass(uint64_t(seed * double(0x7fff'ffff'ffff'ffffULL)))
     {}
 
     /** @brief Default Copy constructor. */
