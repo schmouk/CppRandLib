@@ -23,6 +23,7 @@ SOFTWARE.
 //===========================================================================
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <numeric>
 #include <stdexcept>
 #include <vector>
