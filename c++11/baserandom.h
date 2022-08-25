@@ -21,9 +21,9 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <algorithm>
 #include <array>
-#include <chrono>
-#include <random>
+#include <numeric>
 #include <stdexcept>
 #include <vector>
 
@@ -223,10 +223,7 @@ public:
     * Inheriting classes use a shuffled value of the local time as a seed
     * to initialize their related PRNG.
     */
-    inline BaseRandom() noexcept
-    {
-        setstate();
-    }
+    inline BaseRandom() noexcept = default;
 
     /** @brief Value Constructor. */
     inline BaseRandom(const SeedStateType& seed) noexcept
@@ -247,13 +244,10 @@ public:
     //---   Internal PRNG   -------------------------------------------------
     /** @brief The internal PRNG algorithm.
     *
-    * This method must be overriden in inheriting classes.
-    * @return a double value uniformly contained within the interval [0.0, 1.0).
+    * This method is pure virtual. It MUST be overriden in inheriting classes.
+    * @return a double value uniformly contained within range [0.0, 1.0).
     */
-    virtual inline const double random()
-    {
-        return 0.5;
-    }
+    virtual const double random() noexcept = 0;
 
 
     //---   Assignments operators   -----------------------------------------
@@ -273,164 +267,250 @@ public:
     //---   Calling operators   ---------------------------------------------
     /** @brief Empty Call operator.
     *
-    * @return a value that is uniformly contained within the interval [0.0, 1.0).
+    * @return a value that is uniformly contained within range [0.0, 1.0).
     */
-    inline const double operator() ()
+    inline const double operator() () noexcept
     {
         return uniform();
     }
 
     /** @brief Valued call operator (1 scalar).
     *
-    * @return a value that is uniformly contained within the interval [0; max).
+    * @return a value that is uniformly contained within range [0; max).
     */
     template<typename T>
-    inline const T operator() (const T max)
+    inline const T operator() (const T max) noexcept
     {
         return uniform(T(0), max);
     }
 
     /**@brief Valued call operator (min and max scalars).
     *
-    * @return a value that is uniformly contained within the interval [min; max).
+    * @return a value that is uniformly contained within range [min; max).
     */
     template<typename T>
-    inline const T operator() (const T min, const T max)
+    inline const T operator() (const T min, const T max) noexcept
     {
         return uniform(min, max);
     }
 
-    /** @brief Valued call operator (1 vector of scalars).
+    /** @brief Valued call operator (1 std::vector of scalars).
     *
-    * @return  a vector of value that are uniformly contained within the
-    *   interval [0; max[i])  --  i  being the index of the value in the
-    *   returned vector.
+    * @return  a vector of values that are uniformly contained within
+    *   the interval [0; max[i]) -- i being the index of the value in
+    *   the returned vector.
     */
     template<typename T>
-    std::vector<T> operator() (const std::vector<T> max)
+    std::vector<T> operator() (const std::vector<T>& max)
     {
-        std::vector<T> ret;
-        ret.reserve(max.size());
-        for (T m : max)
-            ret.emplace_back(uniform(m));
-        return ret;
+        if (!std::is_arithmetic<T>::value)
+            throw MaxValueTypeException();
+
+        std::vector<T> out(max.size());
+        auto max_it = max.cbegin();
+        for (auto out_it = out.begin(); out_it != out.end(); )
+            *out_it++ = uniform(*max_it++);
+        return out;
     }
 
-    /** @brief Valued call operator (2 vectors of scalars).
+    /** @brief Valued call operator (1 std::array of scalars).
     *
-    * @return a vector of value that are uniformly contained within  the
+    * @return  an array of values that are uniformly contained within
+    *   the interval [0; max[i]) -- i being the index of the value in
+    *   the returned array.
+    */
+    template<typename T, const size_t n>
+    std::array<T, n> operator() (const std::array<T, n>& max)
+    {
+        if (!std::is_arithmetic<T>::value)
+            throw MaxValueTypeException();
+
+        std::array<T, n> out(max.size());
+        for (auto out_it = out.begin(), max_it = max.cbegin(); out_it != out.end(); )
+            *out_it++ = uniform(*max_it++);
+        return out;
+    }
+
+    /** @brief Valued call operator (2 std::vector of scalars).
+    *
+    * @return  a vector of values that are uniformly contained within the
     *   interval [min[i]; max[i]) - i being the index of the value in the
     *   returned vector.
     */
     template<typename T>
-    std::vector<T> operator() (const std::vector<T> min, const std::vector<T> max)
+    std::vector<T> operator() (const std::vector<T>& min, const std::vector<T>& max)
     {
-        std::vector<T> ret;
-        ret.reserve(std::min(min.size(), max.size()));
-        for (auto min_it = min.cbegin(), max_it = max.cbegin(); min_it != min.cend() && max_it != max.cend(); ++min_it, ++max_it)
-            ret.emplace_back(uniform(*min_it, *max_it));
-        return ret;
+        if (!std::is_arithmetic<T>::value)
+            throw MaxValueTypeException();
+
+        const size_t count = std::min(min.size(), max.size());
+        std::vector<T> out(count);
+        auto min_it = min.cbegin();
+        auto max_it = max.cbegin();
+        for (auto out_it = out.begin(); out_it != out.end(); )
+            *out_it++ = uniform(*min_it++, *max_it++);
+        return out;
+    }
+
+    /** @brief Valued call operator (2 std::array of scalars).
+    *
+    * @return  an array of values that are uniformly contained within the
+    *   interval [min[i]; max[i]) - i being the index of the value in the
+    *   returned array.
+    */
+    template<typename T, const size_t n>
+    std::array<T, n> operator() (const std::array<T, n>& min, const std::array<T, n>& max)
+    {
+        if (!std::is_arithmetic<T>::value)
+            throw MaxValueTypeException();
+
+        const size_t count = std::min(min.size(), max.size());
+        std::array<T, n> out(count);
+        for (auto out_it = out.begin(), min_it = min.cbegin(), max_it = max.cbegin(); out_it != out.begin() + count; )
+            *out_it++ = uniform(*min_it++, *max_it++);
+        return out;
     }
 
 
     //---   Operations   ----------------------------------------------------
-    /** @brief Chooses a random element from a non-empty sequence (std::vector<>). */
+    /** @brief Chooses a random element from a non-empty sequence (std::vector). */
     template<typename T>
-    //T choice(std::vector<T> seq)
     const T& choice(const std::vector<T>& seq)
     {
-        const size_t size{ seq.size() };
-        if (size == 0)
-            throw std::invalid_argument("cannot make a choice from an empty sequence");
-        return seq[uniform(size)];
+        const size_t n{ seq.size() };
+        if (n == 0)
+            throw ChoiceEmptySequenceException();
+        return seq[uniform(n)];
     }
 
-
-    /** @brief Chooses a random element from a non-empty sequence (std::array<>). */
-    template<typename T, const size_t S>
-    const T& choice(const std::array<T, S>& seq)
+    /** @brief Chooses a random element from a non-empty sequence (std::array). */
+    template<typename T, const size_t n>
+    const T& choice(const std::array<T, n>& seq) noexcept(false)
     {
-        if (S == 0)
-            throw std::invalid_argument("cannot make a choice from an empty sequence");
-        return seq[uniform(S)];
-    } 
-
-
-    /** @brief Chooses a random element from a non-empty sequence (buffer_ptr). */
-    template<typename T>
-    const T& choice(const size_t size, const T* buffer_ptr)
-    {
-        if (size == 0)
-            throw std::invalid_argument("cannot make a choice from an empty sequence");
-        if (buffer_ptr == nullptr)
-            throw std::invalid_argument("cannot make a choice from a null sequence");
-        return buffer_ptr[uniform(size)];
-    }
-
-
-    /** @brief Chooses a random element from a non-empty sequence (templated container type).
-    *
-    * Important notice: the ContainerType class MUST provide method '.size()'.
-    * It  may  also  provide  the  type of the contained objects or values via 
-    * class attribute '::value_type', in which case the template argument  'T'
-    * may be ommitted.
-    */
-    template<typename ContainerType, typename T = ContainerType::value_type>
-    const T& choice(const ContainerType& seq)
-    {
-        const size_t size{ seq.size() };
-        if (size == 0)
-            throw std::invalid_argument("cannot make a choice from an empty sequence");
-        return seq[uniform(size)];
+        if (n == 0)
+            throw ChoiceEmptySequenceException();
+        return seq[uniform(n)];
     }
 
 
     /** @brief Returns the internal state of this PRNG; can be passed to setstate() later. */
-    struct _InternalState& getstate() const noexcept
+    inline struct _InternalState& getstate() const noexcept
     {
         return _state;
     }
 
 
-    /** @brief Returns n values that are uniformly contained within the interval [0.0, 1.0). */
-    inline void n_evaluate(size_t n, std::vector<double>& out)
+    /** @brief Returns n values that are uniformly contained within range [0.0, 1.0). */
+    inline std::vector<double> n_evaluate(const size_t n) noexcept
     {
-        n_evaluate(n, out, 0.0, 1.0);
+        return n_evaluate(n, 0.0, 1.0);
     }
 
 
-    /** @brief Returns n values that are uniformly contained within the interval [0, max). */
+    /** @brief Returns n values that are uniformly contained within range [0, max). */
     template<typename T>
-    inline void n_evaluate(size_t n, std::vector<T>& out, const T max)
+    inline std::vector<T> n_evaluate(const size_t n, const T max)
     {
-        n_evaluate(n, out, T(0), max);
+        if (!std::is_arithmetic<T>::value)
+            throw MaxValueTypeException();
+
+        return n_evaluate(n, T(0), max);
     }
 
-    /** @brief Returns n values that are uniformly contained within the interval [min, max). */
+    /** @brief Returns n values that are uniformly contained within range [min, max). */
     template<typename T>
-    inline void n_evaluate(size_t n, std::vector<T>& out, const T min, const T max)
+    std::vector<T> n_evaluate(size_t n, const T min, const T max)
     {
-        out.reserve(n);
-        while (n-- > 0)
-            out.emplace_back(uniform(min, max));
+        if (!std::is_arithmetic<T>::value)
+            throw MaxValueTypeException();
+
+        std::vector<T> out(n);
+        std::for_each(out.begin(), out.end(), [this, min, max](T& o) {o = this->uniform(min, max); });
+        return out;
     }
 
-    /** @brief Returns n vectors of values that are uniformly contained within the interval [0; max[i]) */
+    /** @brief Returns a vector of n vectors that each contain m values in range [0; max[i]).
+    *
+    * Notice: m is implicitly set with max.size() - i.e. the size of the
+    *   returned vector of vectors is the size of input vector 'max'.
+    */
     template<typename T>
-    inline void n_evaluate(size_t n, std::vector<std::vector<T>>& out, const std::vector<T> max)
+    std::vector<std::vector<T>> n_evaluate(const size_t n, const std::vector<T>& max)
     {
-        out.reserve(n);
-        while (n-- > 0)
-            out.emplace_back(uniform(max));
+        if (!std::is_arithmetic<T>::value)
+            throw MaxValueTypeException();
+
+        std::vector<std::vector<T>> out(n);
+        std::for_each(out.begin(), out.end(), [this, max](std::vector<T>& v) { v = (*this)(max); });
+        return out;
     }
 
-    /** @brief Returns n vectors of values that are uniformly contained within the interval [min[i]; max[i]) */
+    /** @brief Returns a vector of n vectors that each contain m values in range [min[i]; max[i]).
+    *
+    * Notice: n_vect is implicitly set with the smaller size of 'min' and 'max'.
+    */
     template<typename T>
-    inline void n_evaluate(size_t n, std::vector<std::vector<T>>& out, const std::vector<T> min, const std::vector<T> max)
+    std::vector<std::vector<T>> n_evaluate(const size_t n, const std::vector<T>& min, const std::vector<T>& max)
     {
-        out.reserve(n);
-        while (n-- > 0)
-            out.emplace_back(uniform(min, max));
+        if (!std::is_arithmetic<T>::value)
+            throw MaxValueTypeException();
+
+        std::vector<std::vector<T>> out(n);
+        std::for_each(out.begin(), out.end(), [this, min, max](std::vector<T>& v) { v = (*this)(min, max); });
+        return out;
+    }
+
+    /** @brief Returns an array of n values that are uniformly contained within range [0.0, 1.0). */
+    template<const size_t n>
+    inline std::array<double, n> n_evaluate() noexcept
+    {
+        return n_evaluate<double, n>(0.0, 1.0);
+    }
+
+    /** @brief Returns n values that are uniformly contained within range [0, max). */
+    template<typename T, const size_t n>
+    std::array<T, n> n_evaluate(const T max)
+    {
+        if (!std::is_arithmetic<T>::value)
+            throw MaxValueTypeException();
+
+        return n_evaluate<T, n>(T(0), max);
+    }
+
+    /** @brief Returns n values that are uniformly contained within range [min, max). */
+    template<typename T, const size_t n>
+    std::array<T, n> n_evaluate(const T min, const T max)
+    {
+        if (!std::is_arithmetic<T>::value)
+            throw MaxValueTypeException();
+
+        std::array<T, n> out;
+        std::for_each(out.begin(), out.end(), [this, min, max](T& o) {o = this->uniform(min, max); });
+        return out;
+    }
+
+    /** @brief Returns an array of n arrays that each contain m values in range [0; max[i]). */
+    template<typename T, const size_t n, const size_t m>
+    std::array<std::array<T, m>, n> n_evaluate(const std::array<T, m>& max)
+    {
+        if (!std::is_arithmetic<T>::value)
+            throw MaxValueTypeException();
+
+        std::array<std::array<T, m>, n> out;
+        std::for_each(out.begin(), out.end(), [this, max](std::array<T, m>& v) { v = (*this)(max); });
+        return out;
+    }
+
+    /** @brief Returns an array of n arrays that each contain m values in range [min[i]; max[i]). */
+    template<typename T, const size_t n, const size_t m>
+    std::array<std::array<T, m>, n> n_evaluate(const std::array<T, m>& min, const std::array<T, m>& max)
+    {
+        if (!std::is_arithmetic<T>::value)
+            throw MaxValueTypeException();
+
+        std::array<std::array<T, m>, n> out;
+        std::for_each(out.begin(), out.end(), [this, min, max](std::array<T, m>& v) { v = (*this)(min, max); });
+        return out;
     }
 
 
@@ -442,7 +522,7 @@ public:
     inline const T randint(const T a, const int b)
     {
         if (!std::is_integral<T>::value)
-            throw std::exception("type of arguments must be integral");
+            throw IntegralValueTypeException();
         return uniform(a, b + 1);
     }
 
@@ -455,11 +535,11 @@ public:
     const T randrange(const T start, const T stop, const T step = 1)
     {
         if (!std::is_integral<T>::value)
-            throw std::exception("type of arguments must be integral");
+            throw IntegralValueTypeException();
         if (start == stop)
-            throw std::invalid_argument("start and stop arguments must be different");
+            throw RangeSameValuesException();
         if (step == 0)
-            throw std::invalid_argument("step argument cannot be 0");
+            throw RangeZeroStepException();
 
         const T width{ stop - start };
 
@@ -471,7 +551,7 @@ public:
     }
 
 
-    /** @brief Chooses k unique random elements from a population sequence (out std::vector<>, in container, default counts = 1).
+    /** @brief Chooses k unique random elements from a population sequence (out std::vector, in container, default counts = 1).
     *
     * Evaluates a vector containing  elements  from  the  population  while
     * leaving  the  original  population  unchanged.  The resulting list is
@@ -501,7 +581,7 @@ public:
     {
         const size_t n{ population.size() };
         if (k > n)
-            throw std::invalid_argument(_SAMPLE_K_ERROR_MSG.c_str());
+            throw SampleCountException();
 
         out.clear();
         out.reserve(k);
@@ -514,8 +594,7 @@ public:
         }
     }
 
-
-    /** @brief Chooses k unique random elements from a population sequence (out std::vector<>, in container, default counts = 1).
+    /** @brief Chooses k unique random elements from a population sequence (out std::array<>, in std::array<>, default counts = 1).
     *
     * Evaluates a vector containing  elements  from  the  population  while
     * leaving  the  original  population  unchanged.  The resulting list is
@@ -537,14 +616,12 @@ public:
     * population  argument.  This  is  especially  fast and space efficient
     * for sampling from a large population:
     *     sample(range(10000000), 60);
-    *
-    * Important notice: the ContainerType class MUST provide method '.size()'.
     */
     template<typename T, const size_t k, const size_t n>
     void sample(std::array<T, k>& out, const std::array<T, n>& population)
     {
         if (k > n)
-            throw std::invalid_argument(_SAMPLE_K_ERROR_MSG.c_str());
+            throw SampleCountException();
 
         std::array<T, n> samples{ population };
 
@@ -556,7 +633,7 @@ public:
     }
 
 
-    /** @brief Chooses k unique random elements from a population sequence.
+    /** @brief Chooses k unique random elements from a population sequence (std::vector<>, with counts vector).
     *
     * Evaluates a vector containing  elements  from  the  population  while
     * leaving  the  original  population  unchanged.  The resulting list is
@@ -583,49 +660,39 @@ public:
     * in Python 3.11 library Random.  In CRandLib, we use a simpler form which
     * should be more efficient as long as population's items are movable (i.e.
     * Move Constructor and maybe Move assignment are defined).
-    *
-    * Important notice: the ContainerType class MUST provide method '.size()'.
-    * It  may  also  provide  the  type of the contained objects or values via
-    * class attribute '::value_type', in which case the template argument  'T'
-    * may be ommitted.
-    * This is true also for CountsType. Furthermore, sizes of 'population' and
-    * 'counts' must be the same.
     */
     template<typename T, typename C>
     inline void sample(std::vector<T>& out, const std::vector<T>& population, const std::vector<C>& counts, const size_t k)
     {
+        if (!std::is_integral<T>::value)
+            throw IntegralValueTypeException();
         if (counts.size() != population.size())
-            throw std::invalid_argument(_SAMPLE_SIZES_ERROR_MSG.c_str());
+            throw SampleSizesException();
         if (!std::is_integral<C>::value)
-            throw std::exception(_SAMPLE_COUNTS_TYPES_ERROR_MSG.c_str());
+            throw SampleCountsTypeException();
 
-        size_t samples_count{ 0 };
-        for (auto& c : counts)
-            samples_count += c;
+        const size_t samples_count = size_t(std::accumulate(counts.begin(), counts.end(), C(0)));
         if (k > samples_count)
-            throw std::invalid_argument(_SAMPLE_K_ERROR_MSG.c_str());
+            throw SampleCountException();
 
-        std::vector<T> samples;
-        samples.reserve(samples_count);
-        size_t i = 0;
+        std::vector<T> samples(samples_count);
+        auto c_it = counts.begin();
         for (auto& p : population) {
-            for (size_t j = size_t(counts[i]); j > 0; --j)
+            for (size_t j = size_t(*c_it++); j > 0; --j)
                 samples.emplace_back(p);
-            ++i;
         }
 
         out.clear();
         out.reserve(k);
-        for (i = 0; i < k; ++i) {
+        for (size_t i = 0; i < k; ++i) {
             const size_t index = uniform(i, samples_count);
             out.emplace_back(samples[index]);
-            if (i != index)
-                std::swap(samples[i], samples[index]);
+            std::swap(samples[i], samples[index]);
         }
     }
 
 
-    /** @brief Chooses k unique random elements from a population sequence.
+    /** @brief Chooses k unique random elements from a population sequence (std::array<>, with counts array).
     *
     * Evaluates a vector containing  elements  from  the  population  while
     * leaving  the  original  population  unchanged.  The resulting list is
@@ -652,40 +719,29 @@ public:
     * in Python 3.11 library Random.  In CRandLib, we use a simpler form which
     * should be more efficient as long as population's items are movable (i.e.
     * Move Constructor and maybe Move assignment are defined).
-    *
-    * Important notice: the ContainerType class MUST provide method '.size()'.
-    * It  may  also  provide  the  type of the contained objects or values via
-    * class attribute '::value_type', in which case the template argument  'T'
-    * may be ommitted.
-    * This is true also for CountsType. Furthermore, sizes of 'population' and
-    * 'counts' must be the same.
     */
     template<typename T, typename C, const size_t k, const size_t n>
     inline void sample(std::array<T, k>& out, const std::array<T, n>& population, const std::array<C, n>& counts)
     {
         if (!std::is_integral<C>::value)
-            throw std::exception(_SAMPLE_COUNTS_TYPES_ERROR_MSG.c_str());
+            throw IntegralValueTypeException();
 
-        size_t samples_count{ 0 };
-        for (auto& c : counts)
-            samples_count += c;
+        const size_t samples_count = size_t(std::accumulate(counts.begin(), counts.end(), C(0)));
         if (k > samples_count)
-            throw std::invalid_argument(_SAMPLE_K_ERROR_MSG.c_str());
+            throw SampleCountException();
 
         std::vector<T> samples;
         samples.reserve(samples_count);
-        size_t i = 0;
+        auto c_it = counts.begin();
         for (auto& p : population) {
-            for (size_t j = size_t(counts[i]); j > 0; --j)
+            for (size_t j = size_t(*c_it++); j > 0; --j)
                 samples.emplace_back(p);
-            ++i;
         }
 
-        for (i = 0; i < k; ++i) {
-            const size_t index = uniform(i, samples_count - i);
+        for (size_t i = 0; i < k; ++i) {
+            const size_t index = uniform(i, samples_count);
             out[i] = samples[index];
-            if (i != index)
-                std::swap(samples[i], samples[index]);
+            std::swap(samples[i], samples[index]);
         }
     }
 
@@ -716,29 +772,18 @@ public:
 
 
     /** @brief Sets the internal state of this PRNG from current time (empty signature). */
-    void setstate()
-    {
-        const unsigned long long ticks = std::chrono::duration_cast<std::chrono::nanoseconds>(
-            std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-
-        setstate(((ticks & 0x0000'0000'ffff'ffff) << 32) +
-                 ((ticks & 0xff00'0000'0000'0000) >> 56) +
-                 ((ticks & 0x00ff'0000'0000'0000) >> 40) +
-                 ((ticks & 0x0000'ff00'0000'0000) >> 24) +
-                 ((ticks & 0x0000'00ff'0000'0000) >> 8));
-    }
-
+    virtual void setstate() noexcept
+    {}
 
     /** @brief Restores the internal state of this PRNG from seed and gauss_next. */
-    inline void setstate(const SeedStateType& seed, const double gauss_next = BaseRandom::GAUSS_NULL)
+    void setstate(const SeedStateType& seed, const double gauss_next = BaseRandom::GAUSS_NULL) noexcept
     {
         _state.seed = seed;
         _state.gauss_next = gauss_next;
     }
 
-
     /** @brief Restores the internal state of this PRNG from object returned by getstate(). */
-    inline void setstate(const _InternalState& state)
+    inline void setstate(const _InternalState& state) noexcept
     {
         _state = state;
     }
@@ -751,6 +796,9 @@ public:
     template<typename ContainerType>
     void shuffle(ContainerType& seq)
     {
+        if (!m_is_indexable<ContainerType>::value)
+            throw IndexableContainerException();
+
         const size_t n{ seq.size() };
         for (size_t i = 0; i < n - 1; ++i) {
             const size_t index = uniform(i, n);
@@ -762,8 +810,8 @@ public:
     //---   Random distribution functions   ---------------------------------
     /** @brief Beta distribution.
     *
-    * @arg alpha: double, must be greater than 0
-    * @arg beta: double, must be greater than 0
+    * @param alpha: double, must be greater than 0
+    * @param beta: double, must be greater than 0
     * @return a value in interval [0.0, 1.0].
     * 
     * Important notice: the implemented code is a translation from Python
@@ -773,29 +821,18 @@ public:
     */
     const double betavariate(const double alpha, const double beta)
     {
-        constexpr char fmt[] = "%s value must be greater than 0.0 (currently is %g)";
-        constexpr int MAX_SIZE = 80;
-        char err_msg[MAX_SIZE];
-
-        if (alpha <= 0.0) {
-            snprintf(err_msg, MAX_SIZE, fmt, "alpha", alpha);
-            throw std::invalid_argument(err_msg);
-        }
-
-        if (beta <= 0.0) {
-            std::snprintf(err_msg, MAX_SIZE, fmt, "beta", beta);
-            throw std::invalid_argument(err_msg);
-        }
+        if (alpha <= 0.0 || beta <= 0.0)
+            throw AlphaBetaArgsException();
 
         const double y = gammavariate(alpha, 1.0);
-        return (y == 0.0) ? 0.0 : (y / y + gammavariate(beta, 1.0));
+        return (y == 0.0) ? 0.0 : (y / (y + gammavariate(beta, 1.0)));
     }
 
 
 
     /** @brief Exponential distribution.
     *
-    * @arg lambda: double, this should get the value (1.0 / desired_mean).
+    * @param lambda: double, this should get the value (1.0 / desired_mean).
     *   It cannot be 0.0.
     * @return a value in range [0.0, Infinity) if lambda is  positive,  or
     *   a value in range (-Infinity, 0.0] if lambda is negative.
@@ -806,12 +843,13 @@ public:
     const double expovariate(const double lambda)
     {
         if (lambda == 0.0)
-            throw std::invalid_argument("lambda value cannot be 0.0 (currently is)");
+            throw ExponentialZeroLambdaException();
 
         return -std::log(1.0 - random());
     }
 
-    
+ 
+
 
     /** @brief Gamma distribution. This is NOT the gamma function!
     *
@@ -827,8 +865,8 @@ public:
     * The Gamma function is the below integral summation from 0 to Infinity:
     *   Γ(x) = ∫0∞ t^(x−1) * std::exp(−t) dt
     * 
-    * @arg alpha : double, the shape parameter - must be greater than 0.0.
-    * @arg beta : double, the scale parameter - must be greater than 0.0.
+    * @param alpha : double, the shape parameter - must be greater than 0.0.
+    * @param beta : double, the scale parameter - must be greater than 0.0.
     *   With these two arguments: mean is alpha * beta and variance is alpha * beta * beta
     *
     * Important notice:  the implemented code is a translation from Python
@@ -839,19 +877,8 @@ public:
     */
     const double gammavariate(const double alpha, const double beta)
     {
-        constexpr char fmt[] = "%s value must be greater than 0.0 (currently is %g)";
-        constexpr int MAX_SIZE = 80;
-        char err_msg[MAX_SIZE];
-
-        if (alpha <= 0.0) {
-            snprintf(err_msg, MAX_SIZE, fmt, "alpha", alpha);
-            throw std::invalid_argument(err_msg);
-        }
-
-        if (beta <= 0.0) {
-            std::snprintf(err_msg, MAX_SIZE, fmt, "beta", beta);
-            throw std::invalid_argument(err_msg);
-        }
+        if (alpha <= 0.0 || beta <= 0.0)
+            throw AlphaBetaArgsException();
 
         if (alpha > 1.0) {
             // Uses R.C.H.Cheng paper
@@ -902,6 +929,7 @@ public:
     }
 
 
+
     /** @brief Default Gaussian distribution (mean=0.0, stdev=1.0).
     *
     * This is slightly faster than the normalvariate() function.
@@ -910,7 +938,7 @@ public:
     * Important notice:  the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
-    inline const double gauss()
+    inline const double gauss() noexcept
     {
         return gauss(0.0, 1.0);
     }
@@ -930,7 +958,7 @@ public:
     const double gauss(const double mu, const double sigma)
     {
         if (sigma <= 0.0)
-            throw std::invalid_argument("value for argument sigma must be greater than 0.0, current value is not");
+            throw GaussSigmaException();
 
         double z = _state.gauss_next;
         _state.gauss_next = GAUSS_NULL;
@@ -953,7 +981,7 @@ public:
     * Important notice:  the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
-    inline const double lognormvariate()
+    inline const double lognormvariate() noexcept
     {
         return lognormvariate(0.0, 1.0);
     }
@@ -968,7 +996,7 @@ public:
     * Important notice:  the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
-    inline const double lognormvariate(const double mu, const double sigma)
+    inline const double lognormvariate(const double mu, const double sigma) noexcept
     {
         return std::exp(gauss(mu, sigma));
     }
@@ -986,7 +1014,7 @@ public:
     * Important notice:  the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
-    inline const double normalvariate()
+    inline const double normalvariate() noexcept
     {
         return gauss();
     }
@@ -1007,7 +1035,7 @@ public:
     * Important notice:  the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
-    inline const double normalvariate(const double mu, const double sigma)
+    inline const double normalvariate(const double mu, const double sigma) noexcept
     {
         return gauss(mu, sigma);
     }
@@ -1015,15 +1043,15 @@ public:
 
     /** @brief Pareto distribution.
     *
-    * @arg alpha: double, the shape parameter. Cannot be 0.0.
+    * @param alpha: double, the shape parameter. Cannot be 0.0.
     *
     * Important notice:  the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
     const double paretovariate(const double alpha)
     {
-        if (alpha <= 0.0)
-            throw std::invalid_argument("shape argument alpha must not be 0.0, current value is.");
+        if (alpha == 0.0)
+            throw ParetoArgsValueException();
 
         // Jain, pg. 495
         return std::pow(1.0 - random(), -1.0 / alpha);
@@ -1041,11 +1069,14 @@ public:
     template<typename T>
     const T triangular(const T low, const T high)
     {
+        if (!std::is_arithmetic<T>::value)
+            throw ArithmeticValueTypeException();
+
         return triangular(low, high, (low + high) / 2);
     }
 
 
-    /** @briefTriangular distribution (low, high, mode).
+    /** @brief Triangular distribution (low, high, mode).
     *
     * Important notice:  the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
@@ -1053,6 +1084,9 @@ public:
     template<typename T>
     const T triangular(T low, T high, const T mode)
     {
+        if (!std::is_arithmetic<T>::value)
+            throw ArithmeticValueTypeException();
+
         if (high == low)
             return high;
         
@@ -1069,7 +1103,7 @@ public:
 
 
     /** @brief Uniform distribution (0.0, 1.0). */
-    inline const double uniform()
+    inline const double uniform() noexcept
     {
         return random();
     }
@@ -1079,6 +1113,9 @@ public:
     template<typename T>
     inline const T uniform(const T max)
     {
+        if (!std::is_arithmetic<T>::value)
+            throw ArithmeticValueTypeException();
+
         return T(max * random());
     }
 
@@ -1087,14 +1124,17 @@ public:
     template<typename T>
     inline const T uniform(const T min, const T max)
     {
+        if (!std::is_arithmetic<T>::value)
+            throw ArithmeticValueTypeException();
+
         return min + T(double(max - min) * random());
     }
 
 
     /** @brief Circular data distribution.
     * 
-    * @arg mu is the mean angle, expressed in radians between 0 and 2*pi
-    * @arg kappa is the concentration parameter, which must be greater than or
+    * @param mu is the mean angle, expressed in radians between 0 and 2*pi
+    * @param kappa is the concentration parameter, which must be greater than or
     *   equal to zero.  If kappa is equal to zero, this distribution reduces
     *   to a uniform random angle over the range 0 to 2*pi.
     *
@@ -1138,16 +1178,130 @@ public:
 
     /** @brief Weibull distribution.
     *
-    * @arg alpha: double, the scale parameter.
-    * @arg beta: double, the shape parameter. Must be non null.
+    * @param alpha: double, the scale parameter.
+    * @param beta: double, the shape parameter. Must be non null.
     */
     const double weibullvariate(const double alpha, const double beta)
     {
         if (beta <= 0.0)
-            throw std::invalid_argument("shape argument beta must not be 0.0, current value is.");
+            throw WeibullArgsValueException();
 
         return alpha * std::pow(-std::log(1.0 - random()), 1.0 / beta);
     }
+
+
+    //---   Exceptions   ----------------------------------------------------
+     /** @brief Exponential law null lambda exception. */
+    class AlphaBetaArgsException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "both arguments alpha and beta must be greater than 0.0."; }
+    };
+
+    /** @brief Wrong argument type - not arithmetic. */
+    class ArithmeticValueTypeException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "Argument(s) must be an arithmetic type."; }
+    };
+    
+     /** @brief Empty sequence exception. */
+    class ChoiceEmptySequenceException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "cannot make a choice from an empty sequence."; }
+    };
+
+    /** @brief Exponential law null lambda exception. */
+    class ExponentialZeroLambdaException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "lambda value cannot be 0.0 (currently is)."; }
+    };
+
+    /** @brief Exponential law null lambda exception. */
+    class GaussSigmaException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "value for argument sigma must be greater than 0.0."; }
+    };
+
+    /** @brief Wrong argument type - not integral. */
+    class IndexableContainerException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "Container type must be std::array or std::vector."; }
+    };
+    
+    /** @brief Wrong argument type - not integral. */
+    class IntegralValueTypeException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "Argument(s) must be an integral type."; }
+    };
+
+    /** @brief Empty sequence exception. */
+    class MaxValueTypeException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "Type of values embedded in container must be arithmetic ones."; }
+    };
+
+    /** @brief Not same sizes of containers exception. */
+    class MinMaxSizesException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "'min' and 'max' container arguments must have same sizes."; }
+    };
+
+    /** @brief Not same sizes of containers exception. */
+    class ParetoArgsValueException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "shape argument 'alpha' must not be 0.0."; }
+    };
+
+    /** @brief Range arguments with same value exception. */
+    class RangeSameValuesException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "'start' and 'stop' arguments must be different."; }
+    };
+
+    /** @brief Range arguments with same value exception. */
+    class RangeZeroStepException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "'step' argument cannot be 0."; }
+    };
+
+    /** @brief Range arguments with same value exception. */
+    class SampleCountException : public std::exception
+    {
+    public:
+        const char* what() { return "cannot sample a number of items that is greater than the overall population."; }
+    };
+
+    /** @brief Range arguments with same value exception. */
+    class SampleCountsTypeException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "type of 'counts' values must be integral."; }
+    };
+
+    /** @brief Range arguments with same value exception. */
+    class SampleSizesException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "sizes of arguments 'population' and 'counts' must be the same."; }
+    };
+
+    /** @brief Weibull law arguments exception. */
+    class WeibullArgsValueException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "shape argument 'beta' must not be 0.0."; }
+    };
 
 
 
@@ -1155,18 +1309,13 @@ protected:
     //---   Constants   -----------------------------------------------------
     static const double BPF;
     static const double E;
+    static const double GAUSS_NULL;
     static const double LOG4;
     static const double NV_MAGICCONST;
     static const double PI;
     static const double RECIP_BPF;
     static const double SG_MAGICCONST;
     static const double TWO_PI;
-
-    static const double GAUSS_NULL;
-
-    static const std::string _SAMPLE_K_ERROR_MSG;
-    static const std::string _SAMPLE_SIZES_ERROR_MSG;
-    static const std::string _SAMPLE_COUNTS_TYPES_ERROR_MSG;
 
 
     //---   Attributes   ----------------------------------------------------
@@ -1175,17 +1324,40 @@ protected:
         SeedStateType seed;                      //!< The internal current state of this PRNG
         double        gauss_next{ GAUSS_NULL };  //!< smart optimization for Gaussian distribution computation
     } _state;
+
+
+private:
+    template<typename ContainerType>
+    class m_is_indexable
+    {
+    public:
+        static const bool value = false;
+    };
+
+    template<typename T>
+    class m_is_indexable<std::vector<T>>
+    {
+    public:
+        static const bool value = true;
+    };
+
+    template<typename T, const size_t n>
+    class m_is_indexable<std::array<T, n>>
+    {
+    public:
+        static const bool value = true;
+    };
 };
 
 //---------------------------------------------------------------------------
-template<typename SeedStateType>
-const double BaseRandom<SeedStateType>::GAUSS_NULL = -1.0;
-
 template<typename SeedStateType>
 const double BaseRandom<SeedStateType>::BPF{ 53 };  // Number of bits in a float
 
 template<typename SeedStateType>
 const double BaseRandom<SeedStateType>::E{ std::exp(1.0) };
+
+template<typename SeedStateType>
+const double BaseRandom<SeedStateType>::GAUSS_NULL = -1.0;
 
 template<typename SeedStateType>
 const double BaseRandom<SeedStateType>::LOG4{ std::log(4.0) };
@@ -1204,19 +1376,3 @@ const double BaseRandom<SeedStateType>::SG_MAGICCONST{ 1.0 + std::log(4.5) };
 
 template<typename SeedStateType>
 const double BaseRandom<SeedStateType>::TWO_PI{ 2.0 * BaseRandom<SeedStateType>::PI };
-
-template<typename SeedStateType>
-const std::string BaseRandom<SeedStateType>::_SAMPLE_K_ERROR_MSG{
-    "cannot sample a number of items that is greater than the overall population."
-};
-
-template<typename SeedStateType>
-const std::string BaseRandom<SeedStateType>::_SAMPLE_SIZES_ERROR_MSG{
-    "sizes of arguments 'population' and 'counts' must be the same."
-};
-
-template<typename SeedStateType>
-const std::string BaseRandom<SeedStateType>::_SAMPLE_COUNTS_TYPES_ERROR_MSG{
-    "type of 'counts' values must be integral."
-};
-
