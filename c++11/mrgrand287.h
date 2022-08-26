@@ -27,6 +27,7 @@ SOFTWARE.
 //===========================================================================
 #include <chrono>
 
+#include "basemrg32.h"
 #include "baserandom.h"
 #include "fastrand32.h"
 #include "listseedstate.h"
@@ -118,18 +119,15 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
 *   should definitively pass.
 */
-class MRGRand287 : public BaseRandom<ListSeedState<uint32_t, 256>>
+class MRGRand287 : public BaseMRG32<256>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using StateType   = ListSeedState<uint32_t, 256>;
-    using MyBaseClass = BaseRandom<ListSeedState<uint32_t, 256>>;
-
-    static const size_t SEED_SIZE = 256;
+    using MyBaseClass = BaseMRG32<256>;
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Default Empty constructor. */
+    /** @brief Empty constructor. */
     inline MRGRand287() noexcept
         : MyBaseClass()
     {
