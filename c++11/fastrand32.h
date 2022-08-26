@@ -1,15 +1,19 @@
 #pragma once
 /*
 MIT License
+
 Copyright (c) 2022 Philippe Schmouker, ph.schmouker (at) gmail.com
+
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
 in the Software without restriction,  including without limitation the  rights
 to use,  copy,  modify,  merge,  publish,  distribute, sublicense, and/or sell
 copies of the Software,  and  to  permit  persons  to  whom  the  Software  is
 furnished to do so, subject to the following conditions:
+
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
+
 THE SOFTWARE IS PROVIDED "AS IS",  WITHOUT WARRANTY OF ANY  KIND,  EXPRESS  OR
 IMPLIED,  INCLUDING  BUT  NOT  LIMITED  TO  THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT  SHALL  THE
@@ -21,8 +25,6 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <cstdint>
-
 #include "baserandom.h"
 
 
@@ -32,6 +34,7 @@ SOFTWARE.
 *   Pseudo-random numbers generator - Linear Congruential Generator dedicated  
 *   to  32-bits  calculations with very short period (about 4.3e+09) but very 
 *   short time computation.
+* 
 *   This module is part of library CppRandLib.
 *   
 *   LCG models evaluate pseudo-random numbers suites x(i) as a simple mathem-
@@ -49,21 +52,27 @@ SOFTWARE.
 *   The implementation of this LCG 32-bits model is based  on  (a=69069, c=1) 
 *   since  these  two  values  have  evaluated to be the 'best' ones for LCGs 
 *   within TestU01 while m = 2^32.
+* 
 *   See FastRand63 for a 2^63 (i.e. about 9.2e+18) period  LC-Generator  with  
 *   low  computation  time  also,  longer  period and quite better randomness 
 *   characteristics than for FastRand32.
 *     
 *   Furthermore this class is callable:
-*     FastRand32 rand();
+* @code
+*     FastRand32 rand{};
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(a) << std::endl;   // prints a uniform pseudo-random value within [0.0, a)
 *     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
+* @endcode
 *   
 *   Notice that for simulating the roll of a dice you should program:
+* @code
 *     FastRand32 diceRoll();
-*     std::cout << int(diceRoll(1, 7)) << std::endl;  // prints a uniform roll within range {1, ..., 6}
+*     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
+*     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
+* @endcode
 *
-*     Reminder:
+*   Reminder:
 *   We give you here below a copy of the table of tests for the LCGs that have 
 *   been implemented in CppRandLib, as provided in paper "TestU01, ..."  - see
 *   file README.md.
