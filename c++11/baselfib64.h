@@ -111,7 +111,7 @@ public:
     using StateType   = ListSeedState<uint64_t, SIZE>;
     using MyBaseClass = BaseRandom<StateType>;
 
-    static inline constexpr size_t SEED_SIZE = SIZE;
+    static const size_t SEED_SIZE = SIZE;
 
 
     //---   Constructors / Destructor   -------------------------------------

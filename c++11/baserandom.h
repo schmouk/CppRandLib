@@ -1,15 +1,19 @@
 ﻿#pragma once
 /*
 MIT License
+
 Copyright (c) 2022 Philippe Schmouker, ph.schmouker (at) gmail.com
+
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
 in the Software without restriction,  including without limitation the  rights
 to use,  copy,  modify,  merge,  publish,  distribute, sublicense, and/or sell
 copies of the Software,  and  to  permit  persons  to  whom  the  Software  is
 furnished to do so, subject to the following conditions:
+
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
+
 THE SOFTWARE IS PROVIDED "AS IS",  WITHOUT WARRANTY OF ANY  KIND,  EXPRESS  OR
 IMPLIED,  INCLUDING  BUT  NOT  LIMITED  TO  THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT  SHALL  THE
@@ -32,187 +36,190 @@ SOFTWARE.
 //===========================================================================
 /** @brief This is the base class for all pseudo-random numbers generators.
 *
+*   This module is part of library CppRandLib.
 *
-    This module is part of library CppRandLib.
-
-    Copyright (c) 2022 Philippe Schmouker
-
-    See FastRand32 for a 2^32 (i.e. 4.3e+9) period LC-Generator and  FastRand63  for a
-    2^63 (i.e. about 9.2e+18) period LC-Generator with low computation time.
-
-    See MRGRand287 for a short period  MR-Generator (2^287,  i.e. 2.49e+86)  with  low
-    computation time but 256 integers memory consumption.
-
-    See MRGRand1457 for a  longer  period  MR-Generator  (2^1457,  i.e. 4.0e+438)  and
-    longer  computation  time  (2^31-1  modulus  calculations)  but  less memory space
-    consumption (47 integers).
-
-    See MRGRand49507 for a far  longer  period  (2^49507,  i.e. 1.2e+14903)  with  low
-    computation  time  too  (31-bits  modulus)  but  use  of  more  memory space (1597
-    integers).
-
-    See LFibRand78, LFibRand116, LFibRand668 and LFibRand1340  for  long  period  LFib
-    generators  (resp.  2^78,  2^116,  2^668  and 2^1340 periods,  i.e. resp. 3.0e+23,
-    8.3e+34, 1.2e+201 and 2.4e+403 periods) while same computation time and far higher
-    precision  (64-bits  calculations) but memory consumption (resp. 17,  55,  607 and
-    1279 integers).
-
-    Furthermore this class and all its inheriting sub-classes are callable. Example:
-      rand = BaseRandom()
-      std::cout << rand();   // prints a uniform pseudo-random value within [0.0, 1.0)
-      std::cout << rand(a);  // prints a uniform pseudo-random value within [0.0, a)
-      std::cout << rand(a,b);// prints a uniform pseudo-random value within [a  , b)
-
-    Please notice that for simulating the roll of a dice you may use any of:
-      diceRoll = UFastRandom();
-      std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within {1, ..., 6}.
-      std::cout << diceRoll.randint(1, 6) << std::endl; // idem
-
-    Conforming to the former version PyRandLib  of  this  library,  next  methods  are
-    available:
-     |
-     |  betavariate(alpha, beta)
-     |      Beta distribution.
-     |      https://en.wikipedia.org/wiki/Beta_distribution
-     |
-     |      Conditions on the parameters are alpha > 0 and beta > 0.
-     |      Returned values range between 0 and 1.
-     |
-     |
-     |  choice(seq)
-     |      Choose a random element from a non-empty sequence.
-     |
-     |
-     |  expovariate(lambda)
-     |      Exponential distribution.
-     |      https://en.wikipedia.org/wiki/Exponential_distribution
-     |
-     |      lambda is 1.0 divided by the desired mean.  It should be
-     |      nonzero.
-     |      Returned values range from 0 to
-     |      positive infinity if lambda is positive, and from negative
-     |      infinity to 0 if lambda is negative.
-     |
-     |
-     |  gammavariate(alpha, beta)
-     |      Gamma distribution.  Not the gamma function!
-     |      https://en.wikipedia.org/wiki/Gamma_distribution
-     |
-     |      Conditions on the parameters are alpha > 0 and beta > 0.
-     |
-     |
-     |  gauss(mu, sigma)
-     |      Gaussian distribution.
-     |      https://en.wikipedia.org/wiki/Normal_distribution
-     |
-     |      mu is the mean, and sigma is the standard deviation.  This is
-     |      slightly faster than the normalvariate() function.
-     |
-     |      Not thread-safe without a lock around calls.
-     |
-     |
-     |  getstate()
-     |      Return internal state; can be passed to setstate() later.
-     |
-     |
-     |  lognormvariate(mu, sigma)
-     |      Log normal distribution.
-     |      https://en.wikipedia.org/wiki/Log-normal_distribution
-     |
-     |      If you take the natural logarithm of this distribution, you'll get a
-     |      normal distribution with mean mu and standard deviation sigma.
-     |      mu can have any value, and sigma must be greater than zero.
-     |
-     |
-     |  normalvariate(mu, sigma)
-     |      Normal distribution.
-     |      https://en.wikipedia.org/wiki/Normal_distribution
-     |
-     |      mu is the mean, and sigma is the standard deviation.
-     |
-     |
-     |  paretovariate(alpha)
-     |      Pareto distribution.  alpha is the shape parameter.
-     |      https://en.wikipedia.org/wiki/Pareto_distribution
-     |
-     |
-     |  randint(a, b)
-     |      Return random integer in range [a, b], including both end points.
-     |
-     |
-     |  randrange(start, stop, step=1)
-     |      Choose a random item from range(start, stop[, step]).
-     |
-     |      This fixes the problem with randint() which includes the
-     |      endpoint.
-     |
-     |
-     |  sample(population, k)
-     |      Chooses k unique random elements from a population sequence or set.
-     |
-     |      Returns a new list containing elements from the population while
-     |      leaving the original population unchanged.  The resulting list is
-     |      in selection order so that all sub-slices will also be valid random
-     |      samples.  This allows raffle winners (the sample) to be partitioned
-     |      into grand prize and second place winners (the subslices).
-     |
-     |      Members of the population need not be hashable or unique.  If the
-     |      population contains repeats, then each occurrence is a possible
-     |      selection in the sample.
-     |
-     |      To choose a sample in a range of integers, use range as an argument.
-     |      This is especially fast and space efficient for sampling from a
-     |      large population:   sample(range(10000000), 60)
-     |
-     |
-     |  seed()
-     |  seed(a)
-     |      Initialize internal state.
-     |      No argument seeds from current time.
-     |      If *a* is an int, all bits are used.
-     |
-     |
-     |  setstate(state)
-     |      Restore internal state from object returned by getstate().
-     |
-     |
-     |  shuffle(x)
-     |      x-> shuffle vector x in place.
-     |
-     |
-     |  triangular()
-     |  triangular(low, high)
-     |  triangular(low, high, mode)
-     |      Triangular distribution.
-     |      http://en.wikipedia.org/wiki/Triangular_distribution
-     |
-     |      Continuous distribution bounded by given lower and upper limits,
-     |      and having a given mode value in-between.
-     |      When missing, low = 0.0, high = 1.0, mode = (low + high) / 2
-     |
-     |
-     |  uniform()
-     |  uniform(b)
-     |  uniform(a, b)
-     |      Get a random number in the range [a, b) or [a, b] depending on rounding.
-     |      When missing, a = 0.0 and b = 1.0
-     |
-     |
-     |  vonmisesvariate(mu, kappa)
-     |      Circular data distribution.
-     |      https://en.wikipedia.org/wiki/Von_Mises_distribution
-     |
-     |      mu is the mean angle, expressed in radians between 0 and 2*pi, and
-     |      kappa is the concentration parameter, which must be greater than or
-     |      equal to zero.  If kappa is equal to zero, this distribution reduces
-     |      to a uniform random angle over the range 0 to 2*pi.
-     |
-     |
-     |  weibullvariate(alpha, beta)
-     |      Weibull distribution.
-     |      https://en.wikipedia.org/wiki/Weibull_distribution
-     |
-     |      alpha is the scale parameter and beta is the shape parameter.
+*   Copyright (c) 2022 Philippe Schmouker
+*
+*   See FastRand32 for a 2^32 (i.e. 4.3e+9) period LC-Generator and  FastRand63  for a
+*   2^63 (i.e. about 9.2e+18) period LC-Generator with low computation time.
+*
+*   See MRGRand287 for a short period  MR-Generator (2^287,  i.e. 2.49e+86)  with  low
+*   computation time but 256 integers memory consumption.
+*
+*   See MRGRand1457 for a  longer  period  MR-Generator  (2^1457,  i.e. 4.0e+438)  and
+*   longer  computation  time  (2^31-1  modulus  calculations)  but  less memory space
+*   consumption (47 integers).
+*
+*   See MRGRand49507 for a far  longer  period  (2^49507,  i.e. 1.2e+14903)  with  low
+*   computation  time  too  (31-bits  modulus)  but  use  of  more  memory space (1597
+*   integers).
+*
+*   See LFibRand78, LFibRand116, LFibRand668 and LFibRand1340  for  long  period  LFib
+*   generators  (resp.  2^78,  2^116,  2^668  and 2^1340 periods,  i.e. resp. 3.0e+23,
+*   8.3e+34, 1.2e+201 and 2.4e+403 periods) while same computation time and far higher
+*   precision  (64-bits  calculations) but memory consumption (resp. 17,  55,  607 and
+*   1279 integers).
+*
+*   Furthermore this class and all its inheriting sub-classes are callable. Example:
+* @code
+*     BaseRandom rand{}; // CAUTION: this won't compile since BaseRandom is an abstract class. Replace 'BaseRandom' with any inheriting class constructor!
+*     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
+*     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
+*     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
+* @endcode
+*
+*   Please notice that for simulating the roll of a dice you may use any of:
+* @code
+*     FastRand32 diceRoll{};                            // notice: use of FastRand32 is for sole example purpose
+*     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
+*     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
+* @endcode
+*
+*   Conforming to the former version PyRandLib  of  this  library,  next  methods  are
+*   available:
+*    |
+*    |  betavariate(alpha, beta)
+*    |      Beta distribution.
+*    |      https://en.wikipedia.org/wiki/Beta_distribution
+*    |
+*    |      Conditions on the parameters are alpha > 0 and beta > 0.
+*    |      Returned values range between 0 and 1.
+*    |
+*    |
+*    |  choice(seq)
+*    |      Choose a random element from a non-empty sequence.
+*    |
+*    |
+*    |  expovariate(lambda)
+*    |      Exponential distribution.
+*    |      https://en.wikipedia.org/wiki/Exponential_distribution
+*    |
+*    |      lambda is 1.0 divided by the desired mean.  It should be
+*    |      nonzero.
+*    |      Returned values range from 0 to
+*    |      positive infinity if lambda is positive, and from negative
+*    |      infinity to 0 if lambda is negative.
+*    |
+*    |
+*    |  gammavariate(alpha, beta)
+*    |      Gamma distribution.  Not the gamma function!
+*    |      https://en.wikipedia.org/wiki/Gamma_distribution
+*    |
+*    |      Conditions on the parameters are alpha > 0 and beta > 0.
+*    |
+*    |
+*    |  gauss(mu, sigma)
+*    |      Gaussian distribution.
+*    |      https://en.wikipedia.org/wiki/Normal_distribution
+*    |
+*    |      mu is the mean, and sigma is the standard deviation.  This is
+*    |      slightly faster than the normalvariate() function.
+*    |
+*    |      Not thread-safe without a lock around calls.
+*    |
+*    |
+*    |  getstate()
+*    |      Return internal state; can be passed to setstate() later.
+*    |
+*    |
+*    |  lognormvariate(mu, sigma)
+*    |      Log normal distribution.
+*    |      https://en.wikipedia.org/wiki/Log-normal_distribution
+*    |
+*    |      If you take the natural logarithm of this distribution, you'll get a
+*    |      normal distribution with mean mu and standard deviation sigma.
+*    |      mu can have any value, and sigma must be greater than zero.
+*    |
+*    |
+*    |  normalvariate(mu, sigma)
+*    |      Normal distribution.
+*    |      https://en.wikipedia.org/wiki/Normal_distribution
+*    |
+*    |      mu is the mean, and sigma is the standard deviation.
+*    |
+*    |
+*    |  paretovariate(alpha)
+*    |      Pareto distribution.  alpha is the shape parameter.
+*    |      https://en.wikipedia.org/wiki/Pareto_distribution
+*    |
+*    |
+*    |  randint(a, b)
+*    |      Return random integer in range [a, b], including both end points.
+*    |
+*    |
+*    |  randrange(start, stop, step=1)
+*    |      Choose a random item from range(start, stop[, step]).
+*    |
+*    |      This fixes the problem with randint() which includes the
+*    |      endpoint.
+*    |
+*    |
+*    |  sample(population, k)
+*    |      Chooses k unique random elements from a population sequence or set.
+*    |
+*    |      Returns a new list containing elements from the population while
+*    |      leaving the original population unchanged.  The resulting list is
+*    |      in selection order so that all sub-slices will also be valid random
+*    |      samples.  This allows raffle winners (the sample) to be partitioned
+*    |      into grand prize and second place winners (the subslices).
+*    |
+*    |      Members of the population need not be hashable or unique.  If the
+*    |      population contains repeats, then each occurrence is a possible
+*    |      selection in the sample.
+*    |
+*    |      To choose a sample in a range of integers, use range as an argument.
+*    |      This is especially fast and space efficient for sampling from a
+*    |      large population:   sample(range(10000000), 60)
+*    |
+*    |
+*    |  seed()
+*    |  seed(a)
+*    |      Initialize internal state.
+*    |      No argument seeds from current time.
+*    |      If *a* is an int, all bits are used.
+*    |
+*    |
+*    |  setstate(state)
+*    |      Restore internal state from object returned by getstate().
+*    |
+*    |
+*    |  shuffle(x)
+*    |      x-> shuffle vector x in place.
+*    |
+*    |
+*    |  triangular()
+*    |  triangular(low, high)
+*    |  triangular(low, high, mode)
+*    |      Triangular distribution.
+*    |      http://en.wikipedia.org/wiki/Triangular_distribution
+*    |
+*    |      Continuous distribution bounded by given lower and upper limits,
+*    |      and having a given mode value in-between.
+*    |      When missing, low = 0.0, high = 1.0, mode = (low + high) / 2
+*    |
+*    |
+*    |  uniform()
+*    |  uniform(b)
+*    |  uniform(a, b)
+*    |      Get a random number in the range [a, b) or [a, b] depending on rounding.
+*    |      When missing, a = 0.0 and b = 1.0
+*    |
+*    |
+*    |  vonmisesvariate(mu, kappa)
+*    |      Circular data distribution.
+*    |      https://en.wikipedia.org/wiki/Von_Mises_distribution
+*    |
+*    |      mu is the mean angle, expressed in radians between 0 and 2*pi, and
+*    |      kappa is the concentration parameter, which must be greater than or
+*    |      equal to zero.  If kappa is equal to zero, this distribution reduces
+*    |      to a uniform random angle over the range 0 to 2*pi.
+*    |
+*    |
+*    |  weibullvariate(alpha, beta)
+*    |      Weibull distribution.
+*    |      https://en.wikipedia.org/wiki/Weibull_distribution
+*    |
+*    |      alpha is the scale parameter and beta is the shape parameter.
 */
 template<typename SeedStateType>
 class BaseRandom
@@ -677,10 +684,11 @@ public:
             throw SampleCountException();
 
         std::vector<T> samples(samples_count);
-        auto c_it = counts.begin();
+        auto c_it = counts.cbegin();
+        auto s_it = samples.begin();
         for (auto& p : population) {
             for (size_t j = size_t(*c_it++); j > 0; --j)
-                samples.emplace_back(p);
+                *s_it++ = p;
         }
 
         out.clear();
@@ -776,11 +784,19 @@ public:
     virtual void setstate() noexcept
     {}
 
+    /** @brief Restores the internal state of this PRNG from seed. */
+    void setstate(const SeedStateType& seed) noexcept
+    {
+        _state.seed = seed;
+        _state.gauss_valid = false;
+    }
+
     /** @brief Restores the internal state of this PRNG from seed and gauss_next. */
-    void setstate(const SeedStateType& seed, const double gauss_next = BaseRandom::GAUSS_NULL) noexcept
+    void setstate(const SeedStateType& seed, const double gauss_next) noexcept
     {
         _state.seed = seed;
         _state.gauss_next = gauss_next;
+        _state.gauss_valid = true;
     }
 
     /** @brief Restores the internal state of this PRNG from object returned by getstate(). */
@@ -961,13 +977,17 @@ public:
         if (sigma <= 0.0)
             throw GaussSigmaException();
 
-        double z = _state.gauss_next;
-        _state.gauss_next = GAUSS_NULL;
-        if (z == GAUSS_NULL) {
+        double z;
+        if (_state.gauss_valid) {
+            z = _state.gauss_next;
+            _state.gauss_valid = false;
+        }
+        else {
             const double u{ uniform(TWO_PI) };
             const double g{ std::sqrt(-2.0 * std::log(1.0 - random())) };
             z = std::cos(u) * g;
             _state.gauss_next = std::sin(u) * g;
+            _state.gauss_valid = true;
         }
 
         return mu + z * sigma;
@@ -1322,8 +1342,9 @@ protected:
     //---   Attributes   ----------------------------------------------------
     struct _InternalState
     {
-        SeedStateType seed;                      //!< The internal current state of this PRNG
-        double        gauss_next{ GAUSS_NULL };  //!< smart optimization for Gaussian distribution computation
+        SeedStateType seed;        //!< The internal current state of this PRNG
+        double        gauss_next;  //!< smart optimization for Gaussian distribution computation (1/2)
+        bool          gauss_valid; //!< smart optimization for Gaussian distribution computation (2/2)
     } _state;
 
 
