@@ -127,19 +127,6 @@ public:
     /** @brief Default Destructor. */
     virtual ~FastRand63() noexcept = default;
 
-    //---   Assignments   ---------------------------------------------------
-    /** @brief Default Copy assignment. */
-    FastRand63& operator= (const FastRand63&) noexcept = default;
-
-    /** @brief Default Move assignment. */
-    FastRand63& operator= (FastRand63&&) noexcept = default;
-
-    /** @brief Seed assignment. */
-    inline FastRand63& operator= (const uint64_t seed) noexcept
-    {
-        MyBaseClass::setstate(seed);
-        return *this;
-    }
 
     //---   Internal PRNG   -------------------------------------------------
     /** @brief The internal PRNG algorithm.
@@ -148,11 +135,19 @@ public:
     */
     virtual inline const double random() noexcept override
     {
-        _state.seed = (9'219'741'426'499'971'445ULL * _state.seed + 1) & 0x7fff'ffff'ffff'ffffULL;
-        return double(_state.seed / (long double)9'223'372'036'854'775'808.0);
+        _state.seed = (0x7ff3'19fa'a77b'f52dULL * _state.seed + 1) & 0x7fff'ffff'ffff'ffffULL;
+        return double((long double)_state.seed / 9'223'372'036'854'775'808.0L);
     }
+
 
     //---   Operations   ----------------------------------------------------
     /** @brief Sets the internal state of this PRNG from current time (empty signature). */
     virtual void setstate() noexcept override;
+
+    /** @brief Sets the internal state of this PRNG with double seed. */
+    inline void setstate(const double seed) noexcept
+    {
+        const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
+        setstate(uint32_t(s * double(0xffff'ffff'ffff'ffffULL)));
+    }
 };

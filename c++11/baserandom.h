@@ -780,19 +780,19 @@ public:
     }
 
 
-    /** @brief Sets the internal state of this PRNG from current time (empty signature). */
+    /** @brief Sets the internal state of this PRNG from shuffled current time. */
     virtual void setstate() noexcept
     {}
 
     /** @brief Restores the internal state of this PRNG from seed. */
-    void setstate(const SeedStateType& seed) noexcept
+    inline void setstate(const SeedStateType& seed) noexcept
     {
         _state.seed = seed;
         _state.gauss_valid = false;
     }
 
     /** @brief Restores the internal state of this PRNG from seed and gauss_next. */
-    void setstate(const SeedStateType& seed, const double gauss_next) noexcept
+    inline void setstate(const SeedStateType& seed, const double gauss_next) noexcept
     {
         _state.seed = seed;
         _state.gauss_next = gauss_next;

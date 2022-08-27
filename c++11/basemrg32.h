@@ -68,7 +68,8 @@ public:
     /** @brief Sets the internal state of this PRNG with a double seed. */
     inline void setstate(const double seed) noexcept
     {
-        setstate(uint32_t(seed * double(0x1'0000'0000ull)));
+        const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
+        setstate(uint32_t(s * double(0x1'0000'0000ull)));
     }
 
     /** @brief Restores the internal state of this PRNG from seed. */

@@ -148,28 +148,6 @@ public:
     virtual ~MRGRand1457() noexcept = default;
 
 
-    //---   Assignments   ---------------------------------------------------
-    /** @brief Default Copy assignment. */
-    MRGRand1457& operator= (const MRGRand1457&) noexcept = default;
-
-    /** @brief Default Move assignment. */
-    MRGRand1457& operator= (MRGRand1457&&) noexcept = default;
-
-    /** @brief Seed assignment (integer). */
-    inline MRGRand1457& operator= (const uint32_t seed) noexcept
-    {
-        setstate(seed);
-        return *this;
-    }
-
-    /** @brief Seed assignment (double). */
-    inline MRGRand1457& operator= (const double seed) noexcept
-    {
-        setstate(seed);
-        return *this;
-    }
-
-
     //---   Internal PRNG   -------------------------------------------------
     /** @brief The internal PRNG algorithm.
     *

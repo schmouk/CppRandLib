@@ -153,28 +153,6 @@ public:
     virtual ~BaseLFib64() noexcept = default;
 
 
-    //---   Assignments   ---------------------------------------------------
-    /** @brief Default Copy assignment. */
-    BaseLFib64& operator= (const BaseLFib64&) noexcept = default;
-
-    /** @brief Default Move assignment. */
-    BaseLFib64& operator= (BaseLFib64&&) noexcept = default;
-
-    /** @brief Seed assignment (integer). */
-    inline BaseLFib64& operator= (const uint64_t seed) noexcept
-    {
-        MyBaseClass::setstate(seed);
-        return *this;
-    }
-
-    /** @brief Seed assignment (double). */
-    inline BaseLFib64& operator= (const double seed) noexcept
-    {
-        MyBaseClass::setstate(seed);
-        return *this;
-    }
-
-
     //---   Operations   ----------------------------------------------------
     /** @brief Sets the internal state of this PRNG from current time (empty signature). */
     virtual void setstate() noexcept override;
@@ -185,7 +163,8 @@ public:
     /** @brief Sets the internal state of this PRNG with a double seed. */
     inline void setstate(const double seed) noexcept
     {
-        setstate(uint64_t(seed * double(0xffff'ffff'ffff'ffffUL)));
+        const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
+        setstate(uint64_t(s * double(0xffff'ffff'ffff'ffffUL)));
     }
 
     /** @brief Restores the internal state of this PRNG from seed. */
