@@ -28,33 +28,27 @@ SOFTWARE.
 #include <chrono>
 
 #include "fastrand32.h"
-#include "mrgrand287.h"
+#include "mrgrand1457.h"
 
 
 //===========================================================================
 /** The internal PRNG algorithm. */
-const double MRGRand287::random() noexcept
+const double MRGRand1457::random() noexcept
 {
-    // The Marsa - LIBF4 version uses the recurrence
-    //    x(i) = (x(i-55) + x(i-119) + x(i-179) + x(i-256)) mod 2 ^ 32
-
-    // evaluates indexes in suite
+    // evaluates indexes in suite for the i-1, i-24 (and i-47) -th values
     const size_t index = MyBaseClass::_state.seed.index;
-    const size_t k55   = (index <  55) ? (index + SEED_SIZE) -  55 : index -  55;
-    const size_t k119  = (index < 119) ? (index + SEED_SIZE) - 119 : index - 119;
-    const size_t k179  = (index < 179) ? (index + SEED_SIZE) - 179 : index - 179;
+    const size_t k1  = (index < 1 ) ? (index + SEED_SIZE) - 1  : index - 1 ;
+    const size_t k24 = (index < 24) ? (index + SEED_SIZE) - 24 : index - 24;
 
     // evaluates current value and modifies internal state
-    const uint32_t value = uint64_t(MyBaseClass::_state.seed.list[k55 ]) +
-                           uint64_t(MyBaseClass::_state.seed.list[k119]) +
-                           uint64_t(MyBaseClass::_state.seed.list[k179]) +
-                           uint64_t(MyBaseClass::_state.seed.list[index]);  // automatic 32-bits modulo
+    const uint64_t value = (0x0408'0000ull * (uint64_t(MyBaseClass::_state.seed.list[k1]) +
+                                              uint64_t(MyBaseClass::_state.seed.list[k24]) +
+                                              uint64_t(MyBaseClass::_state.seed.list[index]))) % MODULO;
+    MyBaseClass::_state.seed.list[index] = uint32_t(value);
 
-    MyBaseClass::_state.seed.list[index] = value;
     // next index
     MyBaseClass::_state.seed.index = (index + 1) % SEED_SIZE;
 
     // finally, returns pseudo random value in range [0.0, 1.0)
-    const double ret = double(value) / double(4'294'967'296.0);
-    return ret;
+    return double(value) / double(MODULO);
 }

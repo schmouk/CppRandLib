@@ -27,79 +27,62 @@ SOFTWARE.
 //===========================================================================
 #include <chrono>
 
-#include "basemrg32.h"
+#include "basemrg31.h"
 #include "baserandom.h"
 #include "fastrand32.h"
 #include "listseedstate.h"
 
 
 //===========================================================================
-/** @brief A fast 32-bits Multiple Recursive Generator with a long period (2.49e+86).
+/** @brief A fast 31-bits Multiple Recursive Generator with a somewhat long period (3.98e+438)
 *
 *   This module is part of library CppRandLib.
 *
 *   Multiple Recursive Generators (MRGs)  use  recurrence  to  evaluate  pseudo-random
 *   numbers suites. Recurrence is of the form:
-*   
+*
 *      x(i) = A * SUM[ x(i-k) ]  mod M
-*   
+*
 *   for 2 to more k different values.
-* 
-*   MRGs offer very large periods with the best known results  in  the  evaluation  of 
-*   their  randomness,  as  stated  in  the  evaluation  done  by  Pierre L'Ecuyer and 
-*   Richard Simard (Universite de Montreal)  in "TestU01:  A C Library  for  Empirical 
-*   Testing of Random  Number Generators  - ACM Transactions on Mathematical Software, 
+*
+*   MRGs offer very large periods with the best known results  in  the  evaluation  of
+*   their  randomness,  as  stated  in  the  evaluation  done  by  Pierre L'Ecuyer and
+*   Richard Simard (Universite de Montreal)  in "TestU01:  A C Library  for  Empirical
+*   Testing of Random  Number Generators  - ACM Transactions on Mathematical Software,
 *   vol.33 n.4, pp.22-40, August 2007".  It is recommended to use  such  pseudo-random
 *   numbers generators rather than LCG ones for serious simulation applications.
-* 
-*   The implementation of this MRG 32-bits  model  is  based  on  a  Lagged  Fibonacci 
-*   generator (LFIB), the Marsa-LFIB4 one.
-*   Lagged Fibonacci generators LFib( m, r, k, op) use the recurrence
-*   
-*       x(i) = (x(i-r) op (x(i-k)) mod m
-*   
-*   where op is an operation that can be
-*       + (addition),
-*       - (substraction),
-*       * (multiplication),
-*       ^(bitwise exclusive-or).
-*   
-*   With the + or - operation, such generators are in fact MRGs. They offer very large
-*   periods  with  the  best  known  results in the evaluation of their randomness, as
-*   stated in the evaluation done by Pierre L'Ecuyer and Richard Simard (Universite de
-*   Montreal) paper.
-*   
-*   The Marsa-LIBF4 version uses the recurrence
-*   
-*       x(i) = (x(i-55) + x(i-119) + x(i-179) + x(i-256)) mod 2^32
-*   
-*   and offers a period of about 2^287 - i.e. 2.49e+86 - with low computation time due
-*   to the use of a 2^32 modulo.
-*   
-*   See MRGRand1457 for a  longer  period  MR-Generator  (2^1457,  i.e. 4.0e+438)  and 
-*   longer  computation  time  (2^31-1  modulus  calculations)  but  less memory space 
-*   consumption (47 integers).
-*   See MRGRand49507 for a far longer period  (2^49_507,  i.e. 1.2e+14_903)  with  low 
-*   computation  time  too  (31-bits  modulus)  but  use  of  more memory space (1_597 
+*
+*   The implementation of this MRG 31-bits model is  based  on  DX-47-3  pseudo-random
+*   generator  proposed  by  Deng  and  Lin.  The  DX-47-3 version uses the recurrence
+*
+*       x(i) = (2^26+2^19) * (x(i-1) + x(i-24) + x(i-47)) mod (2^31-1)
+*
+*   and offers a period of about 2^1457  - i.e. nearly 4.0e+438 - with low computation
+*   time.
+*
+*   See MRGRand287 for a short period  MR-Generator (2^287,  i.e. 2.49e+86)  with  low
+*   computation time but 256 integers memory consumption.
+*   See MRGRand49507 for a far longer period  (2^49_507,  i.e. 1.2e+14_903)  with  low
+*   computation  time  too  (31-bits  modulus)  but  use  of  more memory space (1_597
 *   integers).
-*     
+*
 *   Furthermore this class is callable:
 * @code
-*     MRGRand287 rand();
+*     MRGRand1457 rand();
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 *     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
 * @endcode
-* 
+*
 *   Notice that for simulating the roll of a dice you should program:
 * @code
-*     MRGRand287 diceRoll();
+*     MRGRand1457 diceRoll();
 *     std::cout << int(diceRoll(1, 7)) << std::endl;    // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
-* 
+*
 *   Reminder:
-*   We give you here below a copy of the table of tests for the LCGs that have 
+*   We give you here below a copy of the table of tests for the LCGs that have
 *   been implemented in PyRandLib, as provided in paper "TestU01, ..."  -  see
 *   file README.md.
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -119,70 +102,70 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
 *   should definitively pass.
 */
-class MRGRand287 : public BaseMRG32<256>
+class MRGRand1457 : public BaseMRG31<47>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseMRG32<256>;
+    using MyBaseClass = BaseMRG31<47>;
 
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
-    inline MRGRand287() noexcept
+    inline MRGRand1457() noexcept
         : MyBaseClass()
     {
-        MyBaseClass::setstate();
+        setstate();
     }
 
     /** @brief Valued construtor (integer). */
-    inline MRGRand287(const uint32_t seed) noexcept
+    inline MRGRand1457(const uint32_t seed) noexcept
         : MyBaseClass()
     {
-        MyBaseClass::setstate(seed);
+        setstate(seed);
     }
 
     /** @brief Valued construtor (double). */
-    inline MRGRand287(const double seed) noexcept
+    inline MRGRand1457(const double seed) noexcept
         : MyBaseClass()
     {
-        MyBaseClass::setstate(seed);
+        setstate(seed);
     }
 
     /** @brief Valued constructor (full state). */
-    inline MRGRand287(const StateType& seed) noexcept
+    inline MRGRand1457(const StateType& seed) noexcept
         : MyBaseClass()
     {
         setstate(seed);
     }
 
     /** @brief Default Copy constructor. */
-    MRGRand287(const MRGRand287&) noexcept = default;
+    MRGRand1457(const MRGRand1457&) noexcept = default;
 
     /** @brief Default Move constructor. */
-    MRGRand287(MRGRand287&&) noexcept = default;
+    MRGRand1457(MRGRand1457&&) noexcept = default;
 
     /** @brief Default Destructor. */
-    virtual ~MRGRand287() noexcept = default;
+    virtual ~MRGRand1457() noexcept = default;
 
 
     //---   Assignments   ---------------------------------------------------
     /** @brief Default Copy assignment. */
-    MRGRand287& operator= (const MRGRand287&) noexcept = default;
+    MRGRand1457& operator= (const MRGRand1457&) noexcept = default;
 
     /** @brief Default Move assignment. */
-    MRGRand287& operator= (MRGRand287&&) noexcept = default;
+    MRGRand1457& operator= (MRGRand1457&&) noexcept = default;
 
     /** @brief Seed assignment (integer). */
-    inline MRGRand287& operator= (const uint32_t seed) noexcept
+    inline MRGRand1457& operator= (const uint32_t seed) noexcept
     {
-        MyBaseClass::setstate(seed);
+        setstate(seed);
         return *this;
     }
 
     /** @brief Seed assignment (double). */
-    inline MRGRand287& operator= (const double seed) noexcept
+    inline MRGRand1457& operator= (const double seed) noexcept
     {
-        MyBaseClass::setstate(seed);
+        setstate(seed);
         return *this;
     }
 

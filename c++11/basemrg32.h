@@ -52,9 +52,7 @@ public:
     /** @brief Empty constructor. */
     inline BaseMRG32() noexcept
         : MyBaseClass()
-    {
-        setstate();
-    }
+    {}
 
     /** @brief Default Destructor. */
     virtual ~BaseMRG32() noexcept = default;
@@ -71,6 +69,21 @@ public:
     inline void setstate(const double seed) noexcept
     {
         setstate(uint32_t(seed * double(0x1'0000'0000ull)));
+    }
+
+    /** @brief Restores the internal state of this PRNG from seed. */
+    inline void setstate(const StateType& seed) noexcept
+    {
+        MyBaseClass::_state.seed = seed;
+        MyBaseClass::_state.gauss_valid = false;
+    }
+
+    /** @brief Restores the internal state of this PRNG from seed and gauss_next. */
+    inline  void setstate(const StateType& seed, const double gauss_next) noexcept
+    {
+        MyBaseClass::_state.seed = seed;
+        MyBaseClass::_state.gauss_next = gauss_next;
+        MyBaseClass::_state.gauss_valid = true;
     }
 
 };

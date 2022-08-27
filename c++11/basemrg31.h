@@ -42,8 +42,8 @@ class BaseMRG31 : public BaseRandom<ListSeedState<uint32_t, SIZE>>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using StateType = ListSeedState<uint32_t, 256>;
-    using MyBaseClass = BaseRandom<ListSeedState<uint32_t, 256>>;
+    using StateType = ListSeedState<uint32_t, SIZE>;
+    using MyBaseClass = BaseRandom<ListSeedState<uint32_t, SIZE>>;
 
     
         //---   Class constants   -----------------------------------------------
@@ -55,9 +55,7 @@ public:
     /** @brief Empty constructor. */
     inline BaseMRG31() noexcept
         : MyBaseClass()
-    {
-        setstate();
-    }
+    {}
 
     /** @brief Default Destructor. */
     virtual ~BaseMRG31() noexcept = default;
@@ -74,6 +72,21 @@ public:
     inline void setstate(const double seed) noexcept
     {
         setstate(uint32_t(seed * double(MODULO)));
+    }
+
+    /** @brief Restores the internal state of this PRNG from seed. */
+    inline void setstate(const StateType& seed) noexcept
+    {
+        MyBaseClass::_state.seed = seed;
+        MyBaseClass::_state.gauss_valid = false;
+    }
+
+    /** @brief Restores the internal state of this PRNG from seed and gauss_next. */
+    inline  void setstate(const StateType& seed, const double gauss_next) noexcept
+    {
+        MyBaseClass::_state.seed = seed;
+        MyBaseClass::_state.gauss_next = gauss_next;
+        MyBaseClass::_state.gauss_valid = true;
     }
 
 };
@@ -102,6 +115,6 @@ void BaseMRG31<SIZE>::setstate(const uint32_t seed) noexcept
 {
     FastRand32 rand(seed);
     //for (auto it = MyBaseClass::_state.seed.list.begin(); it != MyBaseClass::_state.seed.list.end(); )
-    for (std::array<uint32_t, SIZE>::iterator it = MyBaseClass::_state.seed.list.begin(); it != MyBaseClass::_state.seed.list.end(); )
+    for (auto it = MyBaseClass::_state.seed.list.begin(); it != MyBaseClass::_state.seed.list.end(); )
         *it++ = uint32_t(rand(MODULO));
 }
