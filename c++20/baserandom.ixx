@@ -637,7 +637,7 @@ public:
     * Move Constructor and maybe Move assignment are defined).
     */
     template<typename T, typename C>
-        requires std::is_integral_v<C> && !std::is_integral<C>::value
+        requires std::is_integral_v<T> && std::is_integral_v<C>
     void sample(std::vector<T>& out, const std::vector<T>& population, const std::vector<C>& counts, const size_t k) noexcept(false)
     {
         if (counts.size() != population.size())
@@ -695,7 +695,7 @@ public:
     */
     template<typename T, typename C, const size_t k, const size_t n>
         requires std::is_integral_v<C>
-    inline void sample(std::array<T, k>& out, const std::array<T, n>& population, const std::array<C, n>& counts) noexcept
+    inline void sample(std::array<T, k>& out, const std::array<T, n>& population, const std::array<C, n>& counts) noexcept(false)
     {
         const size_t samples_count = size_t(std::accumulate(counts.begin(), counts.end(), C(0)));
         if (k > samples_count)
@@ -704,10 +704,9 @@ public:
         std::vector<T> samples;
         samples.reserve(samples_count);
         auto c_it = counts.begin();
-        auto s_it = samples.begin();
         for (auto& p : population) {
             for (size_t j = size_t(*c_it++); j > 0; --j)
-                *s_it++ = p;
+                samples.emplace_back(p);
         }
 
         for (size_t i = 0; i < k; ++i) {
@@ -1266,6 +1265,9 @@ private:
     public:
         static const bool value = false;
     };
+
+    template<typename ContainerType>
+    static inline constexpr bool m_is_indexable_v = m_is_indexable<ContainerType>::value;
 
     template<typename T>
     class m_is_indexable<std::vector<T>>
