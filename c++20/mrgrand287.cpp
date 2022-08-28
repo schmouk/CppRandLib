@@ -24,10 +24,14 @@ SOFTWARE.
 
 
 //===========================================================================
+module;
+
 #include <chrono>
 
-#include "fastrand32.h"
-#include "mrgrand287.h"
+
+module mrgrand287;
+
+import fastrand32; 
 
 
 //===========================================================================
@@ -39,15 +43,15 @@ const double MRGRand287::random() noexcept
 
     // evaluates indexes in suite
     const size_t index = MyBaseClass::_state.seed.index;
-    const size_t k55   = (index <  55) ? (index + SEED_SIZE) -  55 : index -  55;
-    const size_t k119  = (index < 119) ? (index + SEED_SIZE) - 119 : index - 119;
-    const size_t k179  = (index < 179) ? (index + SEED_SIZE) - 179 : index - 179;
+    const size_t k55 = (index < 55) ? (index + SEED_SIZE) - 55 : index - 55;
+    const size_t k119 = (index < 119) ? (index + SEED_SIZE) - 119 : index - 119;
+    const size_t k179 = (index < 179) ? (index + SEED_SIZE) - 179 : index - 179;
 
     // evaluates current value and modifies internal state
-    const uint32_t value = uint64_t(MyBaseClass::_state.seed.list[k55 ]) +
-                           uint64_t(MyBaseClass::_state.seed.list[k119]) +
-                           uint64_t(MyBaseClass::_state.seed.list[k179]) +
-                           uint64_t(MyBaseClass::_state.seed.list[index]);  // automatic 32-bits modulo
+    const uint32_t value = uint64_t(MyBaseClass::_state.seed.list[k55]) +
+        uint64_t(MyBaseClass::_state.seed.list[k119]) +
+        uint64_t(MyBaseClass::_state.seed.list[k179]) +
+        uint64_t(MyBaseClass::_state.seed.list[index]);  // automatic 32-bits modulo
 
     MyBaseClass::_state.seed.list[index] = value;
     // next index

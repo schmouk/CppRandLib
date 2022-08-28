@@ -41,7 +41,7 @@ import listseedstate;
 *
 *   This module is part of library CppRandLib.
 */
-template<const size_t SIZE>
+export template<const size_t SIZE>
 class BaseMRG32 : public BaseRandom<ListSeedState<uint32_t, SIZE>>
 {
 public:

@@ -1,4 +1,3 @@
-#pragma once
 /*
 MIT License
 
@@ -25,11 +24,16 @@ SOFTWARE.
 
 
 //===========================================================================
+module;
+
 #include <chrono>
 
-#include "basemrg32.h"
-#include "fastrand32.h"
-#include "listseedstate.h"
+
+export module mrgrand287;
+
+import basemrg32;
+import fastrand32;
+import listseedstate;
 
 
 //===========================================================================
@@ -39,49 +43,49 @@ SOFTWARE.
 *
 *   Multiple Recursive Generators (MRGs)  use  recurrence  to  evaluate  pseudo-random
 *   numbers suites. Recurrence is of the form:
-*   
+*
 *      x(i) = A * SUM[ x(i-k) ]  mod M
-*   
+*
 *   for 2 to more k different values.
-* 
-*   MRGs offer very large periods with the best known results  in  the  evaluation  of 
-*   their  randomness,  as  stated  in  the  evaluation  done  by  Pierre L'Ecuyer and 
-*   Richard Simard (Universite de Montreal)  in "TestU01:  A C Library  for  Empirical 
-*   Testing of Random  Number Generators  - ACM Transactions on Mathematical Software, 
+*
+*   MRGs offer very large periods with the best known results  in  the  evaluation  of
+*   their  randomness,  as  stated  in  the  evaluation  done  by  Pierre L'Ecuyer and
+*   Richard Simard (Universite de Montreal)  in "TestU01:  A C Library  for  Empirical
+*   Testing of Random  Number Generators  - ACM Transactions on Mathematical Software,
 *   vol.33 n.4, pp.22-40, August 2007".  It is recommended to use  such  pseudo-random
 *   numbers generators rather than LCG ones for serious simulation applications.
-* 
-*   The implementation of this MRG 32-bits  model  is  based  on  a  Lagged  Fibonacci 
+*
+*   The implementation of this MRG 32-bits  model  is  based  on  a  Lagged  Fibonacci
 *   generator (LFIB), the Marsa-LFIB4 one.
 *   Lagged Fibonacci generators LFib( m, r, k, op) use the recurrence
-*   
+*
 *       x(i) = (x(i-r) op (x(i-k)) mod m
-*   
+*
 *   where op is an operation that can be
 *       + (addition),
 *       - (substraction),
 *       * (multiplication),
 *       ^(bitwise exclusive-or).
-*   
+*
 *   With the + or - operation, such generators are in fact MRGs. They offer very large
 *   periods  with  the  best  known  results in the evaluation of their randomness, as
 *   stated in the evaluation done by Pierre L'Ecuyer and Richard Simard (Universite de
 *   Montreal) paper.
-*   
+*
 *   The Marsa-LIBF4 version uses the recurrence
-*   
+*
 *       x(i) = (x(i-55) + x(i-119) + x(i-179) + x(i-256)) mod 2^32
-*   
+*
 *   and offers a period of about 2^287 - i.e. 2.49e+86 - with low computation time due
 *   to the use of a 2^32 modulo.
-*   
-*   See MRGRand1457 for a  longer  period  MR-Generator  (2^1457,  i.e. 4.0e+438)  and 
-*   longer  computation  time  (2^31-1  modulus  calculations)  but  less memory space 
+*
+*   See MRGRand1457 for a  longer  period  MR-Generator  (2^1457,  i.e. 4.0e+438)  and
+*   longer  computation  time  (2^31-1  modulus  calculations)  but  less memory space
 *   consumption (47 integers).
-*   See MRGRand49507 for a far longer period  (2^49_507,  i.e. 1.2e+14_903)  with  low 
-*   computation  time  too  (31-bits  modulus)  but  use  of  more memory space (1_597 
+*   See MRGRand49507 for a far longer period  (2^49_507,  i.e. 1.2e+14_903)  with  low
+*   computation  time  too  (31-bits  modulus)  but  use  of  more memory space (1_597
 *   integers).
-*     
+*
 *   Furthermore this class is callable:
 * @code
 *     MRGRand287 rand();
@@ -89,16 +93,16 @@ SOFTWARE.
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 *     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
 * @endcode
-* 
+*
 *   Notice that for simulating the roll of a dice you should program:
 * @code
 *     MRGRand287 diceRoll();
 *     std::cout << int(diceRoll(1, 7)) << std::endl;    // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
-* 
+*
 *   Reminder:
-*   We give you here below a copy of the table of tests for the LCGs that have 
+*   We give you here below a copy of the table of tests for the LCGs that have
 *   been implemented in PyRandLib, as provided in paper "TestU01, ..."  -  see
 *   file README.md.
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -118,7 +122,7 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
 *   should definitively pass.
 */
-class MRGRand287 : public BaseMRG32<256>
+export class MRGRand287 : public BaseMRG32<256>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
