@@ -1,4 +1,3 @@
-#pragma once
 /*
 MIT License
 
@@ -25,11 +24,16 @@ SOFTWARE.
 
 
 //===========================================================================
+module;
+
 #include <chrono>
 
-#include "basemrg31.h"
-#include "fastrand32.h"
-#include "listseedstate.h"
+
+export module mrgrand49507;
+
+import basemrg31;
+import fastrand32;
+import listseedstate;
 
 
 //===========================================================================
@@ -54,7 +58,7 @@ SOFTWARE.
 *   The implementation of this MRG 31-bits model is  based  on  DX-47-3  pseudo-random
 *   generator  proposed  by  Deng  and  Lin.  The  DX-47-3 version uses the recurrence
 *
-*       x(i) = (2^26+2^19) * (x(i-1) + x(i-24) + x(i-47)) mod (2^31-1)
+*       x(i) = (-2^25-2^7) * (x(i-7) + x(i-1597)) mod (2^31-1)
 *
 *   and offers a period of about 2^1457  - i.e. nearly 4.0e+438 - with low computation
 *   time.
@@ -101,50 +105,50 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
 *   should definitively pass.
 */
-class MRGRand1457 : public BaseMRG31<47>
+export class MRGRand49507 : public BaseMRG31<1597>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseMRG31<47>;
+    using MyBaseClass = BaseMRG31<1597>;
 
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
-    inline MRGRand1457() noexcept
+    inline MRGRand49507() noexcept
         : MyBaseClass()
     {
         setstate();
     }
 
     /** @brief Valued construtor (integer). */
-    inline MRGRand1457(const uint32_t seed) noexcept
+    inline MRGRand49507(const uint32_t seed) noexcept
         : MyBaseClass()
     {
         setstate(seed);
     }
 
     /** @brief Valued construtor (double). */
-    inline MRGRand1457(const double seed) noexcept
+    inline MRGRand49507(const double seed) noexcept
         : MyBaseClass()
     {
         setstate(seed);
     }
 
     /** @brief Valued constructor (full state). */
-    inline MRGRand1457(const StateType& seed) noexcept
+    inline MRGRand49507(const StateType& seed) noexcept
         : MyBaseClass()
     {
         setstate(seed);
     }
 
     /** @brief Default Copy constructor. */
-    MRGRand1457(const MRGRand1457&) noexcept = default;
+    MRGRand49507(const MRGRand49507&) noexcept = default;
 
     /** @brief Default Move constructor. */
-    MRGRand1457(MRGRand1457&&) noexcept = default;
+    MRGRand49507(MRGRand49507&&) noexcept = default;
 
     /** @brief Default Destructor. */
-    virtual ~MRGRand1457() noexcept = default;
+    virtual ~MRGRand49507() noexcept = default;
 
 
     //---   Internal PRNG   -------------------------------------------------

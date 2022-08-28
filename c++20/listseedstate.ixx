@@ -24,30 +24,20 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <chrono>
+module;
 
-#include "fastrand32.h"
-#include "mrgrand1457.h"
+#include <array>
+
+
+export module listseedstate;
 
 
 //===========================================================================
-/** The internal PRNG algorithm. */
-const double MRGRand1457::random() noexcept
+/** @brief The internal state of LFib and MRG Pseudo Random Numbers Generators. */
+export template<typename ValueType, const size_t SIZE>
+class ListSeedState
 {
-    // evaluates indexes in suite for the i-1, i-24 (and i-47) -th values
-    const size_t index = MyBaseClass::_state.seed.index;
-    const size_t k1  = (index < 1 ) ? (index + SEED_SIZE) - 1  : index - 1 ;
-    const size_t k24 = (index < 24) ? (index + SEED_SIZE) - 24 : index - 24;
-
-    // evaluates current value and modifies internal state
-    const uint64_t value = (0x0408'0000ull * (uint64_t(MyBaseClass::_state.seed.list[k1]) +
-                                              uint64_t(MyBaseClass::_state.seed.list[k24]) +
-                                              uint64_t(MyBaseClass::_state.seed.list[index]))) % MODULO;
-    MyBaseClass::_state.seed.list[index] = uint32_t(value);
-
-    // next index
-    MyBaseClass::_state.seed.index = (index + 1) % SEED_SIZE;
-
-    // finally, returns pseudo random value in range [0.0, 1.0)
-    return double(value) / double(MODULO);
-}
+public:
+    std::array<ValueType, SIZE>  list;
+    size_t                       index;
+};
