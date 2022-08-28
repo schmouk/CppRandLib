@@ -29,7 +29,7 @@ module;
 #include <chrono>
 
 
-export module basemrg31;
+export module basemrg32;
 
 import baserandom;
 import fastrand32;
@@ -41,28 +41,25 @@ import listseedstate;
 *
 *   This module is part of library CppRandLib.
 */
-export template<const size_t SIZE>
-class BaseMRG31 : public BaseRandom<ListSeedState<uint32_t, SIZE>>
+template<const size_t SIZE>
+class BaseMRG32 : public BaseRandom<ListSeedState<uint32_t, SIZE>>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using StateType = ListSeedState<uint32_t, SIZE>;
-    using MyBaseClass = BaseRandom<ListSeedState<uint32_t, SIZE>>;
+    using StateType = ListSeedState<uint32_t, 256>;
+    using MyBaseClass = BaseRandom<ListSeedState<uint32_t, 256>>;
 
-
-    //---   Class constants   -----------------------------------------------
-    static constexpr uint32_t MODULO = 0x7fff'ffff;  // i.e. (1 << 31) - 1
-    static constexpr size_t   SEED_SIZE = SIZE;
+    static constexpr size_t SEED_SIZE = SIZE;
 
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
-    inline BaseMRG31() noexcept
+    inline BaseMRG32() noexcept
         : MyBaseClass()
     {}
 
     /** @brief Default Destructor. */
-    virtual ~BaseMRG31() noexcept = default;
+    virtual ~BaseMRG32() noexcept = default;
 
 
     //---   Operations   ----------------------------------------------------
@@ -76,7 +73,7 @@ public:
     inline void setstate(const double seed) noexcept
     {
         const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        setstate(uint32_t(s * double(MODULO)));
+        setstate(uint32_t(s * double(0x1'0000'0000ull)));
     }
 
     /** @brief Restores the internal state of this PRNG from seed. */
@@ -101,25 +98,24 @@ public:
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
 /** Sets the internal state of this PRNG from current time (empty signature). */
 template<const size_t SIZE>
-void BaseMRG31<SIZE>::setstate() noexcept
+void BaseMRG32<SIZE>::setstate() noexcept
 {
     const uint64_t ticks = std::chrono::duration_cast<std::chrono::nanoseconds>(
         std::chrono::high_resolution_clock::now().time_since_epoch()).count();
 
     const uint32_t t32 = uint32_t(ticks & 0xffff'ffff);
-    setstate((((t32 & 0xff00'0000) >> 24) +
+    setstate(((t32 & 0xff00'0000) >> 24) +
         ((t32 & 0x00ff'0000) >> 8) +
         ((t32 & 0x0000'ff00) << 8) +
-        ((t32 & 0x0000'00ff) << 24)) % MODULO);
+        ((t32 & 0x0000'00ff) << 24));
 }
 
 
 /** Sets the internal state of this PRNG with an integer seed. */
 template<const size_t SIZE>
-void BaseMRG31<SIZE>::setstate(const uint32_t seed) noexcept
+void BaseMRG32<SIZE>::setstate(const uint32_t seed) noexcept
 {
     FastRand32 rand(seed);
-    //for (auto it = MyBaseClass::_state.seed.list.begin(); it != MyBaseClass::_state.seed.list.end(); )
     for (auto it = MyBaseClass::_state.seed.list.begin(); it != MyBaseClass::_state.seed.list.end(); )
-        *it++ = uint32_t(rand(MODULO));
+        *it++ = uint32_t(rand() * 0x1'0000'0000ull);
 }
