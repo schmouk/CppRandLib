@@ -24,10 +24,15 @@ SOFTWARE.
 
 
 //===========================================================================
+module;
+
 #include <chrono>
 
-#include "fastrand32.h"
-#include "mrgrand49507.h"
+
+module mrgrand49507;
+
+import fastrand32;
+import mrgrand49507;
 
 
 //===========================================================================
