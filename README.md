@@ -1,4 +1,4 @@
-# CppRandLib
+# CppRandLib  [![Latest release](http://img.shields.io/github/release/schmouk/cpprandlib.svg?style=plastic&labelColor=blueviolet&color=success)](https://github.com/schmouk/cpprandlib/releases)
 Many best in class pseudo random generators grouped into one simple library - c++11 and c++20 versions.
 
 This is a c++ counterpart of library PyRandLib (Python).
