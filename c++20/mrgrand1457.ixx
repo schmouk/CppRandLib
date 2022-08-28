@@ -1,4 +1,3 @@
-#pragma once
 /*
 MIT License
 
@@ -25,11 +24,16 @@ SOFTWARE.
 
 
 //===========================================================================
+module;
+
 #include <chrono>
 
-#include "basemrg31.h"
-#include "fastrand32.h"
-#include "listseedstate.h"
+
+export module mrgrand1457;
+
+import basemrg31;
+import fastrand32;
+import listseedstate;
 
 
 //===========================================================================
@@ -101,7 +105,7 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
 *   should definitively pass.
 */
-class MRGRand1457 : public BaseMRG31<47>
+export class MRGRand1457 : public BaseMRG31<47>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
