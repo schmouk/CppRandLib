@@ -66,7 +66,12 @@ generated pseudo-randomness than the Mersenne twister PRG.
 
 
 ## Installation
-...next to come...
+Currently, the only way to install CppRandLib is to  download  the  .zip  or
+.tar.gz archive,  then to directly put sub-directory `c++11` or `c++20` from 
+archive into your project directory.  
+See https://schmouk.github.io/CppRandLib/ for an easy access   to  download 
+versions or click on tab **releases** on home page of GitHub repository.
+
 
 
 
