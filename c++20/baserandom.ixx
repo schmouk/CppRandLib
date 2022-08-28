@@ -1,14 +1,18 @@
 ﻿/*
 MIT License
+
 Copyright (c) 2022 Philippe Schmouker, ph.schmouker (at) gmail.com
+
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
 in the Software without restriction,  including without limitation the  rights
 to use,  copy,  modify,  merge,  publish,  distribute, sublicense, and/or sell
 copies of the Software,  and  to  permit  persons  to  whom  the  Software  is
 furnished to do so, subject to the following conditions:
+
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
+
 THE SOFTWARE IS PROVIDED "AS IS",  WITHOUT WARRANTY OF ANY  KIND,  EXPRESS  OR
 IMPLIED,  INCLUDING  BUT  NOT  LIMITED  TO  THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT  SHALL  THE
@@ -18,12 +22,12 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-
 //===========================================================================
 module;
 
+#include <algorithm>
 #include <array>
-#include <chrono>
+#include <cmath>
 #include <numeric>
 #include <stdexcept>
 #include <vector>
@@ -35,181 +39,192 @@ export module baserandom;
 //===========================================================================
 /** @brief This is the base class for all pseudo-random numbers generators.
 *
+*   This module is part of library CppRandLib.
 *
-    This module is part of library CppRandLib.
-    Copyright (c) 2022 Philippe Schmouker
-    See FastRand32 for a 2^32 (i.e. 4.3e+9) period LC-Generator and  FastRand63  for a
-    2^63 (i.e. about 9.2e+18) period LC-Generator with low computation time.
-    See MRGRand287 for a short period  MR-Generator (2^287,  i.e. 2.49e+86)  with  low
-    computation time but 256 integers memory consumption.
-    See MRGRand1457 for a  longer  period  MR-Generator  (2^1457,  i.e. 4.0e+438)  and
-    longer  computation  time  (2^31-1  modulus  calculations)  but  less memory space
-    consumption (47 integers).
-    See MRGRand49507 for a far  longer  period  (2^49507,  i.e. 1.2e+14903)  with  low
-    computation  time  too  (31-bits  modulus)  but  use  of  more  memory space (1597
-    integers).
-    See LFibRand78, LFibRand116, LFibRand668 and LFibRand1340  for  long  period  LFib
-    generators  (resp.  2^78,  2^116,  2^668  and 2^1340 periods,  i.e. resp. 3.0e+23,
-    8.3e+34, 1.2e+201 and 2.4e+403 periods) while same computation time and far higher
-    precision  (64-bits  calculations) but memory consumption (resp. 17,  55,  607 and
-    1279 integers).
-    Furthermore this class and all its inheriting sub-classes are callable. Example:
-      rand = BaseRandom()
-      std::cout << rand();   // prints a uniform pseudo-random value within [0.0, 1.0)
-      std::cout << rand(a);  // prints a uniform pseudo-random value within [0.0, a)
-      std::cout << rand(a,b);// prints a uniform pseudo-random value within [a  , b)
-    Please notice that for simulating the roll of a dice you may use any of:
-      diceRoll = UFastRandom();
-      std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within {1, ..., 6}.
-      std::cout << diceRoll.randint(1, 6) << std::endl; // idem
-    Conforming to the former version PyRandLib  of  this  library,  next  methods  are
-    available:
-     |
-     |  betavariate(alpha, beta)
-     |      Beta distribution.
-     |      https://en.wikipedia.org/wiki/Beta_distribution
-     |
-     |      Conditions on the parameters are alpha > 0 and beta > 0.
-     |      Returned values range between 0 and 1.
-     |
-     |
-     |  choice(seq)
-     |      Choose a random element from a non-empty sequence.
-     |
-     |
-     |  expovariate(lambda)
-     |      Exponential distribution.
-     |      https://en.wikipedia.org/wiki/Exponential_distribution
-     |
-     |      lambda is 1.0 divided by the desired mean.  It should be
-     |      nonzero.
-     |      Returned values range from 0 to
-     |      positive infinity if lambda is positive, and from negative
-     |      infinity to 0 if lambda is negative.
-     |
-     |
-     |  gammavariate(alpha, beta)
-     |      Gamma distribution.  Not the gamma function!
-     |      https://en.wikipedia.org/wiki/Gamma_distribution
-     |
-     |      Conditions on the parameters are alpha > 0 and beta > 0.
-     |
-     |
-     |  gauss(mu, sigma)
-     |      Gaussian distribution.
-     |      https://en.wikipedia.org/wiki/Normal_distribution
-     |
-     |      mu is the mean, and sigma is the standard deviation.  This is
-     |      slightly faster than the normalvariate() function.
-     |
-     |      Not thread-safe without a lock around calls.
-     |
-     |
-     |  getstate()
-     |      Return internal state; can be passed to setstate() later.
-     |
-     |
-     |  lognormvariate(mu, sigma)
-     |      Log normal distribution.
-     |      https://en.wikipedia.org/wiki/Log-normal_distribution
-     |
-     |      If you take the natural logarithm of this distribution, you'll get a
-     |      normal distribution with mean mu and standard deviation sigma.
-     |      mu can have any value, and sigma must be greater than zero.
-     |
-     |
-     |  normalvariate(mu, sigma)
-     |      Normal distribution.
-     |      https://en.wikipedia.org/wiki/Normal_distribution
-     |
-     |      mu is the mean, and sigma is the standard deviation.
-     |
-     |
-     |  paretovariate(alpha)
-     |      Pareto distribution.  alpha is the shape parameter.
-     |      https://en.wikipedia.org/wiki/Pareto_distribution
-     |
-     |
-     |  randint(a, b)
-     |      Return random integer in range [a, b], including both end points.
-     |
-     |
-     |  randrange(start, stop, step=1)
-     |      Choose a random item from range(start, stop[, step]).
-     |
-     |      This fixes the problem with randint() which includes the
-     |      endpoint.
-     |
-     |
-     |  sample(population, k)
-     |      Chooses k unique random elements from a population sequence or set.
-     |
-     |      Returns a new list containing elements from the population while
-     |      leaving the original population unchanged.  The resulting list is
-     |      in selection order so that all sub-slices will also be valid random
-     |      samples.  This allows raffle winners (the sample) to be partitioned
-     |      into grand prize and second place winners (the subslices).
-     |
-     |      Members of the population need not be hashable or unique.  If the
-     |      population contains repeats, then each occurrence is a possible
-     |      selection in the sample.
-     |
-     |      To choose a sample in a range of integers, use range as an argument.
-     |      This is especially fast and space efficient for sampling from a
-     |      large population:   sample(range(10000000), 60)
-     |
-     |
-     |  seed()
-     |  seed(a)
-     |      Initialize internal state.
-     |      No argument seeds from current time.
-     |      If *a* is an int, all bits are used.
-     |
-     |
-     |  setstate(state)
-     |      Restore internal state from object returned by getstate().
-     |
-     |
-     |  shuffle(x)
-     |      x-> shuffle vector x in place.
-     |
-     |
-     |  triangular()
-     |  triangular(low, high)
-     |  triangular(low, high, mode)
-     |      Triangular distribution.
-     |      http://en.wikipedia.org/wiki/Triangular_distribution
-     |
-     |      Continuous distribution bounded by given lower and upper limits,
-     |      and having a given mode value in-between.
-     |      When missing, low = 0.0, high = 1.0, mode = (low + high) / 2
-     |
-     |
-     |  uniform()
-     |  uniform(b)
-     |  uniform(a, b)
-     |      Get a random number in the range [a, b) or [a, b] depending on rounding.
-     |      When missing, a = 0.0 and b = 1.0
-     |
-     |
-     |  vonmisesvariate(mu, kappa)
-     |      Circular data distribution.
-     |      https://en.wikipedia.org/wiki/Von_Mises_distribution
-     |
-     |      mu is the mean angle, expressed in radians between 0 and 2*pi, and
-     |      kappa is the concentration parameter, which must be greater than or
-     |      equal to zero.  If kappa is equal to zero, this distribution reduces
-     |      to a uniform random angle over the range 0 to 2*pi.
-     |
-     |
-     |  weibullvariate(alpha, beta)
-     |      Weibull distribution.
-     |      https://en.wikipedia.org/wiki/Weibull_distribution
-     |
-     |      alpha is the scale parameter and beta is the shape parameter.
+*   Copyright (c) 2022 Philippe Schmouker
+*
+*   See FastRand32 for a 2^32 (i.e. 4.3e+9) period LC-Generator and  FastRand63  for a
+*   2^63 (i.e. about 9.2e+18) period LC-Generator with low computation time.
+*
+*   See MRGRand287 for a short period  MR-Generator (2^287,  i.e. 2.49e+86)  with  low
+*   computation time but 256 integers memory consumption.
+*
+*   See MRGRand1457 for a  longer  period  MR-Generator  (2^1457,  i.e. 4.0e+438)  and
+*   longer  computation  time  (2^31-1  modulus  calculations)  but  less memory space
+*   consumption (47 integers).
+*
+*   See MRGRand49507 for a far  longer  period  (2^49507,  i.e. 1.2e+14903)  with  low
+*   computation  time  too  (31-bits  modulus)  but  use  of  more  memory space (1597
+*   integers).
+*
+*   See LFibRand78, LFibRand116, LFibRand668 and LFibRand1340  for  long  period  LFib
+*   generators  (resp.  2^78,  2^116,  2^668  and 2^1340 periods,  i.e. resp. 3.0e+23,
+*   8.3e+34, 1.2e+201 and 2.4e+403 periods) while same computation time and far higher
+*   precision  (64-bits  calculations) but memory consumption (resp. 17,  55,  607 and
+*   1279 integers).
+*
+*   Furthermore this class and all its inheriting sub-classes are callable. Example:
+* @code
+*     BaseRandom rand{}; // CAUTION: this won't compile since BaseRandom is an abstract class. Replace 'BaseRandom' with any inheriting class constructor!
+*     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
+*     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
+*     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
+* @endcode
+*
+*   Please notice that for simulating the roll of a dice you may use any of:
+* @code
+*     FastRand32 diceRoll{};                            // notice: use of FastRand32 is for sole example purpose
+*     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
+*     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
+* @endcode
+*
+*   Conforming to the former version PyRandLib  of  this  library,  next  methods  are
+*   available:
+*    |
+*    |  betavariate(alpha, beta)
+*    |      Beta distribution.
+*    |      https://en.wikipedia.org/wiki/Beta_distribution
+*    |
+*    |      Conditions on the parameters are alpha > 0 and beta > 0.
+*    |      Returned values range between 0 and 1.
+*    |
+*    |
+*    |  choice(seq)
+*    |      Choose a random element from a non-empty sequence.
+*    |
+*    |
+*    |  expovariate(lambda)
+*    |      Exponential distribution.
+*    |      https://en.wikipedia.org/wiki/Exponential_distribution
+*    |
+*    |      lambda is 1.0 divided by the desired mean.  It should be
+*    |      nonzero.
+*    |      Returned values range from 0 to
+*    |      positive infinity if lambda is positive, and from negative
+*    |      infinity to 0 if lambda is negative.
+*    |
+*    |
+*    |  gammavariate(alpha, beta)
+*    |      Gamma distribution.  Not the gamma function!
+*    |      https://en.wikipedia.org/wiki/Gamma_distribution
+*    |
+*    |      Conditions on the parameters are alpha > 0 and beta > 0.
+*    |
+*    |
+*    |  gauss(mu, sigma)
+*    |      Gaussian distribution.
+*    |      https://en.wikipedia.org/wiki/Normal_distribution
+*    |
+*    |      mu is the mean, and sigma is the standard deviation.  This is
+*    |      slightly faster than the normalvariate() function.
+*    |
+*    |      Not thread-safe without a lock around calls.
+*    |
+*    |
+*    |  getstate()
+*    |      Return internal state; can be passed to setstate() later.
+*    |
+*    |
+*    |  lognormvariate(mu, sigma)
+*    |      Log normal distribution.
+*    |      https://en.wikipedia.org/wiki/Log-normal_distribution
+*    |
+*    |      If you take the natural logarithm of this distribution, you'll get a
+*    |      normal distribution with mean mu and standard deviation sigma.
+*    |      mu can have any value, and sigma must be greater than zero.
+*    |
+*    |
+*    |  normalvariate(mu, sigma)
+*    |      Normal distribution.
+*    |      https://en.wikipedia.org/wiki/Normal_distribution
+*    |
+*    |      mu is the mean, and sigma is the standard deviation.
+*    |
+*    |
+*    |  paretovariate(alpha)
+*    |      Pareto distribution.  alpha is the shape parameter.
+*    |      https://en.wikipedia.org/wiki/Pareto_distribution
+*    |
+*    |
+*    |  randint(a, b)
+*    |      Return random integer in range [a, b], including both end points.
+*    |
+*    |
+*    |  randrange(start, stop, step=1)
+*    |      Choose a random item from range(start, stop[, step]).
+*    |
+*    |      This fixes the problem with randint() which includes the
+*    |      endpoint.
+*    |
+*    |
+*    |  sample(population, k)
+*    |      Chooses k unique random elements from a population sequence or set.
+*    |
+*    |      Returns a new list containing elements from the population while
+*    |      leaving the original population unchanged.  The resulting list is
+*    |      in selection order so that all sub-slices will also be valid random
+*    |      samples.  This allows raffle winners (the sample) to be partitioned
+*    |      into grand prize and second place winners (the subslices).
+*    |
+*    |      Members of the population need not be hashable or unique.  If the
+*    |      population contains repeats, then each occurrence is a possible
+*    |      selection in the sample.
+*    |
+*    |      To choose a sample in a range of integers, use range as an argument.
+*    |      This is especially fast and space efficient for sampling from a
+*    |      large population:   sample(range(10000000), 60)
+*    |
+*    |
+*    |  seed()
+*    |  seed(a)
+*    |      Initialize internal state.
+*    |      No argument seeds from current time.
+*    |      If *a* is an int, all bits are used.
+*    |
+*    |
+*    |  setstate(state)
+*    |      Restore internal state from object returned by getstate().
+*    |
+*    |
+*    |  shuffle(x)
+*    |      x-> shuffle vector x in place.
+*    |
+*    |
+*    |  triangular()
+*    |  triangular(low, high)
+*    |  triangular(low, high, mode)
+*    |      Triangular distribution.
+*    |      http://en.wikipedia.org/wiki/Triangular_distribution
+*    |
+*    |      Continuous distribution bounded by given lower and upper limits,
+*    |      and having a given mode value in-between.
+*    |      When missing, low = 0.0, high = 1.0, mode = (low + high) / 2
+*    |
+*    |
+*    |  uniform()
+*    |  uniform(b)
+*    |  uniform(a, b)
+*    |      Get a random number in the range [a, b) or [a, b] depending on rounding.
+*    |      When missing, a = 0.0 and b = 1.0
+*    |
+*    |
+*    |  vonmisesvariate(mu, kappa)
+*    |      Circular data distribution.
+*    |      https://en.wikipedia.org/wiki/Von_Mises_distribution
+*    |
+*    |      mu is the mean angle, expressed in radians between 0 and 2*pi, and
+*    |      kappa is the concentration parameter, which must be greater than or
+*    |      equal to zero.  If kappa is equal to zero, this distribution reduces
+*    |      to a uniform random angle over the range 0 to 2*pi.
+*    |
+*    |
+*    |  weibullvariate(alpha, beta)
+*    |      Weibull distribution.
+*    |      https://en.wikipedia.org/wiki/Weibull_distribution
+*    |
+*    |      alpha is the scale parameter and beta is the shape parameter.
 */
-export
-template<typename SeedStateType>
+export template<typename SeedStateType>
 class BaseRandom
 {
 public:
@@ -219,10 +234,7 @@ public:
     * Inheriting classes use a shuffled value of the local time as a seed
     * to initialize their related PRNG.
     */
-    inline BaseRandom() noexcept
-    {
-        setstate();
-    }
+    inline BaseRandom() noexcept = default;
 
     /** @brief Value Constructor. */
     inline BaseRandom(const SeedStateType& seed) noexcept
@@ -243,13 +255,10 @@ public:
     //---   Internal PRNG   -------------------------------------------------
     /** @brief The internal PRNG algorithm.
     *
-    * This method must be overriden in inheriting classes.
-    * @return a double value uniformly contained within the range [0.0, 1.0).
+    * This method is pure virtual. It MUST be overriden in inheriting classes.
+    * @return a double value uniformly contained within range [0.0, 1.0).
     */
-    virtual inline const double random() noexcept  // = 0;
-    {
-        return 0.5;  // stupid default value, just to get no compiling errors
-    }
+    virtual const double random() noexcept = 0;
 
 
     //---   Assignments operators   -----------------------------------------
@@ -269,7 +278,7 @@ public:
     //---   Calling operators   ---------------------------------------------
     /** @brief Empty Call operator.
     *
-    * @return a value that is uniformly contained within the range [0.0, 1.0).
+    * @return a value that is uniformly contained within range [0.0, 1.0).
     */
     inline const double operator() () noexcept
     {
@@ -278,7 +287,7 @@ public:
 
     /** @brief Valued call operator (1 scalar).
     *
-    * @return a value that is uniformly contained within the range [0; max).
+    * @return a value that is uniformly contained within range [0; max).
     */
     template<typename T>
     inline const T operator() (const T max) noexcept
@@ -288,7 +297,7 @@ public:
 
     /**@brief Valued call operator (min and max scalars).
     *
-    * @return a value that is uniformly contained within the range [min; max).
+    * @return a value that is uniformly contained within range [min; max).
     */
     template<typename T>
     inline const T operator() (const T min, const T max) noexcept
@@ -298,13 +307,13 @@ public:
 
     /** @brief Valued call operator (1 std::vector of scalars).
     *
-    * @return  an array of values that are uniformly contained within
-    *   the range [0; max[i]) -- i being the index of the value in
+    * @return  a vector of values that are uniformly contained within
+    *   the interval [0; max[i]) -- i being the index of the value in
     *   the returned vector.
     */
     template<typename T>
         requires std::is_arithmetic_v<T>
-    inline std::vector<T> operator() (const std::vector<T>& max) noexcept
+    std::vector<T> operator() (const std::vector<T>& max)
     {
         std::vector<T> out(max.size());
         std::transform(max.cbegin(), max.cend(), out.begin(), [this](const T b) { return this->uniform(b); });
@@ -313,28 +322,28 @@ public:
 
     /** @brief Valued call operator (1 std::array of scalars).
     *
-    * @return  an array of values that are uniformly contained within
-    *   the range [0; max[i]) -- i being the index of the value in
-    *   the returned vector.
+    * @return an array of values that are uniformly contained within
+    *   the range [0; max[i]), i being the index of the value in the
+    *   returned array.
     */
     template<typename T, const size_t n>
         requires std::is_arithmetic_v<T>
-    inline std::array<T, n> operator() (const std::array<T, n>& max) noexcept
+    std::array<T, n> operator() (const std::array<T, n>& max) noexcept
     {
         std::array<T, n> out;
         std::transform(max.cbegin(), max.cend(), out.begin(), [this](const T b) { return this->uniform(b); });
         return out;
     }
 
-    /** @brief Valued call operator (2 std::vectors of scalars).
+    /** @brief Valued call operator (2 std::vector of scalars).
     *
-    * @return a vector of values that are uniformly contained within the
-    *   range [min[i]; max[i]), i being the index of the value in the
-    *   returned vector.
+    * @return  a vector of values that are uniformly contained within
+    *   the range [min[i]; max[i]), i being the index of the value in
+    *   the returned vector.
     */
     template<typename T>
         requires std::is_arithmetic_v<T>
-    inline std::vector<T> operator() (const std::vector<T>& min, const std::vector<T>& max) noexcept(false)
+    std::vector<T> operator() (const std::vector<T>& min, const std::vector<T>& max) noexcept
     {
         const size_t count = std::min(min.size(), max.size());
         std::vector<T> out(count);
@@ -342,15 +351,15 @@ public:
         return out;
     }
 
-    /** @brief Valued call operator (2 std::arrays of scalars).
+    /** @brief Valued call operator (2 std::array of scalars).
     *
-    * @return an array of values that are uniformly contained within the
-    *   range [min[i]; max[i]), i being the index of the value in the
-    *   returned vector.
+    * @return  an array of values that are uniformly contained within
+    *   the range [min[i]; max[i]), i being the index of the value in
+    *   the returned array.
     */
     template<typename T, const size_t n>
         requires std::is_arithmetic_v<T>
-    inline std::array<T, n> operator() (const std::array<T, n>& min, const std::array<T, n>& max) noexcept
+    std::array<T, n> operator() (const std::array<T, n>& min, const std::array<T, n>& max) noexcept
     {
         std::array<T, n> out;
         std::transform(min.cbegin(), min.cend(), max.cbegin(), out.begin(), [this](const T a, const T b) { return this->uniform(a, b); });
@@ -359,7 +368,7 @@ public:
 
 
     //---   Operations   ----------------------------------------------------
-    /** @brief Chooses a random element from a non-empty sequence (std::vector<>). */
+    /** @brief Chooses a random element from a non-empty sequence (std::vector). */
     template<typename T>
     const T& choice(const std::vector<T>& seq) noexcept(false)
     {
@@ -369,7 +378,7 @@ public:
         return seq[uniform(n)];
     }
 
-    /** @brief Chooses a random element from a non-empty sequence (std::array<>). */
+    /** @brief Chooses a random element from a non-empty sequence (std::array). */
     template<typename T, const size_t n>
     const T& choice(const std::array<T, n>& seq) noexcept(false)
     {
@@ -412,8 +421,8 @@ public:
 
     /** @brief Returns a vector of n vectors that each contain m values in range [0; max[i]).
     *
-    * Notice: n_vect is implicitly set with max.size() - i.e. the size of
-    *   the returned vector of vectors is the size of input vector 'max'.
+    * Notice: m is implicitly set with max.size() - i.e. the size of the
+    *   returned vector of vectors is the size of input vector 'max'.
     */
     template<typename T>
         requires std::is_arithmetic_v<T>
@@ -490,7 +499,7 @@ public:
     */
     template<typename T>
         requires std::is_integral_v<T>
-    inline const T randint(const T a, const int b) noexcept(false)
+    inline const T randint(const T a, const int b) noexcept
     {
         return uniform(a, b + 1);
     }
@@ -519,7 +528,7 @@ public:
     }
 
 
-    /** @brief Chooses k unique random elements from a population sequence (out std::vector<>, in std::vector<>, default counts = 1).
+    /** @brief Chooses k unique random elements from a population sequence (out std::vector, in container, default counts = 1).
     *
     * Evaluates a vector containing  elements  from  the  population  while
     * leaving  the  original  population  unchanged.  The resulting list is
@@ -598,6 +607,7 @@ public:
         }
     }
 
+
     /** @brief Chooses k unique random elements from a population sequence (std::vector<>, with counts vector).
     *
     * Evaluates a vector containing  elements  from  the  population  while
@@ -627,24 +637,22 @@ public:
     * Move Constructor and maybe Move assignment are defined).
     */
     template<typename T, typename C>
-        requires std::is_integral_v<C>
+        requires std::is_integral_v<C> && !std::is_integral<C>::value
     void sample(std::vector<T>& out, const std::vector<T>& population, const std::vector<C>& counts, const size_t k) noexcept(false)
     {
         if (counts.size() != population.size())
             throw SampleSizesException();
-        if (!std::is_integral<C>::value)
-            throw SampleCountsTypeException();
 
         const size_t samples_count = size_t(std::accumulate(counts.begin(), counts.end(), C(0)));
         if (k > samples_count)
             throw SampleCountException();
 
-        std::vector<T> samples;
-        samples.reserve(samples_count);
-        auto c_it = counts.begin();
+        std::vector<T> samples(samples_count);
+        auto c_it = counts.cbegin();
+        auto s_it = samples.begin();
         for (auto& p : population) {
             for (size_t j = size_t(*c_it++); j > 0; --j)
-                samples.emplace_back(p);
+                *s_it++ = p;
         }
 
         out.clear();
@@ -655,6 +663,7 @@ public:
             std::swap(samples[i], samples[index]);
         }
     }
+
 
     /** @brief Chooses k unique random elements from a population sequence (std::array<>, with counts array).
     *
@@ -686,7 +695,7 @@ public:
     */
     template<typename T, typename C, const size_t k, const size_t n>
         requires std::is_integral_v<C>
-    inline void sample(std::array<T, k>& out, const std::array<T, n>& population, const std::array<C, n>& counts)
+    inline void sample(std::array<T, k>& out, const std::array<T, n>& population, const std::array<C, n>& counts) noexcept
     {
         const size_t samples_count = size_t(std::accumulate(counts.begin(), counts.end(), C(0)));
         if (k > samples_count)
@@ -695,9 +704,10 @@ public:
         std::vector<T> samples;
         samples.reserve(samples_count);
         auto c_it = counts.begin();
+        auto s_it = samples.begin();
         for (auto& p : population) {
             for (size_t j = size_t(*c_it++); j > 0; --j)
-                samples.emplace_back(p);
+                *s_it++ = p;
         }
 
         for (size_t i = 0; i < k; ++i) {
@@ -710,7 +720,7 @@ public:
 
     /** @brief Initializes internal state (empty signature).
     *
-    * The seed value is evaluated from shuffling current time.
+    * The seed value is evaluated from current time.
     */
     inline void seed() noexcept
     {
@@ -730,33 +740,28 @@ public:
         setstate(seed_);
     }
 
-    /** @brief Sets the internal state of this PRNG from current time (empty signature). */
-    void setstate() noexcept
-    {
-#if _MSC_VER >= 1930
-        const unsigned long long ticks = std::chrono::duration_cast<std::chrono::nanoseconds>(
-            std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-#else
-        const unsigned long long ticks = std::chrono::duration_cast<std::chrono::nanoseconds>(
-            std::chrono::steady_clock::now().time_since_epoch()).count();
-#endif
 
-        setstate(((ticks & 0x0000'0000'ffff'ffff) << 32) +
-            ((ticks & 0xff00'0000'0000'0000) >> 56) +
-            ((ticks & 0x00ff'0000'0000'0000) >> 40) +
-            ((ticks & 0x0000'ff00'0000'0000) >> 24) +
-            ((ticks & 0x0000'00ff'0000'0000) >> 8));
+    /** @brief Sets the internal state of this PRNG from shuffled current time. */
+    virtual void setstate() noexcept
+    {}
+
+    /** @brief Restores the internal state of this PRNG from seed. */
+    inline void setstate(const SeedStateType& seed) noexcept
+    {
+        _state.seed = seed;
+        _state.gauss_valid = false;
     }
 
     /** @brief Restores the internal state of this PRNG from seed and gauss_next. */
-    inline void setstate(const SeedStateType& seed, const double gauss_next = BaseRandom::GAUSS_NULL) noexcept
+    inline void setstate(const SeedStateType& seed, const double gauss_next) noexcept
     {
         _state.seed = seed;
         _state.gauss_next = gauss_next;
+        _state.gauss_valid = true;
     }
 
     /** @brief Restores the internal state of this PRNG from object returned by getstate(). */
-    inline void setstate(const struct _InternalState& state) noexcept
+    inline void setstate(const _InternalState& state) noexcept
     {
         _state = state;
     }
@@ -778,16 +783,16 @@ public:
     //---   Random distribution functions   ---------------------------------
     /** @brief Beta distribution.
     *
-    * @arg alpha: double, must be greater than 0
-    * @arg beta: double, must be greater than 0
+    * @param alpha: double, must be greater than 0
+    * @param beta: double, must be greater than 0
     * @return a value in range [0.0, 1.0].
-    *
+    * 
     * Important notice: the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
-    * The original code is due to Janne Sinkkonen and matches all the std
+    * The original code is due to Janne Sinkkonen and matches all the std 
     * texts (e.g., Knuth Vol 2 Ed 3 pg 134 "the beta distribution").
     */
-    const double betavariate(const double alpha, const double beta) noexcept(false)
+    const double betavariate(const double alpha, const double beta)
     {
         if (alpha <= 0.0 || beta <= 0.0)
             throw AlphaBetaArgsException();
@@ -800,13 +805,13 @@ public:
 
     /** @brief Exponential distribution.
     *
-    * @arg lambda: double, this should get the value (1.0 / desired_mean).
+    * @param lambda: double, this should get the value (1.0 / desired_mean).
     *   It cannot be 0.0.
     * @return a value in range [0.0, Infinity) if lambda is  positive,  or
     *   a value in range (-Infinity, 0.0] if lambda is negative.
-    *
+    * 
     * Important notice:  the implemented code is a translation from Python
-    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
+    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++. 
     */
     const double expovariate(const double lambda) noexcept(false)
     {
@@ -815,7 +820,6 @@ public:
 
         return -std::log(1.0 - random());
     }
-
 
 
     /** @brief Gamma distribution. This is NOT the gamma function!
@@ -828,18 +832,18 @@ public:
     *   pdf is the probability density function
     *   a^b is std::pow(a, b)
     *   std::tgamma() is the Gamma funtion as implemented in the c++ math library.
-    *
+    * 
     * The Gamma function is the below integral summation from 0 to Infinity:
     *   Γ(x) = ∫0∞ t^(x−1) * std::exp(−t) dt
-    *
-    * @arg alpha : double, the shape parameter - must be greater than 0.0.
-    * @arg beta : double, the scale parameter - must be greater than 0.0.
+    * 
+    * @param alpha : double, the shape parameter - must be greater than 0.0.
+    * @param beta : double, the scale parameter - must be greater than 0.0.
     *   With these two arguments: mean is alpha * beta and variance is alpha * beta * beta
     *
     * Important notice:  the implemented code is a translation from Python
-    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
+    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++. 
     * As such, some comments present in the Python original code have been
-    * copied as is in this c++ implementation, naming then the authors of
+    * copied as is in this c++ implementation, naming then the authors of 
     * the related parts of code.
     */
     const double gammavariate(const double alpha, const double beta) noexcept(false)
@@ -926,13 +930,17 @@ public:
         if (sigma <= 0.0)
             throw GaussSigmaException();
 
-        double z = _state.gauss_next;
-        _state.gauss_next = GAUSS_NULL;
-        if (z == GAUSS_NULL) {
+        double z;
+        if (_state.gauss_valid) {
+            z = _state.gauss_next;
+            _state.gauss_valid = false;
+        }
+        else {
             const double u{ uniform(TWO_PI) };
-            const double g{ std::sqrt(-2.0 * std::log(1.0 - random())) };
+            const double g{ std::sqrt(-2.0 * std::log(1.0 - uniform())) };
             z = std::cos(u) * g;
             _state.gauss_next = std::sin(u) * g;
+            _state.gauss_valid = true;
         }
 
         return mu + z * sigma;
@@ -941,7 +949,7 @@ public:
 
     /** @brief Default Log normal distribution (mean=0.0, stdev=1.0).
     *
-    * If you take the natural logarithm of this distribution, you'll get
+    * If you take the natural logarithm of this distribution, you'll get 
     * a normal distribution with mean 0.0 and standard deviation 1.0.
     *
     * Important notice:  the implemented code is a translation from Python
@@ -955,7 +963,7 @@ public:
 
     /** @brief Log normal distribution (mean=mu, stdev=sigma).
     *
-    * If you take the natural logarithm of this distribution, you'll get
+    * If you take the natural logarithm of this distribution, you'll get 
     * a normal distribution with mean mu and standard deviation sigma.
     * mu can have any value, and sigma must be greater than zero.
     *
@@ -971,10 +979,10 @@ public:
     /** @brief Normal distribution (mean=0.0, stdev=1.0).
     *
     * The Python version of this method uses Kindermanand Monahan  method.
-    * Reference: Kinderman, A.J.and Monahan, J.F., "Computer generation of
+    * Reference: Kinderman, A.J.and Monahan, J.F., "Computer generation of 
     * random variables using the ratio of  uniform  deviates",  ACM  Trans
     * Math Software, 3, (1977), pp257 - 260.
-    * This method is slightlly slower than the gauss  method,  so  we  call
+    * This method is slightlly slower than the gauss  method,  so  we  call 
     * gauss() instead here, in CRandLib.
     *
     * Important notice:  the implemented code is a translation from Python
@@ -1009,7 +1017,7 @@ public:
 
     /** @brief Pareto distribution.
     *
-    * @arg alpha: double, the shape parameter. Cannot be 0.0.
+    * @param alpha: double, the shape parameter. Cannot be 0.0.
     *
     * Important notice:  the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
@@ -1034,13 +1042,13 @@ public:
     /** @brief Triangular distribution (low, high, default mode). */
     template<typename T>
         requires std::is_arithmetic_v<T>
-    inline const T triangular(const T low, const T high) noexcept
+    const T triangular(const T low, const T high) noexcept
     {
         return triangular(low, high, (low + high) / 2);
     }
 
 
-    /** @briefTriangular distribution (low, high, mode).
+    /** @brief Triangular distribution (low, high, mode).
     *
     * Important notice:  the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
@@ -1090,16 +1098,16 @@ public:
 
 
     /** @brief Circular data distribution.
-    *
-    * @arg mu is the mean angle, expressed in radians between 0 and 2*pi
-    * @arg kappa is the concentration parameter, which must be greater than or
+    * 
+    * @param mu is the mean angle, expressed in radians between 0 and 2*pi
+    * @param kappa is the concentration parameter, which must be greater than or
     *   equal to zero.  If kappa is equal to zero, this distribution reduces
     *   to a uniform random angle over the range 0 to 2*pi.
     *
     * Important notice:  the implemented code is a translation from Python
-    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
+    * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++. 
     * As such, some comments present in the Python original code have been
-    * copied as is in this c++ implementation, naming then the authors of
+    * copied as is in this c++ implementation, naming then the authors of 
     * the related parts of code.
     */
     const double vonmisesvariate(const double mu, const double kappa) noexcept
@@ -1136,8 +1144,8 @@ public:
 
     /** @brief Weibull distribution.
     *
-    * @arg alpha: double, the scale parameter.
-    * @arg beta: double, the shape parameter. Must be non null.
+    * @param alpha: double, the scale parameter.
+    * @param beta: double, the shape parameter. Must be non null.
     */
     const double weibullvariate(const double alpha, const double beta) noexcept(false)
     {
@@ -1149,6 +1157,13 @@ public:
 
 
     //---   Exceptions   ----------------------------------------------------
+    /** @brief Exponential law null lambda exception. */
+    class AlphaBetaArgsException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "both arguments alpha and beta must be greater than 0.0."; }
+    };
+    
     /** @brief Empty sequence exception. */
     class ChoiceEmptySequenceException : public std::exception
     {
@@ -1164,19 +1179,11 @@ public:
     };
 
     /** @brief Exponential law null lambda exception. */
-    class AlphaBetaArgsException : public std::exception
-    {
-    public:
-        const char* what() noexcept { return "both arguments alpha and beta must be greater than 0.0."; }
-    };
-
-    /** @brief Exponential law null lambda exception. */
     class GaussSigmaException : public std::exception
     {
     public:
         const char* what() noexcept { return "value for argument sigma must be greater than 0.0."; }
     };
-
 
     /** @brief Not same sizes of containers exception. */
     class MinMaxSizesException : public std::exception
@@ -1214,13 +1221,6 @@ public:
     };
 
     /** @brief Range arguments with same value exception. */
-    class SampleCountsTypeException : public std::exception
-    {
-    public:
-        const char* what() noexcept { return "type of 'counts' values must be integral."; }
-    };
-
-    /** @brief Range arguments with same value exception. */
     class SampleSizesException : public std::exception
     {
     public:
@@ -1235,11 +1235,13 @@ public:
     };
 
 
+
 protected:
-    static inline constexpr double BPF = 53;
-    static inline constexpr double GAUSS_NULL = -1.0;
-    static inline constexpr double PI = 3.14159265358979323846;
-    static inline constexpr double TWO_PI = 2.0 * PI;
+    //---   Constants   -----------------------------------------------------
+    static constexpr double BPF        = 53;
+    static constexpr double GAUSS_NULL = -1.0;
+    static constexpr double PI         = 3.14159265358979323846;
+    static constexpr double TWO_PI     = 2.0 * PI;
 
     static double E;
     static double LOG4;
@@ -1251,8 +1253,9 @@ protected:
     //---   Attributes   ----------------------------------------------------
     struct _InternalState
     {
-        SeedStateType seed;                      //!< The internal current state of this PRNG
-        double        gauss_next{ GAUSS_NULL };  //!< smart optimization for Gaussian distribution computation
+        SeedStateType seed;        //!< The internal current state of this PRNG
+        double        gauss_next;  //!< smart optimization for Gaussian distribution computation (1/2)
+        bool          gauss_valid; //!< smart optimization for Gaussian distribution computation (2/2)
     } _state;
 
 
@@ -1263,9 +1266,6 @@ private:
     public:
         static const bool value = false;
     };
-
-    template<typename ContainerType>
-    static inline constexpr bool m_is_indexable_v = m_is_indexable<ContainerType>::value;
 
     template<typename T>
     class m_is_indexable<std::vector<T>>
@@ -1280,7 +1280,6 @@ private:
     public:
         static const bool value = true;
     };
-
 };
 
 //---------------------------------------------------------------------------
