@@ -42,3 +42,6 @@ x64
 
 c++11/c++11.cpp
 c++20/c++20.cpp
+docs
+archives
+.gitignore
