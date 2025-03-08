@@ -24,10 +24,15 @@ SOFTWARE.
 
 
 //===========================================================================
+module;
+
 #include <chrono>
 
-#include "fastrand32.h"
-#include "mrgrand1457.h"
+
+module mrgrand1457;
+
+import fastrand32;
+import mrgrand1457;
 
 
 //===========================================================================
@@ -36,8 +41,8 @@ const double MRGRand1457::random() noexcept
 {
     // evaluates indexes in suite for the i-1, i-24 (and i-47) -th values
     const size_t index = MyBaseClass::_state.seed.index;
-    const size_t k1  = (index < 1 ) ? (index + SEED_SIZE) - 1  : index - 1 ;
-    const size_t k24 = (index < 24) ? (index + SEED_SIZE) - 24 : index - 24;
+    const size_t k1    = (index <  1) ? (index + SEED_SIZE) -  1 : index -  1;
+    const size_t k24   = (index < 24) ? (index + SEED_SIZE) - 24 : index - 24;
 
     // evaluates current value and modifies internal state
     const uint64_t value = (0x0408'0000ull * (uint64_t(MyBaseClass::_state.seed.list[k1]) +

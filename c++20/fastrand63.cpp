@@ -24,30 +24,24 @@ SOFTWARE.
 
 
 //===========================================================================
+module;
+
 #include <chrono>
 
-#include "fastrand32.h"
-#include "mrgrand1457.h"
+
+module fastrand63;
 
 
 //===========================================================================
-/** The internal PRNG algorithm. */
-const double MRGRand1457::random() noexcept
+/** Sets the internal state of this PRNG from current time (empty signature). */
+void FastRand63::setstate() noexcept
 {
-    // evaluates indexes in suite for the i-1, i-24 (and i-47) -th values
-    const size_t index = MyBaseClass::_state.seed.index;
-    const size_t k1  = (index < 1 ) ? (index + SEED_SIZE) - 1  : index - 1 ;
-    const size_t k24 = (index < 24) ? (index + SEED_SIZE) - 24 : index - 24;
+    const uint64_t ticks = std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::high_resolution_clock::now().time_since_epoch()).count();
 
-    // evaluates current value and modifies internal state
-    const uint64_t value = (0x0408'0000ull * (uint64_t(MyBaseClass::_state.seed.list[k1]) +
-                                              uint64_t(MyBaseClass::_state.seed.list[k24]) +
-                                              uint64_t(MyBaseClass::_state.seed.list[index]))) % MODULO;
-    MyBaseClass::_state.seed.list[index] = uint32_t(value);
-
-    // next index
-    MyBaseClass::_state.seed.index = (index + 1) % SEED_SIZE;
-
-    // finally, returns pseudo random value in range [0.0, 1.0)
-    return double(value) / double(MODULO);
+    MyBaseClass::setstate(((ticks & 0x0000'0000'7fff'ffff) << 32) +
+                          ((ticks & 0xff00'0000'0000'0000) >> 56) +
+                          ((ticks & 0x00ff'0000'0000'0000) >> 40) +
+                          ((ticks & 0x0000'ff00'0000'0000) >> 24) +
+                          ((ticks & 0x0000'00ff'0000'0000) >> 8));
 }
