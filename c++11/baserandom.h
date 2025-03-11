@@ -533,13 +533,11 @@ public:
     */
     inline std::vector<std::uint8_t> randbytes(const std::uint32_t n)
     {
-        std::vector<std::uint8_t> bytes;
-        bytes.reserve(n);
-
-        for (std::uint8_t& b : bytes)
+        std::vector<std::uint8_t> out(n);
+        for (std::uint8_t& b : out)
             b = (std::uint8_t)uniform(256ul);
 
-        return bytes;
+        return out;
     }
 
 
