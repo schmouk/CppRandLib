@@ -90,7 +90,7 @@ SOFTWARE.
 *    |      Choose a random element from a non-empty sequence.
 *    |
 *    |
-*    |  expovariate(lambda)
+*    |  expovariate(lambda = 1.0)
 *    |      Exponential distribution.
 *    |      https://en.wikipedia.org/wiki/Exponential_distribution
 *    |
@@ -857,7 +857,7 @@ public:
     * Important notice:  the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++. 
     */
-    const double expovariate(const double lambda)
+    const double expovariate(const double lambda = 1.0)
     {
         if (lambda == 0.0)
             throw ExponentialZeroLambdaException();
