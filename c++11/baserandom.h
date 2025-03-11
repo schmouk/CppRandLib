@@ -143,6 +143,11 @@ SOFTWARE.
 *    |      https://en.wikipedia.org/wiki/Pareto_distribution
 *    |
 *    |
+*    |  randbytes(n)
+*    |      Generate n random bytes.
+*    |      This method should not be used for generating security tokens.
+*    |
+*    |
 *    |  randint(a, b)
 *    |      Return random integer in range [a, b], including both end points.
 *    |
@@ -519,6 +524,22 @@ public:
         std::array<std::array<T, m>, n> out;
         std::for_each(out.begin(), out.end(), [this, min, max](std::array<T, m>& v) { v = (*this)(min, max); });
         return out;
+    }
+
+
+    /** @brief Generates n random bytes.
+    *
+    * This method should not be used for generating security tokens.
+    */
+    inline std::vector<std::uint8_t> randbytes(const std::uint32_t n)
+    {
+        std::vector<std::uint8_t> bytes;
+        bytes.reserve(n);
+
+        for (std::uint8_t& b : bytes)
+            b = (std::uint8_t)uniform(256ul);
+
+        return bytes;
     }
 
 
@@ -1342,9 +1363,9 @@ protected:
     //---   Attributes   ----------------------------------------------------
     struct _InternalState
     {
-        SeedStateType seed;        //!< The internal current state of this PRNG
-        double        gauss_next;  //!< smart optimization for Gaussian distribution computation (1/2)
-        bool          gauss_valid; //!< smart optimization for Gaussian distribution computation (2/2)
+        SeedStateType seed{};        //!< The internal current state of this PRNG
+        double        gauss_next{};  //!< smart optimization for Gaussian distribution computation (1/2)
+        bool          gauss_valid{}; //!< smart optimization for Gaussian distribution computation (2/2)
     } _state;
 
 
