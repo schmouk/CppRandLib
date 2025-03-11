@@ -34,32 +34,35 @@ namespace utils
     UInt128& UInt128::operator+= (const UInt128& other) noexcept
     {
         bool carry{ false };
-        carry = _add_carry(_data.i32.w0, other._data.i32.w0, false);
-        carry = _add_carry(_data.i32.w1, other._data.i32.w1, carry);
-        carry = _add_carry(_data.i32.w2, other._data.i32.w2, carry);
-        _add_carry(_data.i32.w3, other._data.i32.w3, carry);  // notice: last carry can be ignored.
+
+        std::uint32_t w0{ lo & 0xffff'ffff }, w1{ lo >> 32 };
+        carry = _add_carry(w0, other.lo & 0xffff'ffff, false);
+        carry = _add_carry(w1, other.lo >> 32, carry);
+
+        std::uint32_t w2{ hi & 0xffff'ffff }, w3{ hi >> 32 };
+        carry = _add_carry(w2, other.hi & 0xffff'ffff, carry);
+        _add_carry(w3, other.hi >> 32, carry);  // notice: last carry can be ignored.
+
+        this->hi = (std::uint64_t(w3) << 32) | w2;
+        this->lo = (std::uint64_t(w1) << 32) | w0;
         return *this;
     }
 
     //---------------------------------------------------------------------------
-    UInt128& UInt128::operator+= (const std::uint64_t other) noexcept
+    UInt128& UInt128::operator+= (const std::uint64_t value) noexcept
     {
         bool carry{ false };
-        carry = _add_carry(_data.i32.w0, other & 0xffff'ffff, false);
-        carry = _add_carry(_data.i32.w1, other >> 32, carry);
-        carry = _add_carry(_data.i32.w2, 0, carry);
-        _add_carry(_data.i32.w3, 0, carry);  // notice: last carry can be ignored.
-        return *this;
-    }
 
-    //---------------------------------------------------------------------------
-    UInt128& UInt128::operator+= (const std::uint32_t other) noexcept
-    {
-        bool carry{ false };
-        carry = _add_carry(_data.i32.w0, other, false);
-        carry = _add_carry(_data.i32.w1, 0, carry);
-        carry = _add_carry(_data.i32.w2, 0, carry);
-        _add_carry(_data.i32.w3, 0, carry);  // notice: last carry can be ignored.
+        std::uint32_t w0{ lo & 0xffff'ffff }, w1{ lo >> 32 };
+        carry = _add_carry(w0, value & 0xffff'ffff, false);
+        carry = _add_carry(w1, value >> 32, carry);
+
+        std::uint32_t w2{ hi & 0xffff'ffff }, w3{ hi >> 32 };
+        carry = _add_carry(w2, 0, carry);
+        _add_carry(w3, 0, carry);  // notice: last carry can be ignored.
+
+        this->hi = (std::uint64_t(w3) << 32) | w2;
+        this->lo = (std::uint64_t(w1) << 32) | w0;
         return *this;
     }
 
@@ -67,10 +70,10 @@ namespace utils
     UInt128& UInt128::operator*= (const UInt128& other) noexcept
     {
         const std::uint64_t
-            a0{ _data.i32.w0 },
-            a1{ _data.i32.w1 },
-            b0{ other._data.i32.w0 },
-            b1{ other._data.i32.w1 },
+            a0{ lo & 0xffff'ffff },
+            a1{ lo >> 32 },
+            b0{ other.lo & 0xffff'ffff },
+            b1{ other.lo >> 32 },
             a0b0{ a0 * b0 },
             a1b0{ a1 * b0 + (a0b0 >> 32) },
             a0b1{ a0 * b1 + (a1b0 & 0xffff'ffff) },
@@ -80,23 +83,69 @@ namespace utils
             hi{ a1b1 + (a1b0 >> 32) + (a0b1 >> 32) },
             lo{ (a0b1 << 32) + (a0b0 & 0xffff'ffff) };
 
-        this->_data.i64.hi = hi + (this->_data.i64.hi * other._data.i64.lo) + (this->_data.i64.lo * other._data.i64.hi);
-        this->_data.i64.lo = lo;
+        this->hi = hi + (this->hi * other.lo) + (this->lo * other.hi);
+        this->lo = lo;
         
         return *this;
     }
 
     //---------------------------------------------------------------------------
-    UInt128& UInt128::operator*= (const std::uint64_t other) noexcept
+    UInt128& UInt128::operator*= (const std::uint64_t value) noexcept
     {
-        //TODO: implement this
+        const std::uint64_t
+            a0{ lo & 0xffff'ffff },
+            a1{ lo >> 32 },
+            b0{ value & 0xffff'ffff },
+            b1{ value >> 32 },
+            a0b0{ a0 * b0 },
+            a1b0{ a1 * b0 + (a0b0 >> 32) },
+            a0b1{ a0 * b1 + (a1b0 & 0xffff'ffff) },
+            a1b1{ a1 * b1 };
+
+        const std::uint64_t
+            hi{ a1b1 + (a1b0 >> 32) + (a0b1 >> 32) },
+            lo{ (a0b1 << 32) + (a0b0 & 0xffff'ffff) };
+
+        this->hi = hi + (this->hi * value);
+        this->lo = lo;
+
         return *this;
     }
 
     //---------------------------------------------------------------------------
-    UInt128& UInt128::operator*= (const std::uint32_t other) noexcept
+    UInt128& UInt128::operator>>= (const unsigned int shift) noexcept
     {
-        //TODO: implement this
+        if (shift > 128) {
+            hi = lo = 0ull;
+        }
+        else if (shift >= 64) {
+            lo = hi >> (shift - 64);
+            hi = 0ull;
+        }
+        else if (shift > 0) {
+            const std::uint64_t hi_mask{ (1ull << shift) - 1 };
+            lo = (lo >> shift) | ((hi & hi_mask) << (64 - shift));
+            hi >>= shift;
+        }
+
+        return *this;
+    }
+
+    //---------------------------------------------------------------------------
+    UInt128& UInt128::operator<<= (const unsigned int shift) noexcept
+    {
+        if (shift > 128) {
+            hi = lo = 0ull;
+        }
+        else if (shift >= 64) {
+            hi = lo << (shift - 64);
+            lo = 0ull;
+        }
+        else if (shift > 0) {
+            hi = (hi << shift) | (lo >> (64 - shift));
+            lo <<= shift;
+        }
+
         return *this;
     }
 
