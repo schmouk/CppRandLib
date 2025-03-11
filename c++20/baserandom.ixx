@@ -146,6 +146,11 @@ export module baserandom;
 *    |      https://en.wikipedia.org/wiki/Pareto_distribution
 *    |
 *    |
+*    |  randbytes(n)
+*    |      Generate n random bytes.
+*    |      This method should not be used for generating security tokens.
+*    |
+*    |
 *    |  randint(a, b)
 *    |      Return random integer in range [a, b], including both end points.
 *    |
@@ -489,6 +494,15 @@ public:
         std::array<std::array<T, m>, n> out;
         for (size_t i = 0; i < n; ++i)
             std::generate_n(out.begin(), n, [this, min, max]() { return (*this)(min, max); });
+        return out;
+    }
+
+
+    /** @brief Generates n random bytes. */
+    inline std::vector<std::uint8_t> randbytes(const std::uint32_t n)
+    {
+        std::vector<std::uint8_t> out(n);
+        std::generate_n(out.begin(), n, [this]() { return this->uniform(256ul); });
         return out;
     }
 
