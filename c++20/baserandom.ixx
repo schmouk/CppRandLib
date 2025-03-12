@@ -29,6 +29,7 @@ module;
 #include <array>
 #include <cmath>
 #include <numeric>
+#include <ranges>
 #include <stdexcept>
 #include <vector>
 
@@ -87,6 +88,14 @@ export module baserandom;
 *    |
 *    |      Conditions on the parameters are alpha > 0 and beta > 0.
 *    |      Returned values range between 0 and 1.
+*    |
+*    |
+*    |  binomialvariate(n=1, p=0.5)
+*    |      Binomial distribution. Return the number of successes for n
+*    |      independent trials with the probability of success in each
+*    |      trial being p.
+*    |      n >= 0, 0.0 <= p <= 1.0,
+*    |      the result is an integer in the range 0 <= X <= n.
 *    |
 *    |
 *    |  choice(seq)
@@ -373,6 +382,23 @@ public:
 
 
     //---   Operations   ----------------------------------------------------
+    /** @brief Returns the number of successes for n>=0 independent trials. */
+    template<typename CountT, typename ProbaT>
+        requires std::is_integral_v<CountT> && std::is_floating_point_v<ProbaT>
+    const CountT binomialvariate(const CountT n = 1, const ProbaT p = ProbaT(0.5))
+    {
+        if (n < 0)
+            throw PositiveValueException();
+        if (p < 0.0 || p > 1.0)
+            throw ProbaOutOfRangeException();
+
+        CountT count{ 0 };
+        std::ranges::for_each(std::views::iota(1, n + 1), [this, p, &count] (const CountT i) { count += this->uniform() < p; });
+
+        return count;
+    }
+
+
     /** @brief Chooses a random element from a non-empty sequence (std::vector). */
     template<typename T>
     const T& choice(const std::vector<T>& seq) noexcept(false)
@@ -1191,6 +1217,13 @@ public:
         const char* what() noexcept { return "lambda value cannot be 0.0 (currently is)."; }
     };
 
+    /** @brief Wrong argument type - not floating point. */
+    class FloatingPointValueTypeException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "Argument(s) must be a floating pointg type."; }
+    };
+
     /** @brief Exponential law null lambda exception. */
     class GaussSigmaException : public std::exception
     {
@@ -1210,6 +1243,20 @@ public:
     {
     public:
         const char* what() noexcept { return "shape argument 'alpha' must not be 0.0."; }
+    };
+
+    /** @brief Not a positive value exception. */
+    class PositiveValueException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "argument value must not be negative."; }
+    };
+
+    /** @brief Probability value out of range exception. */
+    class ProbaOutOfRangeException : public std::exception
+    {
+    public:
+        const char* what() noexcept { return "probabilitiy values must range in [0.0, 1.0]."; }
     };
 
     /** @brief Range arguments with same value exception. */
