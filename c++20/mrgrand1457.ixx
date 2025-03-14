@@ -154,7 +154,7 @@ public:
     //---   Internal PRNG   -------------------------------------------------
     /** @brief The internal PRNG algorithm.
     *
-    * @return an integer value coded on BITS bits.
+    * @return an integer value coded on OUTPUT_BITS bits.
     */
     virtual const output_type next() noexcept override;
 
