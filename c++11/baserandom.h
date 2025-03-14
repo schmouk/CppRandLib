@@ -271,7 +271,7 @@ public:
     */
     inline const double random() noexcept
     {
-        return next() * _NORMALIZE;  // Notice: _NORMALIZE may be overridden in inheriting classes.
+        return next() * _NORMALIZE;
     }
 
 
@@ -1496,4 +1496,4 @@ template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::TWO_PI{ 2.0 * BaseRandom<SeedStateT>::PI };
 
 template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::_NORMALIZE{ 1.0 / (1 >> 32) };  // Notice: MAY be overridden in inheriting classes, for instance
+const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::_NORMALIZE{ 0.5 / (1ull << (OUTPUT_BITS - 1)) };
