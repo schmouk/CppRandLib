@@ -154,7 +154,7 @@ public:
     //---   Internal PRNG   -------------------------------------------------
     /** @brief The internal PRNG algorithm.
     *
-    * @return a double value uniformly contained within range [0.0, 1.0).
+    * @return an integer value coded on BITS bits.
     */
-    virtual const double random() noexcept override;
+    virtual const output_type next() noexcept override;
 };

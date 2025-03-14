@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2022 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
@@ -28,10 +28,10 @@ module;
 
 #include <cstdint>
 
+#include "baserandom.h"
+
 
 export module fastrand63;
-
-import baserandom;
 
 
 //===========================================================================
@@ -98,12 +98,12 @@ import baserandom;
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
 *   should definitively pass.
 */
-export class FastRand63 : public BaseRandom<uint64_t>
+export class FastRand63 : public BaseRandom<std::uint64_t, std::uint64_t, 63>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
     using value_type  = uint64_t;
-    using MyBaseClass = BaseRandom<uint64_t>;
+    using MyBaseClass = BaseRandom<uint64_t, std::uint64_t, 63>;
 
 
     //---   Constructors / Destructor   -------------------------------------
@@ -139,16 +139,16 @@ public:
     *
     * @return a double value uniformly contained within range [0.0, 1.0).
     */
-    virtual inline const double random() noexcept override
+    virtual inline const output_type next() noexcept override
     {
-        _state.seed = (0x7ff3'19fa'a77b'f52dULL * _state.seed + 1) & 0x7fff'ffff'ffff'ffffULL;
-        return double((long double)_state.seed / 9'223'372'036'854'775'808.0L);
+        return _state.seed = (0x7ff3'19fa'a77b'f52dULL * _state.seed + 1) & 0x7fff'ffff'ffff'ffffULL;
     }
 
 
     //---   Operations   ----------------------------------------------------
     /** @brief Sets the internal state of this PRNG from current time (empty signature). */
     virtual void setstate() noexcept override;
+
 
     /** @brief Sets the internal state of this PRNG with integer seed. */
     inline void setstate(const uint64_t seed) noexcept

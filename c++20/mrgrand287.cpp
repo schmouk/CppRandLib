@@ -36,7 +36,7 @@ import fastrand32;
 
 //===========================================================================
 /** The internal PRNG algorithm. */
-const double MRGRand287::random() noexcept
+const MRGRand287::output_type MRGRand287::next() noexcept
 {
     // The Marsa - LIBF4 version uses the recurrence
     //    x(i) = (x(i-55) + x(i-119) + x(i-179) + x(i-256)) mod 2 ^ 32
@@ -57,7 +57,6 @@ const double MRGRand287::random() noexcept
     // next index
     MyBaseClass::_state.seed.index = (index + 1) % SEED_SIZE;
 
-    // finally, returns pseudo random value in range [0.0, 1.0)
-    const double ret = double(value) / double(4'294'967'296.0);
-    return ret;
+    // finally, returns pseudo random value
+    return value;
 }

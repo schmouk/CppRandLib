@@ -37,7 +37,7 @@ import mrgrand49507;
 
 //===========================================================================
 /** The internal PRNG algorithm. */
-const double MRGRand49507::random() noexcept
+const MRGRand49507::output_type MRGRand49507::random() noexcept
 {
     // evaluates indexes in suite for the i-1, i-24 (and i-47) -th values
     const size_t index = MyBaseClass::_state.seed.index;
@@ -51,6 +51,6 @@ const double MRGRand49507::random() noexcept
     // next index
     MyBaseClass::_state.seed.index = (index + 1) % SEED_SIZE;
 
-    // finally, returns pseudo random value in range [0.0, 1.0)
-    return double(value) / double(MODULO);
+    // finally, returns pseudo random value
+    return value;
 }

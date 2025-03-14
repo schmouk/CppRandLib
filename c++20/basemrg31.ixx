@@ -28,10 +28,11 @@ module;
 
 #include <chrono>
 
+#include "baserandom.h"
+
 
 export module basemrg31;
 
-import baserandom;
 import fastrand32;
 import listseedstate;
 
@@ -48,6 +49,8 @@ public:
     //---   Wrappers   ------------------------------------------------------
     using StateType = ListSeedState<uint32_t, SIZE>;
     using MyBaseClass = BaseRandom<ListSeedState<uint32_t, SIZE>>;
+
+    using output_type = MyBaseClass::output_type;
 
 
     //---   Class constants   -----------------------------------------------

@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2022 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
@@ -26,12 +26,13 @@ SOFTWARE.
 //===========================================================================
 module;
 
+#include <chrono>
 #include <cstdint>
+
+#include "baserandom.h"
 
 
 export module fastrand32;
-
-import baserandom;
 
 
 //===========================================================================
@@ -68,7 +69,6 @@ import baserandom;
 *     FastRand32 rand{};
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(a) << std::endl;   // prints a uniform pseudo-random value within [0.0, a)
-*     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
@@ -98,12 +98,12 @@ import baserandom;
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
 *   should definitively pass.
 */
-export class FastRand32 : public BaseRandom<uint32_t>
+export class FastRand32 : public BaseRandom<std::uint32_t, std::uint32_t, 32>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
     using value_type = uint32_t;
-    using MyBaseClass = BaseRandom<uint32_t>;
+    using MyBaseClass = BaseRandom<std::uint32_t, std::uint32_t, 32>;
 
 
     //---   Constructors / Destructor   -------------------------------------
@@ -139,16 +139,26 @@ public:
     *
     * @return a double value uniformly contained within range [0.0, 1.0).
     */
-    virtual inline const double random() noexcept override
+    virtual inline const output_type next() noexcept override
     {
-        _state.seed = 69'069 * _state.seed + 1;  // implicit modulo on 32 bits
-        return _state.seed / 4'294'967'296.0;
+        return _state.seed = 69'069 * _state.seed + 1;  // implicit modulo on 32 bits
     }
 
 
     //---   Operations   ----------------------------------------------------
     /** @brief Sets the internal state of this PRNG with shuffled current time. */
-    virtual void setstate() noexcept override;
+    virtual void setstate() noexcept override
+    {
+        const uint64_t ticks = std::chrono::duration_cast<std::chrono::nanoseconds>(
+            std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+
+        const uint32_t t32 = uint32_t(ticks & 0xffff'ffff);
+        MyBaseClass::setstate(((t32 & 0xff00'0000) >> 24) +
+            ((t32 & 0x00ff'0000) >> 8) +
+            ((t32 & 0x0000'ff00) << 8) +
+            ((t32 & 0x0000'00ff) << 24));
+    }
+
 
     /** @brief Sets the internal state of this PRNG with integer seed. */
     inline void setstate(const uint32_t seed) noexcept

@@ -28,10 +28,11 @@ module;
 
 #include <chrono>
 
+#include "baserandom.h"
+
 
 export module baselfib64;
 
-import baserandom;
 import fastrand63;
 import listseedstate;
 
