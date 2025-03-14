@@ -234,7 +234,7 @@ SOFTWARE.
 *    |
 *    |      alpha is the scale parameter and beta is the shape parameter.
 */
-template<typename SeedStateT, typename OutputT = std::uint32_t, const std::uint8_t BITS = 32>
+template<typename SeedStateT, typename OutputT = std::uint32_t, const std::uint8_t OUTPUT_BITS = 32>
 class BaseRandom
 {
 public:
@@ -259,7 +259,7 @@ public:
     /** @brief The internal PRNG algorithm.
     *
     * This method is pure virtual. It MUST be implemented in inheriting classes.
-    * @return an integer value coded on BITS bits, related to the uniform distribution.
+    * @return an integer value coded on OUTPUT_BITS bits, related to the uniform distribution.
     */
     inline virtual const output_type next() noexcept = 0;
 
@@ -1468,32 +1468,32 @@ private:
 };
 
 //---------------------------------------------------------------------------
-template<typename SeedStateT, typename OutputT, const std::uint8_t BITS>
-const double BaseRandom<SeedStateT, OutputT, BITS>::BPF{ 53 };  // Number of bits in a float
+template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::BPF{ 53 };  // Number of bits in a float
 
-template<typename SeedStateT, typename OutputT, const std::uint8_t BITS>
-const double BaseRandom<SeedStateT, OutputT, BITS>::E{ std::exp(1.0) };
+template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::E{ std::exp(1.0) };
 
-template<typename SeedStateT, typename OutputT, const std::uint8_t BITS>
-const double BaseRandom<SeedStateT, OutputT, BITS>::GAUSS_NULL = -1.0;
+template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::GAUSS_NULL = -1.0;
 
-template<typename SeedStateT, typename OutputT, const std::uint8_t BITS>
-const double BaseRandom<SeedStateT, OutputT, BITS>::LOG4{ std::log(4.0) };
+template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::LOG4{ std::log(4.0) };
 
-template<typename SeedStateT, typename OutputT, const std::uint8_t BITS>
-const double BaseRandom<SeedStateT, OutputT, BITS>::NV_MAGICCONST{ 4 * std::exp(-0.5) / std::sqrt(2.0) };
+template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::NV_MAGICCONST{ 4 * std::exp(-0.5) / std::sqrt(2.0) };
 
-template<typename SeedStateT, typename OutputT, const std::uint8_t BITS>
-const double BaseRandom<SeedStateT, OutputT, BITS>::PI{ 3.14159265358979323846 };
+template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::PI{ 3.14159265358979323846 };
 
-template<typename SeedStateT, typename OutputT, const std::uint8_t BITS>
-const double BaseRandom<SeedStateT, OutputT, BITS>::RECIP_BPF{ std::exp2(-BPF) };
+template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::RECIP_BPF{ std::exp2(-BPF) };
 
-template<typename SeedStateT, typename OutputT, const std::uint8_t BITS>
-const double BaseRandom<SeedStateT, OutputT, BITS>::SG_MAGICCONST{ 1.0 + std::log(4.5) };
+template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::SG_MAGICCONST{ 1.0 + std::log(4.5) };
 
-template<typename SeedStateT, typename OutputT, const std::uint8_t BITS>
-const double BaseRandom<SeedStateT, OutputT, BITS>::TWO_PI{ 2.0 * BaseRandom<SeedStateT>::PI };
+template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::TWO_PI{ 2.0 * BaseRandom<SeedStateT>::PI };
 
-template<typename SeedStateT, typename OutputT, const std::uint8_t BITS>
-const double BaseRandom<SeedStateT, OutputT, BITS>::_NORMALIZE{ 1.0 / (1 >> 32) };  // Notice: MAY be overridden in inheriting classes, for instance
+template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::_NORMALIZE{ 1.0 / (1 >> 32) };  // Notice: MAY be overridden in inheriting classes, for instance

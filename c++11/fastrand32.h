@@ -62,7 +62,6 @@ SOFTWARE.
 *     FastRand32 rand{};
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(a) << std::endl;   // prints a uniform pseudo-random value within [0.0, a)
-*     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
 * @endcode
 *   
 *   Notice that for simulating the roll of a dice you should program:
@@ -92,12 +91,12 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG 
 *   should definitively pass.
 */
-class FastRand32 : public BaseRandom<uint32_t>
+class FastRand32 : public BaseRandom<std::uint32_t>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using value_type  = uint32_t;
-    using MyBaseClass = BaseRandom<uint32_t>;
+    using state_type = std::uint32_t;
+    using MyBaseClass = BaseRandom<std::uint32_t>;
 
 
     //---   Constructors / Destructor   -------------------------------------
@@ -109,13 +108,13 @@ public:
     }
 
     /** @brief Valued construtor (integer). */
-    inline FastRand32(const uint32_t seed) noexcept
+    inline FastRand32(const std::uint32_t seed) noexcept
         : MyBaseClass(seed)
     {}
 
     /** @brief Valued construtor (double). */
     inline FastRand32(const double seed) noexcept
-        : MyBaseClass(uint32_t(seed * double(0x1'0000'0000)))
+        : MyBaseClass(std::uint32_t(seed * double(0x1'0000'0000)))
     {}
 
     /** @brief Default Copy constructor. */
@@ -129,14 +128,10 @@ public:
 
 
     //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return a double value uniformly contained within range [0.0, 1.0).
-    */
-    virtual inline const double random() noexcept override
+    /** @brief The internal PRNG algorithm. */
+    virtual inline const output_type next() noexcept override
     {
-        _state.seed = 69'069 * _state.seed + 1;  // implicit modulo on 32 bits
-        return _state.seed / 4'294'967'296.0;
+        _state.seed = 69'069 * _state.seed + 1;
     }
 
 
@@ -145,10 +140,15 @@ public:
     virtual void setstate() noexcept override;
 
     /** @brief Sets the internal state of this PRNG with double seed. */
-    inline void setstate(const double seed) noexcept
+    inline void setstate(double seed) noexcept
     {
-        const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        setstate(uint32_t(s * double(0xffff'ffff)));
+        if (seed < 0.0)
+            seed = -seed;
+        
+        if (seed <= 1.0)
+            setstate(state_type(seed * double(0xffff'fffful)));
+        else
+            setstate(state_type(seed));
     }
 
 };
