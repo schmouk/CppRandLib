@@ -271,7 +271,7 @@ public:
     */
     inline const double random() noexcept
     {
-        return next() * _NORMALIZE;  // Notice: _NORMALIZE may be overridden in inheriting classes.
+        return next() * _NORMALIZE;
     }
 
 
@@ -1317,15 +1317,15 @@ protected:
     static const double RECIP_BPF;
     static const double SG_MAGICCONST;
 
-    static const double _NORMALIZE;
+    static constexpr double _NORMALIZE{ 0.5 / (1ull << (OUTPUT_BITS - 1)) };
 
 
     //---   Attributes   ----------------------------------------------------
     struct _InternalState
     {
         SeedStateT seed;        //!< The internal current state of this PRNG
-        double        gauss_next;  //!< smart optimization for Gaussian distribution computation (1/2)
-        bool          gauss_valid; //!< smart optimization for Gaussian distribution computation (2/2)
+        double     gauss_next;  //!< smart optimization for Gaussian distribution computation (1/2)
+        bool       gauss_valid; //!< smart optimization for Gaussian distribution computation (2/2)
     } _state;
 
 
@@ -1370,6 +1370,3 @@ const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::RECIP_BPF{ std::exp2(
 
 template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::SG_MAGICCONST{ 1.0 + std::log(4.5) };
-
-template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::_NORMALIZE{ 0.5 / (1ull << (OUTPUT_BITS - 1)) };
