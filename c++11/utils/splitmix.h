@@ -121,7 +121,6 @@ namespace utils
     };
 
 
-
     //===========================================================================
     /** @brief The splitting and mixing algorithm used to initialize 32-bits internal states of PRNGs.
     *
@@ -164,7 +163,6 @@ namespace utils
         }
 
     };
-
 
 
     //===========================================================================
