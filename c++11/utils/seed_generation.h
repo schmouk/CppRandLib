@@ -45,8 +45,9 @@ namespace utils
     */
     inline const std::uint64_t set_random_seed64()
     {
-        const auto t_now = std::chrono::high_resolution_clock::now();
-        const std::uint64_t ticks{ std::uint64_t(std::chrono::duration_cast<std::chrono::microseconds>(t_now.time_since_epoch()).count()) };
+        const std::uint64_t ticks{ std::uint64_t(std::chrono::duration_cast<std::chrono::microseconds>(
+            std::chrono::high_resolution_clock::now().time_since_epoch()).count())
+        };
         return splitmix_64(ticks);
     }
 
@@ -75,7 +76,7 @@ namespace utils
     * which  no ensured way exist to check if such features are available
     * on all platforms and on all hardware.
     */
-    inline const std::uint64_t set_random_seed32()
+    inline const std::uint32_t set_random_seed32()
     {
         return set_random_seed64() & 0xffff'fffful;
     }
@@ -90,7 +91,7 @@ namespace utils
     * which  no ensured way exist to check if such features are available
     * on all platforms and on all hardware.
     */
-    inline const std::uint64_t set_random_seed31()
+    inline const std::uint32_t set_random_seed31()
     {
         return set_random_seed64() & 0x7fff'fffful;
     }

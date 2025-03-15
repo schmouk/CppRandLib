@@ -26,6 +26,7 @@ SOFTWARE.
 
 //===========================================================================
 #include "baserandom.h"
+#include "utils/seed_generation.h"
 
 
 //===========================================================================
@@ -95,7 +96,6 @@ class FastRand32 : public BaseRandom<std::uint32_t>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using state_type = std::uint32_t;
     using MyBaseClass = BaseRandom<std::uint32_t>;
 
 
@@ -114,17 +114,12 @@ public:
 
     /** @brief Valued construtor (double). */
     inline FastRand32(const double seed) noexcept
-        : MyBaseClass(std::uint32_t(seed * double(0x1'0000'0000)))
+        : MyBaseClass(std::uint32_t(seed * double(0x1'0000'0000ull)))
     {}
 
-    /** @brief Default Copy constructor. */
-    FastRand32(const FastRand32&) noexcept = default;
-
-    /** @brief Default Move constructor. */
-    FastRand32(FastRand32&&) noexcept = default;
-
-    /** @brief Default Destructor. */
-    virtual ~FastRand32() noexcept = default;
+    FastRand32(const FastRand32&) noexcept = default;   //!< default copy constructor.
+    FastRand32(FastRand32&&) noexcept = default;        //!< default move constructor.
+    virtual ~FastRand32() noexcept = default;           //!< default destructor.
 
 
     //---   Internal PRNG   -------------------------------------------------
@@ -137,7 +132,10 @@ public:
 
     //---   Operations   ----------------------------------------------------
     /** @brief Sets the internal state of this PRNG with shuffled current time. */
-    virtual void setstate() noexcept override;
+    inline virtual void setstate() noexcept override
+    {
+        setstate(utils::set_random_seed32());
+    }
 
     /** @brief Sets the internal state of this PRNG with double seed. */
     inline void setstate(double seed) noexcept
