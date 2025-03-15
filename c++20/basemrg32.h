@@ -67,7 +67,7 @@ public:
     }
 
     /** @brief Sets the internal state of this PRNG with an integer seed. */
-    void setstate(const uint32_t seed) noexcept
+    void setstate(const std::uint32_t seed) noexcept
     {
         utils::SplitMix32 splitmix_32(seed);
         std::ranges::generate(MyBaseClass::_state.seed.list, [&]() { return splitmix_32(); });
@@ -77,7 +77,7 @@ public:
     inline void setstate(const double seed) noexcept
     {
         const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        setstate(std::uint64_t(s * double(_MODULO)));
+        setstate(std::uint32_t(s * double(_MODULO)));
     }
 
     /** @brief Restores the internal state of this PRNG from seed. */
@@ -95,7 +95,8 @@ public:
         MyBaseClass::_state.gauss_valid = true;
     }
 
+
 private:
-    static constexpr state_type _MODULO{ 0xffff'fffful };
+    static constexpr std::uint32_t _MODULO{ 0xffff'fffful };
 
 };
