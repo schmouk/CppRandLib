@@ -27,6 +27,8 @@ SOFTWARE.
 //===========================================================================
 #include <cstdint>
 
+#include "seed_generation.h"
+
 
 //===========================================================================
 namespace utils
@@ -48,7 +50,31 @@ namespace utils
     *
     * It SHOULD NOT BE USED as a generic PRNG due to is randomness big limitations.
     */
-    const std::uint64_t splitmix_64(const std::uint64_t value) noexcept;
+    class SplitMix64
+    {
+    public:
+        /** @brief Empty constructor, uses the shuffled current time to initialize the internal state. */
+        inline SplitMix64()  noexcept
+            : _state(utils::set_random_seed64())
+        {}
+
+        /** @brief Valued constructor - integer. */
+        inline SplitMix64(const std::uint64_t seed) noexcept
+            : _state(seed)
+        {}
+
+        /** @brief Valued constructor - double. */
+        inline SplitMix64(const double seed) noexcept
+            : _state((seed <= 0.0) ? 0ull : (seed >= 1.0) ? 0xffff'ffff'ffff'ffffull : std::uint64_t(0xffff'ffff'ffff'ffffull * seed))
+        {}
+
+        /** @brief Evaluates next pseudorandom value. */
+        const std::uint64_t operator() () noexcept;
+
+    private:
+        std::uint64_t _state;
+
+    };
     
 
     //===========================================================================
@@ -68,10 +94,32 @@ namespace utils
     *
     * It SHOULD NOT BE USED as a generic PRNG due to is randomness big limitations.
     */
-    inline const std::uint64_t splitmix_63(const std::uint64_t value) noexcept
+    class SplitMix63 : public SplitMix64
     {
-        return splitmix_64(value) >> 1;
-    }
+    public:
+        /** @brief Empty constructor, uses the shuffled current time to initialize the internal state. */
+        inline SplitMix63()  noexcept
+            : SplitMix64()
+        {}
+
+        /** @brief Valued constructor - integer. */
+        inline SplitMix63(const std::uint64_t seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - double. */
+        inline SplitMix63(const double seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Evaluates next pseudorandom value. */
+        const std::uint64_t operator() () noexcept
+        {
+            return SplitMix64::operator()() >> 1;
+        }
+
+    };
+
 
 
     //===========================================================================
@@ -91,10 +139,32 @@ namespace utils
     *
     * It SHOULD NOT BE USED as a generic PRNG due to is randomness big limitations.
     */
-    inline const std::uint64_t splitmix_32(const std::uint64_t value) noexcept
+    class SplitMix32 : public SplitMix64
     {
-        return splitmix_64(value) >> 32;
-    }
+    public:
+        /** @brief Empty constructor, uses the shuffled current time to initialize the internal state. */
+        inline SplitMix32()  noexcept
+            : SplitMix64()
+        {}
+
+        /** @brief Valued constructor - integer. */
+        inline SplitMix32(const std::uint64_t seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - double. */
+        inline SplitMix32(const double seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Evaluates next pseudorandom value. */
+        const std::uint32_t operator() () noexcept
+        {
+            return SplitMix64::operator()() >> 32;
+        }
+
+    };
+
 
 
     //===========================================================================
@@ -114,9 +184,33 @@ namespace utils
     *
     * It SHOULD NOT BE USED as a generic PRNG due to is randomness big limitations.
     */
-    inline const std::uint64_t splitmix_31(const std::uint64_t value) noexcept
+    class SplitMix31 : public SplitMix64
     {
-        return splitmix_64(value) >> 33;
-    }
+    public:
+        /** @brief Empty constructor, uses the shuffled current time to initialize the internal state. */
+        inline SplitMix31()  noexcept
+            : SplitMix64()
+        {
+        }
+
+        /** @brief Valued constructor - integer. */
+        inline SplitMix31(const std::uint64_t seed) noexcept
+            : SplitMix64(seed)
+        {
+        }
+
+        /** @brief Valued constructor - double. */
+        inline SplitMix31(const double seed) noexcept
+            : SplitMix64(seed)
+        {
+        }
+
+        /** @brief Evaluates next pseudorandom value. */
+        const std::uint32_t operator() () noexcept
+        {
+            return SplitMix64::operator()() >> 33;
+        }
+
+    };
 
 }
