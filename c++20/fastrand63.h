@@ -1,3 +1,4 @@
+#pragma once
 /*
 MIT License
 
@@ -24,14 +25,10 @@ SOFTWARE.
 
 
 //===========================================================================
-module;
-
 #include <cstdint>
 
 #include "baserandom.h"
-
-
-export module fastrand63;
+#include "utils/seed_generation.h"
 
 
 //===========================================================================
@@ -98,11 +95,13 @@ export module fastrand63;
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
 *   should definitively pass.
 */
-export class FastRand63 : public BaseRandom<std::uint64_t, std::uint64_t, 63>
+class FastRand63 : public BaseRandom<std::uint64_t, std::uint64_t, 63>
 {
+private:
+    static constexpr std::uint64_t _MODULO_63{ 0x7fff'ffff'ffff'ffffull };
+
 public:
     //---   Wrappers   ------------------------------------------------------
-    using value_type  = uint64_t;
     using MyBaseClass = BaseRandom<uint64_t, std::uint64_t, 63>;
 
 
@@ -121,45 +120,35 @@ public:
 
     /** @brief Valued constructor - double. */
     inline FastRand63(const double seed) noexcept
-        : MyBaseClass(uint64_t(seed* double(0x7fff'ffff'ffff'ffffULL)))
-    {}
+    {
+        setstate(seed);
+    }
 
-    /** @brief Default Copy constructor. */
-    FastRand63(const FastRand63&) noexcept = default;
-
-    /** @brief Default Move constructor. */
-    FastRand63(FastRand63&&) noexcept = default;
-
-    /** @brief Default Destructor. */
-    virtual ~FastRand63() noexcept = default;
+    FastRand63(const FastRand63&) noexcept = default;   //!< default copy constructor.
+    FastRand63(FastRand63&&) noexcept = default;        //!< default move constructor.
+    virtual ~FastRand63() noexcept = default;           //!< default destructor.
 
 
     //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return a double value uniformly contained within range [0.0, 1.0).
-    */
+    /** @brief The internal PRNG algorithm. */
     virtual inline const output_type next() noexcept override
     {
-        return _state.seed = (0x7ff3'19fa'a77b'f52dULL * _state.seed + 1) & 0x7fff'ffff'ffff'ffffULL;
+        return _state.seed = (0x7ff3'19fa'a77b'f52dull * _state.seed + 1) & _MODULO_63;
     }
 
 
     //---   Operations   ----------------------------------------------------
     /** @brief Sets the internal state of this PRNG from current time (empty signature). */
-    virtual void setstate() noexcept override;
-
-
-    /** @brief Sets the internal state of this PRNG with integer seed. */
-    inline void setstate(const uint64_t seed) noexcept
+    virtual void setstate() noexcept override
     {
-        MyBaseClass::setstate(seed);
+        setstate(utils::set_random_seed63());
     }
 
     /** @brief Sets the internal state of this PRNG with double seed. */
     inline void setstate(const double seed) noexcept
     {
         const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        setstate(uint64_t(s * double(0xffff'ffff'ffff'ffffULL)));
+        setstate( std::uint64_t(s * double(_MODULO_63)) );
     }
+
 };

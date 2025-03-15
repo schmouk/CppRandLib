@@ -125,10 +125,7 @@ public:
 
 
     //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return a double value uniformly contained within range [0.0, 1.0).
-    */
+    /** @brief The internal PRNG algorithm. */
     virtual inline const output_type next() noexcept override
     {
         return _state.seed = 69'069 * _state.seed + 1;  // implicit modulo on 32 bits
