@@ -25,10 +25,10 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <chrono>
 #include <cstdint>
 
 #include "splitmix.h"
+#include "time.h"
 
 
 //===========================================================================
@@ -45,10 +45,7 @@ namespace utils
     */
     inline const std::uint64_t set_random_seed64()
     {
-        const std::uint64_t ticks{ std::uint64_t(std::chrono::duration_cast<std::chrono::microseconds>(
-            std::chrono::high_resolution_clock::now().time_since_epoch()).count())
-        };
-        return splitmix_64(ticks);
+        return SplitMix64(utils::get_time_us())();
     }
 
 

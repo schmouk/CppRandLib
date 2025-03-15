@@ -105,15 +105,11 @@ SOFTWARE.
 template<const size_t SIZE, const size_t K>
 class BaseLFib64 : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>
 {
-private:
-    static const state_type _MODULO{ 0xffff'ffff'ffff'ffffull };
-
-
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<state_type>;
+    using MyBaseClass = BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>;
     using output_type = MyBaseClass::output_type;
-    using state_type  = ListSeedState<uint64_t, SIZE, std::uint64_t, 64>;
+    using state_type  = MyBaseClass::state_type;
     
     static const size_t SEED_SIZE{ SIZE };
 
@@ -160,12 +156,11 @@ public:
     }
 
     /** @brief Sets the internal state of this PRNG with an integer seed. */
-    void setstate(const std::uint64_t seed) noexcept
+    inline void setstate(const std::uint64_t seed) noexcept
     {
-        std::uint64_t value{ seed };
-        for (std::uint64_t& s : MyBaseClass::_state.seed.list) {
-            s = value = utils::splitmix_64(value);
-        }
+        utils::SplitMix64 splitmix_64(seed);
+        for (std::uint64_t& s : MyBaseClass::_state.seed.list)
+            s = splitmix_64();
     }
 
     /** @brief Sets the internal state of this PRNG with a double seed. */
@@ -205,6 +200,11 @@ protected:
     {
         MyBaseClass::_state.seed.index = _index % SIZE;
     }
+
+
+private:
+    static constexpr state_type _MODULO{ 0xffff'ffff'ffff'ffffull };
+
 };
 
 
@@ -212,7 +212,7 @@ protected:
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
 /** The internal PRNG algorithm. */
 template<const size_t SIZE, const size_t K >
-const BaseLFib64<SIZE, K>::output_type BaseLFib64<SIZE, K>::next() noexcept
+const typename BaseLFib64<SIZE, K>::output_type BaseLFib64<SIZE, K>::next() noexcept
 {
     // evaluates indexes in suite for the i-5 and i-17 -th values
     const size_t index = MyBaseClass::_state.seed.index;

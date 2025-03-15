@@ -27,7 +27,7 @@ SOFTWARE.
 //===========================================================================
 #include <cstdint>
 
-#include "seed_generation.h"
+#include "time.h"
 
 
 //===========================================================================
@@ -53,9 +53,9 @@ namespace utils
     class SplitMix64
     {
     public:
-        /** @brief Empty constructor, uses the shuffled current time to initialize the internal state. */
+        /** @brief Empty constructor, uses current time to initialize the internal state. */
         inline SplitMix64()  noexcept
-            : _state(utils::set_random_seed64())
+            : _state(utils::get_time_us())
         {}
 
         /** @brief Valued constructor - integer. */
