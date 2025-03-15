@@ -1,3 +1,4 @@
+#pragma once
 /*
 MIT License
 
@@ -24,9 +25,7 @@ SOFTWARE.
 
 
 //===========================================================================
-export module lfib78;
-
-import baselfib64;
+#include "baselfib64.h"
 
 
 //===========================================================================
@@ -110,4 +109,4 @@ import baselfib64;
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
 *   should definitively pass.
 */
-export using LFib78 = BaseLFib64<17, 5>;
+using LFib78 = BaseLFib64<17, 5>;
