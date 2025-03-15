@@ -1,3 +1,4 @@
+#pragma once
 /*
 MIT License
 
@@ -24,15 +25,10 @@ SOFTWARE.
 
 
 //===========================================================================
-module;
-
-#include <chrono>
 #include <cstdint>
 
 #include "baserandom.h"
-
-
-export module fastrand32;
+#include "utils/seed_generation.h"
 
 
 //===========================================================================
@@ -98,11 +94,10 @@ export module fastrand32;
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
 *   should definitively pass.
 */
-export class FastRand32 : public BaseRandom<std::uint32_t, std::uint32_t, 32>
+class FastRand32 : public BaseRandom<std::uint32_t, std::uint32_t, 32>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using value_type = uint32_t;
     using MyBaseClass = BaseRandom<std::uint32_t, std::uint32_t, 32>;
 
 
@@ -115,23 +110,18 @@ public:
     }
 
     /** @brief Valued construtor (integer). */
-    inline FastRand32(const uint32_t seed) noexcept
+    inline FastRand32(const std::uint32_t seed) noexcept
         : MyBaseClass(seed)
     {}
 
     /** @brief Valued construtor (double). */
     inline FastRand32(const double seed) noexcept
-        : MyBaseClass(uint32_t(seed* double(0x1'0000'0000)))
+        : MyBaseClass(std::uint32_t(seed* double(0x1'0000'0000ull)))
     {}
 
-    /** @brief Default Copy constructor. */
-    FastRand32(const FastRand32&) noexcept = default;
-
-    /** @brief Default Move constructor. */
-    FastRand32(FastRand32&&) noexcept = default;
-
-    /** @brief Default Destructor. */
-    virtual ~FastRand32() noexcept = default;
+    FastRand32(const FastRand32&) noexcept = default;   //!< default copy constructor.
+    FastRand32(FastRand32&&) noexcept = default;        //!< default move constructor.
+    virtual ~FastRand32() noexcept = default;           //!< default destructor.
 
 
     //---   Internal PRNG   -------------------------------------------------
@@ -149,28 +139,14 @@ public:
     /** @brief Sets the internal state of this PRNG with shuffled current time. */
     virtual void setstate() noexcept override
     {
-        const uint64_t ticks = std::chrono::duration_cast<std::chrono::nanoseconds>(
-            std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-
-        const uint32_t t32 = uint32_t(ticks & 0xffff'ffff);
-        MyBaseClass::setstate(((t32 & 0xff00'0000) >> 24) +
-            ((t32 & 0x00ff'0000) >> 8) +
-            ((t32 & 0x0000'ff00) << 8) +
-            ((t32 & 0x0000'00ff) << 24));
-    }
-
-
-    /** @brief Sets the internal state of this PRNG with integer seed. */
-    inline void setstate(const uint32_t seed) noexcept
-    {
-        MyBaseClass::setstate(seed);
+        setstate(utils::set_random_seed32());
     }
 
     /** @brief Sets the internal state of this PRNG with double seed. */
     inline void setstate(const double seed) noexcept
     {
         const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        setstate(uint32_t(s * double(0xffff'ffff)));
+        setstate(uint32_t(s * double(0xffff'fffful)));
     }
 
 };

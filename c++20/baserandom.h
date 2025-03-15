@@ -239,6 +239,7 @@ class BaseRandom
 {
 public:
     //---   Wrappers   ------------------------------------------------------
+    using state_type = SeedStateT;
     using output_type = OutputT;
 
 
