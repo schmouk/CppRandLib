@@ -110,7 +110,7 @@ public:
     using output_type = MyBaseClass::output_type;
     using state_type  = MyBaseClass::state_type;
     
-    static const size_t SEED_SIZE{ SIZE };
+    static const size_t SIZE{ SIZE };
 
 
     //---   Constructors / Destructor   -------------------------------------
@@ -214,14 +214,14 @@ const typename BaseLFib64<SIZE, K>::output_type BaseLFib64<SIZE, K>::next() noex
 {
     // evaluates indexes in suite for the i-5 and i-17 -th values
     const size_t index = MyBaseClass::_state.seed.index;
-    const size_t k = (index < K) ? (index + SEED_SIZE) - K : index - K;
+    const size_t k = (index < K) ? (index + SIZE) - K : index - K;
 
     // evaluates current value and modifies internal state
     output_type value = MyBaseClass::_state.seed.list[k] + MyBaseClass::_state.seed.list[index];  // automatic 64-bits modulo
     MyBaseClass::_state.seed.list[index] = value;
 
     // next index
-    MyBaseClass::_state.seed.index = (index + 1) % SEED_SIZE;
+    MyBaseClass::_state.seed.index = (index + 1) % SIZE;
 
     // finally, returns output value
     return value;

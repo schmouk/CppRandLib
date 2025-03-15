@@ -43,9 +43,9 @@ const MRGRand287::output_type MRGRand287::next() noexcept
 
     // evaluates indexes in suite
     const size_t index = MyBaseClass::_state.seed.index;
-    const size_t k55 = (index < 55) ? (index + SEED_SIZE) - 55 : index - 55;
-    const size_t k119 = (index < 119) ? (index + SEED_SIZE) - 119 : index - 119;
-    const size_t k179 = (index < 179) ? (index + SEED_SIZE) - 179 : index - 179;
+    const size_t k55 = (index < 55) ? (index + SIZE) - 55 : index - 55;
+    const size_t k119 = (index < 119) ? (index + SIZE) - 119 : index - 119;
+    const size_t k179 = (index < 179) ? (index + SIZE) - 179 : index - 179;
 
     // evaluates current value and modifies internal state
     const uint32_t value = uint64_t(MyBaseClass::_state.seed.list[k55]) +
@@ -55,7 +55,7 @@ const MRGRand287::output_type MRGRand287::next() noexcept
 
     MyBaseClass::_state.seed.list[index] = value;
     // next index
-    MyBaseClass::_state.seed.index = (index + 1) % SEED_SIZE;
+    MyBaseClass::_state.seed.index = (index + 1) % SIZE;
 
     // finally, returns pseudo random value
     return value;

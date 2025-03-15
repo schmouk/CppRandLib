@@ -41,8 +41,8 @@ const MRGRand1457::output_type MRGRand1457::next() noexcept
 {
     // evaluates indexes in suite for the i-1, i-24 (and i-47) -th values
     const size_t index = MyBaseClass::_state.seed.index;
-    const size_t k1    = (index <  1) ? (index + SEED_SIZE) -  1 : index -  1;
-    const size_t k24   = (index < 24) ? (index + SEED_SIZE) - 24 : index - 24;
+    const size_t k1    = (index <  1) ? (index + SIZE) -  1 : index -  1;
+    const size_t k24   = (index < 24) ? (index + SIZE) - 24 : index - 24;
 
     // evaluates current value and modifies internal state
     const uint64_t value = (0x0408'0000ull * (uint64_t(MyBaseClass::_state.seed.list[k1]) +
@@ -51,7 +51,7 @@ const MRGRand1457::output_type MRGRand1457::next() noexcept
     MyBaseClass::_state.seed.list[index] = uint32_t(value);
 
     // next index
-    MyBaseClass::_state.seed.index = (index + 1) % SEED_SIZE;
+    MyBaseClass::_state.seed.index = (index + 1) % SIZE;
 
     // finally, returns pseudo random value
     return value;

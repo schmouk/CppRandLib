@@ -55,7 +55,6 @@ public:
 
     //---   Class constants   -----------------------------------------------
     static constexpr uint32_t MODULO = 0x7fff'ffff;  // i.e. (1 << 31) - 1
-    static constexpr size_t   SEED_SIZE = SIZE;
 
 
     //---   Constructors / Destructor   -------------------------------------
