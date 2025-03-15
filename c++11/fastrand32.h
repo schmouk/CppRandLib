@@ -92,11 +92,11 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG 
 *   should definitively pass.
 */
-class FastRand32 : public BaseRandom<std::uint32_t>
+class FastRand32 : public BaseRandom<std::uint32_t, std::uint32_t, 32>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<std::uint32_t>;
+    using MyBaseClass = BaseRandom<std::uint32_t, std::uint32_t, 32>;
 
 
     //---   Constructors / Destructor   -------------------------------------
@@ -126,7 +126,7 @@ public:
     /** @brief The internal PRNG algorithm. */
     virtual inline const output_type next() noexcept override
     {
-        _state.seed = 69'069 * _state.seed + 1;
+        return _state.seed = 69'069 * _state.seed + 1;
     }
 
 
@@ -140,13 +140,8 @@ public:
     /** @brief Sets the internal state of this PRNG with double seed. */
     inline void setstate(double seed) noexcept
     {
-        if (seed < 0.0)
-            seed = -seed;
-        
-        if (seed <= 1.0)
-            setstate(state_type(seed * double(0xffff'fffful)));
-        else
-            setstate(state_type(seed));
+        const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
+        setstate(state_type(s * double(0xffff'fffful)));
     }
 
 };
