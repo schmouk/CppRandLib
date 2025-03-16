@@ -32,9 +32,9 @@ SOFTWARE.
 const Mrg1457::output_type Mrg1457::next() noexcept
 {
     // evaluates indexes in suite for the i-1, i-24 (and i-47) -th values
-    const size_t index = _state.seed.index;
-    const size_t k1    = (index <  1) ? (index + SEED_SIZE) -  1 : index -  1;
-    const size_t k24   = (index < 24) ? (index + SEED_SIZE) - 24 : index - 24;
+    const std::uint32_t index = _state.seed.index;
+    const std::uint32_t k1    = (index <  1) ? (index + SEED_SIZE) -  1 : index -  1;
+    const std::uint32_t k24   = (index < 24) ? (index + SEED_SIZE) - 24 : index - 24;
 
     // evaluates current value and modifies internal state
     std::uint64_t value = (0x0408'0000ull * (std::uint64_t(_state.seed.list[k1]) +
