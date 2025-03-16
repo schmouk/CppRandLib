@@ -131,7 +131,7 @@ public:
     /** @brief The internal PRNG algorithm. */
     virtual inline const output_type next() noexcept override
     {
-        return _state.seed = (0x7ff3'19fa'a77b'f52dULL * _state.seed + 1) & _MODULO_63;
+        return _state.seed = (0x7ff3'19fa'a77b'f52dull * _state.seed + 1) & _MODULO_63;
     }
 
 
