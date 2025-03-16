@@ -115,7 +115,7 @@ public:
     }
 
     /** @brief Valued construtor (integer). */
-    inline Mrg49507(const uint64_t seed) noexcept
+    inline Mrg49507(const uint32_t seed) noexcept
         : MyBaseClass()
     {
         setstate(seed);
