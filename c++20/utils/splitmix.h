@@ -59,7 +59,9 @@ namespace utils
         {}
 
         /** @brief Valued constructor - integer. */
-        inline SplitMix64(const std::uint64_t seed) noexcept
+        template<typename IntT>
+            requires std::is_integral_v<IntT>
+        inline SplitMix64(const IntT seed) noexcept
             : _state(seed)
         {}
 
@@ -103,7 +105,9 @@ namespace utils
         {}
 
         /** @brief Valued constructor - integer. */
-        inline SplitMix63(const std::uint64_t seed) noexcept
+        template<typename IntT>
+            requires std::is_integral_v<IntT>
+        inline SplitMix63(const IntT seed) noexcept
             : SplitMix64(seed)
         {}
 
@@ -147,7 +151,9 @@ namespace utils
         {}
 
         /** @brief Valued constructor - integer. */
-        inline SplitMix32(const std::uint64_t seed) noexcept
+        template<typename IntT>
+            requires std::is_integral_v<IntT>
+        inline SplitMix32(const IntT seed) noexcept
             : SplitMix64(seed)
         {}
 
@@ -188,25 +194,24 @@ namespace utils
         /** @brief Empty constructor, uses the shuffled current time to initialize the internal state. */
         inline SplitMix31()  noexcept
             : SplitMix64()
-        {
-        }
+        {}
 
         /** @brief Valued constructor - integer. */
-        inline SplitMix31(const std::uint64_t seed) noexcept
+        template<typename IntT>
+            requires std::is_integral_v<IntT>
+        inline SplitMix31(const IntT seed) noexcept
             : SplitMix64(seed)
-        {
-        }
+        {}
 
         /** @brief Valued constructor - double. */
         inline SplitMix31(const double seed) noexcept
             : SplitMix64(seed)
-        {
-        }
+        {}
 
         /** @brief Evaluates next pseudorandom value. */
         const std::uint32_t operator() () noexcept
         {
-            return SplitMix64::operator()() >> 33;
+            return std::uint32_t(SplitMix64::operator()() >> 33);
         }
 
     };
