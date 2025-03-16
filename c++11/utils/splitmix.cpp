@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2022 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
@@ -24,21 +24,22 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <chrono>
-
-#include "fastrand63.h"
+#include "splitmix.h"
 
 
 //===========================================================================
-/** Sets the internal state of this PRNG from current time (empty signature). */
-void FastRand63::setstate() noexcept
+namespace utils
 {
-    const uint64_t ticks = std::chrono::duration_cast<std::chrono::nanoseconds>(
-        std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+    //-----------------------------------------------------------------------
+    const std::uint64_t SplitMix64::operator() () noexcept
+    {
+        // this is the 'Golden' Gamma value : std::uint64_t( ((1.0 + math.sqrt(5)) / 2.0) * 1<<64 )
+        constexpr std::uint64_t GOLDEN_GAMMA{ 0x9e37'79b9'7f4a'7c15ull };
 
-    MyBaseClass::setstate(((ticks & 0x0000'0000'7fff'ffff) << 32) +
-                          ((ticks & 0xff00'0000'0000'0000) >> 56) +
-                          ((ticks & 0x00ff'0000'0000'0000) >> 40) +
-                          ((ticks & 0x0000'ff00'0000'0000) >> 24) +
-                          ((ticks & 0x0000'00ff'0000'0000) >> 8));
+        _state *= GOLDEN_GAMMA;
+        _state ^= (_state ^ (_state >> 30)) * 0xbf58'476d'1ce4'e5b9ull;
+        _state ^= (_state ^ (_state >> 27)) * 0x94d0'49bb'1331'11ebull;
+        return _state = _state ^ (_state >> 31);
+    }
+
 }

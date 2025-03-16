@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2022 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
@@ -24,28 +24,27 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <chrono>
-
-#include "fastrand32.h"
-#include "mrgrand49507.h"
+#include "mrg1457.h"
 
 
 //===========================================================================
 /** The internal PRNG algorithm. */
-const double MRGRand49507::random() noexcept
+const Mrg1457::output_type Mrg1457::next() noexcept
 {
     // evaluates indexes in suite for the i-1, i-24 (and i-47) -th values
-    const size_t index = MyBaseClass::_state.seed.index;
-    const size_t k7 = (index < 7) ? (index + SEED_SIZE) - 7 : index - 7;
+    const std::uint32_t index = MyBaseClass::_state.seed.index;
+    const std::uint32_t k1  = (index < 1 ) ? (index + SEED_SIZE) - 1  : index - 1 ;
+    const std::uint32_t k24 = (index < 24) ? (index + SEED_SIZE) - 24 : index - 24;
 
     // evaluates current value and modifies internal state
-    const uint64_t value = (0xffff'ffff'fdff'ff80 * (uint64_t(MyBaseClass::_state.seed.list[k7]) +
-                                                     uint64_t(MyBaseClass::_state.seed.list[index]))) % MODULO;
-    MyBaseClass::_state.seed.list[index] = uint32_t(value);
+    uint64_t value = (0x0408'0000ull * (uint64_t(MyBaseClass::_state.seed.list[k1]) +
+                                        uint64_t(MyBaseClass::_state.seed.list[k24]) +
+                                        uint64_t(MyBaseClass::_state.seed.list[index]))) % _MODULO;
+    _state.seed.list[index] = std::uint32_t(value &= _MODULO);
 
     // next index
     MyBaseClass::_state.seed.index = (index + 1) % SEED_SIZE;
 
     // finally, returns pseudo random value in range [0.0, 1.0)
-    return double(value) / double(MODULO);
+    return output_type(value);
 }

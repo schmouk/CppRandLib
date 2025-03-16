@@ -2,7 +2,7 @@
 /*
 MIT License
 
-Copyright (c) 2022 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
@@ -26,6 +26,7 @@ SOFTWARE.
 
 //===========================================================================
 #include "baserandom.h"
+#include "utils/seed_generation.h"
 
 
 //===========================================================================
@@ -62,7 +63,6 @@ SOFTWARE.
 *     FastRand32 rand{};
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(a) << std::endl;   // prints a uniform pseudo-random value within [0.0, a)
-*     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
 * @endcode
 *   
 *   Notice that for simulating the roll of a dice you should program:
@@ -92,12 +92,11 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG 
 *   should definitively pass.
 */
-class FastRand32 : public BaseRandom<uint32_t>
+class FastRand32 : public BaseRandom<std::uint32_t, std::uint32_t, 32>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using value_type  = uint32_t;
-    using MyBaseClass = BaseRandom<uint32_t>;
+    using MyBaseClass = BaseRandom<std::uint32_t, std::uint32_t, 32>;
 
 
     //---   Constructors / Destructor   -------------------------------------
@@ -109,46 +108,40 @@ public:
     }
 
     /** @brief Valued construtor (integer). */
-    inline FastRand32(const uint32_t seed) noexcept
+    inline FastRand32(const std::uint32_t seed) noexcept
         : MyBaseClass(seed)
     {}
 
     /** @brief Valued construtor (double). */
     inline FastRand32(const double seed) noexcept
-        : MyBaseClass(uint32_t(seed * double(0x1'0000'0000)))
+        : MyBaseClass(std::uint32_t(seed * double(0x1'0000'0000ull)))
     {}
 
-    /** @brief Default Copy constructor. */
-    FastRand32(const FastRand32&) noexcept = default;
-
-    /** @brief Default Move constructor. */
-    FastRand32(FastRand32&&) noexcept = default;
-
-    /** @brief Default Destructor. */
-    virtual ~FastRand32() noexcept = default;
+    FastRand32(const FastRand32&) noexcept = default;   //!< default copy constructor.
+    FastRand32(FastRand32&&) noexcept = default;        //!< default move constructor.
+    virtual ~FastRand32() noexcept = default;           //!< default destructor.
 
 
     //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return a double value uniformly contained within range [0.0, 1.0).
-    */
-    virtual inline const double random() noexcept override
+    /** @brief The internal PRNG algorithm. */
+    virtual inline const output_type next() noexcept override
     {
-        _state.seed = 69'069 * _state.seed + 1;  // implicit modulo on 32 bits
-        return _state.seed / 4'294'967'296.0;
+        return _state.seed = 69'069 * _state.seed + 1;
     }
 
 
     //---   Operations   ----------------------------------------------------
     /** @brief Sets the internal state of this PRNG with shuffled current time. */
-    virtual void setstate() noexcept override;
+    inline virtual void setstate() noexcept override
+    {
+        MyBaseClass::setstate(utils::set_random_seed32());
+    }
 
     /** @brief Sets the internal state of this PRNG with double seed. */
-    inline void setstate(const double seed) noexcept
+    inline void setstate(double seed) noexcept
     {
         const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        setstate(uint32_t(s * double(0xffff'ffff)));
+        MyBaseClass::setstate(state_type(s * double(0xffff'fffful)));
     }
 
 };

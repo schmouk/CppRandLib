@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2022 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
@@ -24,36 +24,29 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <chrono>
-
-#include "fastrand32.h"
-#include "mrgrand287.h"
+#include "mrg287.h"
 
 
 //===========================================================================
 /** The internal PRNG algorithm. */
-const double MRGRand287::random() noexcept
+const Mrg287::output_type Mrg287::next() noexcept
 {
     // The Marsa - LIBF4 version uses the recurrence
     //    x(i) = (x(i-55) + x(i-119) + x(i-179) + x(i-256)) mod 2 ^ 32
 
     // evaluates indexes in suite
-    const size_t index = MyBaseClass::_state.seed.index;
-    const size_t k55   = (index <  55) ? (index + SEED_SIZE) -  55 : index -  55;
-    const size_t k119  = (index < 119) ? (index + SEED_SIZE) - 119 : index - 119;
-    const size_t k179  = (index < 179) ? (index + SEED_SIZE) - 179 : index - 179;
+    const std::uint32_t index{ MyBaseClass::_state.seed.index };
+    const std::uint32_t k55{ (index < 55) ? (index + SEED_SIZE) - 55 : index - 55 };
+    const std::uint32_t k119{ (index < 119) ? (index + SEED_SIZE) - 119 : index - 119 };
+    const std::uint32_t k179{ (index < 179) ? (index + SEED_SIZE) - 179 : index - 179 };
 
     // evaluates current value and modifies internal state
-    const uint32_t value = uint64_t(MyBaseClass::_state.seed.list[k55 ]) +
-                           uint64_t(MyBaseClass::_state.seed.list[k119]) +
-                           uint64_t(MyBaseClass::_state.seed.list[k179]) +
-                           uint64_t(MyBaseClass::_state.seed.list[index]);  // automatic 32-bits modulo
+    const std::uint32_t value{ _state.seed.list[k55] + _state.seed.list[k119] + _state.seed.list[k179] + _state.seed.list[index] };
+    _state.seed.list[index] = value;
 
-    MyBaseClass::_state.seed.list[index] = value;
     // next index
-    MyBaseClass::_state.seed.index = (index + 1) % SEED_SIZE;
+    _state.seed.index = (index + 1) & _INDEX_MODULO;
 
-    // finally, returns pseudo random value in range [0.0, 1.0)
-    const double ret = double(value) / double(4'294'967'296.0);
-    return ret;
+    // finally, returns pseudo random value
+    return value;
 }

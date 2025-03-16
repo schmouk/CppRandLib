@@ -2,7 +2,7 @@
 /*
 MIT License
 
-Copyright (c) 2022 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
@@ -26,6 +26,7 @@ SOFTWARE.
 
 //===========================================================================
 #include <chrono>
+#include <cstdint>
 
 #include "baserandom.h"
 #include "fastrand63.h"
@@ -102,16 +103,16 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG 
 *   should definitively pass.
 */
-template<const size_t SIZE, const size_t K>
-class BaseLFib64 : public BaseRandom<ListSeedState<uint64_t, SIZE>>
+template<const std::uint32_t SIZE, const std::uint32_t K>
+class BaseLFib64 : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using value_type  = uint64_t;
-    using StateType   = ListSeedState<uint64_t, SIZE>;
-    using MyBaseClass = BaseRandom<StateType>;
-
-    static const size_t SEED_SIZE = SIZE;
+    using MyBaseClass = BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>;
+    using output_type = MyBaseClass::output_type;
+    using state_type  = MyBaseClass::state_type;
+    
+    static const std::uint32_t SEED_SIZE{ SIZE };
 
 
     //---   Constructors / Destructor   -------------------------------------
@@ -123,7 +124,7 @@ public:
     }
 
     /** @brief Valued construtor (integer). */
-    inline BaseLFib64(const uint64_t seed) noexcept
+    inline BaseLFib64(const std::uint64_t seed) noexcept
         : MyBaseClass()
     {
         setstate(seed);
@@ -137,45 +138,49 @@ public:
     }
 
     /** @brief Valued constructor (full state). */
-    inline BaseLFib64(const StateType& seed) noexcept
+    inline BaseLFib64(const state_type& seed) noexcept
         : MyBaseClass()
     {
         setstate(seed);
     }
 
-    /** @brief Default Copy constructor. */
-    BaseLFib64(const BaseLFib64&) noexcept = default;
-
-    /** @brief Default Move constructor. */
-    BaseLFib64(BaseLFib64&&) noexcept = default;
-
-    /** @brief Default Destructor. */
-    virtual ~BaseLFib64() noexcept = default;
+    BaseLFib64(const BaseLFib64&) noexcept = default;   //!< default copy constructor.
+    BaseLFib64(BaseLFib64&&) noexcept = default;        //!< default move constructor.
+    virtual ~BaseLFib64() noexcept = default;           //!< default destructor.
 
 
     //---   Operations   ----------------------------------------------------
-    /** @brief Sets the internal state of this PRNG from current time (empty signature). */
-    virtual void setstate() noexcept override;
+    /** @brief Sets the internal state of this PRNG from shuffled current time (empty signature). */
+    inline virtual void setstate() noexcept override
+    {
+        setstate(utils::set_random_seed64());
+    }
 
     /** @brief Sets the internal state of this PRNG with an integer seed. */
-    void setstate(const uint64_t seed) noexcept;
+    inline void setstate(const std::uint64_t seed) noexcept
+    {
+        utils::SplitMix64 splitmix_64(seed);
+        for (std::uint64_t& s : MyBaseClass::_state.seed.list)
+            s = splitmix_64();
+    }
 
     /** @brief Sets the internal state of this PRNG with a double seed. */
     inline void setstate(const double seed) noexcept
     {
         const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        setstate(uint64_t(s * double(0xffff'ffff'ffff'ffffUL)));
+        setstate(std::uint64_t(s * double(_MODULO)));
     }
 
+
     /** @brief Restores the internal state of this PRNG from seed. */
-    inline void setstate(const StateType& seed) noexcept
+    inline void setstate(const state_type& seed) noexcept
     {
         MyBaseClass::_state.seed = seed;
         MyBaseClass::_state.gauss_valid = false;
     }
 
     /** @brief Restores the internal state of this PRNG from seed and gauss_next. */
-    inline  void setstate(const StateType& seed, const double gauss_next) noexcept
+    inline void setstate(const state_type& seed, const double gauss_next) noexcept
     {
         MyBaseClass::_state.seed = seed;
         MyBaseClass::_state.gauss_next = gauss_next;
@@ -188,7 +193,7 @@ public:
     *
     * @return a double value uniformly contained within range [0.0, 1.0).
     */
-    virtual const double random() noexcept override;
+    virtual const output_type next() noexcept override;
 
 
 protected:
@@ -197,51 +202,32 @@ protected:
     {
         MyBaseClass::_state.seed.index = _index % SIZE;
     }
+
+
+private:
+    static constexpr typename state_type::value_type _MODULO{ 0xffff'ffff'ffff'ffffull };
+
 };
 
 
 //===========================================================================
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
 /** The internal PRNG algorithm. */
-template<const size_t SIZE, const size_t K>
-const double BaseLFib64<SIZE, K>::random() noexcept
+template<const std::uint32_t SIZE, std::uint32_t K >
+const typename BaseLFib64<SIZE, K>::output_type BaseLFib64<SIZE, K>::next() noexcept
 {
     // evaluates indexes in suite for the i-5 and i-17 -th values
-    const size_t index = MyBaseClass::_state.seed.index;
-    const size_t k = (index < K) ? (index + SEED_SIZE) - K : index - K;
+    const std::uint32_t index = MyBaseClass::_state.seed.index;
+    const std::uint32_t k = (index < K) ? (index + SEED_SIZE) - K : index - K;
 
     // evaluates current value and modifies internal state
-    uint64_t value = MyBaseClass::_state.seed.list[k] + MyBaseClass::_state.seed.list[index];  // automatic 64-bits modulo
+    output_type value = MyBaseClass::_state.seed.list[k] + MyBaseClass::_state.seed.list[index];  // automatic 64-bits modulo
     MyBaseClass::_state.seed.list[index] = value;
 
     // next index
     MyBaseClass::_state.seed.index = (index + 1) % SEED_SIZE;
 
-    // finally, returns pseudo random value in range [0.0, 1.0)
-    return double((long double)value / (long double)18'446'744'073'709'551'616.0);
+    // finally, returns output value
+    return value;
 }
 
-
-/** Sets the internal state of this PRNG from current time (empty signature). */
-template<const size_t SIZE, const size_t K>
-void BaseLFib64<SIZE, K>::setstate() noexcept
-{
-    const uint64_t ticks = std::chrono::duration_cast<std::chrono::nanoseconds>(
-        std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-
-    setstate(((ticks & 0x0000'0000'7fff'ffff) << 32) +
-             ((ticks & 0xff00'0000'0000'0000) >> 56) +
-             ((ticks & 0x00ff'0000'0000'0000) >> 40) +
-             ((ticks & 0x0000'ff00'0000'0000) >> 24) +
-             ((ticks & 0x0000'00ff'0000'0000) >> 8));
-}
-
-
-/** Sets the internal state of this PRNG with an integer seed. */
-template<const size_t SIZE, const size_t K>
-void BaseLFib64<SIZE, K>::setstate(const uint64_t seed) noexcept
-{
-    FastRand63 myRand(seed);
-    for (auto it = MyBaseClass::_state.seed.list.begin(); it != MyBaseClass::_state.seed.list.end(); )
-        *it++ = myRand(0x7fff'ffff'ffff'ffffULL) * 2 + myRand(2);
-}
