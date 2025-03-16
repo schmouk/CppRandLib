@@ -1,3 +1,4 @@
+#pragma once
 /*
 MIT License
 
@@ -24,40 +25,34 @@ SOFTWARE.
 
 
 //===========================================================================
-module;
-
 #include <chrono>
-
-
-module mrgrand287;
-
-import fastrand32; 
+#include <cstdint>
 
 
 //===========================================================================
-/** The internal PRNG algorithm. */
-const double MRGRand287::random() noexcept
+namespace utils
 {
-    // The Marsa - LIBF4 version uses the recurrence
-    //    x(i) = (x(i-55) + x(i-119) + x(i-179) + x(i-256)) mod 2 ^ 32
+    //=======================================================================
+    /** @brief Returns the current time since epoch as a 64-bits milliseconds integer. */
+    inline const std::uint64_t get_time_ms() noexcept
+    {
+        return std::uint64_t(
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::high_resolution_clock::now().time_since_epoch()
+            ).count()
+        );
+    }
 
-    // evaluates indexes in suite
-    const size_t index = MyBaseClass::_state.seed.index;
-    const size_t k55 = (index < 55) ? (index + SEED_SIZE) - 55 : index - 55;
-    const size_t k119 = (index < 119) ? (index + SEED_SIZE) - 119 : index - 119;
-    const size_t k179 = (index < 179) ? (index + SEED_SIZE) - 179 : index - 179;
 
-    // evaluates current value and modifies internal state
-    const uint32_t value = uint64_t(MyBaseClass::_state.seed.list[k55]) +
-        uint64_t(MyBaseClass::_state.seed.list[k119]) +
-        uint64_t(MyBaseClass::_state.seed.list[k179]) +
-        uint64_t(MyBaseClass::_state.seed.list[index]);  // automatic 32-bits modulo
+    //=======================================================================
+    /** @brief Returns the current time since epoch as a 64-bits microseconds integer. */
+    inline const std::uint64_t get_time_us() noexcept
+    {
+        return std::uint64_t(
+            std::chrono::duration_cast<std::chrono::microseconds>(
+                std::chrono::high_resolution_clock::now().time_since_epoch()
+            ).count()
+        );
+    }
 
-    MyBaseClass::_state.seed.list[index] = value;
-    // next index
-    MyBaseClass::_state.seed.index = (index + 1) % SEED_SIZE;
-
-    // finally, returns pseudo random value in range [0.0, 1.0)
-    const double ret = double(value) / double(4'294'967'296.0);
-    return ret;
 }

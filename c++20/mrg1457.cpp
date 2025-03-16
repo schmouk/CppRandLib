@@ -24,24 +24,27 @@ SOFTWARE.
 
 
 //===========================================================================
-module;
-
-#include <chrono>
-
-
-module fastrand63;
+#include "mrg1457.h"
 
 
 //===========================================================================
-/** Sets the internal state of this PRNG from current time (empty signature). */
-void FastRand63::setstate() noexcept
+/** The internal PRNG algorithm. */
+const Mrg1457::output_type Mrg1457::next() noexcept
 {
-    const uint64_t ticks = std::chrono::duration_cast<std::chrono::nanoseconds>(
-        std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+    // evaluates indexes in suite for the i-1, i-24 (and i-47) -th values
+    const std::uint32_t index = _state.seed.index;
+    const std::uint32_t k1    = (index <  1) ? (index + SEED_SIZE) -  1 : index -  1;
+    const std::uint32_t k24   = (index < 24) ? (index + SEED_SIZE) - 24 : index - 24;
 
-    MyBaseClass::setstate(((ticks & 0x0000'0000'7fff'ffff) << 32) +
-                          ((ticks & 0xff00'0000'0000'0000) >> 56) +
-                          ((ticks & 0x00ff'0000'0000'0000) >> 40) +
-                          ((ticks & 0x0000'ff00'0000'0000) >> 24) +
-                          ((ticks & 0x0000'00ff'0000'0000) >> 8));
+    // evaluates current value and modifies internal state
+    std::uint64_t value = (0x0408'0000ull * (std::uint64_t(_state.seed.list[k1]) +
+                                             std::uint64_t(_state.seed.list[k24]) +
+                                             std::uint64_t(_state.seed.list[index]))) % (_MODULO - 1);
+    _state.seed.list[index] = std::uint32_t(value &= _MODULO);
+
+    // next index
+    _state.seed.index = (index + 1) % SEED_SIZE;
+
+    // finally, returns pseudo random value
+    return output_type(value);
 }

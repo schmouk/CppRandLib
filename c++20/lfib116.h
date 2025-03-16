@@ -25,18 +25,16 @@ SOFTWARE.
 
 
 //===========================================================================
-export module lfib668;
-
-import baselfib64;
+#include "baselfib64.h"
 
 
 //===========================================================================
 /** @brief The base class for all LFib PRNG based on 64-bits numbers.
 *
 *   Pseudo-random numbers generator  -  Definition of a fast 64-bits Lagged  Fibonacci
-*   Generator with quite long period (1.2e+201).
+*   Generator with quite short period (8.3e+34).
 *
-*   This module is part of library PyRandLib.
+*   This module is part of library CppRandLib.
 *
 *   Lagged Fibonacci generators LFib( m, r, k, op) use the recurrence
 *
@@ -59,25 +57,24 @@ import baselfib64;
 *   The implementation of this LFib 64-bits model  is  based  on  a  Lagged  Fibonacci
 *   generator (LFIB) that uses the recurrence
 *
-*       x(i) = ( x(i-273) + x(i-607) ) mod 2^64
+*       x(i) = ( x(i-24) + x(i-55) ) mod 2^64
 *
-*   and offers a period of about 2^668 - i.e. 1.2e+201 - with low computation time due
-*   to  the  use of a 2^64 modulo and little memory space consumption (607 long integ-
+*   and offers a period of about 2^116 - i.e. 8.3e+34 - with low computation time  due
+*   to  the  use  of a 2^64 modulo and little memory space consumption (55 long integ-
 *   ers).
 *
 *   Please notice that the TestUO1 article states that  the  operator  should  be  '*'
 *   while Mascagni & Srinivasan  in their original article stated that the operator is
 *   '+'.  We've implemented here the original operator: '+'.
 *
-*   See LFib78,  LFib116 and LFib1340 for long period  LFib  generators  (resp.  2^78,
-*   2^116  and  2^1340  periods,  i.e.  resp.  3.0e+23,  8.3e+34 and 2.4e+403 periods)
+*   See LFib78,  LFib668 and LFib1340 for long period  LFib  generators  (resp.  2^78,
+*   2^668  and  2^1340  periods,  i.e. resp. 3.0e+23,  1.2e+201  and 2.4e+403 periods)
 *   while same computation time and far higher precision (64-bits  calculations)  than
-*   MRGs, but memory consumption (resp. 17, 55 and 1279 integers).
-*
+*   MRGs,  but memory consumption (resp. 17, 607 and 1279 integers).*
 *   Please notice that this class and all its  inheriting  sub-classes  are  callable.
 *   Example:
 * @code
-*     LFib607 rand{};
+*     LFib116 rand{};
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 *     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
@@ -85,7 +82,7 @@ import baselfib64;
 * *
 *   Notice that for simulating the roll of a dice you should program:
 * @code
-*     LFib607 diceRoll();
+*     LFib116 diceRoll();
 *     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
@@ -112,4 +109,4 @@ import baselfib64;
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
 *   should definitively pass.
 */
-export using LFib668 = BaseLFib64<607, 273>;
+using LFib116 = BaseLFib64<55, 24>;

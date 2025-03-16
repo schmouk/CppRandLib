@@ -24,33 +24,29 @@ SOFTWARE.
 
 
 //===========================================================================
-module;
-
-#include <chrono>
-
-
-module mrgrand49507;
-
-import fastrand32;
-import mrgrand49507;
+#include "mrg287.h"
 
 
 //===========================================================================
 /** The internal PRNG algorithm. */
-const double MRGRand49507::random() noexcept
+const Mrg287::output_type Mrg287::next() noexcept
 {
-    // evaluates indexes in suite for the i-1, i-24 (and i-47) -th values
-    const size_t index = MyBaseClass::_state.seed.index;
-    const size_t k7 = (index < 7) ? (index + SEED_SIZE) - 7 : index - 7;
+    // The Marsa - LIBF4 version uses the recurrence
+    //    x(i) = (x(i-55) + x(i-119) + x(i-179) + x(i-256)) mod 2 ^ 32
+
+    // evaluates indexes in suite
+    const std::uint32_t index{ MyBaseClass::_state.seed.index };
+    const std::uint32_t k55{ (index < 55) ? (index + SEED_SIZE) - 55 : index - 55 };
+    const std::uint32_t k119{ (index < 119) ? (index + SEED_SIZE) - 119 : index - 119 };
+    const std::uint32_t k179{ (index < 179) ? (index + SEED_SIZE) - 179 : index - 179 };
 
     // evaluates current value and modifies internal state
-    const uint64_t value = (0xffff'ffff'fdff'ff80 * (uint64_t(MyBaseClass::_state.seed.list[k7]) +
-                                                     uint64_t(MyBaseClass::_state.seed.list[index]))) % MODULO;
-    MyBaseClass::_state.seed.list[index] = uint32_t(value);
+    const std::uint32_t value{ _state.seed.list[k55] + _state.seed.list[k119] + _state.seed.list[k179] + _state.seed.list[index] };
+    _state.seed.list[index] = value;
 
     // next index
-    MyBaseClass::_state.seed.index = (index + 1) % SEED_SIZE;
+    _state.seed.index = (index + 1) & _INDEX_MODULO;
 
-    // finally, returns pseudo random value in range [0.0, 1.0)
-    return double(value) / double(MODULO);
+    // finally, returns pseudo random value
+    return value;
 }
