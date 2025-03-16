@@ -358,8 +358,9 @@ public:
             throw MaxValueTypeException();
 
         std::vector<T> out(max.size());
+        auto max_it{ max.cbegin() };
         for (T& o : out)
-            o = uniform(max);
+            o = uniform(*max_it++);
         return out;
     }
 
@@ -378,8 +379,9 @@ public:
             throw ZeroLengthException();
 
         std::array<T, n> out(max.size());
+        auto max_it{ max.cbegin() };
         for (T& o : out)
-            o = uniform(max);
+            o = uniform(*max_it++);
         return out;
     }
 
@@ -399,8 +401,8 @@ public:
         std::vector<T> out(count);
         auto min_it = min.cbegin();
         auto max_it = max.cbegin();
-        for (auto out_it = out.begin(); out_it != out.end(); )
-            *out_it++ = uniform(*min_it++, *max_it++);
+        for (T& o : out )
+            o = uniform(*min_it++, *max_it++);
         return out;
     }
 
@@ -420,8 +422,10 @@ public:
 
         const std::size_t count = std::min(min.size(), max.size());
         std::array<T, n> out(count);
-        for (auto out_it = out.begin(), min_it = min.cbegin(), max_it = max.cbegin(); out_it != out.begin() + count; )
-            *out_it++ = uniform(*min_it++, *max_it++);
+        auto min_it = min.cbegin();
+        auto max_it = max.cbegin();
+        for (T& o : out )
+            o = uniform(*min_it++, *max_it++);
         return out;
     }
 
@@ -607,7 +611,7 @@ public:
         if (start == stop)
             throw RangeSameValuesException();
 
-        const std::size_t width{ stop - start };
+        const T width{ stop - start };
 
         if (step == 1)
             return start + uniform(width);
@@ -1494,7 +1498,7 @@ template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::SG_MAGICCONST{ 1.0 + std::log(4.5) };
 
 template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::TWO_PI{ 2.0 * BaseRandom<SeedStateT>::PI };
+const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::TWO_PI{ 2.0 * BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::PI };
 
 template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::_NORMALIZE{ 0.5 / (1ull << (OUTPUT_BITS - 1)) };
