@@ -102,7 +102,7 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG 
 *   should definitively pass.
 */
-template<const size_t SIZE, const size_t K>
+template<const std::uint32_t SIZE, const std::uint32_t K>
 class BaseLFib64 : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>
 {
 public:
@@ -111,7 +111,7 @@ public:
     using output_type = MyBaseClass::output_type;
     using state_type  = MyBaseClass::state_type;
     
-    static const size_t SIZE{ SIZE };
+    static const std::uint32_t SIZE{ SIZE };
 
 
     //---   Constructors / Destructor   -------------------------------------
@@ -195,7 +195,7 @@ public:
 
 protected:
     /** @brief Inits the internal index pointing to the internal list. */
-    inline void _initIndex(const size_t _index) noexcept
+    inline void _initIndex(const std::uint32_t _index) noexcept
     {
         MyBaseClass::_state.seed.index = _index % SIZE;
     }
@@ -210,12 +210,12 @@ private:
 //===========================================================================
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
 /** The internal PRNG algorithm. */
-template<const size_t SIZE, const size_t K >
+template<const std::uint32_t SIZE, const std::uint32_t K >
 const typename BaseLFib64<SIZE, K>::output_type BaseLFib64<SIZE, K>::next() noexcept
 {
     // evaluates indexes in suite for the i-5 and i-17 -th values
-    const size_t index = MyBaseClass::_state.seed.index;
-    const size_t k = (index < K) ? (index + SIZE) - K : index - K;
+    const std::uint32_t index = MyBaseClass::_state.seed.index;
+    const std::uint32_t k = (index < K) ? (index + SIZE) - K : index - K;
 
     // evaluates current value and modifies internal state
     output_type value = MyBaseClass::_state.seed.list[k] + MyBaseClass::_state.seed.list[index];  // automatic 64-bits modulo

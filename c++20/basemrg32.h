@@ -43,7 +43,7 @@ class BaseMRG32 : public BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uin
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<ListSeedState<uint32_t, SIZE>, std::uint32_t, 32>;
+    using MyBaseClass = BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uint32_t, 32>;
 
     using output_type = MyBaseClass::output_type;
     using state_type = MyBaseClass::state_type;

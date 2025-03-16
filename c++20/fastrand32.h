@@ -143,7 +143,7 @@ public:
     inline void setstate(const double seed) noexcept
     {
         const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        MyBaseClass::setstate(uint32_t(s * double(0xffff'fffful)));
+        MyBaseClass::setstate(std::uint32_t(s * double(0xffff'fffful)));
     }
 
 };

@@ -39,7 +39,7 @@ SOFTWARE.
 *
 *   This module is part of library CppRandLib.
 */
-template<const size_t SIZE>
+template<const std::uint32_t SIZE>
 class BaseMRG31 : public BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uint32_t, 31>
 {
 public:

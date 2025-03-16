@@ -102,7 +102,7 @@ private:
 
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<uint64_t, std::uint64_t, 63>;
+    using MyBaseClass = BaseRandom<std::uint64_t, std::uint64_t, 63>;
 
 
     //---   Constructors / Destructor   -------------------------------------
@@ -114,7 +114,7 @@ public:
     }
 
     /** @brief Valued constructor - integer. */
-    inline FastRand63(const uint64_t seed) noexcept
+    inline FastRand63(const std::uint64_t seed) noexcept
         : MyBaseClass(seed)
     {}
 
