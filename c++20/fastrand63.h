@@ -141,14 +141,14 @@ public:
     /** @brief Sets the internal state of this PRNG from current time (empty signature). */
     virtual void setstate() noexcept override
     {
-        setstate(utils::set_random_seed63());
+        MyBaseClass::setstate(utils::set_random_seed63());
     }
 
     /** @brief Sets the internal state of this PRNG with double seed. */
     inline void setstate(const double seed) noexcept
     {
         const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        setstate( std::uint64_t(s * double(_MODULO_63)) );
+        MyBaseClass::setstate( std::uint64_t(s * double(_MODULO_63)) );
     }
 
 };

@@ -1,3 +1,4 @@
+#pragma once
 /*
 MIT License
 
@@ -24,20 +25,15 @@ SOFTWARE.
 
 
 //===========================================================================
-module;
-
 #include <array>
-
-
-export module listseedstate;
 
 
 //===========================================================================
 /** @brief The internal state of LFib and MRG Pseudo Random Numbers Generators. */
-export template<typename ValueType, const size_t SIZE>
+template<typename ValueType, const size_t SIZE>
 class ListSeedState
 {
 public:
     std::array<ValueType, SIZE>  list;
-    size_t                       index;
+    std::uint32_t                index;
 };

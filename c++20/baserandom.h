@@ -50,7 +50,7 @@ SOFTWARE.
 *   longer  computation  time  (2^31-1  modulus  calculations)  but  less memory space
 *   consumption (47 integers).
 *
-*   See MRGRand49507 for a far  longer  period  (2^49507,  i.e. 1.2e+14903)  with  low
+*   See Mrg49507 for a far  longer  period  (2^49507,  i.e. 1.2e+14903)  with  low
 *   computation  time  too  (31-bits  modulus)  but  use  of  more  memory space (1597
 *   integers).
 *
@@ -1324,9 +1324,9 @@ protected:
     //---   Attributes   ----------------------------------------------------
     struct _InternalState
     {
-        SeedStateT seed;        //!< The internal current state of this PRNG
-        double     gauss_next;  //!< smart optimization for Gaussian distribution computation (1/2)
-        bool       gauss_valid; //!< smart optimization for Gaussian distribution computation (2/2)
+        SeedStateT seed{};        //!< The internal current state of this PRNG
+        double     gauss_next{};  //!< smart optimization for Gaussian distribution computation (1/2)
+        bool       gauss_valid{}; //!< smart optimization for Gaussian distribution computation (2/2)
     } _state;
 
 

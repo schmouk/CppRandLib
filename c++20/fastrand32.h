@@ -136,14 +136,14 @@ public:
     /** @brief Sets the internal state of this PRNG with shuffled current time. */
     virtual void setstate() noexcept override
     {
-        setstate(utils::set_random_seed32());
+        MyBaseClass::setstate(utils::set_random_seed32());
     }
 
     /** @brief Sets the internal state of this PRNG with double seed. */
     inline void setstate(const double seed) noexcept
     {
         const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        setstate(uint32_t(s * double(0xffff'fffful)));
+        MyBaseClass::setstate(uint32_t(s * double(0xffff'fffful)));
     }
 
 };
