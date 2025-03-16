@@ -24,6 +24,8 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <cstdint>
+
 #include "mrg49507.h"
 
 
@@ -32,8 +34,8 @@ SOFTWARE.
 const Mrg49507::output_type Mrg49507::next() noexcept
 {
     // evaluates indexes in suite for the i-1, i-24 (and i-47) -th values
-    const size_t index = MyBaseClass::_state.seed.index;
-    const size_t k7 = (index < 7) ? (index + SEED_SIZE) - 7 : index - 7;
+    const std::uint32_t index = MyBaseClass::_state.seed.index;
+    const std::uint32_t k7 = (index < 7) ? (index + SEED_SIZE) - 7 : index - 7;
 
     // evaluates current value and modifies internal state
     std::uint64_t value = (0xffff'ffff'fdff'ff80ull * (std::uint64_t(_state.seed.list[k7]) +
