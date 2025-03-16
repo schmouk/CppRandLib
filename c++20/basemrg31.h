@@ -48,6 +48,8 @@ public:
     using output_type = MyBaseClass::output_type;
     using state_type = MyBaseClass::state_type;
 
+    static constexpr std::uint32_t SEED_SIZE{ SIZE };
+
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
@@ -96,7 +98,7 @@ public:
     }
 
 
-private:
+protected:
     static constexpr std::uint32_t _MODULO{ 0x7fff'fffful };
 
 };
