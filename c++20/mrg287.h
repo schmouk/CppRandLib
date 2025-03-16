@@ -72,10 +72,10 @@ SOFTWARE.
 *   and offers a period of about 2^287 - i.e. 2.49e+86 - with low computation time due
 *   to the use of a 2^32 modulo.
 *
-*   See Mrg1457 for a  longer  period  MR-Generator  (2^1457,  i.e. 4.0e+438)  and
-*   longer  computation  time  (2^31-1  modulus  calculations)  but  less memory space
-*   consumption (47 integers).
-*   See MRGRand49507 for a far longer period  (2^49_507,  i.e. 1.2e+14_903)  with  low
+*   See Mrg1457 for a longer period MR-Generator  (2^1457,  i.e. 4.0e+438)  and longer
+*   computation  time  (2^31-1 modulus calculations) but less memory space consumption
+*   (i.e. 47 integers).
+*   See Mrg49507 for  a  far  longer  period  (2^49_507,  i.e. 1.2e+14_903)  with  low
 *   computation  time  too  (31-bits  modulus)  but  use  of  more memory space (1_597
 *   integers).
 *
@@ -84,7 +84,6 @@ SOFTWARE.
 *     Mrg287 rand();
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
-*     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
@@ -115,7 +114,7 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
 *   should definitively pass.
 */
-export class Mrg287 : public BaseMRG32<256>
+class Mrg287 : public BaseMRG32<256>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
@@ -131,7 +130,7 @@ public:
     }
 
     /** @brief Valued construtor (integer). */
-    inline Mrg287(const std::uint32_t seed) noexcept
+    inline Mrg287(const std::uint64_t seed) noexcept
         : MyBaseClass()
     {
         MyBaseClass::setstate(seed);
@@ -153,7 +152,7 @@ public:
 
     Mrg287(const Mrg287&) noexcept = default;   //!< default copy constructor.
     Mrg287(Mrg287&&) noexcept = default;        //!< default move constructor.
-    virtual ~Mrg287() noexcept = default;       //!< default destrctor.
+    virtual ~Mrg287() noexcept = default;       //!< default destructor.
 
 
     //---   Internal PRNG   -------------------------------------------------
@@ -162,4 +161,9 @@ public:
     * @return an integer value coded on OUTPUT_BITS bits.
     */
     virtual const output_type next() noexcept override;
+
+
+private:
+    static constexpr std::uint32_t _INDEX_MODULO{ 0xff };  // related to SEED_SIZE = 256
+
 };
