@@ -38,7 +38,7 @@ SOFTWARE.
 *
 *   This module is part of library CppRandLib.
 */
-export template<const std::uint32_t SIZE>
+template<const std::uint32_t SIZE>
 class BaseMRG32 : public BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uint32_t, 32>
 {
 public:
@@ -69,7 +69,9 @@ public:
     }
 
     /** @brief Sets the internal state of this PRNG with an integer seed. */
-    void setstate(const std::uint32_t seed) noexcept
+    template<typename IntT>
+        requires std::is_integral_v<IntT>
+    void setstate(const IntT seed) noexcept
     {
         utils::SplitMix32 splitmix_32(seed);
         std::ranges::generate(MyBaseClass::_state.seed.list, [&]() { return splitmix_32(); });
@@ -79,7 +81,7 @@ public:
     inline void setstate(const double seed) noexcept
     {
         const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        setstate(std::uint32_t(s * double(_MODULO)));
+        setstate(std::uint64_t(s * double(_MODULO)));
     }
 
     /** @brief Restores the internal state of this PRNG from seed. */

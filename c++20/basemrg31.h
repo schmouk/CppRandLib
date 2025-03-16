@@ -25,6 +25,7 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <cassert>
 #include <cstdint>
 
 #include "baserandom.h"
@@ -38,7 +39,7 @@ SOFTWARE.
 *
 *   This module is part of library CppRandLib.
 */
-export template<const size_t SIZE>
+template<const size_t SIZE>
 class BaseMRG31 : public BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uint32_t, 31>
 {
 public:
@@ -69,28 +70,30 @@ public:
     }
 
     /** @brief Sets the internal state of this PRNG with an integer seed. */
-    inline void setstate(const std::uint32_t seed) noexcept
+    template<typename IntT>
+        requires std::is_integral_v<IntT>
+    inline void setstate(const IntT seed) noexcept
     {
         utils::SplitMix31 splitmix_31(seed);
-        std::ranges::generate(MyBaseClass::_state.seed.list, [&]() { return splitmix_31(); });
+        std::ranges::generate(MyBaseClass::_state.seed.list, [&splitmix_31] () { return splitmix_31(); });
     }
 
     /** @brief Sets the internal state of this PRNG with a double seed. */
     inline void setstate(const double seed) noexcept
     {
         const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        setstate(std::uint32_t(s * double(_MODULO)));
+        setstate(std::uint64_t(s * double(_MODULO)));
     }
 
     /** @brief Restores the internal state of this PRNG from seed. */
-    inline void setstate(const StateType& seed) noexcept
+    inline void setstate(const state_type& seed) noexcept
     {
         MyBaseClass::_state.seed = seed;
         MyBaseClass::_state.gauss_valid = false;
     }
 
     /** @brief Restores the internal state of this PRNG from seed and gauss_next. */
-    inline  void setstate(const StateType& seed, const double gauss_next) noexcept
+    inline void setstate(const state_type& seed, const double gauss_next) noexcept
     {
         MyBaseClass::_state.seed = seed;
         MyBaseClass::_state.gauss_next = gauss_next;
@@ -99,6 +102,6 @@ public:
 
 
 protected:
-    static constexpr std::uint32_t _MODULO{ 0x7fff'fffful };
+    static constexpr std::uint64_t _MODULO{ 0x7fff'ffffull };
 
 };
