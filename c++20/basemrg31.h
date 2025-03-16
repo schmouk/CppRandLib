@@ -25,11 +25,13 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <chrono>
+#include <cassert>
+#include <cstdint>
 
 #include "baserandom.h"
-#include "fastrand32.h"
 #include "listseedstate.h"
+#include "utils/seed_generation.h"
+#include "utils/splitmix.h"
 
 
 //===========================================================================
@@ -37,7 +39,7 @@ SOFTWARE.
 *
 *   This module is part of library CppRandLib.
 */
-template<const size_t SIZE>
+template<const std::uint32_t SIZE>
 class BaseMRG31 : public BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uint32_t, 31>
 {
 public:
@@ -62,28 +64,25 @@ public:
 
     //---   Operations   ----------------------------------------------------
     /** @brief Sets the internal state of this PRNG from current time (empty signature). */
-    virtual void setstate() noexcept override
+    inline virtual void setstate() noexcept override
     {
         setstate(utils::set_random_seed31());
     }
 
     /** @brief Sets the internal state of this PRNG with an integer seed. */
     template<typename IntT>
-    inline void setstate(const IntT seed)
+        requires std::is_integral_v<IntT>
+    inline void setstate(const IntT seed) noexcept
     {
-        if (!std::is_integral<IntT>::value)
-            throw MyBaseClass::IntegralValueTypeException();
-
         utils::SplitMix31 splitmix_31(seed);
-        for( auto& s : MyBaseClass::_state.seed.list)
-            s = splitmix_31();
+        std::ranges::generate(MyBaseClass::_state.seed.list, [&splitmix_31] () { return splitmix_31(); });
     }
 
     /** @brief Sets the internal state of this PRNG with a double seed. */
     inline void setstate(const double seed) noexcept
     {
         const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        setstate(uint32_t(s * double(_MODULO)));
+        setstate(std::uint64_t(s * double(_MODULO)));
     }
 
     /** @brief Restores the internal state of this PRNG from seed. */
@@ -94,7 +93,7 @@ public:
     }
 
     /** @brief Restores the internal state of this PRNG from seed and gauss_next. */
-    inline  void setstate(const state_type& seed, const double gauss_next) noexcept
+    inline void setstate(const state_type& seed, const double gauss_next) noexcept
     {
         MyBaseClass::_state.seed = seed;
         MyBaseClass::_state.gauss_next = gauss_next;

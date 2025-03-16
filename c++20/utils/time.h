@@ -25,16 +25,34 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <array>
+#include <chrono>
+#include <cstdint>
 
 
 //===========================================================================
-/** @brief The internal state of LFib and MRG Pseudo Random Numbers Generators. */
-template<typename ValueType, const size_t SIZE>
-struct ListSeedState
+namespace utils
 {
-    using value_type = ValueType;
+    //=======================================================================
+    /** @brief Returns the current time since epoch as a 64-bits milliseconds integer. */
+    inline const std::uint64_t get_time_ms() noexcept
+    {
+        return std::uint64_t(
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::high_resolution_clock::now().time_since_epoch()
+            ).count()
+        );
+    }
 
-    std::array<ValueType, SIZE>  list;
-    std::uint32_t                index;
-};
+
+    //=======================================================================
+    /** @brief Returns the current time since epoch as a 64-bits microseconds integer. */
+    inline const std::uint64_t get_time_us() noexcept
+    {
+        return std::uint64_t(
+            std::chrono::duration_cast<std::chrono::microseconds>(
+                std::chrono::high_resolution_clock::now().time_since_epoch()
+            ).count()
+        );
+    }
+
+}

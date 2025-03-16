@@ -25,11 +25,12 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <chrono>
+#include <cstdint>
 
 #include "baserandom.h"
-#include "fastrand32.h"
 #include "listseedstate.h"
+#include "utils/seed_generation.h"
+#include "utils/splitmix.h"
 
 
 //===========================================================================
@@ -37,12 +38,12 @@ SOFTWARE.
 *
 *   This module is part of library CppRandLib.
 */
-template<const size_t SIZE>
-class BaseMRG31 : public BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uint32_t, 31>
+template<const std::uint32_t SIZE>
+class BaseMRG32 : public BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uint32_t, 32>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uint32_t, 31>;
+    using MyBaseClass = BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uint32_t, 32>;
 
     using output_type = MyBaseClass::output_type;
     using state_type = MyBaseClass::state_type;
@@ -52,38 +53,35 @@ public:
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
-    inline BaseMRG31() noexcept
+    inline BaseMRG32() noexcept
         : MyBaseClass()
     {}
 
     /** @brief Default Destructor. */
-    virtual ~BaseMRG31() noexcept = default;
+    virtual ~BaseMRG32() noexcept = default;
 
 
     //---   Operations   ----------------------------------------------------
-    /** @brief Sets the internal state of this PRNG from current time (empty signature). */
-    virtual void setstate() noexcept override
+    /** @brief Sets the internal state of this PRNG from shuffled current time (empty signature). */
+    inline virtual void setstate() noexcept override
     {
-        setstate(utils::set_random_seed31());
+        setstate(utils::set_random_seed32());
     }
 
     /** @brief Sets the internal state of this PRNG with an integer seed. */
     template<typename IntT>
-    inline void setstate(const IntT seed)
+        requires std::is_integral_v<IntT>
+    void setstate(const IntT seed) noexcept
     {
-        if (!std::is_integral<IntT>::value)
-            throw MyBaseClass::IntegralValueTypeException();
-
-        utils::SplitMix31 splitmix_31(seed);
-        for( auto& s : MyBaseClass::_state.seed.list)
-            s = splitmix_31();
+        utils::SplitMix32 splitmix_32(seed);
+        std::ranges::generate(MyBaseClass::_state.seed.list, [&]() { return splitmix_32(); });
     }
 
     /** @brief Sets the internal state of this PRNG with a double seed. */
     inline void setstate(const double seed) noexcept
     {
         const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        setstate(uint32_t(s * double(_MODULO)));
+        setstate(std::uint64_t(s * double(_MODULO)));
     }
 
     /** @brief Restores the internal state of this PRNG from seed. */
@@ -102,7 +100,7 @@ public:
     }
 
 
-protected:
-    static constexpr std::uint64_t _MODULO{ 0x7fff'ffffull };
+private:
+    static constexpr std::uint32_t _MODULO{ 0xffff'fffful };
 
 };

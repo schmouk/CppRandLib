@@ -25,8 +25,10 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <cstdint>
+
 #include "baserandom.h"
-#include "utils//seed_generation.h"
+#include "utils/seed_generation.h"
 
 
 //===========================================================================
@@ -35,7 +37,7 @@ SOFTWARE.
 *   Pseudo-random numbers generator - Linear Congruential Generator dedicated
 *   to  63-bits calculations with very short period (about 9.2e+18) and short
 *   time computation.
-* 
+*
 *   This module is part of library CppRandLib.
 *
 *   LCG models evaluate pseudo-random numbers suites x(i) as a simple mathem-
@@ -77,12 +79,12 @@ SOFTWARE.
 *   We give you here below a copy of the table of tests for the LCGs that have
 *   been implemented in CppRandLib, as provided in paper "TestU01, ..."  - see
 *   file README.md.
-* +------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-* | PyRabndLib class | TU01 generator name                | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
-* | ---------------- | ---------------------------------- | --------------- | ------- | ----------- | ------------ | ---------------- | ----------- | -------------- |
-* | FastRand63       | LCG(2^32, 69069, 1)                |     1 x 4-bytes | 2^32    |    3.20     |     0.67     |         11       |     106     |   *too many*   |
-* | FastRand63       | LCG(2^63, 9219741426499971445, 1)  |     2 x 4-bytes | 2^63    |    4.20     |     0.75     |          0       |       5     |       7        |
-* +------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+* +---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+* | PyRabndLib class | TU01 generator name                | Memory Usage | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
+* | ---------------- | ---------------------------------- | ------------ | ------- | ----------- | ------------ | ---------------- | ----------- | -------------- |
+* | FastRand63       | LCG(2^32, 69069, 1)                |  1 x 4-bytes |   2^32  |    3.20     |     0.67     |         11       |     106     |   *too many*   |
+* | FastRand63       | LCG(2^63, 9219741426499971445, 1)  |  2 x 4-bytes |   2^63  |    4.20     |     0.75     |          0       |       5     |       7        |
+* +---------------------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
 *   the expected characteristics for a pretty good PRG;
@@ -96,8 +98,7 @@ SOFTWARE.
 class FastRand63 : public BaseRandom<std::uint64_t, std::uint64_t, 63>
 {
 private:
-    static const std::uint64_t _MODULO_63{ 0x7fff'ffff'ffff'ffffull };
-
+    static constexpr std::uint64_t _MODULO_63{ 0x7fff'ffff'ffff'ffffull };
 
 public:
     //---   Wrappers   ------------------------------------------------------
@@ -119,8 +120,9 @@ public:
 
     /** @brief Valued constructor - double. */
     inline FastRand63(const double seed) noexcept
-        : MyBaseClass(std::uint64_t(seed * double(_MODULO_63)))
-    {}
+    {
+        setstate(seed);
+    }
 
     FastRand63(const FastRand63&) noexcept = default;   //!< default copy constructor.
     FastRand63(FastRand63&&) noexcept = default;        //!< default move constructor.
@@ -146,6 +148,7 @@ public:
     inline void setstate(const double seed) noexcept
     {
         const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        MyBaseClass::setstate(uint64_t(s * double(_MODULO_63)));
+        MyBaseClass::setstate( std::uint64_t(s * double(_MODULO_63)) );
     }
+
 };

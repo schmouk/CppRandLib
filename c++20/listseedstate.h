@@ -30,11 +30,10 @@ SOFTWARE.
 
 //===========================================================================
 /** @brief The internal state of LFib and MRG Pseudo Random Numbers Generators. */
-template<typename ValueType, const size_t SIZE>
-struct ListSeedState
+template<typename ValueType, const std::uint32_t SIZE>
+class ListSeedState
 {
-    using value_type = ValueType;
-
+public:
     std::array<ValueType, SIZE>  list;
     std::uint32_t                index;
 };

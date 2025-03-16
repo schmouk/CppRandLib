@@ -25,12 +25,11 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <chrono>
-#include <cstdint>
+#include <algorithm>
 
 #include "baserandom.h"
-#include "fastrand63.h"
 #include "listseedstate.h"
+#include "utils/seed_generation.h"
 
 
 //===========================================================================
@@ -112,7 +111,7 @@ public:
     using output_type = MyBaseClass::output_type;
     using state_type  = MyBaseClass::state_type;
     
-    static const std::uint32_t SEED_SIZE{ SIZE };
+    static const std::uint32_t SIZE{ SIZE };
 
 
     //---   Constructors / Destructor   -------------------------------------
@@ -160,8 +159,7 @@ public:
     inline void setstate(const std::uint64_t seed) noexcept
     {
         utils::SplitMix64 splitmix_64(seed);
-        for (std::uint64_t& s : MyBaseClass::_state.seed.list)
-            s = splitmix_64();
+        std::ranges::generate( MyBaseClass::_state.seed.list, [&]() { return splitmix_64(); } );
     }
 
     /** @brief Sets the internal state of this PRNG with a double seed. */
@@ -170,7 +168,6 @@ public:
         const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
         setstate(std::uint64_t(s * double(_MODULO)));
     }
-
 
     /** @brief Restores the internal state of this PRNG from seed. */
     inline void setstate(const state_type& seed) noexcept
@@ -198,14 +195,14 @@ public:
 
 protected:
     /** @brief Inits the internal index pointing to the internal list. */
-    inline void _initIndex(const size_t _index) noexcept
+    inline void _initIndex(const std::uint32_t _index) noexcept
     {
         MyBaseClass::_state.seed.index = _index % SIZE;
     }
 
 
 private:
-    static constexpr typename state_type::value_type _MODULO{ 0xffff'ffff'ffff'ffffull };
+    static constexpr state_type _MODULO{ 0xffff'ffff'ffff'ffffull };
 
 };
 
@@ -213,19 +210,19 @@ private:
 //===========================================================================
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
 /** The internal PRNG algorithm. */
-template<const std::uint32_t SIZE, std::uint32_t K >
+template<const std::uint32_t SIZE, const std::uint32_t K >
 const typename BaseLFib64<SIZE, K>::output_type BaseLFib64<SIZE, K>::next() noexcept
 {
     // evaluates indexes in suite for the i-5 and i-17 -th values
     const std::uint32_t index = MyBaseClass::_state.seed.index;
-    const std::uint32_t k = (index < K) ? (index + SEED_SIZE) - K : index - K;
+    const std::uint32_t k = (index < K) ? (index + SIZE) - K : index - K;
 
     // evaluates current value and modifies internal state
     output_type value = MyBaseClass::_state.seed.list[k] + MyBaseClass::_state.seed.list[index];  // automatic 64-bits modulo
     MyBaseClass::_state.seed.list[index] = value;
 
     // next index
-    MyBaseClass::_state.seed.index = (index + 1) % SEED_SIZE;
+    MyBaseClass::_state.seed.index = (index + 1) % SIZE;
 
     // finally, returns output value
     return value;

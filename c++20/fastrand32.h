@@ -25,46 +25,48 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <cstdint>
+
 #include "baserandom.h"
 #include "utils/seed_generation.h"
 
 
 //===========================================================================
 /** @brief Fast Linear Congruential Generator - 32 bits.
-* 
-*   Pseudo-random numbers generator - Linear Congruential Generator dedicated  
-*   to  32-bits  calculations with very short period (about 4.3e+09) but very 
+*
+*   Pseudo-random numbers generator - Linear Congruential Generator dedicated
+*   to  32-bits  calculations with very short period (about 4.3e+09) but very
 *   short time computation.
-* 
+*
 *   This module is part of library CppRandLib.
-*   
+*
 *   LCG models evaluate pseudo-random numbers suites x(i) as a simple mathem-
-*   atical function of 
-*   
-*       x(i) = (a * x(i-1) + c) mod m 
-*    
-*   Results  are  nevertheless  considered  to  be  poor  as  stated  in  the 
-*   evaluation done by Pierre L'Ecuyer and Richard Simard (Universite de 
-*   Montreal) in 'TestU01: A C Library for Empirical Testing of Random Number 
-*   Generators  -  ACM  Transactions  on Mathematical Software,  vol.33  n.4,  
-*   pp.22-40,  August 2007'.  It is not recommended to use such pseudo-random 
+*   atical function of
+*
+*       x(i) = (a * x(i-1) + c) mod m
+*
+*   Results  are  nevertheless  considered  to  be  poor  as  stated  in  the
+*   evaluation done by Pierre L'Ecuyer and Richard Simard (Universite de
+*   Montreal) in 'TestU01: A C Library for Empirical Testing of Random Number
+*   Generators  -  ACM  Transactions  on Mathematical Software,  vol.33  n.4,
+*   pp.22-40,  August 2007'.  It is not recommended to use such pseudo-random
 *   numbers generators for serious simulation applications.
-*  
-*   The implementation of this LCG 32-bits model is based  on  (a=69069, c=1) 
-*   since  these  two  values  have  evaluated to be the 'best' ones for LCGs 
+*
+*   The implementation of this LCG 32-bits model is based  on  (a=69069, c=1)
+*   since  these  two  values  have  evaluated to be the 'best' ones for LCGs
 *   within TestU01 while m = 2^32.
-* 
-*   See FastRand63 for a 2^63 (i.e. about 9.2e+18) period  LC-Generator  with  
-*   low  computation  time  also,  longer  period and quite better randomness 
+*
+*   See FastRand63 for a 2^63 (i.e. about 9.2e+18) period  LC-Generator  with
+*   low  computation  time  also,  longer  period and quite better randomness
 *   characteristics than for FastRand32.
-*     
+*
 *   Furthermore this class is callable:
 * @code
 *     FastRand32 rand{};
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(a) << std::endl;   // prints a uniform pseudo-random value within [0.0, a)
 * @endcode
-*   
+*
 *   Notice that for simulating the roll of a dice you should program:
 * @code
 *     FastRand32 diceRoll();
@@ -73,23 +75,23 @@ SOFTWARE.
 * @endcode
 *
 *   Reminder:
-*   We give you here below a copy of the table of tests for the LCGs that have 
+*   We give you here below a copy of the table of tests for the LCGs that have
 *   been implemented in CppRandLib, as provided in paper "TestU01, ..."  - see
 *   file README.md.
-* +------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-* | PyRabndLib class | TU01 generator name                | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
-* | ---------------- | ---------------------------------- | --------------- | ------- | ----------- | ------------ | ---------------- | ----------- | -------------- |
-* | FastRand32       | LCG(2^32, 69069, 1)                |     1 x 4-bytes | 2^32    |    3.20     |     0.67     |         11       |     106     |   *too many*   |
-* | FastRand63       | LCG(2^63, 9219741426499971445, 1)  |     2 x 4-bytes | 2^63    |    4.20     |     0.75     |          0       |       5     |       7        |
-* +------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+* +---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+* | PyRabndLib class | TU01 generator name                | Memory Usage | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
+* | ---------------- | ---------------------------------- | ------------ | ------- | ----------- | ------------ | ---------------- | ----------- | -------------- |
+* | FastRand32       | LCG(2^32, 69069, 1)                |  1 x 4-bytes |   2^32  |    3.20     |     0.67     |         11       |     106     |   *too many*   |
+* | FastRand63       | LCG(2^63, 9219741426499971445, 1)  |  2 x 4-bytes |   2^63  |    4.20     |     0.75     |          0       |       5     |       7        |
+* +---------------------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
 *   the expected characteristics for a pretty good PRG;
 *
-*   * _crush_ is a bigger set of tests that test more deeply  expected  random 
+*   * _crush_ is a bigger set of tests that test more deeply  expected  random
 *   characteristics
-*   
-*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG 
+*
+*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
 *   should definitively pass.
 */
 class FastRand32 : public BaseRandom<std::uint32_t, std::uint32_t, 32>
@@ -114,7 +116,7 @@ public:
 
     /** @brief Valued construtor (double). */
     inline FastRand32(const double seed) noexcept
-        : MyBaseClass(std::uint32_t(seed * double(0x1'0000'0000ull)))
+        : MyBaseClass(std::uint32_t(seed* double(0x1'0000'0000ull)))
     {}
 
     FastRand32(const FastRand32&) noexcept = default;   //!< default copy constructor.
@@ -126,22 +128,22 @@ public:
     /** @brief The internal PRNG algorithm. */
     virtual inline const output_type next() noexcept override
     {
-        return _state.seed = 69'069 * _state.seed + 1;
+        return _state.seed = 69'069 * _state.seed + 1;  // implicit modulo on 32 bits
     }
 
 
     //---   Operations   ----------------------------------------------------
     /** @brief Sets the internal state of this PRNG with shuffled current time. */
-    inline virtual void setstate() noexcept override
+    virtual void setstate() noexcept override
     {
         MyBaseClass::setstate(utils::set_random_seed32());
     }
 
     /** @brief Sets the internal state of this PRNG with double seed. */
-    inline void setstate(double seed) noexcept
+    inline void setstate(const double seed) noexcept
     {
         const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        MyBaseClass::setstate(state_type(s * double(0xffff'fffful)));
+        MyBaseClass::setstate(std::uint32_t(s * double(0xffff'fffful)));
     }
 
 };
