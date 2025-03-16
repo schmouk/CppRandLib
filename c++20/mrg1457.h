@@ -57,7 +57,7 @@ SOFTWARE.
 *
 *   See Mrg287 for a short period  MR-Generator (2^287,  i.e. 2.49e+86)  with  low
 *   computation time but 256 integers memory consumption.
-*   See MRGRand49507 for a far longer period  (2^49_507,  i.e. 1.2e+14_903)  with  low
+*   See Mrg49507 for a far longer period  (2^49_507,  i.e. 1.2e+14_903)  with  low
 *   computation  time  too  (31-bits  modulus)  but  use  of  more memory space (1_597
 *   integers).
 *
@@ -66,7 +66,6 @@ SOFTWARE.
 *     Mrg1457 rand();
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
-*     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
@@ -97,7 +96,7 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
 *   should definitively pass.
 */
-export class Mrg1457 : public BaseMRG31<47>
+class Mrg1457 : public BaseMRG31<47>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
@@ -113,7 +112,7 @@ public:
     }
 
     /** @brief Valued construtor (integer). */
-    inline Mrg1457(const std::uint32_t seed) noexcept
+    inline Mrg1457(const std::uint64_t seed) noexcept
         : MyBaseClass()
     {
         MyBaseClass::setstate(seed);
