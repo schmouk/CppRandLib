@@ -43,10 +43,10 @@ SOFTWARE.
 *   See FastRand32 for a 2^32 (i.e. 4.3e+9) period LC-Generator and  FastRand63  for a
 *   2^63 (i.e. about 9.2e+18) period LC-Generator with low computation time.
 *
-*   See MRGRand287 for a short period  MR-Generator (2^287,  i.e. 2.49e+86)  with  low
+*   See Mrg287 for a short period  MR-Generator (2^287,  i.e. 2.49e+86)  with  low
 *   computation time but 256 integers memory consumption.
 *
-*   See MRGRand1457 for a  longer  period  MR-Generator  (2^1457,  i.e. 4.0e+438)  and
+*   See Mrg1457 for a  longer  period  MR-Generator  (2^1457,  i.e. 4.0e+438)  and
 *   longer  computation  time  (2^31-1  modulus  calculations)  but  less memory space
 *   consumption (47 integers).
 *
