@@ -170,6 +170,7 @@ public:
         setstate(std::uint64_t(s * double(_MODULO)));
     }
 
+
     /** @brief Restores the internal state of this PRNG from seed. */
     inline void setstate(const state_type& seed) noexcept
     {
@@ -203,7 +204,7 @@ protected:
 
 
 private:
-    static constexpr state_type _MODULO{ 0xffff'ffff'ffff'ffffull };
+    static constexpr typename state_type::value_type _MODULO{ 0xffff'ffff'ffff'ffffull };
 
 };
 
