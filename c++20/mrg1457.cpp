@@ -24,35 +24,27 @@ SOFTWARE.
 
 
 //===========================================================================
-module;
-
-#include <chrono>
-
-
-module mrgrand1457;
-
-import fastrand32;
-import mrgrand1457;
+#include "mrg1457.h"
 
 
 //===========================================================================
 /** The internal PRNG algorithm. */
-const MRGRand1457::output_type MRGRand1457::next() noexcept
+const Mrg1457::output_type Mrg1457::next() noexcept
 {
     // evaluates indexes in suite for the i-1, i-24 (and i-47) -th values
     const size_t index = MyBaseClass::_state.seed.index;
-    const size_t k1    = (index <  1) ? (index + SIZE) -  1 : index -  1;
-    const size_t k24   = (index < 24) ? (index + SIZE) - 24 : index - 24;
+    const size_t k1    = (index <  1) ? (index + MyBaseClass::SEED_SIZE) -  1 : index -  1;
+    const size_t k24   = (index < 24) ? (index + MyBaseClass::SEED_SIZE) - 24 : index - 24;
 
     // evaluates current value and modifies internal state
-    const uint64_t value = (0x0408'0000ull * (uint64_t(MyBaseClass::_state.seed.list[k1]) +
-                                              uint64_t(MyBaseClass::_state.seed.list[k24]) +
-                                              uint64_t(MyBaseClass::_state.seed.list[index]))) % MODULO;
-    MyBaseClass::_state.seed.list[index] = uint32_t(value);
+    std::uint64_t value = (0x0408'0000ull * (std::uint64_t(MyBaseClass::_state.seed.list[k1]) +
+                                             std::uint64_t(MyBaseClass::_state.seed.list[k24]) +
+                                             std::uint64_t(MyBaseClass::_state.seed.list[index]))) % std::uint64_t(_MODULO - 1);
+    MyBaseClass::_state.seed.list[index] = (value &= _MODULO);
 
     // next index
-    MyBaseClass::_state.seed.index = (index + 1) % SIZE;
+    MyBaseClass::_state.seed.index = (index + 1) % MyBaseClass::SEED_SIZE;
 
     // finally, returns pseudo random value
-    return value;
+    return output_type(value);
 }

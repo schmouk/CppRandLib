@@ -24,38 +24,32 @@ SOFTWARE.
 
 
 //===========================================================================
-module;
-
-#include <chrono>
-
-
-module mrgrand287;
-
-import fastrand32; 
+#include "mrg287.h"
 
 
 //===========================================================================
 /** The internal PRNG algorithm. */
-const MRGRand287::output_type MRGRand287::next() noexcept
+const Mrg287::output_type Mrg287::next() noexcept
 {
     // The Marsa - LIBF4 version uses the recurrence
     //    x(i) = (x(i-55) + x(i-119) + x(i-179) + x(i-256)) mod 2 ^ 32
 
     // evaluates indexes in suite
     const size_t index = MyBaseClass::_state.seed.index;
-    const size_t k55 = (index < 55) ? (index + SIZE) - 55 : index - 55;
-    const size_t k119 = (index < 119) ? (index + SIZE) - 119 : index - 119;
-    const size_t k179 = (index < 179) ? (index + SIZE) - 179 : index - 179;
+    const size_t k55 = (index < 55) ? (index + MyBaseClass::SEED_SIZE) - 55 : index - 55;
+    const size_t k119 = (index < 119) ? (index + MyBaseClass::SEED_SIZE) - 119 : index - 119;
+    const size_t k179 = (index < 179) ? (index + MyBaseClass::SEED_SIZE) - 179 : index - 179;
 
     // evaluates current value and modifies internal state
-    const uint32_t value = uint64_t(MyBaseClass::_state.seed.list[k55]) +
-        uint64_t(MyBaseClass::_state.seed.list[k119]) +
-        uint64_t(MyBaseClass::_state.seed.list[k179]) +
-        uint64_t(MyBaseClass::_state.seed.list[index]);  // automatic 32-bits modulo
+    const std::uint32_t value = std::uint64_t(MyBaseClass::_state.seed.list[k55]) +
+        std::uint64_t(MyBaseClass::_state.seed.list[k119]) +
+        std::uint64_t(MyBaseClass::_state.seed.list[k179]) +
+        std::uint64_t(MyBaseClass::_state.seed.list[index]);  // automatic 32-bits modulo
 
     MyBaseClass::_state.seed.list[index] = value;
+
     // next index
-    MyBaseClass::_state.seed.index = (index + 1) % SIZE;
+    MyBaseClass::_state.seed.index = (index + 1) % MyBaseClass::SEED_SIZE;
 
     // finally, returns pseudo random value
     return value;

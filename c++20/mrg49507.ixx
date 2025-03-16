@@ -29,7 +29,7 @@ module;
 #include <chrono>
 
 
-export module mrgrand1457;
+export module mrgrand49507;
 
 import basemrg31;
 import fastrand32;
@@ -58,12 +58,12 @@ import listseedstate;
 *   The implementation of this MRG 31-bits model is  based  on  DX-47-3  pseudo-random
 *   generator  proposed  by  Deng  and  Lin.  The  DX-47-3 version uses the recurrence
 *
-*       x(i) = (2^26+2^19) * (x(i-1) + x(i-24) + x(i-47)) mod (2^31-1)
+*       x(i) = (-2^25-2^7) * (x(i-7) + x(i-1597)) mod (2^31-1)
 *
 *   and offers a period of about 2^1457  - i.e. nearly 4.0e+438 - with low computation
 *   time.
 *
-*   See MRGRand287 for a short period  MR-Generator (2^287,  i.e. 2.49e+86)  with  low
+*   See Mrg287 for a short period  MR-Generator (2^287,  i.e. 2.49e+86)  with  low
 *   computation time but 256 integers memory consumption.
 *   See MRGRand49507 for a far longer period  (2^49_507,  i.e. 1.2e+14_903)  with  low
 *   computation  time  too  (31-bits  modulus)  but  use  of  more memory space (1_597
@@ -71,7 +71,7 @@ import listseedstate;
 *
 *   Furthermore this class is callable:
 * @code
-*     MRGRand1457 rand();
+*     Mrg1457 rand();
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 *     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
@@ -79,7 +79,7 @@ import listseedstate;
 *
 *   Notice that for simulating the roll of a dice you should program:
 * @code
-*     MRGRand1457 diceRoll();
+*     Mrg1457 diceRoll();
 *     std::cout << int(diceRoll(1, 7)) << std::endl;    // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
@@ -91,8 +91,8 @@ import listseedstate;
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
 * | PyRabndLib class | TU01 generator name | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
 * | ---------------- | ------------------- | --------------- | ------- | ----------- | ------------ | ---------------- | ----------- | -------------- |
-* | MRGRand287       | Marsa-LFIB4         |   256 x 4-bytes | 2^287   |    3.40     |     0.8      |          0       |       0     |       0        |
-* | MRGRand1457      | DX-47-3             |    47 x 4-bytes | 2^1457  |    n.a.     |     1.4      |          0       |       0     |       0        |
+* | Mrg287       | Marsa-LFIB4         |   256 x 4-bytes | 2^287   |    3.40     |     0.8      |          0       |       0     |       0        |
+* | Mrg1457      | DX-47-3             |    47 x 4-bytes | 2^1457  |    n.a.     |     1.4      |          0       |       0     |       0        |
 * | MRGRand49507     | DX-1597-2-7         | 1,597 x 4-bytes | 2^49507 |    n.a.     |     1.4      |          0       |       0     |       0        |
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
 *
@@ -105,50 +105,50 @@ import listseedstate;
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
 *   should definitively pass.
 */
-export class MRGRand1457 : public BaseMRG31<47>
+export class MRGRand49507 : public BaseMRG31<1597>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseMRG31<47>;
+    using MyBaseClass = BaseMRG31<1597>;
 
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
-    inline MRGRand1457() noexcept
+    inline MRGRand49507() noexcept
         : MyBaseClass()
     {
         setstate();
     }
 
     /** @brief Valued construtor (integer). */
-    inline MRGRand1457(const uint32_t seed) noexcept
+    inline MRGRand49507(const uint32_t seed) noexcept
         : MyBaseClass()
     {
         setstate(seed);
     }
 
     /** @brief Valued construtor (double). */
-    inline MRGRand1457(const double seed) noexcept
+    inline MRGRand49507(const double seed) noexcept
         : MyBaseClass()
     {
         setstate(seed);
     }
 
     /** @brief Valued constructor (full state). */
-    inline MRGRand1457(const StateType& seed) noexcept
+    inline MRGRand49507(const StateType& seed) noexcept
         : MyBaseClass()
     {
         setstate(seed);
     }
 
     /** @brief Default Copy constructor. */
-    MRGRand1457(const MRGRand1457&) noexcept = default;
+    MRGRand49507(const MRGRand49507&) noexcept = default;
 
     /** @brief Default Move constructor. */
-    MRGRand1457(MRGRand1457&&) noexcept = default;
+    MRGRand49507(MRGRand49507&&) noexcept = default;
 
     /** @brief Default Destructor. */
-    virtual ~MRGRand1457() noexcept = default;
+    virtual ~MRGRand49507() noexcept = default;
 
 
     //---   Internal PRNG   -------------------------------------------------
@@ -157,5 +157,4 @@ public:
     * @return an integer value coded on OUTPUT_BITS bits.
     */
     virtual const output_type next() noexcept override;
-
 };
