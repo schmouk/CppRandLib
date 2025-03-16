@@ -60,9 +60,9 @@ SOFTWARE.
 *
 *   See Mrg287 for  a  short  period  MR-Generator  (2^287,  i.e. 2.49e+86)  with  low
 *   computation time but 256 integers memory consumption.
-*   See Mrg49507 for  a  far  longer  period  (2^49_507,  i.e. 1.2e+14_903)  with  low
-*   computation  time  too  (31-bits  modulus)  but  use  of  more memory space (1_597
-*   integers).
+*   See Mrg1457 for a longer period MR-Generator  (2^1457,  i.e. 4.0e+438)  and longer
+*   computation  time  (2^31-1 modulus calculations) but less memory space consumption
+*   (i.e. 47 integers).
 *
 *   Furthermore this class is callable:
 * @code
@@ -115,7 +115,7 @@ public:
     }
 
     /** @brief Valued construtor (integer). */
-    inline Mrg49507(const uint32_t seed) noexcept
+    inline Mrg49507(const std::uint32_t seed) noexcept
         : MyBaseClass()
     {
         setstate(seed);
