@@ -69,7 +69,7 @@ public:
 
     /** @brief Sets the internal state of this PRNG with an integer seed. */
     template<typename IntT>
-    inline void setstate(const IntT seed) noexcept
+    inline void setstate(const IntT seed)
     {
         if (!std::is_integral<IntT>::value)
             throw MyBaseClass::IntegralValueTypeException();
