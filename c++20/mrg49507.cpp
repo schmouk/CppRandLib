@@ -24,33 +24,25 @@ SOFTWARE.
 
 
 //===========================================================================
-module;
-
-#include <chrono>
-
-
-module mrgrand49507;
-
-import fastrand32;
-import mrgrand49507;
+#include "mrg49507.h"
 
 
 //===========================================================================
 /** The internal PRNG algorithm. */
-const MRGRand49507::output_type MRGRand49507::random() noexcept
+const Mrg49507::output_type Mrg49507::next() noexcept
 {
     // evaluates indexes in suite for the i-1, i-24 (and i-47) -th values
     const size_t index = MyBaseClass::_state.seed.index;
-    const size_t k7 = (index < 7) ? (index + SIZE) - 7 : index - 7;
+    const size_t k7 = (index < 7) ? (index + SEED_SIZE) - 7 : index - 7;
 
     // evaluates current value and modifies internal state
-    const uint64_t value = (0xffff'ffff'fdff'ff80 * (uint64_t(MyBaseClass::_state.seed.list[k7]) +
-                                                     uint64_t(MyBaseClass::_state.seed.list[index]))) % MODULO;
-    MyBaseClass::_state.seed.list[index] = uint32_t(value);
+    std::uint64_t value = (0xffff'ffff'fdff'ff80ull * (std::uint64_t(_state.seed.list[k7]) +
+                                                       std::uint64_t(_state.seed.list[index]))) % (_MODULO - 1);
+    MyBaseClass::_state.seed.list[index] = std::uint32_t(value &= _MODULO);
 
     // next index
-    MyBaseClass::_state.seed.index = (index + 1) % SIZE;
+    MyBaseClass::_state.seed.index = (index + 1) % SEED_SIZE;
 
     // finally, returns pseudo random value
-    return value;
+    return output_type(value);
 }
