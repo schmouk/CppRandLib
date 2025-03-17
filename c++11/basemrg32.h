@@ -62,7 +62,7 @@ SOFTWARE.
 *
 *   Furthermore this class is callable:
 * @code
-*     BaseMRG32 rand();
+*     BaseMRG32 rand(); // CAUTION: Replace 'BaseMRG32' with any inheriting class constructor!
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 * @endcode
