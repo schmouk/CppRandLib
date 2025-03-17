@@ -4,6 +4,8 @@ MIT License
 
 Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
+This file is part of library CppRandLib.
+
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
 in the Software without restriction,  including without limitation the  rights
@@ -37,8 +39,6 @@ SOFTWARE.
 *   Pseudo-random numbers generator - Linear Congruential Generator dedicated
 *   to  32-bits  calculations with very short period (about 4.3e+09) but very
 *   short time computation.
-*
-*   This module is part of library CppRandLib.
 *
 *   LCG models evaluate pseudo-random numbers suites x(i) as a simple mathem-
 *   atical function of

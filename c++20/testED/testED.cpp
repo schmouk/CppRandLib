@@ -1,0 +1,326 @@
+/*
+MIT License
+
+Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+
+This file is part of library CppRandLib.
+
+Permission is hereby granted,  free of charge,  to any person obtaining a copy
+of this software and associated documentation files (the "Software"),  to deal
+in the Software without restriction,  including without limitation the  rights
+to use,  copy,  modify,  merge,  publish,  distribute, sublicense, and/or sell
+copies of the Software,  and  to  permit  persons  to  whom  the  Software  is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS",  WITHOUT WARRANTY OF ANY  KIND,  EXPRESS  OR
+IMPLIED,  INCLUDING  BUT  NOT  LIMITED  TO  THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT  SHALL  THE
+AUTHORS  OR  COPYRIGHT  HOLDERS  BE  LIABLE  FOR  ANY CLAIM,  DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,  ARISING FROM,
+OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+
+//===========================================================================
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+#include <cstring>
+#include <format>
+#include <functional>
+#include <iostream>
+#include <vector>
+
+#include "cpprandlib.h"
+
+
+//===========================================================================
+/** @brief The class of histograms and their associated statistics evaluations. */
+class Histogram
+{
+public:
+    using value_type = std::size_t;
+    using index_type = std::size_t;
+
+    //-----------------------------------------------------------------------
+    inline Histogram(const std::size_t n)
+    {
+        reset(n);
+    }
+
+    virtual ~Histogram() noexcept = default;
+
+    //-----------------------------------------------------------------------
+    inline value_type& operator[] (const index_type index)
+    {
+        return _data[index];
+    }
+
+    inline const value_type& operator[] (const index_type index) const
+    {
+        return _data[index];
+    }
+
+    //-----------------------------------------------------------------------
+    void reset(const std::size_t n)
+    {
+        _data.clear();
+        _data.resize(n);
+        _mean.evaluated = _median.evaluated = _stdev.evaluated = false;
+    }
+
+    //-----------------------------------------------------------------------
+    void print()
+    {
+        std::size_t n{ 0 };
+        for (value_type d : _data) {
+            std::cout << std::format("{:6d} ", d);
+            if (++n % 10 == 0)
+                std::cout << std::endl;
+        }
+        std::cout << std::endl << std::endl;
+    }
+
+    //-----------------------------------------------------------------------
+    const value_type max() const
+    {
+        if (_median)
+            return _data[_data.size() - 1];
+        else
+            return std::ranges::max(_data);
+    }
+
+    //-----------------------------------------------------------------------
+    const value_type min() const
+    {
+        if (_median)
+            return _data[0];
+        else
+            return std::ranges::min(_data);
+    }
+
+    //-----------------------------------------------------------------------
+    const double mean() noexcept
+    {
+        if (!_mean && _data.size() > 0) {
+            _mean.value = std::accumulate(_data.cbegin(), _data.cend(), 0.0) / _data.size();
+            _mean.evaluated = true;
+        }
+
+        return _mean ? _mean.value : 0.0;
+    }
+
+    //-----------------------------------------------------------------------
+    const double median() noexcept
+    {
+        if (!_median && _data.size() > 0) {
+            const std::size_t mid_index{ std::size_t(_data.size() / 2) };
+
+            std::ranges::sort(_data);
+
+            if (_data.size() & 0x01 || _data.size() == 1)
+                _median.value = double(_data[mid_index]);
+            else
+                _median.value = (_data[mid_index - 1] + _data[mid_index]) / 2.0;
+
+            _median.evaluated = true;
+        }
+
+        return _median ? _median.value : 0.0;
+    }
+
+    //-----------------------------------------------------------------------
+    const double stdev()
+    {
+        if (!_stdev && _data.size() > 1) {
+            const double m{ mean() };
+            std::vector<double> diff_m(_data.size());
+
+            std::transform(
+                _data.cbegin(), _data.cend(),
+                diff_m.begin(),
+                std::bind_front(std::minus<double>(), m)
+            );
+            _stdev.value = std::inner_product(
+                diff_m.cbegin(), diff_m.cend(),
+                diff_m.cbegin(),
+                0.0
+            );
+            _stdev.value = std::sqrt(_stdev.value / _data.size());
+
+            _stdev.evaluated = true;
+        }
+
+        return _stdev ? _stdev.value : 0.0;
+    }
+
+
+private:
+    std::vector<value_type> _data{};
+
+    struct _StatItem
+    {
+        double value{ 0.0 };
+        bool evaluated{ false };
+
+        inline operator bool() const
+        {
+            return evaluated;
+        }
+    };
+
+    _StatItem _mean{};
+    _StatItem _median{};
+    _StatItem _stdev{};
+
+};
+
+
+//===========================================================================
+/** @brief Tests the equidistribution of every PRNGs as implemented in library CppRandLib.
+
+    This module is provided with library CppRandLib.
+
+    Copyright(c) 2025 Philippe Schmouker
+
+    The Pseudo-Random Numbers Generators implemented in library  CppRandLib
+    have been chosen as being the best in class ones about their randmoness
+    quality - as evaluated with test program  TestU01(Pierre  L'Ecuyer  and
+    Richard  Simard  (Université  de Montréal) in 'TestU01: A C Library for
+    Empirical Testing of Random  Number  Generators - ACM  Transactions  on
+    Mathematical Software, vol.33 n.4, pp.22 - 40, August 2007').
+
+    One of the main characteristics of these PRNGs is the  equidistribution
+    of the  generated  random numbers.Validating this equidistribution does
+    not ensure the correctness of any implementation  BUT  the  failure  of
+    this  validation  ensures a not correct implementation.This is the sole
+    goal of this litle script.
+
+    This script runs an N-times loop on each algprithm. At  each  loop,  it
+    draws  a  pseudo-random  number in the interval [0; 1, 000) and sets an
+    histogram of the drawings(1, 000 entries). It then evaluates statistics
+    values  mean, median and standard  eviation for each histogram and, for
+    each histogram entry,  evaluates its variance.Should mean value be  far
+    from N/1, 000 or any variance get a too large value, the script outputs
+    all faulty values on console.
+*/
+template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+void test_algo(
+    const std::string& title,
+    BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>* rnd_algo,
+    const std::size_t nb_entries = 1'000,
+    const std::size_t nb_loops = 10'000'000
+)
+{
+    std::string rule{ std::string(title.size() + 1, '-') };
+    std::cout << rule << std::endl << title << std::endl << rule << std::endl;
+
+    Histogram hist(nb_entries);
+
+    double expected_max_diff_mean_median{ (nb_loops / nb_entries) * 0.002 };  // i.e.difference should be less than 0.2 % of expected mean
+    double expected_max_stdev{ 1.04 * sqrt(nb_loops / nb_entries) };          // i.e. + 4 % max over expected stdandard deviation
+    double expected_max_variance{ 4.5 };                                      // this is the absolute value of the expected max on local variance
+
+    if (expected_max_diff_mean_median < 0.5)
+        expected_max_diff_mean_median = 0.5;
+
+    for (std::size_t i = 0; i < nb_loops; ++i) {
+        const std::size_t index{ std::size_t((*rnd_algo)() * nb_entries) };
+        hist[index]++;
+    }
+
+    // uncomment next line if you want to print the content of the histograms
+    //hist.print(); 
+
+    const double mean{ hist.mean() };
+    const double median{ hist.median() };
+    const double stdev{ hist.stdev() };
+
+    std::cout << std::format(
+        "{:d} loops, {:d} entries in histogram, expected mean: {:.1f}\n  mean: {:.1f}, median: {:.1f}, standard deviation: {:.3f}\n",
+        nb_loops, nb_entries, std::round(nb_loops / nb_entries), mean, median, stdev
+    );
+
+
+    bool err{ false };
+
+    if (std::abs(median - mean) > expected_max_diff_mean_median) {
+        err = true;
+        std::cout << std::format(
+            "  incoherence btw. mean and median values, difference expected to be less than {:.1f} <<<<<\n", expected_max_diff_mean_median
+        );
+    }
+
+    if (stdev > expected_max_stdev) {
+        err = true;
+        std::cout << std::format(
+            "  standard deviation is out of range, should be less than {:.3f} <<<<<\n", expected_max_stdev
+        );
+    }
+
+    double min_variance{ 0.0 };
+    double max_variance{ 0.0 };
+
+    for (std::size_t i = 0; i < nb_entries; ++i) {
+        const double variance{ (hist[i] - mean) / stdev };
+        if (std::abs(variance) > expected_max_variance) {
+            err = true;
+            std::cout << std::format(
+                "  entry {:d}: hist = {:d}, variance = {:.4f} seems too large <<<<<\n",
+                i, hist[i], variance
+            );
+        }
+
+        if (variance < min_variance)
+            min_variance = variance;
+        else if (variance > max_variance)
+            max_variance = variance;
+    }
+
+    std::cout << std::format(
+        "  variances are in range [{:.3f} ; {:c}{:.3f}], min: {:d}, max: {:d}\n\n",
+        min_variance, ((max_variance > 0.0) ? '+' : ' '), max_variance, hist.min(), hist.max()
+    );
+
+    std::cout << "  Test " << (err ? "FAILED <<<<<" : "OK.") << std::endl;
+    std::cout << std::endl;
+}
+
+
+//===========================================================================
+int main()
+{
+    // notice: 3217 is a prime number
+
+    FastRand32 frand32;
+    test_algo("FastRand32", &frand32, 3217, 30'000'000);
+
+    FastRand63 frand63;
+    test_algo("FastRand63", &frand63, 3217, 30'000'000);
+
+    LFib78 lfib78;
+    test_algo("LFib78", &lfib78, 3217, 30'000'000);
+
+    LFib116 lfib116;
+    test_algo("LFib116", &lfib116, 3217, 30'000'000);
+
+    LFib668 lfib668;
+    test_algo("LFib668", &lfib668, 3217, 30'000'000);
+
+    LFib1340 lfib1340;
+    test_algo("LFib1340", &lfib1340, 3217, 30'000'000);
+
+    Mrg287 mrg287;
+    test_algo("Mrg287", &mrg287, 3217, 30'000'000);
+
+    Mrg1457 mrg1457;
+    test_algo("Mrg1457", &mrg1457, 3217, 30'000'000);
+
+    Mrg49507 mrg49507;
+    test_algo("Mrg49507", &mrg49507, 3217, 30'000'000);
+
+}
