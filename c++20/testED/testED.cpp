@@ -1,7 +1,9 @@
 /*
 MIT License
 
-Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+
+This file is part of library CppRandLib.
 
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
@@ -34,16 +36,7 @@ SOFTWARE.
 #include <iostream>
 #include <vector>
 
-#include "baserandom.h"
-#include "fastrand32.h"
-#include "fastrand63.h"
-#include "lfib78.h"
-#include "lfib116.h"
-#include "lfib668.h"
-#include "lfib1340.h"
-#include "mrg287.h"
-#include "mrg1457.h"
-#include "mrg49507.h"
+#include "cpprandlib.h"
 
 
 //===========================================================================
