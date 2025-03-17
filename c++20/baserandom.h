@@ -4,6 +4,8 @@ MIT License
 
 Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
+This file is part of library CppRandLib.
+
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
 in the Software without restriction,  including without limitation the  rights
@@ -36,21 +38,23 @@ SOFTWARE.
 //===========================================================================
 /** @brief This is the base class for all pseudo-random numbers generators.
 *
-*   This module is part of library CppRandLib.
-*
 *   Copyright (c) 2022-2025 Philippe Schmouker
 *
-*   See FastRand32 for a 2^32 (i.e. 4.3e+9) period LC-Generator and  FastRand63  for a
+*   See FastRand32 for a 2^32 (i.e. 4.3e+9) period LC-Generator and FastRand63  for  a
 *   2^63 (i.e. about 9.2e+18) period LC-Generator with low computation time.
 *
-*   See Mrg287 for a short period  MR-Generator (2^287,  i.e. 2.49e+86)  with  low
+*   See FastRand63 for a 2^63  (i.e.  about  9.2e+18)  period  LC-Generator  with  low 
+*   computation  time also,  longer period and quite better randomness characteristics
+*   than for FastRand32.
+*
+*   See Mrg287 for  a s hort  period  MR-Generator (2^287,  i.e.  2.49e+86)  with  low
 *   computation time but 256 integers memory consumption.
 *
-*   See Mrg1457 for a  longer  period  MR-Generator  (2^1457,  i.e. 4.0e+438)  and
-*   longer  computation  time  (2^31-1  modulus  calculations)  but  less memory space
-*   consumption (47 integers).
+*   See Mrg1457 for a longer period MR-Generator (2^1457,  i.e. 4.0e+438)  and  longer
+*   computation  time  (2^31-1 modulus calculations) but less memory space consumption
+*   (47 integers).
 *
-*   See Mrg49507 for a far  longer  period  (2^49507,  i.e. 1.2e+14903)  with  low
+*   See  Mrg49507  for  a  far  longer  period  (2^49507,  i.e. 1.2e+14903)  with  low
 *   computation  time  too  (31-bits  modulus)  but  use  of  more  memory space (1597
 *   integers).
 *
@@ -62,7 +66,7 @@ SOFTWARE.
 *
 *   Furthermore this class and all its inheriting sub-classes are callable. Example:
 * @code
-*     BaseRandom rand{}; // CAUTION: this won't compile since BaseRandom is an abstract class. Replace 'BaseRandom' with any inheriting class constructor!
+*     BaseRandom rand{}; // CAUTION: Replace 'BaseRandom' with any inheriting class constructor!
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 *     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
@@ -259,10 +263,13 @@ public:
     //---   Internal PRNG   -------------------------------------------------
     /** @brief The internal PRNG algorithm.
     *
-    * This method is pure virtual. It MUST be overriden in inheriting classes.
+    * This method MUST be overriden in inheriting classes.
     * @return an integer value coded on OUTPUT_BITS bits.
     */
-    virtual inline const output_type next() noexcept = 0;
+    virtual inline const output_type next() noexcept
+    {
+        return output_type(0);
+    }
 
 
     //---   Uniform [0, 1.0) random   ---------------------------------------
@@ -467,7 +474,7 @@ public:
 
         std::vector<std::vector<T>> out(n);
         for (std::vector<T>& o : out) {
-            o.reserve(max.size());
+            o.resize(max.size());
             std::ranges::transform(max, o, [this](const T m) { return this->uniform(m); });
         }
         return out;
@@ -484,7 +491,7 @@ public:
         std::vector<std::vector<T>> out(n);
         const std::size_t count{ std::min(min, max) };
         for (std::vector<T>& o : out) {
-            o.reserve(count);
+            o.resize(count);
             std::ranges::transform(min, max, o, [this](const T min_, const T max_) { return this->uniform(min_, max_); });
         }
         return out;
@@ -612,7 +619,7 @@ public:
             throw SampleCountException();
 
         out.clear();
-        out.reserve(k);
+        out.resize(k);
         std::vector<T> samples{ population };
 
         for (std::size_t i = 0; i < k; ++i) {
@@ -710,7 +717,7 @@ public:
         }
 
         out.clear();
-        out.reserve(k);
+        out.resize(k);
         for (std::size_t i = 0; i < k; ++i) {
             const std::size_t index = uniform(samples_count - i);
             out.emplace_back(samples[index]);
@@ -797,7 +804,8 @@ public:
     *
     * MUST BE IMPLEMENTED in inheriting classes.
     */
-    virtual void setstate() noexcept = 0;
+    virtual void setstate() noexcept
+    {}
 
 
     /** @brief Restores the internal state of this PRNG from seed. */
