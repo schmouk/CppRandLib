@@ -259,10 +259,13 @@ public:
     //---   Internal PRNG   -------------------------------------------------
     /** @brief The internal PRNG algorithm.
     *
-    * This method is pure virtual. It MUST be overriden in inheriting classes.
+    * This method MUST be overriden in inheriting classes.
     * @return an integer value coded on OUTPUT_BITS bits.
     */
-    virtual inline const output_type next() noexcept = 0;
+    virtual inline const output_type next() noexcept
+    {
+        return output_type(0);
+    }
 
 
     //---   Uniform [0, 1.0) random   ---------------------------------------
@@ -467,7 +470,7 @@ public:
 
         std::vector<std::vector<T>> out(n);
         for (std::vector<T>& o : out) {
-            o.reserve(max.size());
+            o.resize(max.size());
             std::ranges::transform(max, o, [this](const T m) { return this->uniform(m); });
         }
         return out;
@@ -484,7 +487,7 @@ public:
         std::vector<std::vector<T>> out(n);
         const std::size_t count{ std::min(min, max) };
         for (std::vector<T>& o : out) {
-            o.reserve(count);
+            o.resize(count);
             std::ranges::transform(min, max, o, [this](const T min_, const T max_) { return this->uniform(min_, max_); });
         }
         return out;
@@ -612,7 +615,7 @@ public:
             throw SampleCountException();
 
         out.clear();
-        out.reserve(k);
+        out.resize(k);
         std::vector<T> samples{ population };
 
         for (std::size_t i = 0; i < k; ++i) {
@@ -710,7 +713,7 @@ public:
         }
 
         out.clear();
-        out.reserve(k);
+        out.resize(k);
         for (std::size_t i = 0; i < k; ++i) {
             const std::size_t index = uniform(samples_count - i);
             out.emplace_back(samples[index]);
@@ -797,7 +800,8 @@ public:
     *
     * MUST BE IMPLEMENTED in inheriting classes.
     */
-    virtual void setstate() noexcept = 0;
+    virtual void setstate() noexcept
+    {}
 
 
     /** @brief Restores the internal state of this PRNG from seed. */
