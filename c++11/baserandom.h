@@ -259,10 +259,13 @@ public:
     //---   Internal PRNG   -------------------------------------------------
     /** @brief The internal PRNG algorithm.
     *
-    * This method is pure virtual. It MUST be implemented in inheriting classes.
+    * This method MUST be implemented in inheriting classes.
     * @return an integer value coded on OUTPUT_BITS bits, related to the uniform distribution.
     */
-    inline virtual const output_type next() noexcept = 0;
+    inline virtual const output_type next()
+    {
+        return output_type(0);
+    }
 
 
     //---   Uniform [0, 1.0) random   ---------------------------------------
@@ -654,7 +657,7 @@ public:
             throw SampleCountException();
 
         out.clear();
-        out.reserve(k);
+        out.resize(k);
         std::vector<T> samples{ population };
 
         for (std::size_t i = 0; i < k; ++i) {
@@ -755,7 +758,7 @@ public:
         }
 
         out.clear();
-        out.reserve(k);
+        out.resize(k);
         for (std::size_t i = 0; i < k; ++i) {
             const std::size_t index = uniform(i, samples_count);
             out.emplace_back(samples[index]);
@@ -804,7 +807,7 @@ public:
             throw SampleCountException();
 
         std::vector<T> samples;
-        samples.reserve(samples_count);
+        samples.resize(samples_count);
         auto c_it = counts.begin();
         for (auto& p : population) {
             for (std::size_t j = std::size_t(*c_it++); j > 0; --j)
@@ -847,7 +850,8 @@ public:
     *
     * MUST BE IMPLEMENTED in inheriting classes.
     */
-    virtual void setstate() noexcept = 0;
+    virtual void setstate() noexcept
+    {}
 
     /** @brief Restores the internal state of this PRNG from seed. */
     inline void setstate(const SeedStateT& seed) noexcept
