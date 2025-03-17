@@ -4,6 +4,8 @@ MIT License
 
 Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
+This file is part of library CppRandLib.
+
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
 in the Software without restriction,  including without limitation the  rights
@@ -32,8 +34,6 @@ SOFTWARE.
 //===========================================================================
 /** @brief A fast 31-bits Multiple Recursive Generator with a somewhat long period (3.98e+438)
 *
-*   This module is part of library CppRandLib.
-*
 *   Multiple Recursive Generators (MRGs)  use  recurrence  to  evaluate  pseudo-random
 *   numbers suites. Recurrence is of the form:
 *
@@ -57,7 +57,7 @@ SOFTWARE.
 *   time.
 *
 *   See MRGRand287 for a short period  MR-Generator (2^287,  i.e. 2.49e+86)  with  low
-*   computation time but 256 integers memory consumption.
+*   computation time but 256 integers memory consumption (2^32 modulus calculations).
 *   See MRGRand49507 for a far longer period  (2^49_507,  i.e. 1.2e+14_903)  with  low
 *   computation  time  too  (31-bits  modulus)  but  use  of  more memory space (1_597
 *   integers).
