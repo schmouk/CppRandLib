@@ -33,16 +33,7 @@ SOFTWARE.
 #include <iostream>
 #include <vector>
 
-#include "baserandom.h"
-#include "fastrand32.h"
-#include "fastrand63.h"
-#include "lfib78.h"
-#include "lfib116.h"
-#include "lfib668.h"
-#include "lfib1340.h"
-#include "mrg287.h"
-#include "mrg1457.h"
-#include "mrg49507.h"
+#include "cpprandlib.h"
 
 
 //===========================================================================
@@ -301,33 +292,33 @@ void test_algo(
 //===========================================================================
 int main()
 {
-    // notice: 2029 and 3217 are prime numbers
+    // notice: 3217 is a prime number
 
     FastRand32 frand32;
-    test_algo("FastRand32", &frand32, 3217, 20'000'000);
+    test_algo("FastRand32", &frand32, 3217, 30'000'000);
 
     FastRand63 frand63;
-    test_algo("FastRand63", &frand63, 3217, 20'000'000);
+    test_algo("FastRand63", &frand63, 3217, 30'000'000);
 
     LFib78 lfib78;
-    test_algo("LFib78", &lfib78, 3217, 20'000'000);
+    test_algo("LFib78", &lfib78, 3217, 30'000'000);
 
     LFib116 lfib116;
-    test_algo("LFib116", &lfib116, 3217, 20'000'000);
+    test_algo("LFib116", &lfib116, 3217, 30'000'000);
 
     LFib668 lfib668;
-    test_algo("LFib668", &lfib668, 3217, 20'000'000);
+    test_algo("LFib668", &lfib668, 3217, 30'000'000);
 
     LFib1340 lfib1340;
-    test_algo("LFib1340", &lfib1340, 3217, 20'000'000);
+    test_algo("LFib1340", &lfib1340, 3217, 30'000'000);
 
     Mrg287 mrg287;
-    test_algo("Mrg287", &mrg287, 3217, 20'000'000);
+    test_algo("Mrg287", &mrg287, 3217, 30'000'000);
 
     Mrg1457 mrg1457;
-    test_algo("Mrg1457", &mrg1457, 3217, 20'000'000);
+    test_algo("Mrg1457", &mrg1457, 3217, 30'000'000);
 
     Mrg49507 mrg49507;
-    test_algo("Mrg49507", &mrg49507, 3217, 20'000'000);
+    test_algo("Mrg49507", &mrg49507, 3217, 30'000'000);
 
 }
