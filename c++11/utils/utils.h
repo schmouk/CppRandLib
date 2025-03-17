@@ -1,7 +1,8 @@
+#pragma once
 /*
 MIT License
 
-Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
 This file is part of library CppRandLib.
 
@@ -26,29 +27,7 @@ SOFTWARE.
 
 
 //===========================================================================
-#include "mrg287.h"
-
-
-//===========================================================================
-/** The internal PRNG algorithm. */
-const Mrg287::output_type Mrg287::next() noexcept
-{
-    // The Marsa - LIBF4 version uses the recurrence
-    //    x(i) = (x(i-55) + x(i-119) + x(i-179) + x(i-256)) mod 2 ^ 32
-
-    // evaluates indexes in suite
-    const std::uint32_t index{ MyBaseClass::_state.seed.index };
-    const std::uint32_t k55{ (index < 55) ? (index + SEED_SIZE) - 55 : index - 55 };
-    const std::uint32_t k119{ (index < 119) ? (index + SEED_SIZE) - 119 : index - 119 };
-    const std::uint32_t k179{ (index < 179) ? (index + SEED_SIZE) - 179 : index - 179 };
-
-    // evaluates current value and modifies internal state
-    const std::uint32_t value{ _state.seed.list[k55] + _state.seed.list[k119] + _state.seed.list[k179] + _state.seed.list[index] };
-    _state.seed.list[index] = value;
-
-    // next index
-    _state.seed.index = (index + 1) & _INDEX_MODULO;
-
-    // finally, returns pseudo random value
-    return value;
-}
+#include "seed_generation.h"
+#include "splitmix.h"
+#include "time.h"
+#include "uint128.h"

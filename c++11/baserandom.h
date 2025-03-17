@@ -4,6 +4,8 @@ MIT License
 
 Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
+This file is part of library CppRandLib.
+
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
 in the Software without restriction,  including without limitation the  rights
@@ -36,12 +38,14 @@ SOFTWARE.
 //===========================================================================
 /** @brief This is the base class for all pseudo-random numbers generators.
 *
-*   This module is part of library CppRandLib.
-*
 *   Copyright (c) 2022-2025 Philippe Schmouker
 *
 *   See FastRand32 for a 2^32 (i.e. 4.3e+9) period LC-Generator and  FastRand63  for a
 *   2^63 (i.e. about 9.2e+18) period LC-Generator with low computation time.
+*
+*   See FastRand63 for a 2^63  (i.e.  about  9.2e+18)  period  LC-Generator  with  low
+*   computation  time also,  longer period and quite better randomness characteristics 
+*   than for FastRand32.
 *
 *   See MRGRand287 for a short period  MR-Generator (2^287,  i.e. 2.49e+86)  with  low
 *   computation time but 256 integers memory consumption.
@@ -62,7 +66,7 @@ SOFTWARE.
 *
 *   Furthermore this class and all its inheriting sub-classes are callable. Example:
 * @code
-*     BaseRandom rand{}; // CAUTION: this won't compile since BaseRandom is an abstract class. Replace 'BaseRandom' with any inheriting class constructor!
+*     BaseRandom rand{}; // CAUTION: Replace 'BaseRandom' with any inheriting class constructor!
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 *     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
@@ -259,10 +263,13 @@ public:
     //---   Internal PRNG   -------------------------------------------------
     /** @brief The internal PRNG algorithm.
     *
-    * This method is pure virtual. It MUST be implemented in inheriting classes.
+    * This method MUST be implemented in inheriting classes.
     * @return an integer value coded on OUTPUT_BITS bits, related to the uniform distribution.
     */
-    inline virtual const output_type next() noexcept = 0;
+    inline virtual const output_type next()
+    {
+        return output_type(0);
+    }
 
 
     //---   Uniform [0, 1.0) random   ---------------------------------------
@@ -654,7 +661,7 @@ public:
             throw SampleCountException();
 
         out.clear();
-        out.reserve(k);
+        out.resize(k);
         std::vector<T> samples{ population };
 
         for (std::size_t i = 0; i < k; ++i) {
@@ -755,7 +762,7 @@ public:
         }
 
         out.clear();
-        out.reserve(k);
+        out.resize(k);
         for (std::size_t i = 0; i < k; ++i) {
             const std::size_t index = uniform(i, samples_count);
             out.emplace_back(samples[index]);
@@ -804,7 +811,7 @@ public:
             throw SampleCountException();
 
         std::vector<T> samples;
-        samples.reserve(samples_count);
+        samples.resize(samples_count);
         auto c_it = counts.begin();
         for (auto& p : population) {
             for (std::size_t j = std::size_t(*c_it++); j > 0; --j)
@@ -847,7 +854,8 @@ public:
     *
     * MUST BE IMPLEMENTED in inheriting classes.
     */
-    virtual void setstate() noexcept = 0;
+    virtual void setstate() noexcept
+    {}
 
     /** @brief Restores the internal state of this PRNG from seed. */
     inline void setstate(const SeedStateT& seed) noexcept
