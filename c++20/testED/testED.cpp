@@ -32,7 +32,6 @@ SOFTWARE.
 #include <cstring>
 #include <format>
 #include <functional>
-#include <iomanip>
 #include <iostream>
 #include <vector>
 
