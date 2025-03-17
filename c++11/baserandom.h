@@ -43,6 +43,10 @@ SOFTWARE.
 *   See FastRand32 for a 2^32 (i.e. 4.3e+9) period LC-Generator and  FastRand63  for a
 *   2^63 (i.e. about 9.2e+18) period LC-Generator with low computation time.
 *
+*   See FastRand63 for a 2^63  (i.e.  about  9.2e+18)  period  LC-Generator  with  low
+*   computation  time also,  longer period and quite better randomness characteristics 
+*   than for FastRand32.
+*
 *   See MRGRand287 for a short period  MR-Generator (2^287,  i.e. 2.49e+86)  with  low
 *   computation time but 256 integers memory consumption.
 *
@@ -62,7 +66,7 @@ SOFTWARE.
 *
 *   Furthermore this class and all its inheriting sub-classes are callable. Example:
 * @code
-*     BaseRandom rand{}; // CAUTION: this won't compile since BaseRandom is an abstract class. Replace 'BaseRandom' with any inheriting class constructor!
+*     BaseRandom rand{}; // CAUTION: Replace 'BaseRandom' with any inheriting class constructor!
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 *     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)

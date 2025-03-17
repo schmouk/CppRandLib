@@ -51,31 +51,6 @@ SOFTWARE.
 *   vol.33 n.4, pp.22-40, August 2007".  It is recommended to use  such  pseudo-random
 *   numbers generators rather than LCG ones for serious simulation applications.
 *
-*   The implementation of this MRG 32-bits  model  is  based  on  a  Lagged  Fibonacci
-*   generator (LFIB), the Marsa-LFIB4 one.
-*   Lagged Fibonacci generators LFib( m, r, k, op) use the recurrence
-*
-*       x(i) = (x(i-r) op (x(i-k)) mod m
-*
-*   where op is an operation that can be
-*       + (addition),
-*       - (substraction),
-*       * (multiplication),
-*       ^(bitwise exclusive-or).
-*
-*   With the + or - operation, such generators are in fact MRGs. They offer very large
-*   periods  with  the  best  known  results in the evaluation of their randomness, as
-*   stated in the evaluation done by Pierre L'Ecuyer and Richard Simard (Universite de
-*   Montreal) paper.
-*
-*   The Marsa-LIBF4 version uses the recurrence
-*
-*       x(i) = (x(i-55) + x(i-119) + x(i-179) + x(i-256)) mod 2^32
-*
-*   and offers a period of about 2^287 - i.e. 2.49e+86 - with low computation time due
-*   to the use of a 2^32 modulo.
-*
-*
 *   See Mrg287 for  a  short  period  MR-Generator  (2^287,  i.e. 2.49e+86)  with  low
 *   computation time but 256 integers memory consumption (2^32 modulus calculations).
 *   See Mrg1457 for a longer period MR-Generator  (2^1457,  i.e. 4.0e+438)  and longer
@@ -87,14 +62,14 @@ SOFTWARE.
 *
 *   Furthermore this class is callable:
 * @code
-*     Mrg287 rand();
+*     BaseMRG32 rand();
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
 * @code
-*     Mrg287 diceRoll();
+*     BaseMRG32 diceRoll();
 *     std::cout << int(diceRoll(1, 7)) << std::endl;    // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
