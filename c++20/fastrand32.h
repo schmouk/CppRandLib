@@ -40,8 +40,6 @@ SOFTWARE.
 *   to  32-bits  calculations with very short period (about 4.3e+09) but very
 *   short time computation.
 *
-*   This module is part of library CppRandLib.
-*
 *   LCG models evaluate pseudo-random numbers suites x(i) as a simple mathem-
 *   atical function of
 *

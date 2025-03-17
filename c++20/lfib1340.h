@@ -36,8 +36,6 @@ SOFTWARE.
 *   Pseudo-random numbers generator  -  Definition of a fast 64-bits Lagged  Fibonacci
 *   Generator with long period (2.4e+403).
 *
-*   This module is part of library CppRandLib.
-*
 *   Lagged Fibonacci generators LFib( m, r, k, op) use the recurrence
 *
 *       x(i) = (x(i-r) op (x(i-k)) mod m

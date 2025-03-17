@@ -36,8 +36,6 @@ SOFTWARE.
 *   Pseudo-random numbers generator  -  Definition of a fast 64-bits Lagged  Fibonacci
 *   Generator with quite long period (1.2e+201).
 *
-*   This module is part of library PyRandLib.
-*
 *   Lagged Fibonacci generators LFib( m, r, k, op) use the recurrence
 *
 *       x(i) = (x(i-r) op (x(i-k)) mod m

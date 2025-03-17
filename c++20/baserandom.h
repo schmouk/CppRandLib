@@ -38,8 +38,6 @@ SOFTWARE.
 //===========================================================================
 /** @brief This is the base class for all pseudo-random numbers generators.
 *
-*   This module is part of library CppRandLib.
-*
 *   Copyright (c) 2022-2025 Philippe Schmouker
 *
 *   See FastRand32 for a 2^32 (i.e. 4.3e+9) period LC-Generator and  FastRand63  for a

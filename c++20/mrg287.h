@@ -34,8 +34,6 @@ SOFTWARE.
 //===========================================================================
 /** @brief A fast 32-bits Multiple Recursive Generator with a long period (2.49e+86).
 *
-*   This module is part of library CppRandLib.
-*
 *   Multiple Recursive Generators (MRGs)  use  recurrence  to  evaluate  pseudo-random
 *   numbers suites. Recurrence is of the form:
 *
