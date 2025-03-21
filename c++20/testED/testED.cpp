@@ -143,7 +143,7 @@ public:
             std::transform(
                 _data.cbegin(), _data.cend(),
                 diff_m.begin(),
-                std::bind_front(std::minus<double>(), m)
+                [m](const std::uint64_t d) { return double(d) - m; }
             );
             _stdev.value = std::inner_product(
                 diff_m.cbegin(), diff_m.cend(),
