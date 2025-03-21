@@ -34,7 +34,7 @@ SOFTWARE.
 
 
 //===========================================================================
-/** @brief A fast 31-bits Multiple Recursive Generator with a somewhat long period (3.98e+438)
+/** @brief A fast 31-bits Multiple Recursive Generator with a very long period (1.2e+14,903)
 *
 *   Multiple Recursive Generators (MRGs)  use  recurrence  to  evaluate  pseudo-random
 *   numbers suites. Recurrence is of the form:
@@ -50,13 +50,13 @@ SOFTWARE.
 *   vol.33 n.4, pp.22-40, August 2007".  It is recommended to use  such  pseudo-random
 *   numbers generators rather than LCG ones for serious simulation applications.
 *
-*   The implementation of this MRG 31-bits model is  based  on  DX-47-3  pseudo-random
-*   generator  proposed  by  Deng  and  Lin.  The  DX-47-3 version uses the recurrence
-*
+*   The implementation of this MRG 31-bits model is based on the 'DX-1597-2-7' MRG. It
+*   uses the recurrence
+*   
 *       x(i) = (-2^25-2^7) * (x(i-7) + x(i-1597)) mod (2^31-1)
-*
-*   and offers a period of about 2^1457  - i.e. nearly 4.0e+438 - with low computation
-*   time.
+*       
+*   and offers a  period  of  about  2^49,507  -  i.e. nearly 1.2e+14,903  -  with low 
+*   computation time.
 *
 *   See Mrg287 for  a  short  period  MR-Generator  (2^287,  i.e. 2.49e+86)  with  low
 *   computation time but 256 integers memory consumption (2^32 modulus calculations).
@@ -91,12 +91,12 @@ SOFTWARE.
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
-*   the expected characteristics for a pretty good PRG;
+*   the expected characteristics for a pretty good PRNG;
 *
 *   * _crush_ is a bigger set of tests that test more deeply  expected  random
 *   characteristics;
 *
-*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
+*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
 class Mrg49507 : public BaseMRG31<1597>
@@ -110,30 +110,20 @@ public:
     /** @brief Empty constructor. */
     inline Mrg49507() noexcept
         : MyBaseClass()
-    {
-        setstate();
-    }
+    {}
 
-    /** @brief Valued construtor (integer). */
-    inline Mrg49507(const uint32_t seed) noexcept
+    /** @brief Valued construtor. */
+    template<typename T>
+    inline Mrg49507(const T seed_) noexcept
         : MyBaseClass()
     {
-        setstate(seed);
-    }
-
-    /** @brief Valued construtor (double). */
-    inline Mrg49507(const double seed) noexcept
-        : MyBaseClass()
-    {
-        setstate(seed);
+        MyBaseClass::MyBaseClass::seed(seed_);
     }
 
     /** @brief Valued constructor (full state). */
     inline Mrg49507(const state_type& seed) noexcept
-        : MyBaseClass()
-    {
-        setstate(seed);
-    }
+        : MyBaseClass(seed)
+    {}
 
     Mrg49507(const Mrg49507&) noexcept = default;   //!< defaul copy constructor.
     Mrg49507(Mrg49507&&) noexcept = default;        //!< default move constructor.
@@ -146,4 +136,5 @@ public:
     * @return an integer value coded on OUTPUT_BITS bits.
     */
     virtual const output_type next() noexcept override;
+
 };

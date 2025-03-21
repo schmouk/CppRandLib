@@ -33,17 +33,23 @@ SOFTWARE.
 /** The internal PRNG algorithm. */
 const Mrg49507::output_type Mrg49507::next() noexcept
 {
-    // evaluates indexes in suite for the i-1, i-24 (and i-47) -th values
-    const std::uint32_t index = MyBaseClass::_state.seed.index;
-    const std::uint32_t k7 = (index < 7) ? (index + SEED_SIZE) - 7 : index - 7;
+    // The DX-1597-2-7 algorithm uses the recurrence
+    //    x(i) = (-2 ^ 25 - 2 ^ 7) * (x(i - 7) + x(i - 1597)) mod(2 ^ 31 - 1)
+
+    // evaluates indexes in suite
+    const std::uint32_t index{ _internal_state.state.index };
+    const std::uint32_t k7{ (index < 7) ? (index + SEED_SIZE) - 7 : index - 7 };
 
     // evaluates current value and modifies internal state
-    const std::uint64_t value = (0xffff'ffff'fdff'ff80ull * (std::uint64_t(MyBaseClass::_state.seed.list[k7]) +
-                                                             std::uint64_t(MyBaseClass::_state.seed.list[index]))) % _MODULO;
-    MyBaseClass::_state.seed.list[index] = uint32_t(value);
+    const std::uint64_t value{ (0xffff'ffff'fdff'ff80ull * (
+            std::uint64_t(_internal_state.state.list[k7]) +
+            std::uint64_t(_internal_state.state.list[index])
+        )) % _MODULO
+    };
+    _internal_state.state.list[index] = uint32_t(value);
 
     // next index
-    MyBaseClass::_state.seed.index = (index + 1) % SEED_SIZE;
+    _internal_state.state.index = (index + 1) % SEED_SIZE;
 
     // finally, returns pseudo random value in range [0.0, 1.0)
     return output_type(value);

@@ -2,7 +2,7 @@
 /*
 MIT License
 
-Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
 This file is part of library CppRandLib.
 
@@ -27,23 +27,36 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <array>
 #include <vector>
 
 
 //===========================================================================
-/** @brief The internal state of LFib and MRG Pseudo Random Numbers Generators. */
-template<typename ValueType, const size_t SIZE>
-struct ListSeedState
+namespace utils
 {
-    using value_type = ValueType;
-
-    std::vector<ValueType> list{};
-    std::uint32_t          index{ 0 };
-
-    inline ListSeedState() noexcept
-        : index(0)
+    //-----------------------------------------------------------------------
+    template<typename ContainerType>
+    class is_indexable
     {
-        list.resize(SIZE);
-    }
+    public:
+        static const bool value{ false };
+    };
 
-};
+
+    //-----------------------------------------------------------------------
+    template<typename T>
+    class is_indexable<std::vector<T>>
+    {
+    public:
+        static const bool value{ true };
+    };
+
+    //-----------------------------------------------------------------------
+    template<typename T, const std::size_t n>
+    class is_indexable<std::array<T, n>>
+    {
+    public:
+        static const bool value{ true };
+    };
+
+}

@@ -4,6 +4,8 @@ MIT License
 
 Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
+This file is part of library CppRandLib.
+
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
 in the Software without restriction,  including without limitation the  rights
@@ -25,14 +27,15 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <cstdint>
+#include <type_traits>
+
 #include "basemrg32.h"
 #include "listseedstate.h"
 
 
 //===========================================================================
 /** @brief A fast 32-bits Multiple Recursive Generator with a long period (2.49e+86).
-*
-*   This module is part of library CppRandLib.
 *
 *   Multiple Recursive Generators (MRGs)  use  recurrence  to  evaluate  pseudo-random
 *   numbers suites. Recurrence is of the form:
@@ -75,8 +78,8 @@ SOFTWARE.
 *   See Mrg1457 for a longer period MR-Generator  (2^1457,  i.e. 4.0e+438)  and longer
 *   computation  time  (2^31-1 modulus calculations) but less memory space consumption
 *   (i.e. 47 integers).
-*   See Mrg49507 for  a  far  longer  period  (2^49_507,  i.e. 1.2e+14_903)  with  low
-*   computation  time  too  (31-bits  modulus)  but  use  of  more memory space (1_597
+*   See Mrg49507 for  a  far  longer  period  (2^49,507,  i.e. 1.2e+14,903)  with  low
+*   computation  time  too  (31-bits  modulus)  but  use  of  more memory space (1,597
 *   integers).
 *
 *   Furthermore this class is callable:
@@ -120,35 +123,30 @@ public:
     //---   Wrappers   ------------------------------------------------------
     using MyBaseClass = BaseMRG32<256>;
 
+    using output_type = MyBaseClass::output_type;
+    using state_type = MyBaseClass::state_type;
+    using value_type = typename state_type::value_type;
+
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
     inline Mrg287() noexcept
         : MyBaseClass()
-    {
-        MyBaseClass::setstate();
-    }
+    {}
 
-    /** @brief Valued construtor (integer). */
-    inline Mrg287(const std::uint32_t seed) noexcept
+    /** @brief Valued construtor. */
+    template<typename T>
+        requires std::is_arithmetic_v<T>
+    inline Mrg287(const T seed_) noexcept
         : MyBaseClass()
     {
-        MyBaseClass::setstate(seed);
-    }
-
-    /** @brief Valued construtor (double). */
-    inline Mrg287(const double seed) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::setstate(seed);
+        MyBaseClass::MyBaseClass::seed(seed_);
     }
 
     /** @brief Valued constructor (full state). */
-    inline Mrg287(const state_type& seed) noexcept
-        : MyBaseClass()
-    {
-        setstate(seed);
-    }
+    inline Mrg287(const state_type& seed_internal_state) noexcept
+        : MyBaseClass(seed_internal_state)
+    {}
 
     Mrg287(const Mrg287&) noexcept = default;   //!< default copy constructor.
     Mrg287(Mrg287&&) noexcept = default;        //!< default move constructor.

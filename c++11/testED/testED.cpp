@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
@@ -41,11 +41,11 @@ SOFTWARE.
 class Histogram
 {
 public:
-    using value_type = std::size_t;
-    using index_type = std::size_t;
+    using value_type = std::uint32_t;
+    using index_type = std::uint32_t;
 
     //-----------------------------------------------------------------------
-    inline Histogram(const std::size_t n)
+    inline Histogram(const std::uint32_t n)
     {
         reset(n);
     }
@@ -64,7 +64,7 @@ public:
     }
 
     //-----------------------------------------------------------------------
-    void reset(const std::size_t n)
+    void reset(const std::uint32_t n)
     {
         _data.clear();
         _data.resize(n);
@@ -74,7 +74,7 @@ public:
     //-----------------------------------------------------------------------
     void print()
     {
-        std::size_t n{ 0 };
+        std::uint32_t n{ 0 };
         for (value_type d : _data) {
             std::cout << std::setw(6) << d << ' ';
             if (++n % 10 == 0)
@@ -110,7 +110,7 @@ public:
     const double median() noexcept
     {
         if (!_median && _data.size() > 0) {
-            const std::size_t mid_index{ std::size_t(_data.size() / 2) };
+            const std::uint32_t mid_index{ std::uint32_t(_data.size() / 2) };
             
             std::sort(_data.begin(), _data.end());
 
@@ -200,12 +200,13 @@ private:
     from N/1, 000 or any variance get a too large value, the script outputs 
     all faulty values on console.
 */
-template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 void test_algo(
     const std::string& title,
-    BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>* rnd_algo,
-    const std::size_t nb_entries = 1'000,
-    const std::size_t nb_loops = 10'000'000
+    BaseRandom<StateT, OutputT, OUTPUT_BITS>* rnd_algo_ptr,
+    const std::uint32_t nb_entries = 3'217,  // notice: 3217 is a prime number
+    const std::uint32_t nb_loops = 30'000'000,
+    const bool print_hist = false
 )
 {
     std::string rule{ std::string(title.size() + 1, '-') };
@@ -220,13 +221,13 @@ void test_algo(
     if (expected_max_diff_mean_median < 0.5)
         expected_max_diff_mean_median = 0.5;
 
-    for (std::size_t i = 0; i < nb_loops; ++i) {
-        const std::size_t index{ std::size_t((*rnd_algo)() * nb_entries) };
+    for (std::uint32_t i = 0; i < nb_loops; ++i) {
+        const std::uint32_t index{ std::uint32_t((*rnd_algo_ptr)() * nb_entries) };
         hist[index]++;
     }
 
-    // uncomment next line if you want to print the content of the histograms
-    //hist.print(); 
+    if (print_hist)
+        hist.print(); 
 
     const double mean{ hist.mean() };
     const double median{ hist.median() };
@@ -262,7 +263,7 @@ void test_algo(
     double min_variance{ 0.0 };
     double max_variance{ 0.0 };
 
-    for (std::size_t i = 0; i < nb_entries; ++i) {
+    for (std::uint32_t i = 0; i < nb_entries; ++i) {
         const double variance{ (hist[i] - mean) / stdev };
         if (std::abs(variance) > expected_max_variance) {
             err = true;
@@ -288,37 +289,48 @@ void test_algo(
     std::cout << std::endl;
 }
 
+//---------------------------------------------------------------------------
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+inline void test_algo(
+    const std::string& title,
+    BaseRandom<StateT, OutputT, OUTPUT_BITS>* rnd_algo_ptr,
+    const bool print_hist
+)
+{
+    test_algo(title, rnd_algo_ptr, 3'217, 30'000'000, print_hist);
+}
+
 
 //===========================================================================
 int main()
 {
     // notice: 3217 is a prime number
 
-    FastRand32 frand32;
-    test_algo("FastRand32", &frand32, 3217, 30'000'000);
+        FastRand32 frand32;
+        test_algo("FastRand32", &frand32);
 
-    FastRand63 frand63;
-    test_algo("FastRand63", &frand63, 3217, 30'000'000);
+        FastRand63 frand63;
+        test_algo("FastRand63", &frand63);
 
-    LFib78 lfib78;
-    test_algo("LFib78", &lfib78, 3217, 30'000'000);
+        LFib78 lfib78;
+        test_algo("LFib78", &lfib78);
 
-    LFib116 lfib116;
-    test_algo("LFib116", &lfib116, 3217, 30'000'000);
+        LFib116 lfib116;
+        test_algo("LFib116", &lfib116);
 
-    LFib668 lfib668;
-    test_algo("LFib668", &lfib668, 3217, 30'000'000);
+        LFib668 lfib668;
+        test_algo("LFib668", &lfib668);
 
-    LFib1340 lfib1340;
-    test_algo("LFib1340", &lfib1340, 3217, 30'000'000);
+        LFib1340 lfib1340;
+        test_algo("LFib1340", &lfib1340);
+            
+        Mrg287 mrg287;
+        test_algo("Mrg287", &mrg287);
 
-    Mrg287 mrg287;
-    test_algo("Mrg287", &mrg287, 3217, 30'000'000);
+        Mrg1457 mrg1457;
+        test_algo("Mrg1457", &mrg1457);
 
-    Mrg1457 mrg1457;
-    test_algo("Mrg1457", &mrg1457, 3217, 30'000'000);
-
-    Mrg49507 mrg49507;
-    test_algo("Mrg49507", &mrg49507, 3217, 30'000'000);
+        Mrg49507 mrg49507;
+        test_algo("Mrg49507", &mrg49507);
 
 }
