@@ -27,7 +27,7 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <chrono>
+#include <cstdint>
 
 #include "baserandom.h"
 #include "listseedstate.h"

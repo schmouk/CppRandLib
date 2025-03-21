@@ -37,19 +37,19 @@ const Mrg49507::output_type Mrg49507::next() noexcept
     //    x(i) = (-2 ^ 25 - 2 ^ 7) * (x(i - 7) + x(i - 1597)) mod(2 ^ 31 - 1)
 
     // evaluates indexes in suite
-    const std::uint32_t index{ MyBaseClass::_internal_state.state.index };
+    const std::uint32_t index{ _internal_state.state.index };
     const std::uint32_t k7{ (index < 7) ? (index + SEED_SIZE) - 7 : index - 7 };
 
     // evaluates current value and modifies internal state
     const std::uint64_t value{ (0xffff'ffff'fdff'ff80ull * (
-            std::uint64_t(MyBaseClass::_internal_state.state.list[k7]) +
-            std::uint64_t(MyBaseClass::_internal_state.state.list[index])
+            std::uint64_t(_internal_state.state.list[k7]) +
+            std::uint64_t(_internal_state.state.list[index])
         )) % _MODULO
     };
-    MyBaseClass::_internal_state.state.list[index] = uint32_t(value);
+    _internal_state.state.list[index] = uint32_t(value);
 
     // next index
-    MyBaseClass::_internal_state.state.index = (index + 1) % SEED_SIZE;
+    _internal_state.state.index = (index + 1) % SEED_SIZE;
 
     // finally, returns pseudo random value in range [0.0, 1.0)
     return output_type(value);

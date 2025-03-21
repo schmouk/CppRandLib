@@ -37,7 +37,7 @@ const Mrg287::output_type Mrg287::next() noexcept
     //    x(i) = (x(i-55) + x(i-119) + x(i-179) + x(i-256)) mod 2 ^ 32
 
     // evaluates indexes in suite
-    const std::uint32_t index{ MyBaseClass::_internal_state.state.index };
+    const std::uint32_t index{ _internal_state.state.index };
     const std::uint32_t k55{ (index < 55) ? (index + SEED_SIZE) - 55 : index - 55 };
     const std::uint32_t k119{ (index < 119) ? (index + SEED_SIZE) - 119 : index - 119 };
     const std::uint32_t k179{ (index < 179) ? (index + SEED_SIZE) - 179 : index - 179 };

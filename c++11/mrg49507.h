@@ -55,7 +55,7 @@ SOFTWARE.
 *   
 *       x(i) = (-2^25-2^7) * (x(i-7) + x(i-1597)) mod (2^31-1)
 *       
-*   and offers a  period  of  about  2^49_507  -  i.e. nearly 1.2e+14,903  -  with low 
+*   and offers a  period  of  about  2^49,507  -  i.e. nearly 1.2e+14,903  -  with low 
 *   computation time.
 *
 *   See Mrg287 for  a  short  period  MR-Generator  (2^287,  i.e. 2.49e+86)  with  low

@@ -27,6 +27,8 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <cstdint>
+
 #include "baserandom.h"
 #include "utils/seed_generation.h"
 
@@ -109,12 +111,11 @@ public:
 
     /** @brief Valued construtor. */
     template<typename T>
-    inline FastRand32(const T seed_)
+    inline FastRand32(const T seed_) noexcept
         : MyBaseClass()
     {
         seed(seed_);
     }
-
 
     FastRand32(const FastRand32&) noexcept = default;   //!< default copy constructor.
     FastRand32(FastRand32&&) noexcept = default;        //!< default move constructor.

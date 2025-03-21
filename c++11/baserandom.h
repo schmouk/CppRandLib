@@ -31,19 +31,16 @@ SOFTWARE.
 #include <array>
 #include <cmath>
 #include <cstdint>
-#include <limits>
 #include <numeric>
 #include <stdexcept>
-#include <type_traits>
 #include <vector>
 
 #include "utils/seed_generation.h"
+#include "utils/type_traits.h"
 
 
 //===========================================================================
 /** @brief This is the base class for all pseudo-random numbers generators.
-*
-*   Copyright (c) 2022-2025 Philippe Schmouker
 *
 *   See FastRand32 for a 2^32 (i.e. 4.3e+9) period LC-Generator and  FastRand63  for a
 *   2^63 (i.e. about 9.2e+18) period LC-Generator with low computation time.
@@ -71,10 +68,9 @@ SOFTWARE.
 *
 *   Furthermore this class and all its inheriting sub-classes are callable. Example:
 * @code
-*     BaseRandom rand{}; // CAUTION: Replace 'BaseRandom' with any inheriting class constructor!
+*     BaseRandom rand{}; // CAUTION: Rrplace 'BaseRandom' with any inheriting class constructor!
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
-*     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
 * @endcode
 *
 *   Please notice that for simulating the roll of a dice you may use any of:
@@ -366,6 +362,7 @@ public:
     template<typename CountT, typename ProbaT>
     const CountT binomialvariate(CountT n = 1, const ProbaT p = ProbaT(0.5));
 
+
     /** @brief Chooses a random element from a non-empty sequence (std::vector). */
     template<typename T>
     const T& choice(const std::vector<T>& seq);
@@ -389,7 +386,7 @@ public:
 
     /** @brief Returns an array of n values that are uniformly contained within range [0.0, 1.0). */
     template<typename T, const std::size_t n>
-    inline std::array<T, n> n_evaluate();
+    inline std::array<T, n> n_evaluate() noexcept;
 
     /** @brief Returns n values that are uniformly contained within range [0, max). */
     template<typename T, const std::size_t n>
@@ -412,7 +409,7 @@ public:
     *
     * This method should not be used for generating security tokens.
     */
-    inline std::vector<std::uint8_t> randbytes(const std::uint32_t n);
+    inline std::vector<std::uint8_t> randbytes(const std::size_t n);
 
 
     /** @brief Returns random integer in range [a, b], including both end points.
@@ -965,28 +962,6 @@ protected:
     virtual inline void _setstate(const std::uint64_t seed) noexcept
     {}
 
-
-private:
-    template<typename ContainerType>
-    class m_is_indexable
-    {
-    public:
-        static constexpr bool value{ false };
-    };
-
-    template<typename T>
-    class m_is_indexable<std::vector<T>>
-    {
-    public:
-        static constexpr bool value{ true };
-    };
-
-    template<typename T, const std::size_t n>
-    class m_is_indexable<std::array<T, n>>
-    {
-    public:
-        static constexpr bool value{ true };
-    };
 };
 
 
@@ -1228,7 +1203,7 @@ std::vector<std::vector<T>> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate
 /** Returns an array of n values that are uniformly contained within range [0.0, 1.0). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 template<typename T, const std::size_t n>
-inline std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate()
+inline std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate() noexcept
 {
     if (!std::is_floating_point<T>::value)
         throw FloatingPointTypeException();
@@ -1301,7 +1276,7 @@ std::array<std::array<T, m>, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_eval
 //---------------------------------------------------------------------------
 /** Generates n random bytes. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-inline std::vector<std::uint8_t> BaseRandom<StateT, OutputT, OUTPUT_BITS>::randbytes(const std::uint32_t n)
+inline std::vector<std::uint8_t> BaseRandom<StateT, OutputT, OUTPUT_BITS>::randbytes(const std::size_t n)
 {
     if (n == 0)
         throw ZeroLengthException();
@@ -1505,7 +1480,7 @@ template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 template<typename ContainerType>
 void BaseRandom<StateT, OutputT, OUTPUT_BITS>::shuffle(ContainerType& seq)
 {
-    if (!m_is_indexable<ContainerType>::value)
+    if (!utils::is_indexable<ContainerType>::value)
         throw IndexableContainerException();
 
     const std::size_t n{ seq.size() };

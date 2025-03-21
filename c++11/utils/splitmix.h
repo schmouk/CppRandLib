@@ -66,7 +66,7 @@ namespace utils
             : _internal_state(seed)
         {}
 
-        /** @brief Valued constructor - double. */
+        /** @brief Valued constructor - double in range [0.0, 1.0). */
         inline SplitMix64(const double seed) noexcept
             : _internal_state((seed <= 0.0) ? 0ull : (seed >= 1.0) ? 0xffff'ffff'ffff'ffffull : std::uint64_t(0xffff'ffff'ffff'ffffull * seed))
         {}

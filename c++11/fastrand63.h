@@ -27,6 +27,8 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <cstdint>
+
 #include "baserandom.h"
 #include "utils/seed_generation.h"
 
@@ -63,7 +65,6 @@ SOFTWARE.
 *     FastRand63 rand{};
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(a) << std::endl;   // prints a uniform pseudo-random value within [0.0, a)
-*     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
@@ -114,10 +115,10 @@ public:
 
     /** @brief Valued construtor. */
     template<typename T>
-    inline FastRand63(const T seed_) noexcept
+    inline FastRand63(const T seed_)
         : MyBaseClass()
     {
-        seed();
+        MyBaseClass::seed(seed_);
     }
 
     FastRand63(const FastRand63&) noexcept = default;   //!< default copy constructor.

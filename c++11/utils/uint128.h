@@ -206,7 +206,7 @@ namespace utils
         {
             std::uint64_t t{ w };
             t += std::uint64_t(a) + carry;
-            w = t & 0xffff'fffful;
+            w = t & 0xffff'ffffull;
             return t & 0x1'0000'0000ull;
         }
 

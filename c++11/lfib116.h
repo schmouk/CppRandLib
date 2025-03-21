@@ -31,10 +31,7 @@ SOFTWARE.
 
 
 //===========================================================================
-/** @brief The base class for all LFib PRNG based on 64-bits numbers.
-*
-*   Pseudo-random numbers generator  -  Definition of a fast 64-bits Lagged  Fibonacci
-*   Generator with quite short period (8.3e+34).
+/** @brief A fast 64-bits Lagged Fibonacci Generator with a short period (8.3e+34).
 * 
 *   Lagged Fibonacci generators LFib( m, r, k, op) use the recurrence
 *
@@ -77,9 +74,8 @@ SOFTWARE.
 *     LFib116 rand{};
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
-*     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
 * @endcode
-* *
+*
 *   Notice that for simulating the roll of a dice you should program:
 * @code
 *     LFib116 diceRoll();

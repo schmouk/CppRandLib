@@ -27,7 +27,6 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <chrono>
 #include <cstdint>
 
 #include "baserandom.h"
@@ -68,15 +67,14 @@ SOFTWARE.
 *   Please notice that this class and all its  inheriting  sub-classes  are  callable.
 *   Example:
 * @code
-*     BaseLFib64 rand{}; // CAUTION: this won't compile since BaseLFib64 is an abstract class. Replace 'BaseLFib64' with any inheriting class constructor!
+*     BaseLFib64 rand{}; // CAUTION: rplace 'BaseLFib64' with any inheriting class constructor!
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
-*     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
 * @endoced
 *
 *   Notice that for simulating the roll of a dice you should program:
 * @code
-*     BaseLFib64 diceRoll(); // CAUTION: this won't compile since BaseLFib64 is an abstract class. Replace 'BaseLFib64' with any inheriting class constructor!
+*     BaseLFib64 diceRoll(); // CAUTION: replace 'BaseLFib64' with any inheriting class constructor!
 *     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode

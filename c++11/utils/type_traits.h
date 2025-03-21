@@ -1,7 +1,8 @@
+#pragma once
 /*
 MIT License
 
-Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
 This file is part of library CppRandLib.
 
@@ -26,29 +27,36 @@ SOFTWARE.
 
 
 //===========================================================================
-#include "mrg1457.h"
+#include <array>
+#include <vector>
 
 
 //===========================================================================
-/** The internal PRNG algorithm. */
-const Mrg1457::output_type Mrg1457::next() noexcept
+namespace utils
 {
-    // evaluates indexes in suite for the i-1, i-24 (and i-47) -th values
-    const std::uint32_t index{ MyBaseClass::_internal_state.state.index };
-    const std::uint32_t k1{ (index < 1) ? (index + SEED_SIZE) - 1 : index - 1 };
-    const std::uint32_t k24{ (index < 24) ? (index + SEED_SIZE) - 24 : index - 24 };
-
-    // evaluates current value and modifies internal state
-    uint64_t value{
-        (0x0408'0000ull * (std::uint64_t(_internal_state.state.list[k1]) +
-        std::uint64_t(_internal_state.state.list[k24]) +
-        std::uint64_t(_internal_state.state.list[index]))) % _MODULO
+    //-----------------------------------------------------------------------
+    template<typename ContainerType>
+    class is_indexable
+    {
+    public:
+        static const bool value{ false };
     };
-    _internal_state.state.list[index] = std::uint32_t(value &= _MODULO);
 
-    // next index
-    _internal_state.state.index = (index + 1) % SEED_SIZE;
 
-    // finally, returns pseudo random value in range [0.0, 1.0)
-    return output_type(value);
+    //-----------------------------------------------------------------------
+    template<typename T>
+    class is_indexable<std::vector<T>>
+    {
+    public:
+        static const bool value{ true };
+    };
+
+    //-----------------------------------------------------------------------
+    template<typename T, const std::size_t n>
+    class is_indexable<std::array<T, n>>
+    {
+    public:
+        static const bool value{ true };
+    };
+
 }
