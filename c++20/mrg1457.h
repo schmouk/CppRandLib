@@ -3,6 +3,8 @@ MIT License
 
 Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
+This file is part of library CppRandLib.
+
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
 in the Software without restriction,  including without limitation the  rights
@@ -24,14 +26,15 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <cstdint>
+#include <type_traits>
+
 #include "basemrg31.h"
 #include "listseedstate.h"
 
 
 //===========================================================================
 /** @brief A fast 31-bits Multiple Recursive Generator with a somewhat long period (3.98e+438)
-*
-*   This module is part of library CppRandLib.
 *
 *   Multiple Recursive Generators (MRGs)  use  recurrence  to  evaluate  pseudo-random
 *   numbers suites. Recurrence is of the form:
@@ -107,30 +110,21 @@ public:
     /** @brief Empty constructor. */
     inline Mrg1457() noexcept
         : MyBaseClass()
-    {
-        MyBaseClass::setstate();
-    }
+    {}
 
-    /** @brief Valued construtor (integer). */
-    inline Mrg1457(const std::uint32_t seed) noexcept
+    /** @brief Valued construtor. */
+    template<typename T>
+        requires std::is_arithmetic_v<T>
+    inline Mrg1457(const T seed_) noexcept
         : MyBaseClass()
     {
-        MyBaseClass::setstate(seed);
-    }
-
-    /** @brief Valued construtor (double). */
-    inline Mrg1457(const double seed) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::setstate(seed);
+        MyBaseClass::MyBaseClass::seed(seed_);
     }
 
     /** @brief Valued constructor (full state). */
     inline Mrg1457(const state_type& seed) noexcept
-        : MyBaseClass()
-    {
-        setstate(seed);
-    }
+        : MyBaseClass(seed)
+    {}
 
     Mrg1457(const Mrg1457&) noexcept = default;     //!< default copy constructor.
     Mrg1457(Mrg1457&&) noexcept = default;          //!< default move constructor.

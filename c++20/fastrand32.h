@@ -4,6 +4,8 @@ MIT License
 
 Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
+This file is part of library CppRandLib.
+
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
 in the Software without restriction,  including without limitation the  rights
@@ -26,6 +28,7 @@ SOFTWARE.
 
 //===========================================================================
 #include <cstdint>
+#include <type_traits>
 
 #include "baserandom.h"
 #include "utils/seed_generation.h"
@@ -37,8 +40,6 @@ SOFTWARE.
 *   Pseudo-random numbers generator - Linear Congruential Generator dedicated
 *   to  32-bits  calculations with very short period (about 4.3e+09) but very
 *   short time computation.
-*
-*   This module is part of library CppRandLib.
 *
 *   LCG models evaluate pseudo-random numbers suites x(i) as a simple mathem-
 *   atical function of
@@ -106,18 +107,17 @@ public:
     inline FastRand32() noexcept
         : MyBaseClass()
     {
-        setstate();
+        seed();
     }
 
     /** @brief Valued construtor (integer). */
-    inline FastRand32(const std::uint32_t seed) noexcept
-        : MyBaseClass(seed)
-    {}
-
-    /** @brief Valued construtor (double). */
-    inline FastRand32(const double seed) noexcept
-        : MyBaseClass(std::uint32_t(seed* double(0x1'0000'0000ull)))
-    {}
+    template<typename T>
+        requires std::is_arithmetic_v<T>
+    inline FastRand32(const T seed)
+        : MyBaseClass()
+    {
+        seed(seed);
+    }
 
     FastRand32(const FastRand32&) noexcept = default;   //!< default copy constructor.
     FastRand32(FastRand32&&) noexcept = default;        //!< default move constructor.
@@ -128,22 +128,15 @@ public:
     /** @brief The internal PRNG algorithm. */
     virtual inline const output_type next() noexcept override
     {
-        return _state.seed = 69'069 * _state.seed + 1;  // implicit modulo on 32 bits
+        return _internal_state.state = 69'069 * _internal_state.state + 1;
     }
 
 
     //---   Operations   ----------------------------------------------------
-    /** @brief Sets the internal state of this PRNG with shuffled current time. */
-    virtual void setstate() noexcept override
-    {
-        MyBaseClass::setstate(utils::set_random_seed32());
-    }
-
     /** @brief Sets the internal state of this PRNG with double seed. */
-    inline void setstate(const double seed) noexcept
+    virtual inline void _setstate(const std::uint64_t seed_) noexcept override
     {
-        const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        MyBaseClass::setstate(std::uint32_t(s * double(0xffff'fffful)));
+        _internal_state.state = std::uint32_t(seed_ & 0xffff'ffff);
     }
 
 };
