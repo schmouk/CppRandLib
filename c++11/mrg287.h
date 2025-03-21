@@ -27,10 +27,9 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <chrono>
+#include <cstdint>
 
 #include "basemrg32.h"
-#include "fastrand32.h"
 #include "listseedstate.h"
 
 
@@ -110,12 +109,12 @@ SOFTWARE.
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
-*   the expected characteristics for a pretty good PRG;
+*   the expected characteristics for a pretty good PRNG;
 *
 *   * _crush_ is a bigger set of tests that test more deeply  expected  random
 *   characteristics;
 *
-*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
+*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
 class Mrg287 : public BaseMRG32<256>
@@ -124,35 +123,49 @@ public:
     //---   Wrappers   ------------------------------------------------------
     using MyBaseClass = BaseMRG32<256>;
 
+    using output_type = MyBaseClass::output_type;
+    using state_type = MyBaseClass::state_type;
+    using value_type = typename state_type::value_type;
+
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
     inline Mrg287() noexcept
         : MyBaseClass()
-    {
-        MyBaseClass::setstate();
-    }
+    {}
 
-    /** @brief Valued construtor (integer). */
-    inline Mrg287(const uint32_t seed) noexcept
+    /** @brief Valued construtor. */
+    template<typename T>
+    inline Mrg287(const T seed_) noexcept
         : MyBaseClass()
     {
-        MyBaseClass::setstate(seed);
+        MyBaseClass::MyBaseClass::seed(seed_);
     }
 
-    /** @brief Valued construtor (double). */
-    inline Mrg287(const double seed) noexcept
+    /** @brief Valued construtor (specialization, integer). */
+    /** /
+    template<>
+    inline Mrg287(const std::uint32_t seed_) noexcept
         : MyBaseClass()
     {
-        MyBaseClass::setstate(seed);
+        MyBaseClass::MyBaseClass::seed(seed_);
     }
+    /**/
+
+    /** @brief Valued construtor (specialization, double). */
+    /** /
+    template<>
+    inline Mrg287(const double seed_) noexcept
+        : MyBaseClass()
+    {
+        MyBaseClass::MyBaseClass::seed(seed_);
+    }
+    /**/
 
     /** @brief Valued constructor (full state). */
-    inline Mrg287(const state_type& seed) noexcept
-        : MyBaseClass()
-    {
-        setstate(seed);
-    }
+    inline Mrg287(const state_type& seed_internal_state) noexcept
+        : MyBaseClass(seed_internal_state)
+    {}
 
     Mrg287(const Mrg287&) noexcept = default;   //!< default copy constructor.
     Mrg287(Mrg287&&) noexcept = default;        //!< default move constructor.

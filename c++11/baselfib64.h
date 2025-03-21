@@ -31,8 +31,8 @@ SOFTWARE.
 #include <cstdint>
 
 #include "baserandom.h"
-#include "fastrand63.h"
 #include "listseedstate.h"
+#include "utils/splitmix.h"
 
 
 //===========================================================================
@@ -95,12 +95,12 @@ SOFTWARE.
 * +--------------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
-*   the expected characteristics for a pretty good PRG;
+*   the expected characteristics for a pretty good PRNG;
 *
 *   * _crush_ is a bigger set of tests that test more deeply  expected  random 
 *   characteristics;
 *
-*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG 
+*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG 
 *   should definitively pass.
 */
 template<const std::uint32_t SIZE, const std::uint32_t K>
@@ -110,7 +110,8 @@ public:
     //---   Wrappers   ------------------------------------------------------
     using MyBaseClass = BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>;
     using output_type = MyBaseClass::output_type;
-    using state_type  = MyBaseClass::state_type;
+    using state_type = MyBaseClass::state_type;
+    using value_type = typename state_type::value_type; 
     
     static const std::uint32_t SEED_SIZE{ SIZE };
 
@@ -120,28 +121,31 @@ public:
     inline BaseLFib64() noexcept
         : MyBaseClass()
     {
-        setstate();
+        MyBaseClass::seed();
     }
 
-    /** @brief Valued construtor (integer). */
-    inline BaseLFib64(const std::uint64_t seed) noexcept
+    /** @brief Valued construtor. */
+    template<typename T>
+    inline BaseLFib64(const T seed_) noexcept
         : MyBaseClass()
     {
-        setstate(seed);
+        MyBaseClass::seed(seed_);
     }
 
     /** @brief Valued construtor (double). */
-    inline BaseLFib64(const double seed) noexcept
+    /** /
+    inline BaseLFib64(const double seed_) noexcept
         : MyBaseClass()
     {
-        setstate(seed);
+        MyBaseClass::seed(seed_);
     }
+    /**/
 
     /** @brief Valued constructor (full state). */
-    inline BaseLFib64(const state_type& seed) noexcept
+    inline BaseLFib64(const state_type& internal_state) noexcept
         : MyBaseClass()
     {
-        setstate(seed);
+        MyBaseClass::setstate(internal_state);
     }
 
     BaseLFib64(const BaseLFib64&) noexcept = default;   //!< default copy constructor.
@@ -149,63 +153,26 @@ public:
     virtual ~BaseLFib64() noexcept = default;           //!< default destructor.
 
 
-    //---   Operations   ----------------------------------------------------
-    /** @brief Sets the internal state of this PRNG from shuffled current time (empty signature). */
-    inline virtual void setstate() noexcept override
-    {
-        setstate(utils::set_random_seed64());
-    }
-
-    /** @brief Sets the internal state of this PRNG with an integer seed. */
-    inline void setstate(const std::uint64_t seed) noexcept
-    {
-        utils::SplitMix64 splitmix_64(seed);
-        for (std::uint64_t& s : MyBaseClass::_state.seed.list)
-            s = splitmix_64();
-    }
-
-    /** @brief Sets the internal state of this PRNG with a double seed. */
-    inline void setstate(const double seed) noexcept
-    {
-        const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        setstate(std::uint64_t(s * double(_MODULO)));
-    }
-
-
-    /** @brief Restores the internal state of this PRNG from seed. */
-    inline void setstate(const state_type& seed) noexcept
-    {
-        MyBaseClass::_state.seed = seed;
-        MyBaseClass::_state.gauss_valid = false;
-    }
-
-    /** @brief Restores the internal state of this PRNG from seed and gauss_next. */
-    inline void setstate(const state_type& seed, const double gauss_next) noexcept
-    {
-        MyBaseClass::_state.seed = seed;
-        MyBaseClass::_state.gauss_next = gauss_next;
-        MyBaseClass::_state.gauss_valid = true;
-    }
-
-
     //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return a double value uniformly contained within range [0.0, 1.0).
+    /** @brief The internal PRNG algorithm. Outputs a 64-bits integer value.
     */
     virtual const output_type next() noexcept override;
 
 
 protected:
+    /** @brief Sets the internal state of this PRNG with an integer seed. */
+    virtual inline void _setstate(const std::uint64_t seed) noexcept override
+    {
+        utils::SplitMix64 splitmix_64(seed);
+        for (std::uint64_t& s : MyBaseClass::_internal_state.state.list)
+            s = splitmix_64();
+    }
+
     /** @brief Inits the internal index pointing to the internal list. */
     inline void _initIndex(const size_t _index) noexcept
     {
-        MyBaseClass::_state.seed.index = _index % SIZE;
+        MyBaseClass::_internal_state.state.index = _index % SIZE;
     }
-
-
-private:
-    static constexpr typename state_type::value_type _MODULO{ 0xffff'ffff'ffff'ffffull };
 
 };
 
@@ -217,15 +184,18 @@ template<const std::uint32_t SIZE, std::uint32_t K >
 const typename BaseLFib64<SIZE, K>::output_type BaseLFib64<SIZE, K>::next() noexcept
 {
     // evaluates indexes in suite for the i-5 and i-17 -th values
-    const std::uint32_t index = MyBaseClass::_state.seed.index;
-    const std::uint32_t k = (index < K) ? (index + SEED_SIZE) - K : index - K;
+    const std::uint32_t index{ MyBaseClass::_internal_state.state.index };
+    const std::uint32_t k{ (index < K) ? (index + SEED_SIZE) - K : index - K };
 
     // evaluates current value and modifies internal state
-    output_type value = MyBaseClass::_state.seed.list[k] + MyBaseClass::_state.seed.list[index];  // automatic 64-bits modulo
-    MyBaseClass::_state.seed.list[index] = value;
+    output_type value{
+        MyBaseClass::_internal_state.state.list[k] +
+        MyBaseClass::_internal_state.state.list[index]
+    };
+    MyBaseClass::_internal_state.state.list[index] = value;
 
     // next index
-    MyBaseClass::_state.seed.index = (index + 1) % SEED_SIZE;
+    MyBaseClass::_internal_state.state.index = (index + 1) % SEED_SIZE;
 
     // finally, returns output value
     return value;

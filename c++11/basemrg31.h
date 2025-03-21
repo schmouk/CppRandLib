@@ -30,8 +30,9 @@ SOFTWARE.
 #include <chrono>
 
 #include "baserandom.h"
-#include "fastrand32.h"
 #include "listseedstate.h"
+#include "utils/seed_generation.h"
+#include "utils/splitmix.h"
 
 
 //===========================================================================
@@ -87,12 +88,12 @@ SOFTWARE.
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
-*   the expected characteristics for a pretty good PRG;
+*   the expected characteristics for a pretty good PRNG;
 *
 *   * _crush_ is a bigger set of tests that test more deeply  expected  random
 *   characteristics;
 *
-*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
+*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
 template<const size_t SIZE>
@@ -104,6 +105,7 @@ public:
 
     using output_type = MyBaseClass::output_type;
     using state_type = MyBaseClass::state_type;
+    using value_type = typename state_type::value_type;
 
     static constexpr std::uint32_t SEED_SIZE{ SIZE };
 
@@ -112,7 +114,44 @@ public:
     /** @brief Empty constructor. */
     inline BaseMRG31() noexcept
         : MyBaseClass()
-    {}
+    {
+        seed();
+    }
+
+    /** @brief Valued construtor. */
+    template<typename T>
+    inline BaseMRG31(const T seed_) noexcept
+        : MyBaseClass()
+    {
+        seed();
+    }
+
+    /** @brief Valued construtor (specialization, integer). */
+    /** /
+    template<>
+    inline BaseMRG31(const std::uint32_t seed_) noexcept
+        : MyBaseClass()
+    {
+        MyBaseClass::seed(seed_);
+    }
+    /**/
+
+    /** @brief Valued construtor (specialization, double). */
+    /** /
+    template<>
+    inline BaseMRG31(const double seed_) noexcept
+        : MyBaseClass()
+    {
+        MyBaseClass::seed(seed_);
+    }
+    /**/
+
+    /** @brief Valued constructor (full state). */
+    inline BaseMRG31(const state_type& internal_state) noexcept
+        : MyBaseClass()
+    {
+        MyBaseClass::setstate(internal_state);
+    }
 
     /** @brief Default Destructor. */
     virtual ~BaseMRG31() noexcept = default;
@@ -120,47 +159,17 @@ public:
 
     //---   Operations   ----------------------------------------------------
     /** @brief Sets the internal state of this PRNG from current time (empty signature). */
-    virtual void setstate() noexcept override
+    virtual inline void seed() noexcept override
     {
-        setstate(utils::set_random_seed31());
+        _setstate(utils::set_random_seed31());
     }
 
     /** @brief Sets the internal state of this PRNG with an integer seed. */
-    template<typename IntT>
-    inline void setstate(const IntT seed)
+    virtual inline void _setstate(const std::uint64_t seed) noexcept override
     {
-        if (!std::is_integral<IntT>::value)
-            throw MyBaseClass::IntegralValueTypeException();
-
-        utils::SplitMix31 splitmix_31(seed);
-        for( auto& s : MyBaseClass::_state.seed.list)
+        utils::SplitMix31 splitmix_31(std::uint32_t(seed & 0x7fff'ffff));
+        for( auto& s : MyBaseClass::_internal_state.state.list)
             s = splitmix_31();
     }
-
-    /** @brief Sets the internal state of this PRNG with a double seed. */
-    inline void setstate(const double seed) noexcept
-    {
-        const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        setstate(uint32_t(s * double(_MODULO)));
-    }
-
-    /** @brief Restores the internal state of this PRNG from seed. */
-    inline void setstate(const state_type& seed) noexcept
-    {
-        MyBaseClass::_state.seed = seed;
-        MyBaseClass::_state.gauss_valid = false;
-    }
-
-    /** @brief Restores the internal state of this PRNG from seed and gauss_next. */
-    inline  void setstate(const state_type& seed, const double gauss_next) noexcept
-    {
-        MyBaseClass::_state.seed = seed;
-        MyBaseClass::_state.gauss_next = gauss_next;
-        MyBaseClass::_state.gauss_valid = true;
-    }
-
-
-protected:
-    static constexpr std::uint64_t _MODULO{ 0x7fff'ffffull };
 
 };

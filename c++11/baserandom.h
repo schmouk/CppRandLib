@@ -30,9 +30,14 @@ SOFTWARE.
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstdint>
+#include <limits>
 #include <numeric>
 #include <stdexcept>
+#include <type_traits>
 #include <vector>
+
+#include "utils/seed_generation.h"
 
 
 //===========================================================================
@@ -238,22 +243,17 @@ SOFTWARE.
 *    |
 *    |      alpha is the scale parameter and beta is the shape parameter.
 */
-template<typename SeedStateT, typename OutputT = std::uint32_t, const std::uint8_t OUTPUT_BITS = 32>
+template<typename StateT, typename OutputT = std::uint32_t, const std::uint8_t OUTPUT_BITS = 32>
 class BaseRandom
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using state_type = SeedStateT;
+    using state_type = StateT;
     using output_type = OutputT;
 
 
     //---   Constructors / Destructor   -------------------------------------
-    inline BaseRandom(const SeedStateT& seed) noexcept  //!< valued constructor.
-    {
-        setstate(seed);
-    }
-
-    BaseRandom() noexcept = default;                    //!< default empty constructor
+    BaseRandom() noexcept = default;                    //!< default empty constructor.
     BaseRandom(const BaseRandom&) noexcept = default;   //!< default copy constructor.
     BaseRandom(BaseRandom&&) noexcept = default;        //!< default move constructor.
 
@@ -287,9 +287,9 @@ public:
     BaseRandom& operator= (const BaseRandom&) noexcept = default;   //!< default copy assignment.
     BaseRandom& operator= (BaseRandom&&) noexcept = default;        //!< default move assignment.
 
-    inline BaseRandom& operator= (const SeedStateT& seed) noexcept  //!< valued assignment.
+    inline BaseRandom& operator= (const StateT& new_internal_state) noexcept  //!< valued assignment.
     {
-        setstate(seed);
+        setstate(new_internal_state);
     }
 
 
@@ -484,7 +484,7 @@ public:
     /** @brief Returns the internal state of this PRNG; can be passed to setstate() later. */
     inline struct _InternalState& getstate() const noexcept
     {
-        return _state;
+        return _internal_state;
     }
 
 
@@ -828,54 +828,48 @@ public:
 
     /** @brief Initializes internal state (empty signature).
     *
-    * The seed value is evaluated from shuffled and xored current time.
+    * Uses an integer value evaluated from shuffled and xored current time as seed.
     */
-    inline void seed() noexcept
+    virtual inline void seed() noexcept
     {
-        setstate();
+        seed(utils::set_random_seed64());
     }
 
-
-    /** @brief Initializes internal state from a seed state. */
-    template<typename SeedStateT>
-    inline void seed(const SeedStateT& seed_) noexcept
+    /** @brief Initializes internal state from a 32-bits unsigned integer seed. */
+    inline void seed(const unsigned long seed) noexcept
     {
-        setstate(seed_);
+        _setstate(seed);
+        _internal_state.gauss_valid = false;
     }
 
-
-    /** @brief Initializes internal state from a long integer. */
-    inline void seed(const std::uint32_t seed_) noexcept
+    /** @brief Initializes internal state from a 64-bits unsigned integer seed. */
+    inline void seed(const unsigned long long seed) noexcept
     {
-        setstate(seed_);
+        _setstate(seed);
+        _internal_state.gauss_valid = false;
     }
 
-    /** @brief Sets the internal state of this PRNG from shuffled and xored current time.
-    *
-    * MUST BE IMPLEMENTED in inheriting classes.
-    */
-    virtual void setstate() noexcept
-    {}
+    /** @brief Initalizes internal state from a double seed. */
+    inline void seed(const double seed_) noexcept
+    {
+        const double s{ (seed_ < 0.0) ? -seed_ : seed_ };
+        seed(std::uint64_t(s > 1.0 ? s : s * double(_MODULO)));
+    }
+
 
     /** @brief Restores the internal state of this PRNG from seed. */
-    inline void setstate(const SeedStateT& seed) noexcept
+    inline void setstate(const StateT& new_internal_state) noexcept
     {
-        _state.seed = seed;
-        _state.gauss_valid = false;
+        _internal_state.state = new_internal_state;
+        _internal_state.gauss_valid = false;
     }
 
     /** @brief Restores the internal state of this PRNG from seed and gauss_next. */
-    inline void setstate(const SeedStateT& seed, const double gauss_next) noexcept
+    inline void setstate(const StateT& new_internal_state, const double gauss_next) noexcept
     {
-        _state.seed = seed;
-        _state.gauss_next = gauss_next;
-        _state.gauss_valid = true;
-    }
-
-    /** @brief Restores the internal state of this PRNG from object returned by getstate(). */
-    inline void setstate(const _InternalState& state) noexcept
-    {
-        _state = state;
+        _internal_state.state = new_internal_state;
+        _internal_state.gauss_next = gauss_next;
+        _internal_state.gauss_valid = true;
     }
 
 
@@ -1050,16 +1044,16 @@ public:
             throw GaussSigmaException();
 
         double z;
-        if (_state.gauss_valid) {
-            z = _state.gauss_next;
-            _state.gauss_valid = false;
+        if (_internal_state.gauss_valid) {
+            z = _internal_state.gauss_next;
+            _internal_state.gauss_valid = false;
         }
         else {
             const double u{ uniform(TWO_PI) };
             const double g{ std::sqrt(-2.0 * std::log(1.0 - uniform())) };
             z = std::cos(u) * g;
-            _state.gauss_next = std::sin(u) * g;
-            _state.gauss_valid = true;
+            _internal_state.gauss_next = std::sin(u) * g;
+            _internal_state.gauss_valid = true;
         }
 
         return mu + z * sigma;
@@ -1445,16 +1439,26 @@ protected:
     static const double SG_MAGICCONST;
     static const double TWO_PI;
 
-    static const double _NORMALIZE;
+    static constexpr std::uint64_t _MODULO{ (((1ull << (OUTPUT_BITS - 1)) - 1) << 1) | 0xf };  // notice: complex formula to avoid marning on bits overflow, should be (1 << OUTPUT_BITS) - 1
+    static constexpr double _NORMALIZE{ 1.0 / (_MODULO + 1.0) };
 
 
     //---   Attributes   ----------------------------------------------------
     struct _InternalState
     {
-        SeedStateT seed{};        //!< The internal current state of this PRNG
-        double     gauss_next{};  //!< smart optimization for Gaussian distribution computation (1/2)
-        bool       gauss_valid{}; //!< smart optimization for Gaussian distribution computation (2/2)
-    } _state;
+        StateT state{};        //!< The internal current state of this PRNG
+        double gauss_next{};  //!< smart optimization for Gaussian distribution computation (1/2)
+        bool   gauss_valid{}; //!< smart optimization for Gaussian distribution computation (2/2)
+    } _internal_state;
+
+
+    //---   Operations   ----------------------------------------------------
+    /** @brief Sets the internal state with an integer seed.
+    *
+    * MUST BE overridden in inheriting classes.
+    */
+    virtual inline void _setstate(const std::uint64_t seed) noexcept
+    {}
 
 
 private:
@@ -1462,51 +1466,48 @@ private:
     class m_is_indexable
     {
     public:
-        static const bool value = false;
+        static constexpr bool value{ false };
     };
 
     template<typename T>
     class m_is_indexable<std::vector<T>>
     {
     public:
-        static const bool value = true;
+        static constexpr bool value{ true };
     };
 
     template<typename T, const std::size_t n>
     class m_is_indexable<std::array<T, n>>
     {
     public:
-        static const bool value = true;
+        static constexpr bool value{ true };
     };
 };
 
 //---------------------------------------------------------------------------
-template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::BPF{ 53 };  // Number of bits in a float
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::BPF{ 53 };  // Number of bits in a float
 
-template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::E{ std::exp(1.0) };
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::E{ std::exp(1.0) };
 
-template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::GAUSS_NULL = -1.0;
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::GAUSS_NULL = -1.0;
 
-template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::LOG4{ std::log(4.0) };
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::LOG4{ std::log(4.0) };
 
-template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::NV_MAGICCONST{ 4 * std::exp(-0.5) / std::sqrt(2.0) };
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::NV_MAGICCONST{ 4 * std::exp(-0.5) / std::sqrt(2.0) };
 
-template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::PI{ 3.14159265358979323846 };
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::PI{ 3.14159265358979323846 };
 
-template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::RECIP_BPF{ std::exp2(-BPF) };
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::RECIP_BPF{ std::exp2(-BPF) };
 
-template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::SG_MAGICCONST{ 1.0 + std::log(4.5) };
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::SG_MAGICCONST{ 1.0 + std::log(4.5) };
 
-template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::TWO_PI{ 2.0 * BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::PI };
-
-template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-const double BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>::_NORMALIZE{ 0.5 / (1ull << (OUTPUT_BITS - 1)) };
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::TWO_PI{ 2.0 * BaseRandom<StateT, OutputT, OUTPUT_BITS>::PI };

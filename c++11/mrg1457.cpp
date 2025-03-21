@@ -34,18 +34,20 @@ SOFTWARE.
 const Mrg1457::output_type Mrg1457::next() noexcept
 {
     // evaluates indexes in suite for the i-1, i-24 (and i-47) -th values
-    const std::uint32_t index = MyBaseClass::_state.seed.index;
-    const std::uint32_t k1  = (index < 1 ) ? (index + SEED_SIZE) - 1  : index - 1 ;
-    const std::uint32_t k24 = (index < 24) ? (index + SEED_SIZE) - 24 : index - 24;
+    const std::uint32_t index{ MyBaseClass::_internal_state.state.index };
+    const std::uint32_t k1{ (index < 1) ? (index + SEED_SIZE) - 1 : index - 1 };
+    const std::uint32_t k24{ (index < 24) ? (index + SEED_SIZE) - 24 : index - 24 };
 
     // evaluates current value and modifies internal state
-    uint64_t value = (0x0408'0000ull * (uint64_t(MyBaseClass::_state.seed.list[k1]) +
-                                        uint64_t(MyBaseClass::_state.seed.list[k24]) +
-                                        uint64_t(MyBaseClass::_state.seed.list[index]))) % _MODULO;
-    _state.seed.list[index] = std::uint32_t(value &= _MODULO);
+    uint64_t value{
+        (0x0408'0000ull * (uint64_t(MyBaseClass::_internal_state.state.list[k1]) +
+        uint64_t(MyBaseClass::_internal_state.state.list[k24]) +
+        uint64_t(MyBaseClass::_internal_state.state.list[index]))) % _MODULO
+    };
+    _internal_state.state.list[index] = std::uint32_t(value &= _MODULO);
 
     // next index
-    MyBaseClass::_state.seed.index = (index + 1) % SEED_SIZE;
+    MyBaseClass::_internal_state.state.index = (index + 1) % SEED_SIZE;
 
     // finally, returns pseudo random value in range [0.0, 1.0)
     return output_type(value);
