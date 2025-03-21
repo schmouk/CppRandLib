@@ -112,46 +112,14 @@ public:
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
-    inline BaseMRG32() noexcept
-        : MyBaseClass()
-    {
-        seed();
-    }
+    inline BaseMRG32() noexcept;
 
     /** @brief Valued construtor. */
     template<typename T>
-    inline BaseMRG32(const T seed_) noexcept
-        : MyBaseClass()
-    {
-        seed();
-    }
-
-    /** @brief Valued construtor (specialization, integer). */
-    /** /
-    template<>
-    inline BaseMRG32(const std::uint32_t seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::seed(seed_);
-    }
-    /**/
-
-    /** @brief Valued construtor (specialization, double). */
-    /** /
-    template<>
-    inline BaseMRG32(const double seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::seed(seed_);
-    }
-    /**/
+    inline BaseMRG32(const T seed_) noexcept;
 
     /** @brief Valued constructor (full state). */
-    inline BaseMRG32(const state_type& internal_state) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::setstate(internal_state);
-    }
+    inline BaseMRG32(const state_type& internal_state) noexcept;
 
     /** @brief Default Destructor. */
     virtual ~BaseMRG32() noexcept = default;
@@ -159,17 +127,58 @@ public:
 
     //---   Operations   ----------------------------------------------------
     /** @brief Sets the internal state of this PRNG from current time (empty signature). */
-    virtual inline void seed() noexcept override
-    {
-        _setstate(utils::set_random_seed32());
-    }
+    virtual inline void seed() noexcept override;
 
     /** @brief Sets the internal state of this PRNG with an integer seed. */
-    virtual inline void _setstate(const std::uint64_t seed) noexcept override
-    {
-        utils::SplitMix32 splitmix_32(std::uint32_t(seed & 0xffff'ffff));
-        for (auto& s : MyBaseClass::_internal_state.state.list)
-            s = splitmix_32();
-    }
+    virtual inline void _setstate(const std::uint64_t seed) noexcept override;
 
 };
+
+
+//===========================================================================
+//---   TEMPLATES IMPLEMENTATION   ------------------------------------------
+//---------------------------------------------------------------------------
+/** Empty constructor. */
+template<const size_t SIZE>
+inline BaseMRG32<SIZE>::BaseMRG32() noexcept
+    : MyBaseClass()
+{
+    seed();
+}
+
+//---------------------------------------------------------------------------
+/** Valued construtor. */
+template<const size_t SIZE>
+template<typename T>
+inline BaseMRG32<SIZE>::BaseMRG32(const T seed_) noexcept
+    : MyBaseClass()
+{
+    seed();
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (full state). */
+template<const size_t SIZE>
+inline BaseMRG32<SIZE>::BaseMRG32(const state_type& internal_state) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::setstate(internal_state);
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG from current time (empty signature). */
+template<const size_t SIZE>
+inline void BaseMRG32<SIZE>::seed() noexcept
+{
+    _setstate(utils::set_random_seed32());
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG with an integer seed. */
+template<const size_t SIZE>
+inline void BaseMRG32<SIZE>::_setstate(const std::uint64_t seed) noexcept
+{
+    utils::SplitMix32 splitmix_32(std::uint32_t(seed & 0xffff'ffff));
+    for (auto& s : MyBaseClass::_internal_state.state.list)
+        s = splitmix_32();
+}

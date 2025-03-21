@@ -120,26 +120,6 @@ public:
         seed();
     }
 
-    /** @brief Valued construtor (specialization, integer). */
-    /** /
-    template<>
-    inline FastRand63(const std::uint64_t seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::seed(seed_);
-    }
-    /**/
-
-    /** @brief Valued construtor (specialization, double). */
-    /** /
-    template<>
-    inline FastRand63(const double seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::seed(seed_);
-    }
-    /**/
-
     FastRand63(const FastRand63&) noexcept = default;   //!< default copy constructor.
     FastRand63(FastRand63&&) noexcept = default;        //!< default move constructor.
     virtual ~FastRand63() noexcept = default;           //!< default destructor.
@@ -165,6 +145,5 @@ public:
     {
         _internal_state.state = seed_ & 0x7fff'ffff'ffff'ffff;
     }
-
 
 };

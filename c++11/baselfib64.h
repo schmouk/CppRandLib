@@ -118,35 +118,14 @@ public:
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Default Empty constructor. */
-    inline BaseLFib64() noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::seed();
-    }
+    inline BaseLFib64() noexcept;
 
     /** @brief Valued construtor. */
     template<typename T>
-    inline BaseLFib64(const T seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::seed(seed_);
-    }
-
-    /** @brief Valued construtor (double). */
-    /** /
-    inline BaseLFib64(const double seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::seed(seed_);
-    }
-    /**/
+    inline BaseLFib64(const T seed_) noexcept;
 
     /** @brief Valued constructor (full state). */
-    inline BaseLFib64(const state_type& internal_state) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::setstate(internal_state);
-    }
+    inline BaseLFib64(const state_type& internal_state) noexcept;
 
     BaseLFib64(const BaseLFib64&) noexcept = default;   //!< default copy constructor.
     BaseLFib64(BaseLFib64&&) noexcept = default;        //!< default move constructor.
@@ -161,24 +140,46 @@ public:
 
 protected:
     /** @brief Sets the internal state of this PRNG with an integer seed. */
-    virtual inline void _setstate(const std::uint64_t seed) noexcept override
-    {
-        utils::SplitMix64 splitmix_64(seed);
-        for (std::uint64_t& s : MyBaseClass::_internal_state.state.list)
-            s = splitmix_64();
-    }
+    virtual inline void _setstate(const std::uint64_t seed) noexcept override;
 
     /** @brief Inits the internal index pointing to the internal list. */
-    inline void _initIndex(const size_t _index) noexcept
-    {
-        MyBaseClass::_internal_state.state.index = _index % SIZE;
-    }
+    inline void _initIndex(const size_t _index) noexcept;
 
 };
 
 
 //===========================================================================
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
+//---------------------------------------------------------------------------
+/** Default Empty constructor. */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline BaseLFib64<SIZE, K>::BaseLFib64() noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed();
+}
+
+//---------------------------------------------------------------------------
+/** Valued construtor. */
+template<const std::uint32_t SIZE, std::uint32_t K >
+template<typename T>
+inline BaseLFib64<SIZE, K>::BaseLFib64(const T seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (full state). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline BaseLFib64<SIZE, K>::BaseLFib64(const state_type& internal_state) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::setstate(internal_state);
+}
+
+
+//---------------------------------------------------------------------------
 /** The internal PRNG algorithm. */
 template<const std::uint32_t SIZE, std::uint32_t K >
 const typename BaseLFib64<SIZE, K>::output_type BaseLFib64<SIZE, K>::next() noexcept
@@ -201,3 +202,20 @@ const typename BaseLFib64<SIZE, K>::output_type BaseLFib64<SIZE, K>::next() noex
     return value;
 }
 
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG with an integer seed. */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline void BaseLFib64<SIZE, K>::_setstate(const std::uint64_t seed) noexcept
+{
+    utils::SplitMix64 splitmix_64(seed);
+    for (std::uint64_t& s : MyBaseClass::_internal_state.state.list)
+        s = splitmix_64();
+}
+
+//---------------------------------------------------------------------------
+/** Inits the internal index pointing to the internal list. */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline void BaseLFib64<SIZE, K>::_initIndex(const size_t _index) noexcept
+{
+    MyBaseClass::_internal_state.state.index = _index % SIZE;
+}

@@ -306,7 +306,7 @@ int main()
 {
     // notice: 3217 is a prime number
 
-        FastRand32 frand32(1ul);
+        FastRand32 frand32;
         test_algo("FastRand32", &frand32);
 
         FastRand63 frand63;

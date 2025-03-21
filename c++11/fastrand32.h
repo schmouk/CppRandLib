@@ -115,35 +115,6 @@ public:
         seed(seed_);
     }
 
-    /** @brief Valued construtor (templated, no specialization). */
-    /** /
-    template<typename T>
-    inline FastRand32(const T seed_) noexcept
-        : MyBaseClass()
-    {
-        seed();
-    }
-    /**/
-
-    /** @brief Valued construtor (specialization, integer). */
-    /*
-    template<>
-    inline FastRand32(const std::uint64_t seed_) noexcept
-        : MyBaseClass()
-    {
-        seed(seed_);
-    }
-    */
-
-    /** @brief Valued construtor (specialization, double). */
-    /*
-    template<>
-    inline FastRand32(const double seed_) noexcept
-        : MyBaseClass()
-    {
-        seed(seed_);
-    }
-    */
 
     FastRand32(const FastRand32&) noexcept = default;   //!< default copy constructor.
     FastRand32(FastRand32&&) noexcept = default;        //!< default move constructor.

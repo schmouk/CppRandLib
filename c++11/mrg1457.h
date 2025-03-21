@@ -121,26 +121,6 @@ public:
         MyBaseClass::MyBaseClass::seed(seed_);
     }
 
-    /** @brief Valued construtor (specialization, integer). */
-    /** /
-    template<>
-    inline Mrg1457(const std::uint32_t seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::MyBaseClass::seed(seed_);
-    }
-    /**/
-
-    /** @brief Valued construtor (specialization, double). */
-    /** /
-    template<>
-    inline Mrg1457(const double seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::MyBaseClass::seed(seed_);
-    }
-    /**/
-
     /** @brief Valued constructor (full state). */
     inline Mrg1457(const state_type& seed) noexcept
         : MyBaseClass(seed)
