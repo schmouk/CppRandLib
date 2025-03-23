@@ -52,7 +52,7 @@ void test_perf(
     nb_loops = loops_count * LOOP_CLUSTER_SIZE;
 
     for (auto& p : perfs) {
-        const std::uint64_t start{ utils::get_time_us() };
+        const std::uint64_t start{ utils::get_time_ns() };
 
         for (std::size_t i = 0; i < loops_count; ++i) {
             rnd_algo_ptr->next();
@@ -157,12 +157,12 @@ void test_perf(
             rnd_algo_ptr->next();
         }
 
-        const std::uint64_t end{ utils::get_time_us() };
+        const std::uint64_t end{ utils::get_time_ns() };
 
         p = end - start;
     }
 
-    const double nanoseconds{ 1000.0 / nb_loops };
+    const double nanoseconds{ 1.0 / nb_loops };
     for (std::uint64_t p : perfs)
         std::cout << p * nanoseconds << ' ';
     std::cout << std::endl;
