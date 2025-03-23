@@ -219,4 +219,14 @@ int main()
         test_perf("Mrg49507", &mrg49507);
     }
 
+    {
+        BaseXoroshiro<4> base_xoroshiro;
+        test_perf("BaseXoroshiro<4>", &base_xoroshiro);
+    }
+
+    {
+        BaseRandom<std::uint32_t> base_xoroshiro;
+        test_perf("BaseRandom", &base_xoroshiro);
+    }
+
 }
