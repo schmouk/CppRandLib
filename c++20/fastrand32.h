@@ -113,10 +113,10 @@ public:
     /** @brief Valued construtor (integer). */
     template<typename T>
         requires std::is_arithmetic_v<T>
-    inline FastRand32(const T seed)
+    inline FastRand32(const T seed_)
         : MyBaseClass()
     {
-        seed(seed);
+        seed(seed_);
     }
 
     FastRand32(const FastRand32&) noexcept = default;   //!< default copy constructor.
