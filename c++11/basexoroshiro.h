@@ -30,6 +30,7 @@ SOFTWARE.
 #include <array>
 
 #include "baserandom.h"
+#include "utils/splitmix.h"
 
 
 //===========================================================================

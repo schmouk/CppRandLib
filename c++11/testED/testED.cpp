@@ -256,7 +256,7 @@ void test_algo(
     if (stdev > expected_max_stdev) {
         err = true;
         std::cout << "  standard deviation is out of range, should be less than "
-            << std::fixed << std::setprecision(3) << expected_max_stdev << "<<<<<"
+            << std::fixed << std::setprecision(3) << expected_max_stdev << " <<<<<"
             << std::endl;
     }
 
