@@ -361,4 +361,9 @@ int main()
         test_algo("Xoroshiro256", &xoroshiro256);
     }
 
+    {
+        Xoroshiro512 xoroshiro512;
+        test_algo("Xoroshiro512", &xoroshiro512);
+    }
+
 }

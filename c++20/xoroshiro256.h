@@ -33,7 +33,7 @@ SOFTWARE.
 
 
 //===========================================================================
-/** @brief A fast 64-bits Scrambled Linear Pseudorandom Number Generators with a medium period (1.16e+77)
+/** @brief A very fast 64-bits Scrambled Linear Pseudorandom Number Generators with a medium period (1.16e+77)
 *
 *   This pseudorandom numbers generator  implements  the  xoroshiro256**  pseudorandom
 *   generator,  the  four 64-bits integers state array version of the Scrambled Linear

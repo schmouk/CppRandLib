@@ -37,3 +37,4 @@ SOFTWARE.
 #include "mrg1457.h"
 #include "mrg49507.h"
 #include "xoroshiro256.h"
+#include "xoroshiro512.h"

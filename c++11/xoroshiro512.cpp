@@ -1,4 +1,3 @@
-#pragma once
 /*
 MIT License
 
@@ -27,26 +26,30 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <cassert>
-#include <type_traits>
+#include <cstdint>
+
+#include "utils/bits_rotations.h"
+#include "xoroshiro512.h"
 
 
 //===========================================================================
-namespace utils
+/** The internal PRNG algorithm. */
+const Xoroshiro512::output_type Xoroshiro512::next() noexcept
 {
-    //=======================================================================
-    /** @brief Bits left rotation on unsigned integers. */
-    template<typename IntT>
-    inline const IntT rot_left(const IntT value, const int rot_count, const int BITS_COUNT = 8 * sizeof IntT)
-    {
-        static_assert(std::is_unsigned<IntT>::value, "bits rotation are only applied on unsigned integer values.");
-        assert(rot_count >= 1);
-        assert(rot_count <= BITS_COUNT);
+    const std::uint64_t current_s1{ _internal_state.state[1] };
 
-        const IntT lo_mask{ (IntT(1) << IntT(BITS_COUNT - rot_count)) - IntT(1)};
-        const IntT hi_mask{ IntT(-1) ^ lo_mask};
+    // advances the internal state of the PRNG
+    _internal_state.state[2] ^= _internal_state.state[0];
+    _internal_state.state[5] ^= current_s1;  // _internal_state.state[1];
+    _internal_state.state[1] ^= _internal_state.state[2];
+    _internal_state.state[7] ^= _internal_state.state[3];
+    _internal_state.state[3] ^= _internal_state.state[4];
+    _internal_state.state[4] ^= _internal_state.state[5];
+    _internal_state.state[0] ^= _internal_state.state[6];
+    _internal_state.state[6] ^= _internal_state.state[7];
+    _internal_state.state[6] ^= current_s1 << 11;
+    _internal_state.state[7] = utils::rot_left(_internal_state.state[7], 21);
 
-        return ((value & lo_mask) << rot_count) | ((value & hi_mask) >> (BITS_COUNT - rot_count));
-    }
-
+    // finally, returns pseudo random value as a 64-bits integer
+    return utils::rot_left(current_s1 * 5, 7) * 9;
 }

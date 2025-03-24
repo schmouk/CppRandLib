@@ -225,6 +225,11 @@ int main()
     }
 
     {
+        Xoroshiro512 xoroshiro512(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Xoroshiro512", &xoroshiro512);
+    }
+
+    {
         BaseXoroshiro<4> base_xoroshiro;
         test_perf("BaseXoroshiro<4>", &base_xoroshiro);
     }

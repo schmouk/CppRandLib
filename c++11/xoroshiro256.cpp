@@ -40,7 +40,7 @@ const Xoroshiro256::output_type Xoroshiro256::next() noexcept
 
     // advances the internal state of the PRNG
     _internal_state.state[2] ^= _internal_state.state[0];
-    _internal_state.state[3] ^= _internal_state.state[1];
+    _internal_state.state[3] ^= current_s1;  // _internal_state.state[1];
     _internal_state.state[1] ^= _internal_state.state[2];
     _internal_state.state[0] ^= _internal_state.state[3];
     _internal_state.state[2] ^= current_s1 << 17;
