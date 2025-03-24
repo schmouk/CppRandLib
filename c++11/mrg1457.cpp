@@ -49,6 +49,6 @@ const Mrg1457::output_type Mrg1457::next() noexcept
     // next index
     _internal_state.state.index = (index + 1) % SEED_SIZE;
 
-    // finally, returns pseudo random value in range [0.0, 1.0)
+    // finally, returns pseudo random value as a 31-bits integer
     return output_type(value);
 }

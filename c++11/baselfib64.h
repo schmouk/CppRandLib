@@ -196,7 +196,7 @@ const typename BaseLFib64<SIZE, K>::output_type BaseLFib64<SIZE, K>::next() noex
     // next index
     MyBaseClass::_internal_state.state.index = (index + 1) % SEED_SIZE;
 
-    // finally, returns output value
+    // finally, returns pseudo random value as a 64-bits integer
     return value;
 }
 
