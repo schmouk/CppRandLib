@@ -220,6 +220,11 @@ int main()
     }
 
     {
+        Xoroshiro256 xoroshiro256(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Xoroshiro256", &xoroshiro256);
+    }
+
+    {
         BaseXoroshiro<4> base_xoroshiro;
         test_perf("BaseXoroshiro<4>", &base_xoroshiro);
     }
