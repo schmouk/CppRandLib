@@ -36,19 +36,19 @@ SOFTWARE.
 /** The internal PRNG algorithm. */
 const Xoroshiro512::output_type Xoroshiro512::next() noexcept
 {
-    const std::uint64_t current_s1{ _internal_state.state[1] };
+    const std::uint64_t current_s1{ _internal_state.state.list[1] };
 
     // advances the internal state of the PRNG
-    _internal_state.state[2] ^= _internal_state.state[0];
-    _internal_state.state[5] ^= current_s1;  // _internal_state.state[1];
-    _internal_state.state[1] ^= _internal_state.state[2];
-    _internal_state.state[7] ^= _internal_state.state[3];
-    _internal_state.state[3] ^= _internal_state.state[4];
-    _internal_state.state[4] ^= _internal_state.state[5];
-    _internal_state.state[0] ^= _internal_state.state[6];
-    _internal_state.state[6] ^= _internal_state.state[7];
-    _internal_state.state[6] ^= current_s1 << 11;
-    _internal_state.state[7] = utils::rot_left(_internal_state.state[7], 21);
+    _internal_state.state.list[2] ^= _internal_state.state.list[0];
+    _internal_state.state.list[5] ^= current_s1;  // _internal_state.state[1];
+    _internal_state.state.list[1] ^= _internal_state.state.list[2];
+    _internal_state.state.list[7] ^= _internal_state.state.list[3];
+    _internal_state.state.list[3] ^= _internal_state.state.list[4];
+    _internal_state.state.list[4] ^= _internal_state.state.list[5];
+    _internal_state.state.list[0] ^= _internal_state.state.list[6];
+    _internal_state.state.list[6] ^= _internal_state.state.list[7];
+    _internal_state.state.list[6] ^= current_s1 << 11;
+    _internal_state.state.list[7] = utils::rot_left(_internal_state.state.list[7], 21);
 
     // finally, returns pseudo random value as a 64-bits integer
     return utils::rot_left(current_s1 * 5, 7) * 9;

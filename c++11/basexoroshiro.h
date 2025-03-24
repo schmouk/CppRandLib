@@ -28,8 +28,10 @@ SOFTWARE.
 
 //===========================================================================
 #include <array>
+#include <cstdint>
 
 #include "baserandom.h"
+#include "listseedstate.h"
 #include "utils/splitmix.h"
 
 
@@ -103,16 +105,14 @@ SOFTWARE.
 */
 
 template<const std::uint32_t SIZE>
-class BaseXoroshiro : public BaseRandom<std::array<std::uint64_t, SIZE>, std::uint64_t, 64>
+class BaseXoroshiro : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<std::array<std::uint64_t, SIZE>, std::uint64_t, 64>;
+    using MyBaseClass = BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>;
     using output_type = MyBaseClass::output_type;
     using state_type = MyBaseClass::state_type;
     using value_type = typename state_type::value_type;
-
-    static const std::uint32_t SEED_SIZE{ SIZE };
 
 
     //---   Constructors / Destructor   -------------------------------------
@@ -174,6 +174,7 @@ template<const std::uint32_t SIZE>
 inline void BaseXoroshiro<SIZE>::_setstate(const std::uint64_t seed) noexcept
 {
     utils::SplitMix64 splitmix_64(seed);
-    for (std::uint64_t& s : MyBaseClass::_internal_state.state)
+    for (std::uint64_t& s : MyBaseClass::_internal_state.state.list)
         s = splitmix_64();
+    MyBaseClass::_internal_state.state.index = 0;
 }

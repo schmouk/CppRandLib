@@ -35,17 +35,17 @@ SOFTWARE.
 //===========================================================================
 /** @brief A fast 64-bits Scrambled Linear Pseudorandom Number Generators with a long period (1.34e+154)
 *
-    This pseudorandom numbers generator implements  the  xoroshiro512**  pseudo-random
-    generator,  the eight 64-bits integers state array version of the Scrambled Linear
-    Pseudorandom Number Generators. It provides 64-bits pseudo random values, a medium
-    period  2^512 (i.e. about 1.34e+154),  jump ahead feature,  very short escape from
-    zeroland (30 iterations only) and passes TestU01 tests.
+*   This pseudorandom numbers generator implements  the  xoroshiro512**  pseudo-random
+*   generator,  the eight 64-bits integers state array version of the Scrambled Linear
+*   Pseudorandom Number Generators. It provides 64-bits pseudo random values, a medium
+*   period  2^512 (i.e. about 1.34e+154),  jump ahead feature,  very short escape from
+*   zeroland (30 iterations only) and passes TestU01 tests.
 *
 *   The base xoroshiro linear transformation  is  obtained  combining  a  rotation,  a
 *   shift,  and  again  a  rotation.  An  additional  scrambling  method  based on two
 *   multiplications is also computed for this version xoroshiro256** of the algorithm.
 *
-*   See Xoroshiro512 for a large 2^256 period (i.e. about  1.16e+77)  scramble  linear
+*   See Xoroshiro256 for a large 2^256 period (i.e. about  1.16e+77)  scramble  linear
 *   PRNG,  with  low  computation  time,  64-bits  output  values  and good randomness
 *   characteristics.
 *   See Xoroshiro1024 for a large 2^1024 period (i.e. about 1.80e+308) scramble linear
@@ -57,13 +57,13 @@ SOFTWARE.
 *   been  implemented  in CppRandLib,  as  described by the authors of xoroshiro - see
 *   reference [10] in file README.md.
 *
-* +-------------------------------------------------------------------------------------------------------------------------------------------------------+
+* +------------------------------------------------------------------------------------------------------------------------------------------------------+
 * | PyRandLib class | initial xoroshiro algo name | Memory Usage | Period | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
 * | --------------- | --------------------------- | ------------ | ------ | ----------- | ------------ | ---------------- | ----------- | -------------- |
 * | Xoroshiro512    | xoroshiro256**              |  8 x 4-bytes | 2^256  |    n.a.     |     0.84     |          0       |       0     |       0        |
 * | Xoroshiro512    | xoroshiro512**              | 16 x 4-bytes | 2^512  |    n.a.     |     0.99     |          0       |       0     |       0        |
 * | Xoroshiro1024   | xoroshiro1024**             | 32 x 4-bytes | 2^1024 |    n.a.     |     1.17     |          0       |       0     |       0        |
-* +-------------------------------------------------------------------------------------------------------------------------------------------------------+
+* +------------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
 *   the expected characteristics for a pretty good PRNG;

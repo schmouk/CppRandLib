@@ -38,3 +38,4 @@ SOFTWARE.
 #include "mrg49507.h"
 #include "xoroshiro256.h"
 #include "xoroshiro512.h"
+#include "xoroshiro1024.h"

@@ -29,24 +29,36 @@ SOFTWARE.
 #include <cstdint>
 
 #include "utils/bits_rotations.h"
-#include "xoroshiro256.h"
+#include "xoroshiro1024.h"
 
 
 //===========================================================================
 /** The internal PRNG algorithm. */
-const Xoroshiro256::output_type Xoroshiro256::next() noexcept
+const Xoroshiro1024::output_type Xoroshiro1024::next() noexcept
 {
-    const std::uint64_t current_s1{ _internal_state.state.list[1] };
+    const std::uint32_t previous_index{ _internal_state.state.index };
+    const std::uint32_t new_index{ (previous_index + 1) & 0xf };
 
     // advances the internal state of the PRNG
-    _internal_state.state.list[2] ^= _internal_state.state.list[0];
-    _internal_state.state.list[3] ^= current_s1;  // _internal_state.state.list[1];
-    _internal_state.state.list[1] ^= _internal_state.state.list[2];
-    _internal_state.state.list[0] ^= _internal_state.state.list[3];
-    _internal_state.state.list[2] ^= current_s1 << 17;
-    _internal_state.state.list[3] = utils::rot_left(_internal_state.state.list[3], 45);
+    const std::uint64_t s_low{ _internal_state.state.list[new_index] };
+    const std::uint64_t s_high{ _internal_state.state.list[previous_index] ^ s_low };
+    
+    _internal_state.state.list[previous_index] = utils::rot_left(s_low, 25) ^ s_high ^ (s_high << 27);
+    _internal_state.state.list[new_index] = utils::rot_left(s_high, 36);
+
+    _internal_state.state.index = new_index;
 
     // finally, returns pseudo random value as a 64-bits integer
-    return utils::rot_left(current_s1 * 5, 7) * 9;
+    return utils::rot_left(s_low * 5, 7) * 9;
 
+    /** /
+    previousIndex = self._index
+    # advances the internal state of the PRNG
+    self._index = (self._index + 1) & Xoroshiro1024._SIZE_MODULO
+    sHigh = self._state[previousIndex] ^ (sLow : = self._state[self._index])
+    self._state[previousIndex] = BaseRandom._rotleft(sLow, 25) ^ sHigh ^ ((sHigh << 27) & Xoroshiro1024._MODULO)
+    self._state[self._index] = BaseRandom._rotleft(sHigh, 36)
+    # returns the output value
+    return (BaseRandom._rotleft(sLow * 5, 7) * 9) & Xoroshiro1024._MODULO
+    /**/
 }
