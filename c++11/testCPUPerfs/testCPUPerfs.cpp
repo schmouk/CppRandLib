@@ -52,7 +52,7 @@ void test_perf(
     nb_loops = loops_count * LOOP_CLUSTER_SIZE;
 
     for (auto& p : perfs) {
-        const std::uint64_t start{ utils::get_time_us() };
+        const std::uint64_t start{ utils::get_time_ns() };
 
         for (std::size_t i = 0; i < loops_count; ++i) {
             rnd_algo_ptr->next();
@@ -157,12 +157,12 @@ void test_perf(
             rnd_algo_ptr->next();
         }
 
-        const std::uint64_t end{ utils::get_time_us() };
+        const std::uint64_t end{ utils::get_time_ns() };
 
         p = end - start;
     }
 
-    const double nanoseconds{ 1000.0 / nb_loops };
+    const double nanoseconds{ 1.0 / nb_loops };
     for (std::uint64_t p : perfs)
         std::cout << p * nanoseconds << ' ';
     std::cout << std::endl;
@@ -217,6 +217,31 @@ int main()
     {
         Mrg49507 mrg49507(0x3ca5'8796ul);
         test_perf("Mrg49507", &mrg49507);
+    }
+
+    {
+        Xoroshiro256 xoroshiro256(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Xoroshiro256", &xoroshiro256);
+    }
+
+    {
+        Xoroshiro512 xoroshiro512(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Xoroshiro512", &xoroshiro512);
+    }
+
+    {
+        Xoroshiro1024 xoroshiro1024(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Xoroshiro1024", &xoroshiro1024);
+    }
+
+    {
+        BaseXoroshiro<4> base_xoroshiro;
+        test_perf("BaseXoroshiro<4>", &base_xoroshiro);
+    }
+
+    {
+        BaseRandom<std::uint32_t> base_xoroshiro;
+        test_perf("BaseRandom", &base_xoroshiro);
     }
 
 }

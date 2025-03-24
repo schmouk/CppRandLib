@@ -27,6 +27,7 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <algorithm>
 #include <cstdint>
 
 #include "baserandom.h"
@@ -196,7 +197,7 @@ const typename BaseLFib64<SIZE, K>::output_type BaseLFib64<SIZE, K>::next() noex
     // next index
     MyBaseClass::_internal_state.state.index = (index + 1) % SEED_SIZE;
 
-    // finally, returns output value
+    // finally, returns pseudo random value as a 64-bits integer
     return value;
 }
 
@@ -206,8 +207,7 @@ template<const std::uint32_t SIZE, std::uint32_t K >
 inline void BaseLFib64<SIZE, K>::_setstate(const std::uint64_t seed) noexcept
 {
     utils::SplitMix64 splitmix_64(seed);
-    for (std::uint64_t& s : MyBaseClass::_internal_state.state.list)
-        s = splitmix_64();
+    std::ranges::generate(MyBaseClass::_internal_state.state.list, [&]() { return splitmix_64(); });
 }
 
 //---------------------------------------------------------------------------

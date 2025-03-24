@@ -27,11 +27,11 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <algorithm>
 #include <cstdint>
 
 #include "baserandom.h"
 #include "listseedstate.h"
-#include "utils/seed_generation.h"
 #include "utils/splitmix.h"
 
 
@@ -180,6 +180,5 @@ template<const size_t SIZE>
 inline void BaseMRG31<SIZE>::_setstate(const std::uint64_t seed) noexcept
 {
     utils::SplitMix31 splitmix_31(std::uint32_t(seed & 0x7fff'ffff));
-    for (auto& s : MyBaseClass::_internal_state.state.list)
-        s = splitmix_31();
+    std::ranges::generate(MyBaseClass::_internal_state.state.list, [&]() { return splitmix_31(); });
 }

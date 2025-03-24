@@ -54,6 +54,6 @@ const Mrg287::output_type Mrg287::next() noexcept
     // next index
     _internal_state.state.index = (index + 1) & _INDEX_MODULO;
 
-    // finally, returns pseudo random value
+    // finally, returns pseudo random value as a 32-bits integer
     return value;
 }

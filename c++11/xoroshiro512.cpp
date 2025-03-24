@@ -1,5 +1,3 @@
-#pragma once
-
 /*
 MIT License
 
@@ -28,46 +26,30 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <chrono>
 #include <cstdint>
+
+#include "utils/bits_rotations.h"
+#include "xoroshiro512.h"
 
 
 //===========================================================================
-namespace utils
+/** The internal PRNG algorithm. */
+const Xoroshiro512::output_type Xoroshiro512::next() noexcept
 {
-    //=======================================================================
-    /** @brief Returns the current time since epoch as a 64-bits milliseconds integer. */
-    inline const std::uint64_t get_time_ms() noexcept
-    {
-        return std::uint64_t(
-            std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::high_resolution_clock::now().time_since_epoch()
-            ).count()
-        );
-    }
+    const std::uint64_t current_s1{ _internal_state.state.list[1] };
 
+    // advances the internal state of the PRNG
+    _internal_state.state.list[2] ^= _internal_state.state.list[0];
+    _internal_state.state.list[5] ^= current_s1;  // _internal_state.state[1];
+    _internal_state.state.list[1] ^= _internal_state.state.list[2];
+    _internal_state.state.list[7] ^= _internal_state.state.list[3];
+    _internal_state.state.list[3] ^= _internal_state.state.list[4];
+    _internal_state.state.list[4] ^= _internal_state.state.list[5];
+    _internal_state.state.list[0] ^= _internal_state.state.list[6];
+    _internal_state.state.list[6] ^= _internal_state.state.list[7];
+    _internal_state.state.list[6] ^= current_s1 << 11;
+    _internal_state.state.list[7] = utils::rot_left(_internal_state.state.list[7], 21);
 
-    //=======================================================================
-    /** @brief Returns the current time since epoch as a 64-bits microseconds integer. */
-    inline const std::uint64_t get_time_us() noexcept
-    {
-        return std::uint64_t(
-            std::chrono::duration_cast<std::chrono::microseconds>(
-                std::chrono::high_resolution_clock::now().time_since_epoch()
-            ).count()
-        );
-    }
-
-
-    //=======================================================================
-    /** @brief Returns the current time since epoch as a 64-bits nanoseconds integer. */
-    inline const std::uint64_t get_time_ns() noexcept
-    {
-        return std::uint64_t(
-            std::chrono::duration_cast<std::chrono::nanoseconds>(
-                std::chrono::high_resolution_clock::now().time_since_epoch()
-            ).count()
-        );
-    }
-
+    // finally, returns pseudo random value as a 64-bits integer
+    return utils::rot_left(current_s1 * 5, 7) * 9;
 }

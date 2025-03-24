@@ -256,7 +256,7 @@ void test_algo(
     if (stdev > expected_max_stdev) {
         err = true;
         std::cout << "  standard deviation is out of range, should be less than "
-            << std::fixed << std::setprecision(3) << expected_max_stdev << "<<<<<"
+            << std::fixed << std::setprecision(3) << expected_max_stdev << " <<<<<"
             << std::endl;
     }
 
@@ -305,32 +305,64 @@ inline void test_algo(
 int main()
 {
     // notice: 3217 is a prime number
-
+    {
         FastRand32 frand32;
         test_algo("FastRand32", &frand32);
+    }
 
+    {
         FastRand63 frand63;
         test_algo("FastRand63", &frand63);
+    }
 
+    {
         LFib78 lfib78;
         test_algo("LFib78", &lfib78);
+    }
 
+    {
         LFib116 lfib116;
         test_algo("LFib116", &lfib116);
+    }
 
+    {
         LFib668 lfib668;
         test_algo("LFib668", &lfib668);
+    }
 
+    {
         LFib1340 lfib1340;
         test_algo("LFib1340", &lfib1340);
-            
+    }
+
+    {
         Mrg287 mrg287;
         test_algo("Mrg287", &mrg287);
+    }
 
+    {
         Mrg1457 mrg1457;
         test_algo("Mrg1457", &mrg1457);
+    }
 
+    {
         Mrg49507 mrg49507;
         test_algo("Mrg49507", &mrg49507);
+    }
+
+    {
+        Xoroshiro256 xoroshiro256;
+        test_algo("Xoroshiro256", &xoroshiro256);
+    }
+
+    {
+        Xoroshiro512 xoroshiro512;
+        test_algo("Xoroshiro512", &xoroshiro512);
+    }
+
+    {
+        Xoroshiro1024 xoroshiro1024;
+        test_algo("Xoroshiro1024", &xoroshiro1024);
+    }
 
 }

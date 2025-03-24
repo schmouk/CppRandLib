@@ -49,26 +49,25 @@ SOFTWARE.
 *   computation  time also,  longer period and quite better randomness characteristics 
 *   than for FastRand32.
 *
-*   See MRGRand287 for a short period  MR-Generator (2^287,  i.e. 2.49e+86)  with  low
-*   computation time but 256 integers memory consumption.
-*
-*   See MRGRand1457 for a  longer  period  MR-Generator  (2^1457,  i.e. 4.0e+438)  and
-*   longer  computation  time  (2^31-1  modulus  calculations)  but  less memory space
-*   consumption (47 integers).
-*
-*   See MRGRand49507 for a far  longer  period  (2^49507,  i.e. 1.2e+14903)  with  low
-*   computation  time  too  (31-bits  modulus)  but  use  of  more  memory space (1597
-*   integers).
+*   See MRGRand287, MRGRand1457 and MRGRand49507 for long periods MR-Generators (resp.
+*   2^287,  2^1,457  and  2^49,507,  i.e. 2.49e+86, 4.0e+438 and 1.2e+14,903) with low
+*   computation time but resp. 256, 47 and 1,597 integers memory  consumption.  Output
+*   values are coded on resp. 32-, 31- and 31- bits.
 *
 *   See LFibRand78, LFibRand116, LFibRand668 and LFibRand1340  for  long  period  LFib
 *   generators  (resp.  2^78,  2^116,  2^668  and 2^1340 periods,  i.e. resp. 3.0e+23,
 *   8.3e+34, 1.2e+201 and 2.4e+403 periods) while same computation time and far higher
 *   precision  (64-bits  calculations) but memory consumption (resp. 17,  55,  607 and
 *   1279 integers).
+* 
+*   See Xoroshiro256, Xoroshiro512, Xoroshiro1024 for long  period  generators  (resp. 
+*   2^256,  2^512  and  2^1024 periods,  i.e. resp. 1.16e+77,  1.34e+154 and 1.80e+308 
+*   periods),  64-bits precision calculations and short memory consumption  (resp.  4, 
+*   8 and 16 integers coded on 64 bits).
 *
 *   Furthermore this class and all its inheriting sub-classes are callable. Example:
 * @code
-*     BaseRandom rand{}; // CAUTION: Rrplace 'BaseRandom' with any inheriting class constructor!
+*     BaseRandom rand{}; // CAUTION: Replace 'BaseRandom' with any inheriting class constructor!
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 * @endcode
@@ -80,8 +79,8 @@ SOFTWARE.
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
 *
-*   Conforming to the former version PyRandLib  of  this  library,  next  methods  are
-*   available:
+*   Conforming to the former Python version of this library (PyRandLib),  next methods
+*   are available - built-in function in Python module 'random':
 *    |
 *    |  betavariate(alpha, beta)
 *    |      Beta distribution.
@@ -948,7 +947,7 @@ protected:
     //---   Attributes   ----------------------------------------------------
     struct _InternalState
     {
-        StateT state{};        //!< The internal current state of this PRNG
+        StateT state{};       //!< The internal current state of this PRNG
         double gauss_next{};  //!< smart optimization for Gaussian distribution computation (1/2)
         bool   gauss_valid{}; //!< smart optimization for Gaussian distribution computation (2/2)
     } _internal_state;
