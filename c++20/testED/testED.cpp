@@ -357,8 +357,8 @@ int main()
     }
 
     {
-        BaseXoroshiro<4> base_xoroshiro;
-        test_algo("BaseXoroshiro", &base_xoroshiro);
+        Xoroshiro256 xoroshiro256;
+        test_algo("Xoroshiro256", &xoroshiro256);
     }
 
 }

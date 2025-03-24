@@ -1,4 +1,3 @@
-#pragma once
 /*
 MIT License
 
@@ -27,13 +26,27 @@ SOFTWARE.
 
 
 //===========================================================================
-#include "fastrand32.h"
-#include "fastrand63.h"
-#include "lfib78.h"
-#include "lfib116.h"
-#include "lfib668.h"
-#include "lfib1340.h"
-#include "mrg287.h"
-#include "mrg1457.h"
-#include "mrg49507.h"
+#include <cstdint>
+
+#include "utils/bits_rotations.h"
 #include "xoroshiro256.h"
+
+
+//===========================================================================
+/** The internal PRNG algorithm. */
+const Xoroshiro256::output_type Xoroshiro256::next() noexcept
+{
+    const std::uint64_t current_s1{ _internal_state.state[1] };
+
+    // advances the internal state of the PRNG
+    _internal_state.state[2] ^= _internal_state.state[0];
+    _internal_state.state[3] ^= _internal_state.state[1];
+    _internal_state.state[1] ^= _internal_state.state[2];
+    _internal_state.state[0] ^= _internal_state.state[3];
+    _internal_state.state[2] ^= current_s1 << 17;
+    _internal_state.state[3] = utils::rot_left(_internal_state.state[3], 45);
+
+    // finally, returns pseudo random value as a 64-bits integer
+    return utils::rot_left(current_s1 * 5, 7) * 9;
+
+}
