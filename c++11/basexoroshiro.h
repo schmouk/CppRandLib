@@ -27,7 +27,6 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <array>
 #include <cstdint>
 
 #include "baserandom.h"
@@ -103,7 +102,6 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests that  any  GOOD  PRNG
 *   should definitively pass.
 */
-
 template<const std::uint32_t SIZE>
 class BaseXoroshiro : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>
 {
