@@ -357,6 +357,11 @@ int main()
     }
 
     {
+        Well512a well512a;
+        test_algo("Well512a", &well512a);
+    }
+
+    {
         Xoroshiro256 xoroshiro256;
         test_algo("Xoroshiro256", &xoroshiro256);
     }

@@ -224,6 +224,11 @@ int main()
     }
 
     {
+        Well512a well512a(0x3ca5'8796ul);
+        test_perf("Well512a", &well512a);
+    }
+
+    {
         Xoroshiro256 xoroshiro256(0x3ca5'8796'1f2e'b45aull);
         test_perf("Xoroshiro256", &xoroshiro256);
     }

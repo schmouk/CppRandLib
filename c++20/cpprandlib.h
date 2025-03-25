@@ -36,6 +36,7 @@ SOFTWARE.
 #include "mrg287.h"
 #include "mrg1457.h"
 #include "mrg49507.h"
+#include "well512a.h"
 #include "xoroshiro256.h"
 #include "xoroshiro512.h"
 #include "xoroshiro1024.h"

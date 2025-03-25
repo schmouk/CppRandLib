@@ -1,4 +1,3 @@
-#pragma once
 /*
 MIT License
 
@@ -27,16 +26,30 @@ SOFTWARE.
 
 
 //===========================================================================
-#include "fastrand32.h"
-#include "fastrand63.h"
-#include "lfib78.h"
-#include "lfib116.h"
-#include "lfib668.h"
-#include "lfib1340.h"
-#include "mrg287.h"
-#include "mrg1457.h"
-#include "mrg49507.h"
+#include <cstdint>
+
 #include "well512a.h"
-#include "xoroshiro256.h"
-#include "xoroshiro512.h"
-#include "xoroshiro1024.h"
+
+
+//===========================================================================
+/** The internal PRNG algorithm. */
+const Well512a::output_type Well512a::next() noexcept
+{
+    const std::uint32_t i{ _internal_state.state.index };
+    const std::uint32_t i_1{ (i - 1) & 0xf };
+
+    const value_type z0{ _internal_state.state.list[i_1] };
+    // notice:  all blocks of bits in the internal state are 32 bits wide, which leads to a great
+    // simplification for the implementation of the generic WELL algorithm when evaluating z0.
+    const value_type z1{ _M3_neg(_internal_state.state.list[i], 16) ^ _M3_neg(_internal_state.state.list[(i + 13) & 0x0f], 15) };
+    const value_type z2{ _M3_pos(_internal_state.state.list[(i + 9) & 0xf], 11) };
+    // notice: the last term of the above equation in the WELL generic algorithm is, for its Well512a
+    // version, the zero matrix _M0 which we suppress here for calculations optimization purpose
+    const value_type z3{ z1 ^ z2 };
+
+    _internal_state.state.list[i] = z3;
+    _internal_state.state.list[i_1] = _M3_neg(z0, 2) ^ _M3_neg(z1, 18) ^ _M2_neg(z2, 28) ^ _M5_neg(z3, 5, _a1);
+    _internal_state.state.index = i_1;
+
+    return z3;
+}
