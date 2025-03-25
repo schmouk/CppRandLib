@@ -1,5 +1,4 @@
 #pragma once
-
 /*
 MIT License
 
@@ -28,46 +27,39 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <chrono>
-#include <cstdint>
-
+#include <array>
+#include <vector>
+ 
 
 //===========================================================================
 namespace utils
 {
-    //=======================================================================
-    /** @brief Returns the current time since epoch as a 64-bits milliseconds integer. */
-    inline const std::uint64_t get_time_ms() noexcept
+    //-----------------------------------------------------------------------
+    template<typename ContainerType>
+    class is_indexable
     {
-        return std::uint64_t(
-            std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::high_resolution_clock::now().time_since_epoch()
-            ).count()
-        );
-    }
+    public:
+        static const bool value = false;
+    };
+
+    template<typename ContainerType>
+    static inline constexpr bool is_indexable_v{ is_indexable<ContainerType>::value };
 
 
-    //=======================================================================
-    /** @brief Returns the current time since epoch as a 64-bits microseconds integer. */
-    inline const std::uint64_t get_time_us() noexcept
+    //-----------------------------------------------------------------------
+    template<typename T>
+    class is_indexable<std::vector<T>>
     {
-        return std::uint64_t(
-            std::chrono::duration_cast<std::chrono::microseconds>(
-                std::chrono::high_resolution_clock::now().time_since_epoch()
-            ).count()
-        );
-    }
+    public:
+        static const bool value{ true };
+    };
 
-
-    //=======================================================================
-    /** @brief Returns the current time since epoch as a 64-bits nanoseconds integer. */
-    inline const std::uint64_t get_time_ns() noexcept
+    //-----------------------------------------------------------------------
+    template<typename T, const std::size_t n>
+    class is_indexable<std::array<T, n>>
     {
-        return std::uint64_t(
-            std::chrono::duration_cast<std::chrono::nanoseconds>(
-                std::chrono::high_resolution_clock::now().time_since_epoch()
-            ).count()
-        );
-    }
+    public:
+        static const bool value{ true };
+    };
 
 }

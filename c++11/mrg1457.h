@@ -27,6 +27,8 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <cstdint>
+
 #include "basemrg31.h"
 #include "listseedstate.h"
 
@@ -67,7 +69,6 @@ SOFTWARE.
 *     Mrg1457 rand();
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
-*     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
@@ -90,12 +91,12 @@ SOFTWARE.
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
-*   the expected characteristics for a pretty good PRG;
+*   the expected characteristics for a pretty good PRNG;
 *
 *   * _crush_ is a bigger set of tests that test more deeply  expected  random
 *   characteristics;
 *
-*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
+*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
 class Mrg1457 : public BaseMRG31<47>
@@ -109,30 +110,20 @@ public:
     /** @brief Empty constructor. */
     inline Mrg1457() noexcept
         : MyBaseClass()
-    {
-        MyBaseClass::setstate();
-    }
+    {}
 
-    /** @brief Valued construtor (integer). */
-    inline Mrg1457(const uint32_t seed) noexcept
+    /** @brief Valued construtor. */
+    template<typename T>
+    inline Mrg1457(const T seed_) noexcept
         : MyBaseClass()
     {
-        MyBaseClass::setstate(seed);
-    }
-
-    /** @brief Valued construtor (double). */
-    inline Mrg1457(const double seed) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::setstate(seed);
+        MyBaseClass::MyBaseClass::seed(seed_);
     }
 
     /** @brief Valued constructor (full state). */
     inline Mrg1457(const state_type& seed) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::setstate(seed);
-    }
+        : MyBaseClass(seed)
+    {}
 
     Mrg1457(const Mrg1457&) noexcept = default;     //!< default copy constructor.
     Mrg1457(Mrg1457&&) noexcept = default;          //!< default move constructor.

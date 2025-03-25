@@ -1,5 +1,3 @@
-#pragma once
-
 /*
 MIT License
 
@@ -28,46 +26,39 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <chrono>
 #include <cstdint>
+
+#include "utils/bits_rotations.h"
+#include "xoroshiro1024.h"
 
 
 //===========================================================================
-namespace utils
+/** The internal PRNG algorithm. */
+const Xoroshiro1024::output_type Xoroshiro1024::next() noexcept
 {
-    //=======================================================================
-    /** @brief Returns the current time since epoch as a 64-bits milliseconds integer. */
-    inline const std::uint64_t get_time_ms() noexcept
-    {
-        return std::uint64_t(
-            std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::high_resolution_clock::now().time_since_epoch()
-            ).count()
-        );
-    }
+    const std::uint32_t previous_index{ _internal_state.state.index };
+    const std::uint32_t new_index{ (previous_index + 1) & 0xf };
 
+    // advances the internal state of the PRNG
+    const std::uint64_t s_low{ _internal_state.state.list[new_index] };
+    const std::uint64_t s_high{ _internal_state.state.list[previous_index] ^ s_low };
+    
+    _internal_state.state.list[previous_index] = utils::rot_left(s_low, 25) ^ s_high ^ (s_high << 27);
+    _internal_state.state.list[new_index] = utils::rot_left(s_high, 36);
 
-    //=======================================================================
-    /** @brief Returns the current time since epoch as a 64-bits microseconds integer. */
-    inline const std::uint64_t get_time_us() noexcept
-    {
-        return std::uint64_t(
-            std::chrono::duration_cast<std::chrono::microseconds>(
-                std::chrono::high_resolution_clock::now().time_since_epoch()
-            ).count()
-        );
-    }
+    _internal_state.state.index = new_index;
 
+    // finally, returns pseudo random value as a 64-bits integer
+    return utils::rot_left(s_low * 5, 7) * 9;
 
-    //=======================================================================
-    /** @brief Returns the current time since epoch as a 64-bits nanoseconds integer. */
-    inline const std::uint64_t get_time_ns() noexcept
-    {
-        return std::uint64_t(
-            std::chrono::duration_cast<std::chrono::nanoseconds>(
-                std::chrono::high_resolution_clock::now().time_since_epoch()
-            ).count()
-        );
-    }
-
+    /** /
+    previousIndex = self._index
+    # advances the internal state of the PRNG
+    self._index = (self._index + 1) & Xoroshiro1024._SIZE_MODULO
+    sHigh = self._state[previousIndex] ^ (sLow : = self._state[self._index])
+    self._state[previousIndex] = BaseRandom._rotleft(sLow, 25) ^ sHigh ^ ((sHigh << 27) & Xoroshiro1024._MODULO)
+    self._state[self._index] = BaseRandom._rotleft(sHigh, 36)
+    # returns the output value
+    return (BaseRandom._rotleft(sLow * 5, 7) * 9) & Xoroshiro1024._MODULO
+    /**/
 }

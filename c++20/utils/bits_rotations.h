@@ -1,5 +1,4 @@
 #pragma once
-
 /*
 MIT License
 
@@ -28,46 +27,25 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <chrono>
-#include <cstdint>
+#include <cassert>
+#include <type_traits>
 
 
 //===========================================================================
 namespace utils
 {
     //=======================================================================
-    /** @brief Returns the current time since epoch as a 64-bits milliseconds integer. */
-    inline const std::uint64_t get_time_ms() noexcept
+    template<typename IntT>
+        requires std::is_unsigned_v<IntT>
+    inline const IntT rot_left(const IntT value, const int rot_count, const int BITS_COUNT = 8 * sizeof(IntT))
     {
-        return std::uint64_t(
-            std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::high_resolution_clock::now().time_since_epoch()
-            ).count()
-        );
-    }
+        assert(rot_count >= 1);
+        assert(rot_count <= BITS_COUNT);
 
+        const IntT lo_mask{ (IntT(1) << IntT(BITS_COUNT - rot_count)) - IntT(1) };
+        const IntT hi_mask{ IntT(-1) ^ lo_mask};
 
-    //=======================================================================
-    /** @brief Returns the current time since epoch as a 64-bits microseconds integer. */
-    inline const std::uint64_t get_time_us() noexcept
-    {
-        return std::uint64_t(
-            std::chrono::duration_cast<std::chrono::microseconds>(
-                std::chrono::high_resolution_clock::now().time_since_epoch()
-            ).count()
-        );
-    }
-
-
-    //=======================================================================
-    /** @brief Returns the current time since epoch as a 64-bits nanoseconds integer. */
-    inline const std::uint64_t get_time_ns() noexcept
-    {
-        return std::uint64_t(
-            std::chrono::duration_cast<std::chrono::nanoseconds>(
-                std::chrono::high_resolution_clock::now().time_since_epoch()
-            ).count()
-        );
+        return ((value & lo_mask) << rot_count) | ((value & hi_mask) >> (BITS_COUNT - rot_count));
     }
 
 }
