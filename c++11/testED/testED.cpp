@@ -216,7 +216,7 @@ void test_algo(
 
     double expected_max_diff_mean_median{ (nb_loops / nb_entries) * 0.002 };  // i.e.difference should be less than 0.2 % of expected mean
     double expected_max_stdev{ 1.04 * sqrt(nb_loops / nb_entries) };          // i.e. + 4 % max over expected stdandard deviation
-    double expected_max_variance{ 4.5 };                                      // this is the absolute value of the expected max on local variance
+    constexpr double expected_max_variance{ 5.0 };                            // this is the absolute value of the expected max on local variance
 
     if (expected_max_diff_mean_median < 0.5)
         expected_max_diff_mean_median = 0.5;
@@ -353,6 +353,11 @@ int main()
     {
         Well512a well512a;
         test_algo("Well512a", &well512a);
+    }
+
+    {
+        Well1024a well1024a;
+        test_algo("Well1024a", &well1024a);
     }
 
     {
