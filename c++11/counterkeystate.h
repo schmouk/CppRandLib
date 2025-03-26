@@ -2,7 +2,7 @@
 /*
 MIT License
 
-Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
 This file is part of library CppRandLib.
 
@@ -42,13 +42,10 @@ struct CounterKeyState
 {
     static_assert(std::is_integral<CounterType>::value);
 
+    using value_type = CounterType;
+
     CounterType counter{ 0 };
     CounterType key{ 0 };
-
-    inline CounterKeyState(const CounterType c, const CounterType k) noexcept
-        : counter(c)
-        , key(k)
-    {}
 
 
     inline void init_key() noexcept
@@ -95,7 +92,6 @@ void CounterKeyState<std::uint32_t>::init_key(
     }
 
     key |= 1;  // notice: key must be odd
-
 }
 
 //---------------------------------------------------------------------------
@@ -112,21 +108,20 @@ void CounterKeyState<std::uint64_t>::init_key(
     key = 0;
 
     // let's initialize the 8 high hexa digits of the key - all different
-    for (std::uint32_t n = 15; n >= 8; --n) {
+    for (std::uint32_t n = 15; n >= 8; ) {
         const std::uint32_t i{ std::uint32_t(double(n) * double(init_rand()) * NORMALIZE) };
 
         key = (key << 4) + hex_digits[i];
-        std::swap(hex_digits[i], hex_digits[n]);
+        std::swap(hex_digits[i], hex_digits[--n]);
     }
 
     // then let's initialize the 8 low hexa digits of the key - all different
-    for (std::uint32_t n = 15; n >= 8; --n) {
+    for (std::uint32_t n = 15; n >= 8; ) {
         const std::uint32_t i{ std::uint32_t(double(n) * double(init_rand()) * NORMALIZE) };
 
         key = (key << 4) + hex_digits[i];
-        std::swap(hex_digits[i], hex_digits[n]);
+        std::swap(hex_digits[i], hex_digits[--n]);
     }
 
     key |= 1;  // notice: key must be odd
-
 }

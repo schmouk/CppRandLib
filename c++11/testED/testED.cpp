@@ -112,12 +112,13 @@ public:
         if (!_median && _data.size() > 0) {
             const std::uint32_t mid_index{ std::uint32_t(_data.size() / 2) };
             
-            std::sort(_data.begin(), _data.end());
+            std::vector<std::uint32_t> copied_data{ _data };  // not to alter the original content of this histogram
+            std::sort(copied_data.begin(), copied_data.end());
 
-            if (_data.size() & 0x01 || _data.size() == 1)
-                _median.value = double(_data[mid_index]);
+            if (copied_data.size() & 0x01 || copied_data.size() == 1)
+                _median.value = double(copied_data[mid_index]);
             else
-                _median.value = (_data[mid_index - 1] + _data[mid_index]) / 2.0;
+                _median.value = (copied_data[mid_index - 1] + copied_data[mid_index]) / 2.0;
 
             _median.evaluated = true;
         }
@@ -348,6 +349,11 @@ int main()
     {
         Mrg49507 mrg49507;
         test_algo("Mrg49507", &mrg49507);
+    }
+
+    {
+        BaseSquares base_squares;
+        test_algo("BaseSquares", &base_squares);
     }
 
     {
