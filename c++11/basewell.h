@@ -115,6 +115,8 @@ public:
     using state_type  = MyBaseClass::state_type;
     using value_type  = typename state_type::value_type;
 
+    static constexpr std::uint32_t STATE_SIZE{ SIZE };
+
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Default Empty constructor. */
