@@ -31,7 +31,7 @@ SOFTWARE.
 
 
 //===========================================================================
-/** @brief The internal state of LFib and MRG Pseudo Random Numbers Generators. */
+/** @brief The internal state of many Pseudo Random Numbers Generators. */
 template<typename ValueType, const size_t SIZE>
 struct ListSeedState
 {
