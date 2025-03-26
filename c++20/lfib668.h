@@ -4,6 +4,8 @@ MIT License
 
 Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
+This file is part of library CppRandLib.
+
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
 in the Software without restriction,  including without limitation the  rights
@@ -29,12 +31,7 @@ SOFTWARE.
 
 
 //===========================================================================
-/** @brief The base class for all LFib PRNG based on 64-bits numbers.
-*
-*   Pseudo-random numbers generator  -  Definition of a fast 64-bits Lagged  Fibonacci
-*   Generator with quite long period (1.2e+201).
-*
-*   This module is part of library PyRandLib.
+/** @brief A fast 64-bits Lagged Fibonacci Generator with a long period (1.2e+201).
 *
 *   Lagged Fibonacci generators LFib( m, r, k, op) use the recurrence
 *
@@ -78,7 +75,6 @@ SOFTWARE.
 *     LFib607 rand{};
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
-*     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
 * @endcode
 * *
 *   Notice that for simulating the roll of a dice you should program:

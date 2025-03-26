@@ -27,7 +27,7 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <array>
+#include <vector>
 
 
 //===========================================================================
@@ -37,6 +37,13 @@ struct ListSeedState
 {
     using value_type = ValueType;
 
-    std::array<ValueType, SIZE>  list;
-    std::uint32_t                index;
+    std::vector<ValueType> list{};
+    std::uint32_t          index{ 0 };
+
+    inline ListSeedState() noexcept
+        : index(0)
+    {
+        list.resize(SIZE);
+    }
+
 };

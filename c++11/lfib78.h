@@ -31,11 +31,8 @@ SOFTWARE.
 
 
 //===========================================================================
-/** @brief The base class for all LFib PRNG based on 64-bits numbers.
+/** @brief A fast 64-bits Lagged Fibonacci Generator with a short period (3.0e+23).
 *
-*   Pseudo-random numbers generator  -  Definition of a fast 64-bits Lagged  Fibonacci
-*   Generator with quite short period (3.0e+23).
-* 
 *   Lagged Fibonacci generators LFib( m, r, k, op) use the recurrence
 *
 *       x(i) = (x(i-r) op (x(i-k)) mod m
@@ -77,7 +74,6 @@ SOFTWARE.
 *     LFib78 rand{};
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
-*     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
 * @endcode
 * *
 *   Notice that for simulating the roll of a dice you should program:
@@ -101,12 +97,12 @@ SOFTWARE.
 * +--------------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
-*   the expected characteristics for a pretty good PRG;
+*   the expected characteristics for a pretty good PRNG;
 *
 *   * _crush_ is a bigger set of tests that test more deeply  expected  random
 *   characteristics;
 *
-*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
+*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
 using LFib78 = BaseLFib64<17, 5>;
