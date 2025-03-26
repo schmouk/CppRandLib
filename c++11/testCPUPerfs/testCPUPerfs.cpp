@@ -220,6 +220,26 @@ int main()
     }
 
     {
+        Well512a well512a(0x3ca5'8796ul);
+        test_perf("Well512a", &well512a);
+    }
+
+    {
+        Well1024a well1024a(0x3ca5'8796ul);
+        test_perf("Well1024a", &well1024a);
+    }
+
+    {
+        Well19937c well19937c(0x3ca5'8796ul);
+        test_perf("Well19937c", &well19937c);
+    }
+
+    {
+        Well44497b well44497b(0x3ca5'8796ul);
+        test_perf("Well44497b", &well44497b);
+    }
+
+    {
         Xoroshiro256 xoroshiro256(0x3ca5'8796'1f2e'b45aull);
         test_perf("Xoroshiro256", &xoroshiro256);
     }
