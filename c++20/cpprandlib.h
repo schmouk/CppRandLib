@@ -38,6 +38,7 @@ SOFTWARE.
 #include "mrg49507.h"
 #include "well512a.h"
 #include "well1024a.h"
+#include "well19937c.h"
 #include "xoroshiro256.h"
 #include "xoroshiro512.h"
 #include "xoroshiro1024.h"

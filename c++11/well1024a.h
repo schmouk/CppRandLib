@@ -33,7 +33,7 @@ SOFTWARE.
 
 
 //===========================================================================
-/** @brief A fast 32-bits Well-Equidistributed Long-period Linear generator with a large period (2^1024, i.e. 1.80e+308).
+/** @brief A fast 32-bits Well-Equidistributed Long-period Linear generator with a large period (2^1,024, i.e. 1.80e+308).
 *
 *   Well-Equidistributed Long-period Linear Generators (WELL)  use  linear  recurrence
 *   based  on  primitive  characteristic  polynomials associated with left- and right-
@@ -59,9 +59,9 @@ SOFTWARE.
 *
 *   See Well512a for a large period WELL-Generator (2^512,  i.e. 1.34e+154)  with  low
 *   computation time and 16 integers memory consumption.
-*   See Well199937b for a far longer period  (2^19,937, i.e. 4.32e+6,001) with similar
+*   See Well199937c for a far longer period  (2^19,937, i.e. 4.32e+6,001) with similar
 *   computation time but use of more memory space (624 integers).
-*   See Well44497c for a very large period (2^44,497,  i.e. 15.1e+13,466) with similar
+*   See Well44497b for a very large period (2^44,497,  i.e. 15.1e+13,466) with similar
 *   computation time but use of even more memory space (1,391 integers).
 *
 *   Reminder:

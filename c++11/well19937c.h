@@ -33,7 +33,7 @@ SOFTWARE.
 
 
 //===========================================================================
-/** @brief A fast 32-bits Well-Equidistributed Long-period Linear generator with a large period (2^1024, i.e. 1.80e+308).
+/** @brief A fast 32-bits Well-Equidistributed Long-period Linear generator with a very large period (2^19,937, i.e. 4.32e+6,001).
 *
 *   Well-Equidistributed Long-period Linear Generators (WELL)  use  linear  recurrence
 *   based  on  primitive  characteristic  polynomials associated with left- and right-
@@ -48,7 +48,7 @@ SOFTWARE.
 *   Furthermore, WELLs have proven their great ability  to  very  fastly  escape  from
 *   zeroland.
 *
-*   Notice: the algorithm in its Well1024a version has been coded  here  as  a  direct
+*   Notice: the algorithm in its Well19937c version has been coded  here  as  a  direct
 *   implementation  of  its  description  in the initial paper:  "Improved Long-Period
 *   Generators Based on Linear Recurrences Modulo 2",  François  PANNETON  and  Pierre
 *   L'ECUYER (Université de Montréal) and Makoto MATSUMOTO (Hiroshima University),  in
@@ -59,8 +59,8 @@ SOFTWARE.
 *
 *   See Well512a for a large period WELL-Generator (2^512,  i.e. 1.34e+154)  with  low
 *   computation time and 16 integers memory consumption.
-*   See Well199937c for a far longer period  (2^19,937, i.e. 4.32e+6,001) with similar
-*   computation time but use of more memory space (624 integers).
+*   See Well1024a for a longer period WELL-Generator (2^1,024,  i.e. 1.80e+308),  same
+*   computation time and 32 integers memory consumption.
 *   See Well44497b for a very large period (2^44,497,  i.e. 15.1e+13,466) with similar
 *   computation time but use of even more memory space (1,391 integers).
 *
@@ -92,37 +92,37 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests that  any  GOOD  PRNG
 *   should definitively pass.
 */
-class Well1024a : public BaseWell<32>
+class Well19937c : public BaseWell<624>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseWell<32>;
+    using MyBaseClass = BaseWell<624>;
 
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
-    inline Well1024a() noexcept
+    inline Well19937c() noexcept
         : MyBaseClass()
     {
     }
 
     /** @brief Valued construtor. */
     template<typename T>
-    inline Well1024a(const T seed_) noexcept
+    inline Well19937c(const T seed_) noexcept
         : MyBaseClass()
     {
         MyBaseClass::seed(seed_);
     }
 
     /** @brief Valued constructor (full state). */
-    inline Well1024a(const state_type& seed) noexcept
+    inline Well19937c(const state_type& seed) noexcept
         : MyBaseClass(seed)
     {
     }
 
-    Well1024a(const Well1024a&) noexcept = default;   //!< default copy constructor.
-    Well1024a(Well1024a&&) noexcept = default;        //!< default move constructor.
-    virtual ~Well1024a() noexcept = default;         //!< default destructor.
+    Well19937c(const Well19937c&) noexcept = default;   //!< default copy constructor.
+    Well19937c(Well19937c&&) noexcept = default;        //!< default move constructor.
+    virtual ~Well19937c() noexcept = default;         //!< default destructor.
 
 
     //---   Internal PRNG   -------------------------------------------------
