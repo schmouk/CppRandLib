@@ -54,7 +54,7 @@ SOFTWARE.
 *   while this is not mentionned in the original paper - see reference
 *   [9] in file README.md.
 *
-*   Please notice that this class and all its  inheriting  sub-classes  
+*   Please notice that this class and all its  inheriting  sub-classes
 *   are callable. Example:
 * @code
 *     BaseSquares rand{};                   // CAUTION: Replace 'BaseSquares' with any inheriting class constructor!
@@ -90,23 +90,23 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests that  any  GOOD  PRNG  should
 *   definitively pass.
 */
-class BaseSquares : public BaseRandom<CounterKeyState<std::uint64_t>, std::uint64_t, 64>
+template<typename OutputT>
+class BaseSquares : public BaseRandom<CounterKeyState, OutputT, 8 * sizeof(OutputT)>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<CounterKeyState<std::uint64_t>, std::uint64_t, 64>;
-    using output_type = MyBaseClass::output_type;
+    using MyBaseClass = BaseRandom<CounterKeyState, OutputT, 8 * sizeof(OutputT)>;
+    using output_type = OutputT;
     using state_type = MyBaseClass::state_type;
     using value_type = typename state_type::value_type;
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Default Empty constructor. */
+    /** @brief Empty constructor. */
     inline BaseSquares() noexcept;
 
     /** @brief Valued construtor. */
-    template<typename T>
-    inline BaseSquares(const T seed_) noexcept;
+    inline BaseSquares(const std::uint64_t seed_) noexcept;
 
     /** @brief Valued constructor (full state). */
     inline BaseSquares(const state_type& internal_state) noexcept;
@@ -127,7 +127,8 @@ protected:
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
 //---------------------------------------------------------------------------
 /** Default Empty constructor. */
-inline BaseSquares::BaseSquares() noexcept
+template<typename OutputT>
+inline BaseSquares<OutputT>::BaseSquares() noexcept
     : MyBaseClass()
 {
     MyBaseClass::seed();
@@ -135,8 +136,8 @@ inline BaseSquares::BaseSquares() noexcept
 
 //---------------------------------------------------------------------------
 /** Valued construtor. */
-template<typename T>
-inline BaseSquares::BaseSquares(const T seed_) noexcept
+template<typename OutputT>
+inline BaseSquares<OutputT>::BaseSquares(const std::uint64_t seed_) noexcept
     : MyBaseClass()
 {
     MyBaseClass::seed(seed_);
@@ -144,7 +145,8 @@ inline BaseSquares::BaseSquares(const T seed_) noexcept
 
 //---------------------------------------------------------------------------
 /** Valued constructor (full state). */
-inline BaseSquares::BaseSquares(const state_type& internal_state) noexcept
+template<typename OutputT>
+inline BaseSquares<OutputT>::BaseSquares(const state_type& internal_state) noexcept
     : MyBaseClass()
 {
     MyBaseClass::setstate(internal_state);
@@ -152,8 +154,9 @@ inline BaseSquares::BaseSquares(const state_type& internal_state) noexcept
 
 //---------------------------------------------------------------------------
 /** Sets the internal state of this PRNG with an integer seed. */
-inline void BaseSquares::_setstate(const std::uint64_t seed) noexcept
+template<typename OutputT>
+inline void BaseSquares<OutputT>::_setstate(const std::uint64_t seed) noexcept
 {
-    _internal_state.state.init_key(seed);  // notice: the std::uint64_t specialization of this method is automatically called here
-    _internal_state.state.counter = 0;
+    MyBaseClass::_internal_state.state.init_key(seed);  // notice: the std::uint64_t specialization of this method is automatically called here
+    MyBaseClass::_internal_state.state.counter = 0;
 }

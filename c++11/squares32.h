@@ -29,23 +29,15 @@ SOFTWARE.
 //===========================================================================
 #include <cstdint>
 
-#include "baserandom.h"
-#include "counterkeystate.h"
+#include "basesquares.h"
 
 
 //===========================================================================
-/** @brief The base class for all Squares counter-based pseudo-random Generators.
+/** @brief Squares pseudo-random Generators dedicated to 64-bits calculations and 32-bits output values with small period (min 2^64, i.e. 1.84e+19).
 *
-*   Squares models are based on an incremented counter and a key.  The
-*   algorithm squares a combination of the counter and the key values,
-*   and exchanges the upper and lower bits  of  the  combination,  the
-*   whole  repeated  a number of times (4 to 5 rounds).  Output values
-*   are provided on 32-bits or on 64-bits according to the model.  See
-*   [9] in README.md.
-*
-*   See Squares32 for a 2^64 (i.e. about 1.84e+19)  period  PRNG  with
-*   low  computation  time,  medium period,  32-bits output values and
-*   very good randomness characteristics.
+*   This Squares models is based on a  four  rounds  of  squaring  and
+*   exchanging of upper and lower bits of the successive combinations.
+*   Output values are provided on 32-bits.
 *
 *   See Squares64 for a 2^64 (i.e. about 1.84e+19)  period  PRNG  with
 *   low  computation  time,  medium period,  64-bits output values and
@@ -54,17 +46,17 @@ SOFTWARE.
 *   while this is not mentionned in the original paper - see reference
 *   [9] in file README.md.
 *
-*   Please notice that this class and all its  inheriting  sub-classes  
+*   Please notice that this class and all its  inheriting  sub-classes
 *   are callable. Example:
 * @code
-*     BaseSquares rand{};                   // CAUTION: Replace 'BaseSquares' with any inheriting class constructor!
+*     Squares32 rand{};                     // CAUTION: Replace 'BaseSquares' with any inheriting class constructor!
 *     std::cout << rand() << std::endl;     // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;    // prints a uniform pseudo-random value within [0.0, b)
 * @endcode
 *
 *   Please notice that for simulating the roll of a dice you may use any of:
 * @code
-*     BaseSquares diceRoll{};               // CAUTION: Replace 'BaseSquares' with any inheriting class constructor!
+*     Squares32 diceRoll{};  // CAUTION: Replace 'BaseSquares' with any inheriting class constructor!
 *     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
@@ -90,73 +82,42 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests that  any  GOOD  PRNG  should
 *   definitively pass.
 */
-template<typename OutputT>
-class BaseSquares : public BaseRandom<CounterKeyState, OutputT, 8 * sizeof(OutputT)>
+class Squares32 : public BaseSquares<std::uint32_t>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<CounterKeyState, OutputT, 8 * sizeof(OutputT)>;
-    using output_type = OutputT;
-    using state_type  = MyBaseClass::state_type;
-    using value_type  = typename state_type::value_type;
+    using MyBaseClass = BaseSquares<std::uint32_t>;
+    using output_type = MyBaseClass::output_type;
 
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
-    inline BaseSquares() noexcept;
+    inline Squares32() noexcept
+        : MyBaseClass()
+    {}
 
     /** @brief Valued construtor. */
-    inline BaseSquares(const std::uint64_t seed_) noexcept;
+    inline Squares32(const std::uint64_t seed_) noexcept
+        : MyBaseClass()
+    {
+        MyBaseClass::seed(seed_);
+    }
 
     /** @brief Valued constructor (full state). */
-    inline BaseSquares(const state_type& internal_state) noexcept;
+    inline Squares32(const state_type& seed) noexcept
+        : MyBaseClass(seed)
+    {}
 
-    BaseSquares(const BaseSquares&) noexcept = default;   //!< default copy constructor.
-    BaseSquares(BaseSquares&&) noexcept = default;        //!< default move constructor.
-    virtual ~BaseSquares() noexcept = default;            //!< default destructor.
+    Squares32(const Squares32&) noexcept = default;   //!< default copy constructor.
+    Squares32(Squares32&&) noexcept = default;        //!< default move constructor.
+    virtual ~Squares32() noexcept = default;         //!< default destructor.
 
 
-protected:
-    /** @brief Sets the internal state of this PRNG with an integer seed. */
-    virtual inline void _setstate(const std::uint64_t seed) noexcept override;
+    //---   Internal PRNG   -------------------------------------------------
+    /** @brief The internal PRNG algorithm.
+    *
+    * @return an integer value coded on 32 bits.
+    */
+    virtual const output_type next() noexcept override;
 
 };
-
-
-//===========================================================================
-//---   TEMPLATES IMPLEMENTATION   ------------------------------------------
-//---------------------------------------------------------------------------
-/** Default Empty constructor. */
-template<typename OutputT>
-inline BaseSquares<OutputT>::BaseSquares() noexcept
-    : MyBaseClass()
-{
-    MyBaseClass::seed();
-}
-
-//---------------------------------------------------------------------------
-/** Valued construtor. */
-template<typename OutputT>
-inline BaseSquares<OutputT>::BaseSquares(const std::uint64_t seed_) noexcept
-    : MyBaseClass()
-{
-    MyBaseClass::seed(seed_);
-}
-
-//---------------------------------------------------------------------------
-/** Valued constructor (full state). */
-template<typename OutputT>
-inline BaseSquares<OutputT>::BaseSquares(const state_type& internal_state) noexcept
-    : MyBaseClass()
-{
-    MyBaseClass::setstate(internal_state);
-}
-
-//---------------------------------------------------------------------------
-/** Sets the internal state of this PRNG with an integer seed. */
-template<typename OutputT>
-inline void BaseSquares<OutputT>::_setstate(const std::uint64_t seed) noexcept
-{
-    MyBaseClass::_internal_state.state.init_key(seed);  // notice: the std::uint64_t specialization of this method is automatically called here
-    MyBaseClass::_internal_state.state.counter = 0;
-}

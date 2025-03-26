@@ -358,8 +358,8 @@ int main()
     }
 
     {
-        BaseSquares base_square;
-        test_algo("BaseSquares", &base_square);
+        Squares32 square32;
+        test_algo("Squares32", &square32);
     }
 
     {

@@ -37,22 +37,20 @@ SOFTWARE.
 
 //===========================================================================
 /** @brief The internal state of counter-based Pseudo Random Numbers Generators. */
-template<typename CounterType>
 struct CounterKeyState
 {
-    static_assert(std::is_integral<CounterType>::value);
+    using value_type = std::uint64_t;
 
-    using value_type = CounterType;
-
-    CounterType counter{ 0 };
-    CounterType key{ 0 };
+    value_type counter{ 0 };
+    value_type key{ 0 };
 
 
     inline void init_key() noexcept
-    {}
+    {
+    }
 
-    /** @brief Initalizes the attribute key according to the original recommendations in document [9] - see file REAME.md. */
-    inline void init_key(const CounterType seed) noexcept;
+    /** @brief Initalizes the attribute key according to the original recommendations in document [9] - see file README.md. */
+    inline void init_key(const value_type seed) noexcept;
 
 };
 
@@ -60,49 +58,13 @@ struct CounterKeyState
 //===========================================================================
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
 //---------------------------------------------------------------------------
-template<typename CounterType>
-void CounterKeyState<CounterType>::init_key(
-    const CounterType seed
-) noexcept
-{
-    // default implementation - see specializations
-    key = 1;
-}
-
-
-//---------------------------------------------------------------------------
-template<>
-void CounterKeyState<std::uint32_t>::init_key(
-    const std::uint32_t seed
-) noexcept
-{
-    constexpr double NORMALIZE{ 1.0 / double(0x1'0000'0000ull) };
-
-    std::vector<std::uint32_t> hex_digits{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf };
-    utils::SplitMix32 init_rand(seed);
-
-    key = 0;
-
-    // let's initialize the 8 hexa digits of the key - all different
-    for (std::uint64_t n = 15; n >= 8; --n) {
-        const std::uint64_t i{ std::uint64_t(double(n) * double(init_rand()) * NORMALIZE) };
-
-        key = (key << 4) + hex_digits[i];
-        std::swap(hex_digits[i], hex_digits[n]);
-    }
-
-    key |= 1;  // notice: key must be odd
-}
-
-//---------------------------------------------------------------------------
-template<>
-void CounterKeyState<std::uint64_t>::init_key(
-    const std::uint64_t seed
+void CounterKeyState::init_key(
+    const value_type seed
 ) noexcept
 {
     constexpr double NORMALIZE{ 0.5 / double(0x8000'0000'0000'0000ull) };
 
-    std::vector<std::uint32_t> hex_digits{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf };
+    std::vector<value_type> hex_digits{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf };
     utils::SplitMix64 init_rand(seed);
 
     key = 0;
