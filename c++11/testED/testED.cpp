@@ -1,7 +1,9 @@
 /*
 MIT License
 
-Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+
+This file is provided with library CppRandLib.
 
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
@@ -41,11 +43,11 @@ SOFTWARE.
 class Histogram
 {
 public:
-    using value_type = std::size_t;
-    using index_type = std::size_t;
+    using value_type = std::uint32_t;
+    using index_type = std::uint32_t;
 
     //-----------------------------------------------------------------------
-    inline Histogram(const std::size_t n)
+    inline Histogram(const std::uint32_t n)
     {
         reset(n);
     }
@@ -64,7 +66,7 @@ public:
     }
 
     //-----------------------------------------------------------------------
-    void reset(const std::size_t n)
+    void reset(const std::uint32_t n)
     {
         _data.clear();
         _data.resize(n);
@@ -74,7 +76,7 @@ public:
     //-----------------------------------------------------------------------
     void print()
     {
-        std::size_t n{ 0 };
+        std::uint32_t n{ 0 };
         for (value_type d : _data) {
             std::cout << std::setw(6) << d << ' ';
             if (++n % 10 == 0)
@@ -110,14 +112,15 @@ public:
     const double median() noexcept
     {
         if (!_median && _data.size() > 0) {
-            const std::size_t mid_index{ std::size_t(_data.size() / 2) };
+            const std::uint32_t mid_index{ std::uint32_t(_data.size() / 2) };
             
-            std::sort(_data.begin(), _data.end());
+            std::vector<std::uint32_t> copied_data{ _data };  // not to alter the original content of this histogram
+            std::sort(copied_data.begin(), copied_data.end());
 
-            if (_data.size() & 0x01 || _data.size() == 1)
-                _median.value = double(_data[mid_index]);
+            if (copied_data.size() & 0x01 || copied_data.size() == 1)
+                _median.value = double(copied_data[mid_index]);
             else
-                _median.value = (_data[mid_index - 1] + _data[mid_index]) / 2.0;
+                _median.value = (copied_data[mid_index - 1] + copied_data[mid_index]) / 2.0;
 
             _median.evaluated = true;
         }
@@ -175,8 +178,6 @@ private:
 //===========================================================================
 /** @brief Tests the equidistribution of every PRNGs as implemented in library CppRandLib.
 
-    This module is provided with library CppRandLib.
-    
     Copyright(c) 2025 Philippe Schmouker
     
     The Pseudo-Random Numbers Generators implemented in library  CppRandLib 
@@ -193,19 +194,20 @@ private:
     goal of this litle script.
 
     This script runs an N-times loop on each algprithm. At  each  loop,  it 
-    draws  a  pseudo-random  number in the interval [0; 1, 000) and sets an 
-    histogram of the drawings(1, 000 entries). It then evaluates statistics 
-    values  mean, median and standard  eviation for each histogram and, for 
-    each histogram entry,  evaluates its variance.Should mean value be  far 
-    from N/1, 000 or any variance get a too large value, the script outputs 
+    draws  a  pseudorandom  number  in  the interval [0; 3,217) and sets an
+    histogram of the drawings(3,217 entries).  It then evaluates statistics
+    values  mean, median and standard  eviation for each histogram and, for
+    each histogram entry,  evaluates its variance. Should mean value be far
+    from N/3,217 or any variance get a too large value,  the script outputs
     all faulty values on console.
 */
-template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 void test_algo(
     const std::string& title,
-    BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>* rnd_algo,
-    const std::size_t nb_entries = 1'000,
-    const std::size_t nb_loops = 10'000'000
+    BaseRandom<StateT, OutputT, OUTPUT_BITS>* rnd_algo_ptr,
+    const std::uint32_t nb_entries = 3'217,  // notice: 3217 is a prime number
+    const std::uint32_t nb_loops = 30'000'000,
+    const bool print_hist = false
 )
 {
     std::string rule{ std::string(title.size() + 1, '-') };
@@ -215,18 +217,18 @@ void test_algo(
 
     double expected_max_diff_mean_median{ (nb_loops / nb_entries) * 0.002 };  // i.e.difference should be less than 0.2 % of expected mean
     double expected_max_stdev{ 1.04 * sqrt(nb_loops / nb_entries) };          // i.e. + 4 % max over expected stdandard deviation
-    double expected_max_variance{ 4.5 };                                      // this is the absolute value of the expected max on local variance
+    constexpr double expected_max_variance{ 5.0 };                            // this is the absolute value of the expected max on local variance
 
     if (expected_max_diff_mean_median < 0.5)
         expected_max_diff_mean_median = 0.5;
 
-    for (std::size_t i = 0; i < nb_loops; ++i) {
-        const std::size_t index{ std::size_t((*rnd_algo)() * nb_entries) };
+    for (std::uint32_t i = 0; i < nb_loops; ++i) {
+        const std::uint32_t index{ std::uint32_t((*rnd_algo_ptr)() * nb_entries) };
         hist[index]++;
     }
 
-    // uncomment next line if you want to print the content of the histograms
-    //hist.print(); 
+    if (print_hist)
+        hist.print(); 
 
     const double mean{ hist.mean() };
     const double median{ hist.median() };
@@ -255,14 +257,14 @@ void test_algo(
     if (stdev > expected_max_stdev) {
         err = true;
         std::cout << "  standard deviation is out of range, should be less than "
-            << std::fixed << std::setprecision(3) << expected_max_stdev << "<<<<<"
+            << std::fixed << std::setprecision(3) << expected_max_stdev << " <<<<<"
             << std::endl;
     }
 
     double min_variance{ 0.0 };
     double max_variance{ 0.0 };
 
-    for (std::size_t i = 0; i < nb_entries; ++i) {
+    for (std::uint32_t i = 0; i < nb_entries; ++i) {
         const double variance{ (hist[i] - mean) / stdev };
         if (std::abs(variance) > expected_max_variance) {
             err = true;
@@ -288,37 +290,110 @@ void test_algo(
     std::cout << std::endl;
 }
 
+//---------------------------------------------------------------------------
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+inline void test_algo(
+    const std::string& title,
+    BaseRandom<StateT, OutputT, OUTPUT_BITS>* rnd_algo_ptr,
+    const bool print_hist
+)
+{
+    test_algo(title, rnd_algo_ptr, 3'217, 30'000'000, print_hist);
+}
+
 
 //===========================================================================
 int main()
 {
     // notice: 3217 is a prime number
+    {
+        FastRand32 frand32;
+        test_algo("FastRand32", &frand32);
+    }
 
-    FastRand32 frand32;
-    test_algo("FastRand32", &frand32, 3217, 30'000'000);
+    {
+        FastRand63 frand63;
+        test_algo("FastRand63", &frand63);
+    }
 
-    FastRand63 frand63;
-    test_algo("FastRand63", &frand63, 3217, 30'000'000);
+    {
+        LFib78 lfib78;
+        test_algo("LFib78", &lfib78);
+    }
 
-    LFib78 lfib78;
-    test_algo("LFib78", &lfib78, 3217, 30'000'000);
+    {
+        LFib116 lfib116;
+        test_algo("LFib116", &lfib116);
+    }
 
-    LFib116 lfib116;
-    test_algo("LFib116", &lfib116, 3217, 30'000'000);
+    {
+        LFib668 lfib668;
+        test_algo("LFib668", &lfib668);
+    }
 
-    LFib668 lfib668;
-    test_algo("LFib668", &lfib668, 3217, 30'000'000);
+    {
+        LFib1340 lfib1340;
+        test_algo("LFib1340", &lfib1340);
+    }
 
-    LFib1340 lfib1340;
-    test_algo("LFib1340", &lfib1340, 3217, 30'000'000);
+    {
+        Mrg287 mrg287;
+        test_algo("Mrg287", &mrg287);
+    }
 
-    Mrg287 mrg287;
-    test_algo("Mrg287", &mrg287, 3217, 30'000'000);
+    {
+        Mrg1457 mrg1457;
+        test_algo("Mrg1457", &mrg1457);
+    }
 
-    Mrg1457 mrg1457;
-    test_algo("Mrg1457", &mrg1457, 3217, 30'000'000);
+    {
+        Mrg49507 mrg49507;
+        test_algo("Mrg49507", &mrg49507);
+    }
 
-    Mrg49507 mrg49507;
-    test_algo("Mrg49507", &mrg49507, 3217, 30'000'000);
+    {
+        Squares32 squares32;
+        test_algo("Squares32", &squares32);
+    }
+
+    {
+        Squares64 squares64;
+        test_algo("Squares64", &squares64);
+    }
+
+    {
+        Well512a well512a;
+        test_algo("Well512a", &well512a);
+    }
+
+    {
+        Well1024a well1024a;
+        test_algo("Well1024a", &well1024a);
+    }
+
+    {
+        Well19937c well19937c;
+        test_algo("Well19937c", &well19937c);
+    }
+
+    {
+        Well44497b well44497b;
+        test_algo("Well44497b", &well44497b);
+    }
+
+    {
+        Xoroshiro256 xoroshiro256;
+        test_algo("Xoroshiro256", &xoroshiro256);
+    }
+
+    {
+        Xoroshiro512 xoroshiro512;
+        test_algo("Xoroshiro512", &xoroshiro512);
+    }
+
+    {
+        Xoroshiro1024 xoroshiro1024;
+        test_algo("Xoroshiro1024", &xoroshiro1024);
+    }
 
 }

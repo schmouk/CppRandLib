@@ -4,6 +4,8 @@ MIT License
 
 Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
+This file is part of library CppRandLib.
+
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
 in the Software without restriction,  including without limitation the  rights
@@ -25,15 +27,23 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <array>
+#include <vector>
 
 
 //===========================================================================
-/** @brief The internal state of LFib and MRG Pseudo Random Numbers Generators. */
-template<typename ValueType, const std::uint32_t SIZE>
-class ListSeedState
+/** @brief The internal state of many Pseudo Random Numbers Generators. */
+template<typename ValueType, const size_t SIZE>
+struct ListSeedState
 {
-public:
-    std::array<ValueType, SIZE>  list;
-    std::uint32_t                index;
+    using value_type = ValueType;
+
+    std::vector<ValueType> list{};
+    std::uint32_t          index{ 0 };
+
+    inline ListSeedState() noexcept
+        : index(0)
+    {
+        list.resize(SIZE);
+    }
+
 };

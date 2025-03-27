@@ -27,16 +27,23 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <array>
+#include <vector>
 
 
 //===========================================================================
-/** @brief The internal state of LFib and MRG Pseudo Random Numbers Generators. */
+/** @brief The internal state of many Pseudo Random Numbers Generators. */
 template<typename ValueType, const size_t SIZE>
 struct ListSeedState
 {
     using value_type = ValueType;
 
-    std::array<ValueType, SIZE>  list;
-    std::uint32_t                index;
+    std::vector<ValueType> list{};
+    std::uint32_t          index{ 0 };
+
+    inline ListSeedState() noexcept
+        : index(0)
+    {
+        list.resize(SIZE);
+    }
+
 };
