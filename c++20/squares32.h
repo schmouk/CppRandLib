@@ -87,7 +87,6 @@ class Squares32 : public BaseSquares<std::uint32_t>
 public:
     //---   Wrappers   ------------------------------------------------------
     using MyBaseClass = BaseSquares<std::uint32_t>;
-    using output_type = MyBaseClass::output_type;
 
 
     //---   Constructors / Destructor   -------------------------------------

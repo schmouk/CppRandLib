@@ -33,18 +33,18 @@ SOFTWARE.
 
 
 //===========================================================================
-/** @brief Squares pseudo-random Generators dedicated to 64-bits calculations and 32-bits output values with small period (min 2^64, i.e. 1.84e+19).
+/** @brief Squares pseudo-random Generators dedicated to 64-bits calculations and 64-bits output values with small period (min 2^64, i.e. 1.84e+19).
 *
-*   This Squares models is based on a  four  rounds  of  squaring  and
+*   This Squares models is based on a  five  rounds  of  squaring  and
 *   exchanging of upper and lower bits of the successive combinations.
 *   Output values are provided on 32-bits.
+*   Caution: this 64-bits output values version  should  not  pass the 
+*   birthday  test,  which  is  a randmoness issue,  while this is not 
+*   mentionned in the original paper (see [9] in file README.md).
 *
-*   See Squares64 for a 2^64 (i.e. about 1.84e+19)  period  PRNG  with
-*   low  computation  time,  medium period,  64-bits output values and
-*   very good randomness characteristics. Caution: the 64-bits version
-*   should  not  pass the birthday test,  which is a randomness issue,
-*   while this is not mentionned in the original paper - see reference
-*   [9] in file README.md.
+*   See Squares32 for a 2^64 (i.e. about 1.84e+19)  period  PRNG  with
+*   low  computation  time,  medium period,  32-bits output values and
+*   very good randomness characteristics.
 *
 *   Please notice that this class and all its  inheriting  sub-classes
 *   are callable. Example:
@@ -82,34 +82,36 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests that  any  GOOD  PRNG  should
 *   definitively pass.
 */
-class Squares32 : public BaseSquares<std::uint32_t>
+class Squares64 : public BaseSquares<std::uint64_t>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseSquares<std::uint32_t>;
+    using MyBaseClass = BaseSquares<std::uint64_t>;
 
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
-    inline Squares32() noexcept
+    inline Squares64() noexcept
         : MyBaseClass()
-    {}
+    {
+    }
 
     /** @brief Valued construtor. */
-    inline Squares32(const std::uint64_t seed_) noexcept
+    inline Squares64(const std::uint64_t seed_) noexcept
         : MyBaseClass()
     {
         MyBaseClass::seed(seed_);
     }
 
     /** @brief Valued constructor (full state). */
-    inline Squares32(const state_type& seed) noexcept
+    inline Squares64(const state_type& seed) noexcept
         : MyBaseClass(seed)
-    {}
+    {
+    }
 
-    Squares32(const Squares32&) noexcept = default;   //!< default copy constructor.
-    Squares32(Squares32&&) noexcept = default;        //!< default move constructor.
-    virtual ~Squares32() noexcept = default;         //!< default destructor.
+    Squares64(const Squares64&) noexcept = default;   //!< default copy constructor.
+    Squares64(Squares64&&) noexcept = default;        //!< default move constructor.
+    virtual ~Squares64() noexcept = default;         //!< default destructor.
 
 
     //---   Internal PRNG   -------------------------------------------------
