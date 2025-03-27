@@ -3,6 +3,8 @@ MIT License
 
 Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
+This file is provided with library CppRandLib.
+
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
 in the Software without restriction,  including without limitation the  rights
@@ -112,12 +114,13 @@ public:
         if (!_median && _data.size() > 0) {
             const std::uint32_t mid_index{ std::uint32_t(_data.size() / 2) };
             
-            std::sort(_data.begin(), _data.end());
+            std::vector<std::uint32_t> copied_data{ _data };  // not to alter the original content of this histogram
+            std::sort(copied_data.begin(), copied_data.end());
 
-            if (_data.size() & 0x01 || _data.size() == 1)
-                _median.value = double(_data[mid_index]);
+            if (copied_data.size() & 0x01 || copied_data.size() == 1)
+                _median.value = double(copied_data[mid_index]);
             else
-                _median.value = (_data[mid_index - 1] + _data[mid_index]) / 2.0;
+                _median.value = (copied_data[mid_index - 1] + copied_data[mid_index]) / 2.0;
 
             _median.evaluated = true;
         }
@@ -175,8 +178,6 @@ private:
 //===========================================================================
 /** @brief Tests the equidistribution of every PRNGs as implemented in library CppRandLib.
 
-    This module is provided with library CppRandLib.
-    
     Copyright(c) 2025 Philippe Schmouker
     
     The Pseudo-Random Numbers Generators implemented in library  CppRandLib 
@@ -193,11 +194,11 @@ private:
     goal of this litle script.
 
     This script runs an N-times loop on each algprithm. At  each  loop,  it 
-    draws  a  pseudo-random  number in the interval [0; 1, 000) and sets an 
-    histogram of the drawings(1, 000 entries). It then evaluates statistics 
-    values  mean, median and standard  eviation for each histogram and, for 
-    each histogram entry,  evaluates its variance.Should mean value be  far 
-    from N/1, 000 or any variance get a too large value, the script outputs 
+    draws  a  pseudorandom  number  in  the interval [0; 3,217) and sets an
+    histogram of the drawings(3,217 entries).  It then evaluates statistics
+    values  mean, median and standard  eviation for each histogram and, for
+    each histogram entry,  evaluates its variance. Should mean value be far
+    from N/3,217 or any variance get a too large value,  the script outputs
     all faulty values on console.
 */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
@@ -348,6 +349,16 @@ int main()
     {
         Mrg49507 mrg49507;
         test_algo("Mrg49507", &mrg49507);
+    }
+
+    {
+        Squares32 squares32;
+        test_algo("Squares32", &squares32);
+    }
+
+    {
+        Squares64 squares64;
+        test_algo("Squares64", &squares64);
     }
 
     {

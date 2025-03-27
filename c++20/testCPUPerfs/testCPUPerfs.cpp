@@ -224,6 +224,16 @@ int main()
     }
 
     {
+        Squares32 square32(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Squares32", &square32);
+    }
+
+    {
+        Squares64 squares64(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Squares64", &squares64);
+    }
+
+    {
         Well512a well512a(0x3ca5'8796ul);
         test_perf("Well512a", &well512a);
     }

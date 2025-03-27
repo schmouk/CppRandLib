@@ -71,13 +71,18 @@ SOFTWARE.
 *
 *   Please notice that this class and all its  inheriting  sub-classes  are  callable.
 *   Example:
+* @code
+*     BaseWell rand{};                      // CAUTION: Replace 'BaseWell' with any inheriting class constructor!
+*     std::cout << rand() << std::endl;     // prints a uniform pseudo-random value within [0.0, 1.0)
+*     std::cout << rand(b) << std::endl;    // prints a uniform pseudo-random value within [0.0, b)
+* @endcode
 *
-*     rand = BaseWell()   # Caution: this is just used as illustrative. This base class cannot be instantiated
-*     print( rand() )     # prints a pseudo-random value within [0.0, 1.0)
-*     print( rand(a) )    # prints a pseudo-random value within [0, a) or [0.0, a) depending on the type of a
-*
-*   Inheriting classes have to define class attributes '_STATE_SIZE'. See Well512a for
-*   an example.
+*   Please notice that for simulating the roll of a dice you may use any of:
+* @code
+*     BaseWell diceRoll{};                  // CAUTION: Replace 'BaseWell' with any inheriting class constructor!
+*     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
+*     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
+* @endcode
 *
 *   Reminder:
 *   We give you here below a copy of the table of tests for the WELL  algorithms  that

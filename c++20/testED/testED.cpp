@@ -86,19 +86,13 @@ public:
     //-----------------------------------------------------------------------
     const value_type max() const
     {
-        if (_median)
-            return _data[_data.size() - 1];
-        else
-            return std::ranges::max(_data);
+        return std::ranges::max(_data);
     }
 
     //-----------------------------------------------------------------------
     const value_type min() const
     {
-        if (_median)
-            return _data[0];
-        else
-            return std::ranges::min(_data);
+        return std::ranges::min(_data);
     }
 
     //-----------------------------------------------------------------------
@@ -118,12 +112,13 @@ public:
         if (!_median && _data.size() > 0) {
             const std::uint32_t mid_index{ std::uint32_t(_data.size() / 2) };
 
-            std::sort(_data.begin(), _data.end());
+            std::vector<std::uint32_t> copied_data{ _data };  // not to alter the original content of this histogram
+            std::sort(copied_data.begin(), copied_data.end());
 
-            if (_data.size() & 0x01 || _data.size() == 1)
-                _median.value = double(_data[mid_index]);
+            if (copied_data.size() & 0x01 || copied_data.size() == 1)
+                _median.value = double(copied_data[mid_index]);
             else
-                _median.value = (_data[mid_index - 1] + _data[mid_index]) / 2.0;
+                _median.value = (copied_data[mid_index - 1] + copied_data[mid_index]) / 2.0;
 
             _median.evaluated = true;
         }
@@ -198,12 +193,12 @@ private:
     this  validation  ensures a not correct implementation.This is the sole
     goal of this litle script.
 
-    This script runs an N-times loop on each algprithm. At  each  loop,  it
-    draws  a  pseudo-random  number in the interval [0; 1, 000) and sets an
-    histogram of the drawings(1, 000 entries). It then evaluates statistics
+    This script runs an N-times loop on each algorithm. At  each  loop,  it
+    draws  a  pseudorandom  number  in  the interval [0; 3,217) and sets an
+    histogram of the drawings(3,217 entries).  It then evaluates statistics
     values  mean, median and standard  eviation for each histogram and, for
-    each histogram entry,  evaluates its variance.Should mean value be  far
-    from N/1, 000 or any variance get a too large value, the script outputs
+    each histogram entry,  evaluates its variance. Should mean value be far
+    from N/3,217 or any variance get a too large value,  the script outputs
     all faulty values on console.
 */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
@@ -354,6 +349,16 @@ int main()
     {
         Mrg49507 mrg49507;
         test_algo("Mrg49507", &mrg49507);
+    }
+
+    {
+        Squares32 square32;
+        test_algo("Squares32", &square32);
+    }
+
+    {
+        Squares64 squares64;
+        test_algo("Squares64", &squares64);
     }
 
     {

@@ -1,4 +1,3 @@
-#pragma once
 /*
 MIT License
 
@@ -27,21 +26,33 @@ SOFTWARE.
 
 
 //===========================================================================
-#include "fastrand32.h"
-#include "fastrand63.h"
-#include "lfib78.h"
-#include "lfib116.h"
-#include "lfib668.h"
-#include "lfib1340.h"
-#include "mrg287.h"
-#include "mrg1457.h"
-#include "mrg49507.h"
+#include <cstdint>
+
 #include "squares32.h"
-#include "squares64.h"
-#include "well512a.h"
-#include "well1024a.h"
-#include "well19937c.h"
-#include "well44497b.h"
-#include "xoroshiro256.h"
-#include "xoroshiro512.h"
-#include "xoroshiro1024.h"
+
+
+//===========================================================================
+/** The internal PRNG algorithm. */
+const Squares32::output_type Squares32::next() noexcept
+{
+    _internal_state.state.counter++;  // notice: modulo 2^64 increment
+
+    value_type x, y, z;
+    x = y = _internal_state.state.counter * _internal_state.state.key;
+    z = y + _internal_state.state.key;
+
+    // squaring - round 1
+    x = x * x + y;
+    x = (x >> 32) | (x << 32);
+
+    // squaring - round 2
+    x = x * x + z;
+    x = (x >> 32) | (x << 32);
+
+    // squaring - round 3
+    x = x * x + y;
+    x = (x >> 32) | (x << 32);
+
+    // squaring - round 4
+    return output_type((x * x + z) >> 32);
+}
