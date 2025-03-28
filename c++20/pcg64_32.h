@@ -36,10 +36,10 @@ SOFTWARE.
 /** @brief Permutated Congruential Generator dedicated to 64-bits calculations and 32-bits output with medium period (about 1.84e+19).
 *
 *   This Pcg64_32 class implements the "PCG XSH RS 64/32 (LCG)" version of the
-*   PCG  algorithm,  as  specified  in the related paper (see reference [7] in 
-*   document README.md).
-*  
-*   PCGs are very fast generators, with low memory usage except for a very few 
+*   PCG  algorithm,  as  specified  in the related paper (see reference [7] in
+*   document README.md). Output values are returned on 32 bits.
+*
+*   PCGs are very fast generators, with low memory usage except for a very few
 *   of them and medium to very large periods.  They offer jump ahead and multi
 *   streams features for most of them. They are difficult to very difficult to
 *   invert and to predict.
@@ -49,21 +49,21 @@ SOFTWARE.
 *   32-bits word integers memory consumption.  Output values are  returned  on
 *   64 bits.
 *
-*   See Pcg1024_32 for a 2^32,830 (i.e. about 6.53e+9882) period  PC-Generator
+*   See Pcg1024_32 for a 2^32,830 (i.e. about 6.53e+9,882) period PC-Generator
 *   with low computation time also and a very large period,  but 1,026 32-bits
 *   word integers memory consumption. Output values are returned on 32 bits.
 *
 *   Please notice that this class and all its  inheriting  sub-classes
 *   are callable. Example:
 * @code
-*     Squares32 rand{};                     // CAUTION: Replace 'BaseSquares' with any inheriting class constructor!
+*     Pcg64_32 rand{};
 *     std::cout << rand() << std::endl;     // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;    // prints a uniform pseudo-random value within [0.0, b)
 * @endcode
 *
 *   Please notice that for simulating the roll of a dice you may use any of:
 * @code
-*     Squares32 diceRoll{};  // CAUTION: Replace 'BaseSquares' with any inheriting class constructor!
+*     Pcg64_32 diceRoll{};
 *     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
@@ -104,7 +104,8 @@ public:
     /** @brief Empty constructor. */
     inline Pcg64_32() noexcept
         : MyBaseClass()
-    {}
+    {
+    }
 
     /** @brief Valued construtor. */
     inline Pcg64_32(const std::uint64_t seed_) noexcept
