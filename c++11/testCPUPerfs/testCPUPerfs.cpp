@@ -222,6 +222,11 @@ int main()
     }
 
     {
+        Pcg64_32 pcg64_32(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Pcg64_32", &pcg64_32);
+    }
+
+    {
         Squares32 squares32(0x3ca5'8796'1f2e'b45aull);
         test_perf("Squares32", &squares32);
     }

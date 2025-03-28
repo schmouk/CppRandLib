@@ -36,6 +36,7 @@ SOFTWARE.
 #include "mrg287.h"
 #include "mrg1457.h"
 #include "mrg49507.h"
+#include "pcg64_32.h"
 #include "squares32.h"
 #include "squares64.h"
 #include "well512a.h"
