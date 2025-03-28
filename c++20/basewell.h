@@ -102,7 +102,7 @@ SOFTWARE.
 *   (1) The Well19937b generator  provided  with  library  CppRandLib  implement s the
 *   Well19937a algorithm augmented with an associated tempering algorithm.
 *
-*   * _small crush_ is a small set of simple tests that q uickly  tests  some  of  the
+*   * _small crush_ is a small set of simple tests that  quickly  tests  some  of  the
 *   expected characteristics for a pretty good PRNG;
 *
 *   * _crush_ is a  bigger  set  of  tests  that  test  more  deeply  expected  random

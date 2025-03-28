@@ -81,7 +81,7 @@ SOFTWARE.
 * | Squares64        | squares64          |  4 x 4-bytes    |   2^64  |    n.a.     |     n.a.     |          0       |       0     |       0        |
 * +--------------------------------------------------------------------------------------------------------------------------------------------------+
 *
-*   * _small crush_ is a small set of simple tests that q uickly  tests  some  of  the
+*   * _small crush_ is a small set of simple tests that  quickly  tests  some  of  the
 *   expected characteristics for a pretty good PRNG;
 *
 *   * _crush_ is a  bigger  set  of  tests  that  test  more  deeply  expected  random

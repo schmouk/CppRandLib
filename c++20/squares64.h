@@ -49,14 +49,14 @@ SOFTWARE.
 *   Please notice that this class and all its  inheriting  sub-classes
 *   are callable. Example:
 * @code
-*     Squares32 rand{};                     // CAUTION: Replace 'BaseSquares' with any inheriting class constructor!
+*     Squares64 rand{};
 *     std::cout << rand() << std::endl;     // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;    // prints a uniform pseudo-random value within [0.0, b)
 * @endcode
 *
 *   Please notice that for simulating the roll of a dice you may use any of:
 * @code
-*     Squares32 diceRoll{};  // CAUTION: Replace 'BaseSquares' with any inheriting class constructor!
+*     Squares64 diceRoll{};
 *     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
@@ -73,7 +73,7 @@ SOFTWARE.
 * | Squares64        | squares64          |  4 x 4-bytes    |   2^64  |    n.a.     |     n.a.     |          0       |       0     |       0        |
 * +--------------------------------------------------------------------------------------------------------------------------------------------------+
 *
-*   * _small crush_ is a small set of simple tests that q uickly  tests  some  of  the
+*   * _small crush_ is a small set of simple tests that  quickly  tests  some  of  the
 *   expected characteristics for a pretty good PRNG;
 *
 *   * _crush_ is a  bigger  set  of  tests  that  test  more  deeply  expected  random
