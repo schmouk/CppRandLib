@@ -34,7 +34,7 @@ SOFTWARE.
 
 
 //===========================================================================
-/** @brief The base class for all Squares counter-based pseudo-random Generators.
+/** @brief The base class for all Squares counter-based pseudorandom Generators.
 *
 *   Squares models are based on an incremented counter and a key.  The
 *   algorithm squares a combination of the counter and the key values,

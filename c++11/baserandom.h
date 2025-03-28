@@ -238,10 +238,17 @@ SOFTWARE.
 *    |
 *    |      alpha is the scale parameter and beta is the shape parameter.
 */
-template<typename StateT, typename OutputT = std::uint32_t, const std::uint8_t OUTPUT_BITS = 32>
+template<
+    typename StateT,
+    typename OutputT = std::uint32_t,
+    const std::uint8_t OUTPUT_BITS = 8 * sizeof(OutputT)
+>
 class BaseRandom
 {
 public:
+
+    static_assert(std::is_integral<OutputT>::value);
+
     //---   Wrappers   ------------------------------------------------------
     using state_type = StateT;
     using output_type = OutputT;
