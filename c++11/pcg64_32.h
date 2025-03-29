@@ -104,7 +104,9 @@ public:
     /** @brief Empty constructor. */
     inline Pcg64_32() noexcept
         : MyBaseClass()
-    {}
+    {
+        MyBaseClass::seed();
+    }
 
     /** @brief Valued construtor. */
     inline Pcg64_32(const std::uint64_t seed_) noexcept

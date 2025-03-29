@@ -361,6 +361,11 @@ int main()
     }
 
     {
+        Pcg128_64 pcg128_64;
+        ok = test_algo("Pcg128_64", &pcg128_64) && ok;
+    }
+
+    {
         Squares32 squares32;
         ok = test_algo("Squares32", &squares32) && ok;
     }
