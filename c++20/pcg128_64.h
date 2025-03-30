@@ -29,7 +29,7 @@ SOFTWARE.
 //===========================================================================
 #include <cstdint>
 
-#include "basepcg.h"
+#include "baseclasses/basepcg.h"
 #include "utils/splitmix.h"
 #include "utils/uint128.h"
 

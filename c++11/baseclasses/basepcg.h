@@ -43,10 +43,11 @@ SOFTWARE.
 *   subpart of its internal state,  leading to a very large enhancement of the
 *   randomness of these algorithms compared with the LCGs one.
 *
-*   These PRNGs have been tested with TestU01 and have shown to pass all tests
-*   (Pierre  L'Ecuyer and Richard Simard (Universite de Montreal) in 'TestU01:
-*   A C Library for Empirical  Testing  of  Random  Number  Generators  -  ACM
-*   Transactions on Mathematical Software, vol.33 n.4, pp.22-40, August 2007')
+*   These PRNGs have been tested with TestU01 by the authors and have shown to 
+*   pass  all  tests  (about  TestU01,  see Pierre L'Ecuyer and Richard Simard 
+*   (Universite de Montreal) in 'TestU01: A C Library for Empirical Testing of 
+*   Random  Number  Generators  -  ACM  Transactions on Mathematical Software, 
+*   vol.33 n.4, pp.22-40, August 2007')
 *
 *   PCGs are very fast generators, with low memory usage except for a very few
 *   of them and medium to very large periods.  They offer jump ahead and multi
@@ -56,10 +57,12 @@ SOFTWARE.
 *   See Pcg64_32 for a 2^64 (i.e. 1.84e+19) period PC-Generator with very  low
 *   computation  time  and  medium period, with 2 32-bits word integers memory
 *   consumption. Output values are returned on 32 bits.
+* 
 *   See Pcg128_64 for a 2^128 (i.e. about 3.40e+38) period  PC-Generator  with
 *   low  computation  time also and a longer period than for Pcg64_32,  with 4
 *   32-bits word integers memory consumption.  Output values are  returned  on
 *   64 bits.
+* 
 *   See Pcg1024_32 for a 2^32,830 (i.e. about 6.53e+9882) period  PC-Generator
 *   with low computation time also and a very large period,  but 1,026 32-bits
 *   word integers memory consumption. Output values are returned on 32 bits.

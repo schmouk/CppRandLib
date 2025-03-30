@@ -29,7 +29,7 @@ SOFTWARE.
 //===========================================================================
 #include <cstdint>
 
-#include "basemrg31.h"
+#include "baseclasses/basemrg31.h"
 #include "listseedstate.h"
 
 

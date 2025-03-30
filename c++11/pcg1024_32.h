@@ -28,43 +28,44 @@ SOFTWARE.
 
 //===========================================================================
 #include <cstdint>
+#include <vector>
 
 #include "baseclasses/basepcg.h"
 #include "utils/splitmix.h"
-#include "utils/uint128.h"
 
 
 //===========================================================================
-/** @brief Permutated Congruential Generator dedicated to 128-bits calculations and 64-bits output with medium period (about 3.40e+38).
+/** @brief Permutated Congruential Generator dedicated to 64-bits calculations and 32-bits output with medium period (about 1.84e+19).
 *
-*   The Pcg128_64 class implements the  "PCG XSL RR 128/64 (LCG)"  version  of
-*   the PCG algorithm, as specified in the related paper (see reference [7] in 
-*   document README.md). Output values are returned on 64 bits.
+*   This Pcg1024_32 class implements the "PCG XSH RS 64/32 (EXT 1024)" version
+*   of the PCG algorithm, as specified in the related paper (see reference [7]
+*   in document README.md). Output values are returned on 32 bits.
 *
 *   PCGs are very fast generators, with low memory usage except for a very few
 *   of them and medium to very large periods.  They offer jump ahead and multi
 *   streams features for most of them. They are difficult to very difficult to
 *   invert and to predict.
 *
-*   See Pcg64_32 for a 2^64 (i.e. about 1.84e+19) period PC-Generator with low
-*   computation  time and a shorter period than for Pcg128_64,  with 4 32-bits 
-*   word integers memory consumption. Output values are  eturned on 32 bits.
-*
-*   See Pcg1024_32 for a 2^32,830 (i.e. about 6.53e+9,882) period PC-Generator
-*   with low computation time also and a very large period,  but 1,026 32-bits
-*   word integers memory consumption. Output values are returned on 32 bits.
+*   See Pcg64_32 for a 2^64 (i.e. 1.84e+19) period PC-Generator with very  low
+*   computation  time  and  medium period, with 2 32-bits word integers memory
+*   consumption. Output values are returned on 32 bits.
+
+*   See Pcg128_64 for a 2^128 (i.e. about 3.40e+38) period  PC-Generator  with
+*   low  computation  time also and a longer period than for Pcg64_32,  with 4
+*   32-bits word integers memory consumption.  Output values are  returned  on
+*   64 bits.
 *
 *   Please notice that this class and all its  inheriting  sub-classes
 *   are callable. Example:
 * @code
-*     Squares32 rand{};                     // CAUTION: Replace 'BaseSquares' with any inheriting class constructor!
+*     Pcg1024_32 rand{};
 *     std::cout << rand() << std::endl;     // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;    // prints a uniform pseudo-random value within [0.0, b)
 * @endcode
 *
 *   Please notice that for simulating the roll of a dice you may use any of:
 * @code
-*     Squares32 diceRoll{};  // CAUTION: Replace 'BaseSquares' with any inheriting class constructor!
+*     Pcg1024_32 diceRoll{};
 *     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
@@ -91,32 +92,36 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests that  any  GOOD  PRNG  should
 *   definitively pass.
 */
-class Pcg128_64 : public BasePCG<utils::UInt128, std::uint64_t>
+class Pcg1024_32 : public BasePCG<std::vector<std::uint32_t>, std::uint32_t>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BasePCG<utils::UInt128, std::uint64_t>;
-    using value_type = utils::UInt128;
+    using MyBaseClass = BasePCG<std::vector<std::uint32_t>, std::uint32_t>;
+    using value_type = std::uint32_t;
+
+    static const std::uint64_t _MODULO{ (1ull << 32) - 1ull };
+    static const std::size_t   _STATE_SIZE{ 1024 };
+    static const std::size_t   _STATE_INDEX{ _STATE_SIZE };
 
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
-    inline Pcg128_64() noexcept
+    inline Pcg1024_32() noexcept
         : MyBaseClass()
     {
         MyBaseClass::seed();
     }
 
     /** @brief Valued construtor. */
-    inline Pcg128_64(const std::uint64_t seed_) noexcept
+    inline Pcg1024_32(const std::uint64_t seed_) noexcept
         : MyBaseClass()
     {
         MyBaseClass::seed(seed_);
     }
 
-    Pcg128_64(const Pcg128_64&) noexcept = default;   //!< default copy constructor.
-    Pcg128_64(Pcg128_64&&) noexcept = default;        //!< default move constructor.
-    virtual ~Pcg128_64() noexcept = default;          //!< default destructor.
+    Pcg1024_32(const Pcg1024_32&) noexcept = default;   //!< default copy constructor.
+    Pcg1024_32(Pcg1024_32&&) noexcept = default;        //!< default move constructor.
+    virtual ~Pcg1024_32() noexcept = default;           //!< default destructor.
 
 
     //---   Internal PRNG   -------------------------------------------------
@@ -131,19 +136,36 @@ public:
     /** @brief Sets the internal state with an integer seed. */
     virtual inline void _setstate(const std::uint64_t seed) noexcept override
     {
-        utils::SplitMix64 splitmix64(seed);
-        _internal_state.state = utils::UInt128(splitmix64(), splitmix64());
-    }
+        // implementation notice: the original paper sets a one 64-bits integer as
+        // the internal state and 1,024 others as the extended internal state.  We
+        // put all of these in a single vector that finally contains 1,025 items.
+        _internal_state.state.resize(_STATE_SIZE + 1);
 
-    /** @brief Sets the internal state with an UInt128 seed. */
-    virtual inline void _setstate(const utils::UInt128 seed) noexcept
-    {
-        _internal_state.state = seed;
+        utils::SplitMix64 splitmix_64(seed);
+        for (auto& s : _internal_state.state)
+            s = splitmix_64();
     }
 
 
 private:
-    static const utils::UInt128 _a;  // (std::uint64_t(0x2360'ed05'1fc6'5da4), 0x4385'df64'9fcc'f645ull);
-    static const utils::UInt128 _c;  // (std::uint64_t(0x5851'f42d'4c95'7f2d), 0x1405'7b7e'f767'814f);
+    //---   Operations   ----------------------------------------------------
+    /** Evaluates the inversion of an xor-shift operation. */
+    static const value_type _invxrs(
+        const value_type value,
+        const unsigned int bits_count,
+        const unsigned int shift
+    )
+    {
+        if (shift * 2 >= bits_count)
+            return value ^ (value >> shift);
+
+        const unsigned int new_bits_shift{ bits_count - shift };
+        const value_type bot_mask{ (1ull << (bits_count - shift * 2)) - 1ull };
+        const value_type top_mask{ ~bot_mask & 0xffff'ffffull };
+        const value_type top{ (value ^ (value >> shift)) };
+        const value_type bot{ _invxrs((top | (value & bot_mask)) & ((1ull << new_bits_shift) - 1), new_bits_shift, shift) };
+
+        return (top & top_mask) | (bot & bot_mask);
+    }
 
 };

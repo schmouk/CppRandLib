@@ -30,7 +30,7 @@ SOFTWARE.
 #include <cstdint>
 #include <type_traits>
 
-#include "basemrg32.h"
+#include "baseclasses/basemrg32.h"
 #include "listseedstate.h"
 
 
