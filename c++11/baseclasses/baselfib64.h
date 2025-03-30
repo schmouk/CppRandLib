@@ -30,7 +30,7 @@ SOFTWARE.
 #include <cstdint>
 
 #include "baserandom.h"
-#include "listseedstate.h"
+#include "internalstates/listseedstate.h"
 #include "utils/splitmix.h"
 
 

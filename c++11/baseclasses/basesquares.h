@@ -30,7 +30,7 @@ SOFTWARE.
 #include <cstdint>
 
 #include "baserandom.h"
-#include "counterkeystate.h"
+#include "internalstates/counterkeystate.h"
 
 
 //===========================================================================
