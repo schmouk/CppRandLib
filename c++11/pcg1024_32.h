@@ -31,6 +31,8 @@ SOFTWARE.
 #include <vector>
 
 #include "baseclasses/basepcg.h"
+#include "internalstates/extendedstate.h"
+#include "pcg64_32.h"
 #include "utils/splitmix.h"
 
 
@@ -39,7 +41,8 @@ SOFTWARE.
 *
 *   This Pcg1024_32 class implements the "PCG XSH RS 64/32 (EXT 1024)" version
 *   of the PCG algorithm, as specified in the related paper (see reference [7]
-*   in document README.md). Output values are returned on 32 bits.
+*   in document README.md). Output values are returned on 32 bits. State value
+*   is coded on 64-bits. Each value in extended state is coded on 32-bits.
 *
 *   PCGs are very fast generators, with low memory usage except for a very few
 *   of them and medium to very large periods.  They offer jump ahead and multi
@@ -92,16 +95,18 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests that  any  GOOD  PRNG  should
 *   definitively pass.
 */
-class Pcg1024_32 : public BasePCG<std::vector<std::uint32_t>, std::uint32_t>
+class Pcg1024_32 : public BasePCG<ExtendedState<Pcg64_32, std::uint32_t, 1024>, std::uint32_t>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BasePCG<std::vector<std::uint32_t>, std::uint32_t>;
-    using value_type = std::uint32_t;
+    using MyBaseClass         = BasePCG<ExtendedState<Pcg64_32, std::uint32_t, 1024>, std::uint32_t>;
+    using state_type          = MyBaseClass::state_type;
+    using value_type          = MyBaseClass::state_type::value_type;
+    using extended_value_type = MyBaseClass::state_type::extended_value_type;
 
-    static const std::uint64_t _MODULO{ (1ull << 32) - 1ull };
-    static const std::size_t   _STATE_SIZE{ 1024 };
-    static const std::size_t   _STATE_INDEX{ _STATE_SIZE };
+    static const std::uint64_t _MODULO_32{ (1ull << 32) - 1ull };
+    static const unsigned int  _STATE_SIZE{ 1024 };
+    static const unsigned int  _INDEX_MODULO{ _STATE_SIZE - 1 };  // notice: this is ok because _STATE_SIZE is a power of two
 
 
     //---   Constructors / Destructor   -------------------------------------
@@ -134,38 +139,26 @@ public:
 
     //---   Operations   ----------------------------------------------------
     /** @brief Sets the internal state with an integer seed. */
-    virtual inline void _setstate(const std::uint64_t seed) noexcept override
-    {
-        // implementation notice: the original paper sets a one 64-bits integer as
-        // the internal state and 1,024 others as the extended internal state.  We
-        // put all of these in a single vector that finally contains 1,025 items.
-        _internal_state.state.resize(_STATE_SIZE + 1);
-
-        utils::SplitMix64 splitmix_64(seed);
-        for (auto& s : _internal_state.state)
-            s = splitmix_64();
-    }
+    virtual void _setstate(const std::uint64_t seed) noexcept override;
 
 
 private:
     //---   Operations   ----------------------------------------------------
+    /** Advances the extended states. */
+    void _advance_table() noexcept;
+
+    /** Evaluates new extended state indexed value in the extended state table.
+    *
+    *   Returns True when the evaluated extended value is set to zero on all bits
+    *   but its two lowest ones - these two bits never change with MCGs.
+    */
+    const bool _external_step(extended_value_type e, unsigned int i) noexcept;
+
     /** Evaluates the inversion of an xor-shift operation. */
-    static const value_type _invxrs(
-        const value_type value,
+    static const extended_value_type _invxrs(
+        const extended_value_type value,
         const unsigned int bits_count,
         const unsigned int shift
-    )
-    {
-        if (shift * 2 >= bits_count)
-            return value ^ (value >> shift);
-
-        const unsigned int new_bits_shift{ bits_count - shift };
-        const value_type bot_mask{ (1ull << (bits_count - shift * 2)) - 1ull };
-        const value_type top_mask{ ~bot_mask & 0xffff'ffffull };
-        const value_type top{ (value ^ (value >> shift)) };
-        const value_type bot{ _invxrs((top | (value & bot_mask)) & ((1ull << new_bits_shift) - 1), new_bits_shift, shift) };
-
-        return (top & top_mask) | (bot & bot_mask);
-    }
+    );
 
 };
