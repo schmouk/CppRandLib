@@ -96,7 +96,7 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
-template<const size_t SIZE>
+template<const std::uint32_t SIZE>
 class BaseMRG31 : public BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uint32_t, 31>
 {
 public:
@@ -139,7 +139,7 @@ public:
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
 //---------------------------------------------------------------------------
 /** Empty constructor. */
-template<const size_t SIZE>
+template<const std::uint32_t SIZE>
 inline BaseMRG31<SIZE>::BaseMRG31() noexcept
     : MyBaseClass()
 {
@@ -148,7 +148,7 @@ inline BaseMRG31<SIZE>::BaseMRG31() noexcept
 
 //---------------------------------------------------------------------------
 /** Valued construtor. */
-template<const size_t SIZE>
+template<const std::uint32_t SIZE>
 template<typename T>
 inline BaseMRG31<SIZE>::BaseMRG31(const T seed_) noexcept
     : MyBaseClass()
@@ -158,7 +158,7 @@ inline BaseMRG31<SIZE>::BaseMRG31(const T seed_) noexcept
 
 //---------------------------------------------------------------------------
 /** Valued constructor (full state). */
-template<const size_t SIZE>
+template<const std::uint32_t SIZE>
 inline BaseMRG31<SIZE>::BaseMRG31(const state_type& internal_state) noexcept
     : MyBaseClass()
 {
@@ -168,7 +168,7 @@ inline BaseMRG31<SIZE>::BaseMRG31(const state_type& internal_state) noexcept
 
 //---------------------------------------------------------------------------
 /** Sets the internal state of this PRNG from current time (empty signature). */
-template<const size_t SIZE>
+template<const std::uint32_t SIZE>
 inline void BaseMRG31<SIZE>::seed() noexcept
 {
     _setstate(utils::set_random_seed31());
@@ -176,7 +176,7 @@ inline void BaseMRG31<SIZE>::seed() noexcept
 
 //---------------------------------------------------------------------------
 /** Sets the internal state of this PRNG with an integer seed. */
-template<const size_t SIZE>
+template<const std::uint32_t SIZE>
 inline void BaseMRG31<SIZE>::_setstate(const std::uint64_t seed) noexcept
 {
     utils::SplitMix31 splitmix_31(std::uint32_t(seed & 0x7fff'ffff));
