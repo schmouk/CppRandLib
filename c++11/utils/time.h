@@ -58,4 +58,16 @@ namespace utils
         );
     }
 
+
+    //=======================================================================
+    /** @brief Returns the current time since epoch as a 64-bits nanoseconds integer. */
+    inline const std::uint64_t get_time_ns() noexcept
+    {
+        return std::uint64_t(
+            std::chrono::duration_cast<std::chrono::nanoseconds>(
+                std::chrono::high_resolution_clock::now().time_since_epoch()
+            ).count()
+        );
+    }
+
 }

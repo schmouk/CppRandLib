@@ -2,7 +2,7 @@
 /*
 MIT License
 
-Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
 This file is part of library CppRandLib.
 
@@ -27,16 +27,26 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <array>
+#include <cassert>
+#include <type_traits>
 
 
 //===========================================================================
-/** @brief The internal state of LFib and MRG Pseudo Random Numbers Generators. */
-template<typename ValueType, const size_t SIZE>
-struct ListSeedState
+namespace utils
 {
-    using value_type = ValueType;
+    //=======================================================================
+    /** @brief Bits left rotation on unsigned integers. */
+    template<typename IntT>
+    inline const IntT rot_left(const IntT value, const int rot_count, const int BITS_COUNT = 8 * sizeof IntT)
+    {
+        static_assert(std::is_unsigned<IntT>::value, "bits rotation are only applied on unsigned integer values.");
+        assert(rot_count >= 1);
+        assert(rot_count <= BITS_COUNT);
 
-    std::array<ValueType, SIZE>  list;
-    std::uint32_t                index;
-};
+        const IntT lo_mask{ (IntT(1) << IntT(BITS_COUNT - rot_count)) - IntT(1)};
+        const IntT hi_mask{ IntT(-1) ^ lo_mask};
+
+        return ((value & lo_mask) << rot_count) | ((value & hi_mask) >> (BITS_COUNT - rot_count));
+    }
+
+}

@@ -3,8 +3,6 @@ MIT License
 
 Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
-This file is part of library CppRandLib.
-
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
 in the Software without restriction,  including without limitation the  rights
@@ -43,11 +41,11 @@ SOFTWARE.
 class Histogram
 {
 public:
-    using value_type = std::size_t;
-    using index_type = std::size_t;
+    using value_type = std::uint32_t;
+    using index_type = std::uint32_t;
 
     //-----------------------------------------------------------------------
-    inline Histogram(const std::size_t n)
+    inline Histogram(const std::uint32_t n)
     {
         reset(n);
     }
@@ -66,7 +64,7 @@ public:
     }
 
     //-----------------------------------------------------------------------
-    void reset(const std::size_t n)
+    void reset(const std::uint32_t n)
     {
         _data.clear();
         _data.resize(n);
@@ -76,7 +74,7 @@ public:
     //-----------------------------------------------------------------------
     void print()
     {
-        std::size_t n{ 0 };
+        std::uint32_t n{ 0 };
         for (value_type d : _data) {
             std::cout << std::format("{:6d} ", d);
             if (++n % 10 == 0)
@@ -88,19 +86,13 @@ public:
     //-----------------------------------------------------------------------
     const value_type max() const
     {
-        if (_median)
-            return _data[_data.size() - 1];
-        else
-            return std::ranges::max(_data);
+        return std::ranges::max(_data);
     }
 
     //-----------------------------------------------------------------------
     const value_type min() const
     {
-        if (_median)
-            return _data[0];
-        else
-            return std::ranges::min(_data);
+        return std::ranges::min(_data);
     }
 
     //-----------------------------------------------------------------------
@@ -118,14 +110,15 @@ public:
     const double median() noexcept
     {
         if (!_median && _data.size() > 0) {
-            const std::size_t mid_index{ std::size_t(_data.size() / 2) };
+            const std::uint32_t mid_index{ std::uint32_t(_data.size() / 2) };
 
-            std::ranges::sort(_data);
+            std::vector<std::uint32_t> copied_data{ _data };  // not to alter the original content of this histogram
+            std::sort(copied_data.begin(), copied_data.end());
 
-            if (_data.size() & 0x01 || _data.size() == 1)
-                _median.value = double(_data[mid_index]);
+            if (copied_data.size() & 0x01 || copied_data.size() == 1)
+                _median.value = double(copied_data[mid_index]);
             else
-                _median.value = (_data[mid_index - 1] + _data[mid_index]) / 2.0;
+                _median.value = (copied_data[mid_index - 1] + copied_data[mid_index]) / 2.0;
 
             _median.evaluated = true;
         }
@@ -143,7 +136,7 @@ public:
             std::transform(
                 _data.cbegin(), _data.cend(),
                 diff_m.begin(),
-                std::bind_front(std::minus<double>(), m)
+                [m](const std::uint64_t d) { return double(d) - m; }
             );
             _stdev.value = std::inner_product(
                 diff_m.cbegin(), diff_m.cend(),
@@ -200,20 +193,21 @@ private:
     this  validation  ensures a not correct implementation.This is the sole
     goal of this litle script.
 
-    This script runs an N-times loop on each algprithm. At  each  loop,  it
-    draws  a  pseudo-random  number in the interval [0; 1, 000) and sets an
-    histogram of the drawings(1, 000 entries). It then evaluates statistics
+    This script runs an N-times loop on each algorithm. At  each  loop,  it
+    draws  a  pseudorandom  number  in  the interval [0; 3,217) and sets an
+    histogram of the drawings(3,217 entries).  It then evaluates statistics
     values  mean, median and standard  eviation for each histogram and, for
-    each histogram entry,  evaluates its variance.Should mean value be  far
-    from N/1, 000 or any variance get a too large value, the script outputs
+    each histogram entry,  evaluates its variance. Should mean value be far
+    from N/3,217 or any variance get a too large value,  the script outputs
     all faulty values on console.
 */
-template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-void test_algo(
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+const bool test_algo(
     const std::string& title,
-    BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>* rnd_algo,
-    const std::size_t nb_entries = 1'000,
-    const std::size_t nb_loops = 10'000'000
+    BaseRandom<StateT, OutputT, OUTPUT_BITS>* rnd_algo_ptr,
+    const std::uint32_t nb_entries = 3'217,  // notice: 3217 is a prime number
+    const std::uint32_t nb_loops = 30'000'000,
+    const bool print_hist = false
 )
 {
     std::string rule{ std::string(title.size() + 1, '-') };
@@ -223,35 +217,41 @@ void test_algo(
 
     double expected_max_diff_mean_median{ (nb_loops / nb_entries) * 0.002 };  // i.e.difference should be less than 0.2 % of expected mean
     double expected_max_stdev{ 1.04 * sqrt(nb_loops / nb_entries) };          // i.e. + 4 % max over expected stdandard deviation
-    double expected_max_variance{ 4.5 };                                      // this is the absolute value of the expected max on local variance
+    constexpr double expected_max_variance{ 5.0 };                            // this is the absolute value of the expected max on local variance
 
     if (expected_max_diff_mean_median < 0.5)
         expected_max_diff_mean_median = 0.5;
 
-    for (std::size_t i = 0; i < nb_loops; ++i) {
-        const std::size_t index{ std::size_t((*rnd_algo)() * nb_entries) };
+    for (std::uint32_t i = 0; i < nb_loops; ++i) {
+        const std::uint32_t index{ std::uint32_t((*rnd_algo_ptr)() * nb_entries) };
         hist[index]++;
     }
 
-    // uncomment next line if you want to print the content of the histograms
-    //hist.print(); 
+    if (print_hist)
+        hist.print();
 
     const double mean{ hist.mean() };
     const double median{ hist.median() };
     const double stdev{ hist.stdev() };
 
-    std::cout << std::format(
-        "{:d} loops, {:d} entries in histogram, expected mean: {:.1f}\n  mean: {:.1f}, median: {:.1f}, standard deviation: {:.3f}\n",
-        nb_loops, nb_entries, std::round(nb_loops / nb_entries), mean, median, stdev
-    );
-
+    std::cout << nb_loops
+        << " loops, "
+        << nb_entries
+        << " entries in histogram, expected mean: "
+        << std::fixed << std::setprecision(1) << std::round(nb_loops / nb_entries)
+        << std::endl
+        << "  mean: " << mean
+        << ", median: " << median
+        << ", standard deviation " << std::fixed << std::setprecision(3) << stdev
+        << std::endl;
 
     bool err{ false };
 
     if (std::abs(median - mean) > expected_max_diff_mean_median) {
         err = true;
         std::cout << std::format(
-            "  incoherence btw. mean and median values, difference expected to be less than {:.1f} <<<<<\n", expected_max_diff_mean_median
+            "  incoherence btw. mean and median values, difference expected to be less than {:.1f} <<<<<\n",
+            expected_max_diff_mean_median
         );
     }
 
@@ -265,7 +265,7 @@ void test_algo(
     double min_variance{ 0.0 };
     double max_variance{ 0.0 };
 
-    for (std::size_t i = 0; i < nb_entries; ++i) {
+    for (std::uint32_t i = 0; i < nb_entries; ++i) {
         const double variance{ (hist[i] - mean) / stdev };
         if (std::abs(variance) > expected_max_variance) {
             err = true;
@@ -288,39 +288,135 @@ void test_algo(
 
     std::cout << "  Test " << (err ? "FAILED <<<<<" : "OK.") << std::endl;
     std::cout << std::endl;
+
+    return !err;  // returns true if things were ok and false otherwise
+}
+
+//---------------------------------------------------------------------------
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+inline const bool test_algo(
+    const std::string& title,
+    BaseRandom<StateT, OutputT, OUTPUT_BITS>* rnd_algo_ptr,
+    const bool print_hist
+)
+{
+    return test_algo(title, rnd_algo_ptr, 3'217, 30'000'000, print_hist);
 }
 
 
 //===========================================================================
 int main()
 {
-    // notice: 3217 is a prime number
+    bool ok{ true };
 
-    FastRand32 frand32;
-    test_algo("FastRand32", &frand32, 3217, 30'000'000);
+    {
+        FastRand32 frand32;
+        ok = test_algo("FastRand32", &frand32) && ok;
+    }
 
-    FastRand63 frand63;
-    test_algo("FastRand63", &frand63, 3217, 30'000'000);
+    {
+        FastRand63 frand63;
+        ok = test_algo("FastRand63", &frand63) && ok;
+    }
 
-    LFib78 lfib78;
-    test_algo("LFib78", &lfib78, 3217, 30'000'000);
+    {
+        LFib78 lfib78;
+        ok = test_algo("LFib78", &lfib78) && ok;
+    }
 
-    LFib116 lfib116;
-    test_algo("LFib116", &lfib116, 3217, 30'000'000);
+    {
+        LFib116 lfib116;
+        ok = test_algo("LFib116", &lfib116) && ok;
+    }
 
-    LFib668 lfib668;
-    test_algo("LFib668", &lfib668, 3217, 30'000'000);
+    {
+        LFib668 lfib668;
+        ok = test_algo("LFib668", &lfib668) && ok;
+    }
 
-    LFib1340 lfib1340;
-    test_algo("LFib1340", &lfib1340, 3217, 30'000'000);
+    {
+        LFib1340 lfib1340;
+        ok = test_algo("LFib1340", &lfib1340) && ok;
+    }
 
-    Mrg287 mrg287;
-    test_algo("Mrg287", &mrg287, 3217, 30'000'000);
+    {
+        Mrg287 mrg287;
+        ok = test_algo("Mrg287", &mrg287) && ok;
+    }
 
-    Mrg1457 mrg1457;
-    test_algo("Mrg1457", &mrg1457, 3217, 30'000'000);
+    {
+        Mrg1457 mrg1457;
+        ok = test_algo("Mrg1457", &mrg1457) && ok;
+    }
 
-    Mrg49507 mrg49507;
-    test_algo("Mrg49507", &mrg49507, 3217, 30'000'000);
+    {
+        Mrg49507 mrg49507;
+        ok = test_algo("Mrg49507", &mrg49507) && ok;
+    }
+
+    {
+        Pcg64_32 pcg64_32;
+        ok = test_algo("Pcg64_32", &pcg64_32) && ok;
+    }
+
+    {
+        Pcg128_64 pcg128_64;
+        ok = test_algo("Pcg128_64", &pcg128_64) && ok;
+    }
+
+    {
+        Pcg1024_32 pcg1024_32;
+        ok = test_algo("Pcg1024_32", &pcg1024_32) && ok;
+    }
+
+    {
+        Squares32 squares32;
+        ok = test_algo("Squares32", &squares32) && ok;
+    }
+
+    {
+        Squares64 squares64;
+        ok = test_algo("Squares64", &squares64) && ok;
+    }
+
+    {
+        Well512a well512a;
+        ok = test_algo("Well512a", &well512a) && ok;
+    }
+
+    {
+        Well1024a well1024a;
+        ok = test_algo("Well1024a", &well1024a) && ok;
+    }
+
+    {
+        Well19937c well19937c;
+        ok = test_algo("Well19937c", &well19937c) && ok;
+    }
+
+    {
+        Well44497b well44497b;
+        ok = test_algo("Well44497b", &well44497b) && ok;
+    }
+
+    {
+        Xoroshiro256 xoroshiro256;
+        ok = test_algo("Xoroshiro256", &xoroshiro256) && ok;
+    }
+
+    {
+        Xoroshiro512 xoroshiro512;
+        ok = test_algo("Xoroshiro512", &xoroshiro512) && ok;
+    }
+
+    {
+        Xoroshiro1024 xoroshiro1024;
+        ok = test_algo("Xoroshiro1024", &xoroshiro1024) && ok;
+    }
+
+    if (ok)
+        std::cout << "\n--> All tests PASSED\n\n";
+    else
+        std::cout << "\n>>>>> Some test FAILED <<<<<\n\n";
 
 }

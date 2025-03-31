@@ -4,6 +4,8 @@ MIT License
 
 Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
+This file is part of library CppRandLib.
+
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
 in the Software without restriction,  including without limitation the  rights
@@ -26,8 +28,9 @@ SOFTWARE.
 
 //===========================================================================
 #include <cstdint>
+#include <type_traits>
 
-#include "baserandom.h"
+#include "baseclasses/baserandom.h"
 #include "utils/seed_generation.h"
 
 
@@ -37,8 +40,6 @@ SOFTWARE.
 *   Pseudo-random numbers generator - Linear Congruential Generator dedicated
 *   to  63-bits calculations with very short period (about 9.2e+18) and short
 *   time computation.
-*
-*   This module is part of library CppRandLib.
 *
 *   LCG models evaluate pseudo-random numbers suites x(i) as a simple mathem-
 *   atical function of
@@ -65,7 +66,6 @@ SOFTWARE.
 *     FastRand63 rand{};
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(a) << std::endl;   // prints a uniform pseudo-random value within [0.0, a)
-*     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
@@ -100,6 +100,7 @@ class FastRand63 : public BaseRandom<std::uint64_t, std::uint64_t, 63>
 private:
     static constexpr std::uint64_t _MODULO_63{ 0x7fff'ffff'ffff'ffffull };
 
+
 public:
     //---   Wrappers   ------------------------------------------------------
     using MyBaseClass = BaseRandom<std::uint64_t, std::uint64_t, 63>;
@@ -110,18 +111,16 @@ public:
     inline FastRand63() noexcept
         : MyBaseClass()
     {
-        setstate();
+        seed();
     }
 
-    /** @brief Valued constructor - integer. */
-    inline FastRand63(const std::uint64_t seed) noexcept
-        : MyBaseClass(seed)
-    {}
-
-    /** @brief Valued constructor - double. */
-    inline FastRand63(const double seed) noexcept
+    /** @brief Valued constructor. */
+    template<typename T>
+        requires std::is_arithmetic_v<T>
+    inline FastRand63(const T seed_)
+        : MyBaseClass()
     {
-        setstate(seed);
+        MyBaseClass::seed(seed_);
     }
 
     FastRand63(const FastRand63&) noexcept = default;   //!< default copy constructor.
@@ -133,22 +132,21 @@ public:
     /** @brief The internal PRNG algorithm. */
     virtual inline const output_type next() noexcept override
     {
-        return _state.seed = (0x7ff3'19fa'a77b'f52dull * _state.seed + 1) & _MODULO_63;
+        return _internal_state.state = (0x7ff3'19fa'a77b'f52dull * _internal_state.state + 1) & _MODULO_63;
     }
 
 
     //---   Operations   ----------------------------------------------------
     /** @brief Sets the internal state of this PRNG from current time (empty signature). */
-    virtual void setstate() noexcept override
+    virtual void seed() noexcept override
     {
-        MyBaseClass::setstate(utils::set_random_seed63());
+        setstate(utils::set_random_seed63());
     }
 
-    /** @brief Sets the internal state of this PRNG with double seed. */
-    inline void setstate(const double seed) noexcept
+    /** @brief Sets the internal state with an integer seed. */
+    virtual inline void _setstate(const std::uint64_t seed_) noexcept override
     {
-        const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        MyBaseClass::setstate( std::uint64_t(s * double(_MODULO_63)) );
+        _internal_state.state = seed_ & 0x7fff'ffff'ffff'ffff;
     }
 
 };

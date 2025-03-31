@@ -1,8 +1,9 @@
-#pragma once
 /*
 MIT License
 
-Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+
+This file is part of library CppRandLib.
 
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
@@ -25,15 +26,38 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <array>
+#include <cstdint>
+
+#include "squares64.h"
 
 
 //===========================================================================
-/** @brief The internal state of LFib and MRG Pseudo Random Numbers Generators. */
-template<typename ValueType, const std::uint32_t SIZE>
-class ListSeedState
+/** The internal PRNG algorithm. */
+const Squares64::output_type Squares64::next() noexcept
 {
-public:
-    std::array<ValueType, SIZE>  list;
-    std::uint32_t                index;
-};
+    _internal_state.state.counter++;  // notice: modulo 2^64 increment
+
+    value_type x, y, z, t;
+
+    x = y = _internal_state.state.counter * _internal_state.state.key;
+    z = y + _internal_state.state.key;
+
+    // squaring - round 1
+    x = x * x + y;
+    x = (x >> 32) | (x << 32);
+
+    // squaring - round 2
+    x = x * x + z;
+    x = (x >> 32) | (x << 32);
+
+    // squaring - round 3
+    x = x * x + y;
+    x = (x >> 32) | (x << 32);
+
+    // squaring - round 4
+    t = x = x * x + z;
+    x = (x >> 32) | (x << 32);
+
+    // squaring - round 5
+    return t ^ ((x * x + y) >> 32);
+}

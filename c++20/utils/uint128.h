@@ -2,7 +2,9 @@
 /*
 MIT License
 
-Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+
+This file is part of library CppRandLib.
 
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
@@ -207,8 +209,8 @@ namespace utils
         {
             std::uint64_t t{ w };
             t += std::uint64_t(a) + carry;
-            w = t & 0xffff'ffff;
-            return t & 0x1'0000'0000;
+            w = t & 0xffff'ffffull;
+            return t & 0x1'0000'0000ull;
         }
 
     };

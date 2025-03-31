@@ -1,7 +1,9 @@
 /*
 MIT License
 
-Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+
+This file is provided with library CppRandLib.
 
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
@@ -35,13 +37,12 @@ SOFTWARE.
 
 //===========================================================================
 /** @brief Evaluates the CPU time spent evaluating output values. */
-template<typename SeedStateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 void test_perf(
     const std::string& title,
-    BaseRandom<SeedStateT, OutputT, OUTPUT_BITS>* rnd_algo,
-    const std::size_t seed_value,
-    std::size_t nb_loops,
-    const std::size_t nb_repeats
+    BaseRandom<StateT, OutputT, OUTPUT_BITS>* rnd_algo_ptr,
+    std::size_t nb_loops = 10'000'000,
+    const std::size_t nb_repeats = 20
 )
 {
     std::cout << "--- " << title << " ---" << std::endl;
@@ -53,117 +54,117 @@ void test_perf(
     nb_loops = loops_count * LOOP_CLUSTER_SIZE;
 
     for (auto& p : perfs) {
-        const std::uint64_t start{ utils::get_time_us() };
+        const std::uint64_t start{ utils::get_time_ns() };
 
         for (std::size_t i = 0; i < loops_count; ++i) {
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
-            rnd_algo->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
+            rnd_algo_ptr->next();
         }
 
-        const std::uint64_t end{ utils::get_time_us() };
+        const std::uint64_t end{ utils::get_time_ns() };
 
         p = end - start;
     }
 
-    const double nanoseconds{ 1000.0 / nb_loops };
+    const double nanoseconds{ 1.0 / nb_loops };
     for (std::uint64_t p : perfs)
         std::cout << p * nanoseconds << ' ';
     std::cout << std::endl;
@@ -175,31 +176,119 @@ void test_perf(
 //===========================================================================
 int main()
 {
-    FastRand32 frand32;
-    test_perf("FastRand32", &frand32, 0x3ca5'8796, 10'000'000, 15);
+    {
+        FastRand32 frand32(0x3ca5'8796ul);
+        test_perf("FastRand32", &frand32);
+    }
 
-    FastRand63 frand63;
-    test_perf("FastRand63", &frand63, 0x3ca5'8796'1f2e'b45a, 10'000'000, 15);
+    {
+        FastRand63 frand63(0x3ca5'8796'1f2e'b45aull);
+        test_perf("FastRand63", &frand63);
+    }
 
-    LFib78 lfib68;
-    test_perf("LFib78", &lfib68, 0x3ca5'8796'1f2e'b45a, 10'000'000, 15);
+    {
+        LFib78 lfib68(0x3ca5'8796'1f2e'b45aull);
+        test_perf("LFib78", &lfib68);
+    }
 
-    LFib116 lfib116;
-    test_perf("LFib116", &lfib116, 0x3ca5'8796'1f2e'b45a, 10'000'000, 15);
+    {
+        LFib116 lfib116(0x3ca5'8796'1f2e'b45aull);
+        test_perf("LFib116", &lfib116);
+    }
 
-    LFib668 lfib668;
-    test_perf("LFib668", &lfib668, 0x3ca5'8796'1f2e'b45a, 10'000'000, 15);
+    {
+        LFib668 lfib668(0x3ca5'8796'1f2e'b45aull);
+        test_perf("LFib668", &lfib668);
+    }
 
-    LFib1340 lfib1340;
-    test_perf("LFib1340", &lfib1340, 0x3ca5'8796'1f2e'b45a, 10'000'000, 15);
+    {
+        LFib1340 lfib1340(0x3ca5'8796'1f2e'b45aull);
+        test_perf("LFib1340", &lfib1340);
+    }
 
-    Mrg287 mrg287;
-    test_perf("Mrg287", &mrg287, 0x3ca5'8796, 10'000'000, 15);
+    {
+        Mrg287 mrg287(0x3ca5'8796ul);
+        test_perf("Mrg287", &mrg287);
+    }
 
-    Mrg1457 mrg1457;
-    test_perf("Mrg1457", &mrg1457, 0x3ca5'8796, 10'000'000, 15);
+    {
+        Mrg1457 mrg1457(0x3ca5'8796ul);
+        test_perf("Mrg1457", &mrg1457);
+    }
 
-    Mrg49507 mrg49507;
-    test_perf("Mrg49507", &mrg49507, 0x3ca5'8796, 10'000'000, 15);
+    {
+        Mrg49507 mrg49507(0x3ca5'8796ul);
+        test_perf("Mrg49507", &mrg49507);
+    }
+
+    {
+        Pcg64_32 pcg64_32(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Pcg64_32", &pcg64_32);
+    }
+
+    {
+        Pcg128_64 pcg128_64(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Pcg128_64", &pcg128_64);
+    }
+
+    {
+        Pcg1024_32 pcg1024_32(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Pcg1024_32", &pcg1024_32);
+    }
+
+    {
+        Squares32 squares32(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Squares32", &squares32);
+    }
+
+    {
+        Squares64 squares64(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Squares64", &squares64);
+    }
+
+    {
+        Well512a well512a(0x3ca5'8796ul);
+        test_perf("Well512a", &well512a);
+    }
+
+    {
+        Well1024a well1024a(0x3ca5'8796ul);
+        test_perf("Well1024a", &well1024a);
+    }
+
+    {
+        Well19937c well19937c(0x3ca5'8796ul);
+        test_perf("Well19937c", &well19937c);
+    }
+
+    {
+        Well44497b well44497b(0x3ca5'8796ul);
+        test_perf("Well44497b", &well44497b);
+    }
+
+    {
+        Xoroshiro256 xoroshiro256(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Xoroshiro256", &xoroshiro256);
+    }
+
+    {
+        Xoroshiro512 xoroshiro512(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Xoroshiro512", &xoroshiro512);
+    }
+
+    {
+        Xoroshiro1024 xoroshiro1024(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Xoroshiro1024", &xoroshiro1024);
+    }
+
+    {
+        BaseXoroshiro<4> base_xoroshiro;
+        test_perf("BaseXoroshiro<4>", &base_xoroshiro);
+    }
+
+    {
+        BaseRandom<std::uint32_t> base_xoroshiro;
+        test_perf("BaseRandom", &base_xoroshiro);
+    }
 
 }
