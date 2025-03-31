@@ -63,14 +63,14 @@ SOFTWARE.
 *
 *   Furthermore this class is callable:
 * @code
-*     BaseMRG32 rand(); // CAUTION: Replace 'BaseMRG32' with any inheriting class constructor!
+*     BaseMRG32 rand();  // CAUTION: Replace 'BaseMRG32' with any inheriting class constructor!
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
 * @code
-*     BaseMRG32 diceRoll();
+*     BaseMRG32 diceRoll();  // CAUTION: Replace 'BaseMRG32' with any inheriting class constructor!
 *     std::cout << int(diceRoll(1, 7)) << std::endl;    // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
