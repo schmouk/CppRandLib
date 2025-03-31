@@ -27,10 +27,11 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <algorithm>
 #include <cstdint>
 
 #include "baserandom.h"
-#include "listseedstate.h"
+#include "internalstates/listseedstate.h"
 #include "utils/splitmix.h"
 
 
@@ -39,31 +40,31 @@ SOFTWARE.
 *
 *   Definition of the base class for all LFib pseudo-random generators based
 *   on 64-bits generated numbers.
-* 
+*
 *   Lagged Fibonacci generators LFib( m, r, k, op) use the recurrence
-*   
+*
 *       x(i) = (x(i-r) op (x(i-k)) mod m
-*   
+*
 *   where op is an operation that can be:
 *       + (addition),
 *       - (substraction),
 *       * (multiplication),
 *       ^ (bitwise exclusive-or).
-*   
+*
 *   With the + or - operation, such generators are in fact MRGs. They offer very large
 *   periods  with  the  best  known  results in the evaluation of their randomness, as
 *   stated in the evaluation done by Pierre L'Ecuyer and Richard Simard (Universite de
-*   Montreal)  in  "TestU01:  A  C  Library  for Empirical Testing  of  Random  Number  
-*   Generators - ACM Transactions  on  Mathematical  Software,  vol.33 n.4,  pp.22-40, 
-*   August 2007".  It  is  recommended  to  use  such pseudo-random numbers generators 
+*   Montreal)  in  "TestU01:  A  C  Library  for Empirical Testing  of  Random  Number
+*   Generators - ACM Transactions  on  Mathematical  Software,  vol.33 n.4,  pp.22-40,
+*   August 2007".  It  is  recommended  to  use  such pseudo-random numbers generators
 *   rather than LCG ones for serious simulation applications.
-*      
-*   See LFib78,  LFib116,  LFib668 and LFib1340 for long period LFib generators (resp. 
-*   2^78,  2^116,  2^668 and 2^1340 periods, i.e. resp. 3.0e+23, 8.3e+34, 1.2e+201 and 
-*   2.4e+403 periods) while same computation time and far  higher  precision  (64-bits  
-*   calculations) than MRGs,  but more memory consumption (resp. 17,  55, 607 and 1279 
+*
+*   See LFib78,  LFib116,  LFib668 and LFib1340 for long period LFib generators (resp.
+*   2^78,  2^116,  2^668 and 2^1340 periods, i.e. resp. 3.0e+23, 8.3e+34, 1.2e+201 and
+*   2.4e+403 periods) while same computation time and far  higher  precision  (64-bits
+*   calculations) than MRGs,  but more memory consumption (resp. 17,  55, 607 and 1279
 *   integers).
-*   
+*
 *   Please notice that this class and all its  inheriting  sub-classes  are  callable.
 *   Example:
 * @code
@@ -78,9 +79,9 @@ SOFTWARE.
 *     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
-* 
+*
 *   Reminder:
-*   We give you here below a copy of the table of tests for the LCGs that have 
+*   We give you here below a copy of the table of tests for the LCGs that have
 *   been implemented in PyRandLib, as provided in paper "TestU01, ..."  -  see
 *   file README.md.
 * +--------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -95,10 +96,10 @@ SOFTWARE.
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
 *   the expected characteristics for a pretty good PRNG;
 *
-*   * _crush_ is a bigger set of tests that test more deeply  expected  random 
+*   * _crush_ is a bigger set of tests that test more deeply  expected  random
 *   characteristics;
 *
-*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG 
+*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
 template<const std::uint32_t SIZE, const std::uint32_t K>
@@ -109,8 +110,8 @@ public:
     using MyBaseClass = BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>;
     using output_type = MyBaseClass::output_type;
     using state_type = MyBaseClass::state_type;
-    using value_type = typename state_type::value_type; 
-    
+    using value_type = typename state_type::value_type;
+
     static const std::uint32_t SEED_SIZE{ SIZE };
 
 
@@ -206,8 +207,7 @@ template<const std::uint32_t SIZE, std::uint32_t K >
 inline void BaseLFib64<SIZE, K>::_setstate(const std::uint64_t seed) noexcept
 {
     utils::SplitMix64 splitmix_64(seed);
-    for (std::uint64_t& s : MyBaseClass::_internal_state.state.list)
-        s = splitmix_64();
+    std::ranges::generate(MyBaseClass::_internal_state.state.list, [&]() { return splitmix_64(); });
 }
 
 //---------------------------------------------------------------------------

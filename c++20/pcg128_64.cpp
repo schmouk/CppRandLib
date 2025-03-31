@@ -1,4 +1,3 @@
-#pragma once
 /*
 MIT License
 
@@ -27,24 +26,28 @@ SOFTWARE.
 
 
 //===========================================================================
-#include "fastrand32.h"
-#include "fastrand63.h"
-#include "lfib78.h"
-#include "lfib116.h"
-#include "lfib668.h"
-#include "lfib1340.h"
-#include "mrg287.h"
-#include "mrg1457.h"
-#include "mrg49507.h"
-#include "pcg64_32.h"
+#include <cstdint>
+
 #include "pcg128_64.h"
-#include "pcg1024_32.h"
-#include "squares32.h"
-#include "squares64.h"
-#include "well512a.h"
-#include "well1024a.h"
-#include "well19937c.h"
-#include "well44497b.h"
-#include "xoroshiro256.h"
-#include "xoroshiro512.h"
-#include "xoroshiro1024.h"
+
+
+//===========================================================================
+/** The internal PRNG algorithm. */
+const Pcg128_64::output_type Pcg128_64::next() noexcept
+{
+    utils::UInt128 previous_state{ _internal_state.state };
+
+    // evaluates next internal state value, LCG algorithm, 128-bits arithmetic
+    _internal_state.state = _a * previous_state + _c;
+
+    // then evaluates and returns the permutated output value
+    const unsigned int random_rotation{ previous_state.hi >> 58 };  // random right rotation count is set with the 6 upper bits of internal state
+    const output_type value{ previous_state.lo ^ previous_state.hi };
+    return (value >> random_rotation) | ((value & ((1ull << random_rotation) - 1ull))) << (64 - random_rotation);
+}
+
+
+//===========================================================================
+/** The private constants used for the engine algorithm. */
+const utils::UInt128 Pcg128_64::_a(0x2360'ed05'1fc6'5da4ull, 0x4385'df64'9fcc'f645ull);
+const utils::UInt128 Pcg128_64::_c(0x5851'f42d'4c95'7f2dull, 0x1405'7b7e'f767'814full);

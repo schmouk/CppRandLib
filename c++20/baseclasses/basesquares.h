@@ -30,7 +30,7 @@ SOFTWARE.
 #include <cstdint>
 
 #include "baserandom.h"
-#include "counterkeystate.h"
+#include "internalstates/counterkeystate.h"
 
 
 //===========================================================================
@@ -54,7 +54,7 @@ SOFTWARE.
 *   while this is not mentionned in the original paper - see reference
 *   [9] in file README.md.
 *
-*   Please notice that this class and all its  inheriting  sub-classes  
+*   Please notice that this class and all its  inheriting  sub-classes
 *   are callable. Example:
 * @code
 *     BaseSquares rand{};                   // CAUTION: Replace 'BaseSquares' with any inheriting class constructor!
@@ -81,7 +81,7 @@ SOFTWARE.
 * | Squares64        | squares64          |  4 x 4-bytes    |   2^64  |    n.a.     |     n.a.     |          0       |       0     |       0        |
 * +--------------------------------------------------------------------------------------------------------------------------------------------------+
 *
-*   * _small crush_ is a small set of simple tests that q uickly  tests  some  of  the
+*   * _small crush_ is a small set of simple tests that  quickly  tests  some  of  the
 *   expected characteristics for a pretty good PRNG;
 *
 *   * _crush_ is a  bigger  set  of  tests  that  test  more  deeply  expected  random
@@ -97,8 +97,8 @@ public:
     //---   Wrappers   ------------------------------------------------------
     using MyBaseClass = BaseRandom<CounterKeyState, OutputT, 8 * sizeof(OutputT)>;
     using output_type = OutputT;
-    using state_type  = MyBaseClass::state_type;
-    using value_type  = typename state_type::value_type;
+    using state_type = MyBaseClass::state_type;
+    using value_type = typename state_type::value_type;
 
 
     //---   Constructors / Destructor   -------------------------------------

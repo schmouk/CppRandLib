@@ -29,8 +29,8 @@ SOFTWARE.
 //===========================================================================
 #include <cstdint>
 
-#include "basemrg32.h"
-#include "listseedstate.h"
+#include "baseclasses/basemrg32.h"
+#include "internalstates/listseedstate.h"
 
 
 //===========================================================================

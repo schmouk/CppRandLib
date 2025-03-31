@@ -3,6 +3,8 @@ MIT License
 
 Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
+This file is provided with library CppRandLib.
+
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
 in the Software without restriction,  including without limitation the  rights
@@ -217,6 +219,21 @@ int main()
     {
         Mrg49507 mrg49507(0x3ca5'8796ul);
         test_perf("Mrg49507", &mrg49507);
+    }
+
+    {
+        Pcg64_32 pcg64_32(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Pcg64_32", &pcg64_32);
+    }
+
+    {
+        Pcg128_64 pcg128_64(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Pcg128_64", &pcg128_64);
+    }
+
+    {
+        Pcg1024_32 pcg1024_32(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Pcg1024_32", &pcg1024_32);
     }
 
     {

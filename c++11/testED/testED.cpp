@@ -202,7 +202,7 @@ private:
     all faulty values on console.
 */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-void test_algo(
+const bool test_algo(
     const std::string& title,
     BaseRandom<StateT, OutputT, OUTPUT_BITS>* rnd_algo_ptr,
     const std::uint32_t nb_entries = 3'217,  // notice: 3217 is a prime number
@@ -288,112 +288,135 @@ void test_algo(
 
     std::cout << "  Test " << (err ? "FAILED <<<<<" : "OK.") << std::endl;
     std::cout << std::endl;
+
+    return !err;  // returns true if things were ok and false otherwise
 }
+
 
 //---------------------------------------------------------------------------
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-inline void test_algo(
+inline const bool test_algo(
     const std::string& title,
     BaseRandom<StateT, OutputT, OUTPUT_BITS>* rnd_algo_ptr,
     const bool print_hist
 )
 {
-    test_algo(title, rnd_algo_ptr, 3'217, 30'000'000, print_hist);
+    return test_algo(title, rnd_algo_ptr, 3'217, 30'000'000, print_hist);
 }
 
 
 //===========================================================================
 int main()
 {
-    // notice: 3217 is a prime number
+    bool ok{ true };
+
     {
         FastRand32 frand32;
-        test_algo("FastRand32", &frand32);
+        ok = test_algo("FastRand32", &frand32) && ok;
     }
 
     {
         FastRand63 frand63;
-        test_algo("FastRand63", &frand63);
+        ok = test_algo("FastRand63", &frand63) && ok;
     }
 
     {
         LFib78 lfib78;
-        test_algo("LFib78", &lfib78);
+        ok = test_algo("LFib78", &lfib78) && ok;
     }
 
     {
         LFib116 lfib116;
-        test_algo("LFib116", &lfib116);
+        ok = test_algo("LFib116", &lfib116) && ok;
     }
 
     {
         LFib668 lfib668;
-        test_algo("LFib668", &lfib668);
+        ok = test_algo("LFib668", &lfib668) && ok;
     }
 
     {
         LFib1340 lfib1340;
-        test_algo("LFib1340", &lfib1340);
+        ok = test_algo("LFib1340", &lfib1340) && ok;
     }
 
     {
         Mrg287 mrg287;
-        test_algo("Mrg287", &mrg287);
+        ok = test_algo("Mrg287", &mrg287) && ok;
     }
 
     {
         Mrg1457 mrg1457;
-        test_algo("Mrg1457", &mrg1457);
+        ok = test_algo("Mrg1457", &mrg1457) && ok;
     }
 
     {
         Mrg49507 mrg49507;
-        test_algo("Mrg49507", &mrg49507);
+        ok = test_algo("Mrg49507", &mrg49507) && ok;
+    }
+
+    {
+        Pcg64_32 pcg64_32;
+        ok = test_algo("Pcg64_32", &pcg64_32) && ok;
+    }
+
+    {
+        Pcg128_64 pcg128_64;
+        ok = test_algo("Pcg128_64", &pcg128_64) && ok;
+    }
+
+    {
+        Pcg1024_32 pcg1024_32;
+        ok = test_algo("Pcg1024_32", &pcg1024_32) && ok;
     }
 
     {
         Squares32 squares32;
-        test_algo("Squares32", &squares32);
+        ok = test_algo("Squares32", &squares32) && ok;
     }
 
     {
         Squares64 squares64;
-        test_algo("Squares64", &squares64);
+        ok = test_algo("Squares64", &squares64) && ok;
     }
 
     {
         Well512a well512a;
-        test_algo("Well512a", &well512a);
+        ok = test_algo("Well512a", &well512a) && ok;
     }
 
     {
         Well1024a well1024a;
-        test_algo("Well1024a", &well1024a);
+        ok = test_algo("Well1024a", &well1024a) && ok;
     }
 
     {
         Well19937c well19937c;
-        test_algo("Well19937c", &well19937c);
+        ok = test_algo("Well19937c", &well19937c) && ok;
     }
 
     {
         Well44497b well44497b;
-        test_algo("Well44497b", &well44497b);
+        ok = test_algo("Well44497b", &well44497b) && ok;
     }
 
     {
         Xoroshiro256 xoroshiro256;
-        test_algo("Xoroshiro256", &xoroshiro256);
+        ok = test_algo("Xoroshiro256", &xoroshiro256) && ok;
     }
 
     {
         Xoroshiro512 xoroshiro512;
-        test_algo("Xoroshiro512", &xoroshiro512);
+        ok = test_algo("Xoroshiro512", &xoroshiro512) && ok;
     }
 
     {
         Xoroshiro1024 xoroshiro1024;
-        test_algo("Xoroshiro1024", &xoroshiro1024);
+        ok = test_algo("Xoroshiro1024", &xoroshiro1024) && ok;
     }
 
+    if (ok)
+        std::cout << "\n--> All tests PASSED\n\n";
+    else
+        std::cout << "\n>>>>> Some test FAILED <<<<<\n\n";
 }

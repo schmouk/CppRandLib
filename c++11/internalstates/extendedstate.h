@@ -27,24 +27,27 @@ SOFTWARE.
 
 
 //===========================================================================
-#include "fastrand32.h"
-#include "fastrand63.h"
-#include "lfib78.h"
-#include "lfib116.h"
-#include "lfib668.h"
-#include "lfib1340.h"
-#include "mrg287.h"
-#include "mrg1457.h"
-#include "mrg49507.h"
-#include "pcg64_32.h"
-#include "pcg128_64.h"
-#include "pcg1024_32.h"
-#include "squares32.h"
-#include "squares64.h"
-#include "well512a.h"
-#include "well1024a.h"
-#include "well19937c.h"
-#include "well44497b.h"
-#include "xoroshiro256.h"
-#include "xoroshiro512.h"
-#include "xoroshiro1024.h"
+#include <type_traits>
+#include <vector>
+
+
+//===========================================================================
+/** @brief The internal state of many Pseudo Random Numbers Generators. */
+template<typename StateType, typename ExtendedValueType, const size_t EXTENDED_SIZE>
+struct ExtendedState
+{
+    static_assert(std::is_integral<ExtendedValueType>::value);
+
+    using value_type = typename StateType::value_type;
+    using extended_value_type = ExtendedValueType;
+
+    std::vector<extended_value_type> extended_state{};
+    StateType                        state{};
+
+    inline ExtendedState() noexcept
+        : state{}
+    {
+        extended_state.resize(EXTENDED_SIZE);
+    }
+
+};

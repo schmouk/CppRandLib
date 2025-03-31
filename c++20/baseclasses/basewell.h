@@ -27,10 +27,11 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <algorithm>
 #include <cstdint>
 
 #include "baserandom.h"
-#include "listseedstate.h"
+#include "internalstates/listseedstate.h"
 #include "utils/splitmix.h"
 
 
@@ -62,11 +63,11 @@ SOFTWARE.
 *
 *   See Well512a for a large period WELL-Generator (2^512,  i.e. 1.34e+154)  with  low
 *   computation time and 16 integers memory little consumption.
-*   See Well1024a for a longer period WELL-Generator (2^1,024,  i.e. 1.80e+308),  same
+*   See Well1024a for a longer period WELL-Generator  (2^1024,  i.e. 1.80e+308),  same
 *   computation time and 32 integers memory consumption.
-*   See Well199937c for a far longer period  (2^19,937, i.e. 4.32e+6,001) with similar
+*   See Well199937b for a far longer period  (2^19,937, i.e. 4.32e+6,001) with similar
 *   computation time but use of more memory space (624 integers).
-*   See Well44497b for a very large period (2^44,497,  i.e. 15.1e+13,466) with similar
+*   See Well44497c for a very large period (2^44,497,  i.e. 1.51e+13,466) with similar
 *   computation time but use of even more memory space (1,391 integers).
 *
 *   Please notice that this class and all its  inheriting  sub-classes  are  callable.
@@ -101,7 +102,7 @@ SOFTWARE.
 *   (1) The Well19937b generator  provided  with  library  CppRandLib  implement s the
 *   Well19937a algorithm augmented with an associated tempering algorithm.
 *
-*   * _small crush_ is a small set of simple tests that q uickly  tests  some  of  the
+*   * _small crush_ is a small set of simple tests that  quickly  tests  some  of  the
 *   expected characteristics for a pretty good PRNG;
 *
 *   * _crush_ is a  bigger  set  of  tests  that  test  more  deeply  expected  random
@@ -206,8 +207,7 @@ template<const std::uint32_t SIZE>
 inline void BaseWell<SIZE>::_setstate(const std::uint64_t seed) noexcept
 {
     utils::SplitMix32 splitmix_32(std::uint32_t(seed & 0xffff'fffful));
-    for (std::uint32_t& s : MyBaseClass::_internal_state.state.list)
-        s = splitmix_32();
+    std::ranges::generate(MyBaseClass::_internal_state.state.list, [&]() { return splitmix_32(); });
     MyBaseClass::_internal_state.state.index = 0;
 }
 
