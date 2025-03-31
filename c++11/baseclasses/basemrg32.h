@@ -100,7 +100,7 @@ class BaseMRG32 : public BaseRandom<ListSeedState<std::uint32_t, SIZE>>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<ListSeedState<std::uint32_t, 256>>;
+    using MyBaseClass = BaseRandom<ListSeedState<std::uint32_t, SIZE>>;
 
     using output_type = MyBaseClass::output_type;
     using state_type = MyBaseClass::state_type;
@@ -152,7 +152,7 @@ template<typename T>
 inline BaseMRG32<SIZE>::BaseMRG32(const T seed_) noexcept
     : MyBaseClass()
 {
-    seed();
+    MyBaseClass::seed(seed_);
 }
 
 //---------------------------------------------------------------------------

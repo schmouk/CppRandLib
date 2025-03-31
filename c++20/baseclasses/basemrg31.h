@@ -153,7 +153,7 @@ template<typename T>
 inline BaseMRG31<SIZE>::BaseMRG31(const T seed_) noexcept
     : MyBaseClass()
 {
-    seed();
+    MyBaseClass::seed(seed_);
 }
 
 //---------------------------------------------------------------------------
