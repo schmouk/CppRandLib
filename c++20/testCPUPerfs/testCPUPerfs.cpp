@@ -234,6 +234,11 @@ int main()
     }
 
     {
+        Pcg1024_32 pcg1024_32(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Pcg1024_32", &pcg1024_32);
+    }
+
+    {
         Squares32 square32(0x3ca5'8796'1f2e'b45aull);
         test_perf("Squares32", &square32);
     }

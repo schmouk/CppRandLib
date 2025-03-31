@@ -590,6 +590,9 @@ public:
     inline void setstate(const StateT& seed, const double gauss_next) noexcept;
 
 
+    /** @brief eturns the current internal state value. */
+    inline const StateT state() const noexcept;
+
 
     /** @brief In place Shuffles the specified sequence. */
     template<typename ContainerType>
@@ -1402,6 +1405,14 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::setstate(const StateT& new
     _internal_state.state = new_internal_state;
     _internal_state.gauss_next = gauss_next;
     _internal_state.gauss_valid = true;
+}
+
+//---------------------------------------------------------------------------
+/** Returns the current internal state value. */
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+inline const StateT BaseRandom<StateT, OutputT, OUTPUT_BITS>::state() const noexcept
+{
+    return _internal_state.state;
 }
 
 //---------------------------------------------------------------------------

@@ -27,24 +27,27 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <type_traits>
 #include <vector>
 
 
 //===========================================================================
 /** @brief The internal state of many Pseudo Random Numbers Generators. */
-template<typename ValueType, typename ExtendedValueType, const size_t SIZE>
+template<typename StateType, typename ExtendedValueType, const size_t EXTENDED_SIZE>
 struct ExtendedState
 {
-    using value_type = ValueType;
+    static_assert(std::is_integral<ExtendedValueType>::value);
+
+    using value_type = typename StateType::value_type;
     using extended_value_type = ExtendedValueType;
 
-    std::vector<ExtendedValueType> extended_state{};
-    std::ValueType                 state{ 0 };
+    std::vector<extended_value_type> extended_state{};
+    StateType                        state{};
 
-    inline ListSeedState() noexcept
-        : state(0)
+    inline ExtendedState() noexcept
+        : state{}
     {
-        extended_state.resize(SIZE);
+        extended_state.resize(EXTENDED_SIZE);
     }
 
 };
