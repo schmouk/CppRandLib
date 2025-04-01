@@ -27,6 +27,7 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <algorithm>
 #include <cstdint>
 
 #include "baserandom.h"
@@ -96,17 +97,15 @@ SOFTWARE.
 *   should definitively pass.
 */
 template<const std::uint32_t SIZE>
-class BaseMELG : public BaseRandom<ListSeedState<std::uint64_t, SIZE>>
+class BaseMELG : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<ListSeedState<std::uint64_t, SIZE>>;
+    using MyBaseClass = BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t>;
 
     using output_type = MyBaseClass::output_type;
     using state_type = MyBaseClass::state_type;
     using value_type = typename state_type::value_type;
-
-    static constexpr std::uint32_t SEED_SIZE{ SIZE };
 
 
     //---   Constructors / Destructor   -------------------------------------
@@ -177,7 +176,6 @@ inline void BaseMELG<SIZE>::seed() noexcept
 template<const std::uint32_t SIZE>
 inline void BaseMELG<SIZE>::_setstate(const std::uint64_t seed) noexcept
 {
-    utils::SplitMix64 splitmix_64(std::uint64_t(seed));
-    for (auto& s : MyBaseClass::_internal_state.state.list)
-        s = splitmix_64();
+    utils::SplitMix64 splitmix_64(seed);
+    std::ranges::generate(MyBaseClass::_internal_state.state.list, [&] { return splitmix_64(); });
 }
