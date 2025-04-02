@@ -346,6 +346,11 @@ int main()
     }
 
     {
+        Melg19937 melg19937;
+        ok = test_algo("Melg19937", &melg19937) && ok;
+    }
+
+    {
         Mrg287 mrg287;
         ok = test_algo("Mrg287", &mrg287) && ok;
     }

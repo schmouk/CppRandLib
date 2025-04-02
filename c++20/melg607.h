@@ -27,10 +27,7 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <cstdint>
-
 #include "baseclasses/basemelg.h"
-#include "internalstates/listseedstate.h"
 
 
 //===========================================================================
@@ -132,6 +129,6 @@ public:
 
 private:
     // this definition will avoid an 'if' in method 'next()'
-    static constexpr std::uint64_t _A_COND[]{ 0ull, 0x81f1'fd68'0123'48bcull };
+    static constexpr value_type _A_COND[]{ 0ull, 0x81f1'fd68'0123'48bcull };
 
 };

@@ -212,6 +212,11 @@ int main()
     }
 
     {
+        Melg19937 melg19937(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Melg19937", &melg19937);
+    }
+
+    {
         Mrg287 mrg287(0x3ca5'8796ul);
         test_perf("Mrg287", &mrg287);
     }

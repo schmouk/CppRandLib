@@ -42,8 +42,9 @@ SOFTWARE.
 *   random numbers.  They pass all TestU01 tests and newer ones but are the slowest to
 *   compute ones in the base of PRNGs that have been implemented in PyRandLib.
 *
-*   See Melg19937 for an even larger period MELG-Generator (2^19,937, i.e. 4.32e+6001),
-*   same computation time and equivalent of 626 integers memory consumption.
+*   See Melg607 for a large period MELG-Generator (2^607, i.e. 5.31e+182)  with medium
+*   computation  time  and  the  equivalent  of  21  32-bits  integers  memory  little
+*   consumption. This is the shortest period version proposed in paper [11].
 *
 *   See Melg44497 for a very large period (2^44,497,  i.e. 15.1e+13,466)  with  similar
 *   computation  time  but  use  of even more memory space (equivalent of 1,393 32-bits
@@ -51,14 +52,14 @@ SOFTWARE.
 *
 *   Furthermore this class is callable:
 * @code
-*     Melg607 rand();
+*     Melg19937 rand();
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
 * @code
-*     Melg607 diceRoll();
+*     Melg19937 diceRoll();
 *     std::cout << int(diceRoll(1, 7)) << std::endl;    // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
@@ -84,39 +85,39 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
-class Melg607 : public BaseMELG<10>
+class Melg19937 : public BaseMELG<312>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseMELG<10>;
+    using MyBaseClass = BaseMELG<312>;
 
     using output_type = MyBaseClass::output_type;
-    using state_type = MyBaseClass::state_type;
-    using value_type = typename state_type::value_type;
+    using state_type  = MyBaseClass::state_type;
+    using value_type  = typename state_type::value_type;
 
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
-    inline Melg607() noexcept
+    inline Melg19937() noexcept
         : MyBaseClass()
     {}
 
     /** @brief Valued construtor. */
     template<typename T>
-    inline Melg607(const T seed_) noexcept
+    inline Melg19937(const T seed_) noexcept
         : MyBaseClass()
     {
         MyBaseClass::MyBaseClass::seed(seed_);
     }
 
     /** @brief Valued constructor (full state). */
-    inline Melg607(const state_type& seed_internal_state) noexcept
+    inline Melg19937(const state_type& seed_internal_state) noexcept
         : MyBaseClass(seed_internal_state)
     {}
 
-    Melg607(const Melg607&) noexcept = default;   //!< default copy constructor.
-    Melg607(Melg607&&) noexcept = default;        //!< default move constructor.
-    virtual ~Melg607() noexcept = default;        //!< default destructor.
+    Melg19937(const Melg19937&) noexcept = default;   //!< default copy constructor.
+    Melg19937(Melg19937&&) noexcept = default;        //!< default move constructor.
+    virtual ~Melg19937() noexcept = default;        //!< default destructor.
 
 
     //---   Internal PRNG   -------------------------------------------------
@@ -129,6 +130,6 @@ public:
 
 private:
     // this definition will avoid an 'if' in method 'next()'
-    static constexpr value_type _A_COND[]{ 0ull, 0x81f1'fd68'0123'48bcull };
+    static constexpr value_type _A_COND[]{ 0ull, 0x5c32'e06d'f730'fc42ull};
 
 };
