@@ -27,8 +27,10 @@ SOFTWARE.
 
 
 //===========================================================================
-#include "baserandom.h"
-#include "utils//seed_generation.h"
+#include <cstdint>
+
+#include "baseclasses/baserandom.h"
+#include "utils/seed_generation.h"
 
 
 //===========================================================================
@@ -63,7 +65,6 @@ SOFTWARE.
 *     FastRand63 rand{};
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(a) << std::endl;   // prints a uniform pseudo-random value within [0.0, a)
-*     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
@@ -85,12 +86,12 @@ SOFTWARE.
 * +------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
-*   the expected characteristics for a pretty good PRG;
+*   the expected characteristics for a pretty good PRNG;
 *
 *   * _crush_ is a bigger set of tests that test more deeply  expected  random
 *   characteristics
 *
-*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
+*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
 class FastRand63 : public BaseRandom<std::uint64_t, std::uint64_t, 63>
@@ -109,18 +110,16 @@ public:
     inline FastRand63() noexcept
         : MyBaseClass()
     {
-        setstate();
+        seed();
     }
 
-    /** @brief Valued constructor - integer. */
-    inline FastRand63(const std::uint64_t seed) noexcept
-        : MyBaseClass(seed)
-    {}
-
-    /** @brief Valued constructor - double. */
-    inline FastRand63(const double seed) noexcept
-        : MyBaseClass(std::uint64_t(seed * double(_MODULO_63)))
-    {}
+    /** @brief Valued construtor. */
+    template<typename T>
+    inline FastRand63(const T seed_)
+        : MyBaseClass()
+    {
+        MyBaseClass::seed(seed_);
+    }
 
     FastRand63(const FastRand63&) noexcept = default;   //!< default copy constructor.
     FastRand63(FastRand63&&) noexcept = default;        //!< default move constructor.
@@ -131,21 +130,21 @@ public:
     /** @brief The internal PRNG algorithm. */
     virtual inline const output_type next() noexcept override
     {
-        return _state.seed = (0x7ff3'19fa'a77b'f52dull * _state.seed + 1) & _MODULO_63;
+        return _internal_state.state = (0x7ff3'19fa'a77b'f52dull * _internal_state.state + 1) & _MODULO_63;
     }
 
 
     //---   Operations   ----------------------------------------------------
     /** @brief Sets the internal state of this PRNG from current time (empty signature). */
-    virtual void setstate() noexcept override
+    virtual void seed() noexcept override
     {
-        MyBaseClass::setstate(utils::set_random_seed63());
+        setstate(utils::set_random_seed63());
     }
 
-    /** @brief Sets the internal state of this PRNG with double seed. */
-    inline void setstate(const double seed) noexcept
+    /** @brief Sets the internal state with an integer seed. */
+    virtual inline void _setstate(const std::uint64_t seed_) noexcept override
     {
-        const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        MyBaseClass::setstate(uint64_t(s * double(_MODULO_63)));
+        _internal_state.state = seed_ & 0x7fff'ffff'ffff'ffff;
     }
+
 };

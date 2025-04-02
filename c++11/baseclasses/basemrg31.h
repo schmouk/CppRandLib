@@ -27,11 +27,11 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <chrono>
+#include <cstdint>
 
 #include "baserandom.h"
-#include "fastrand32.h"
-#include "listseedstate.h"
+#include "internalstates/listseedstate.h"
+#include "utils/splitmix.h"
 
 
 //===========================================================================
@@ -62,14 +62,14 @@ SOFTWARE.
 *
 *   Furthermore this class is callable:
 * @code
-*     BaseMRG31 rand(); // CAUTION: Replace 'BaseMRG31' with any inheriting class constructor!
+*     BaseMRG31 rand();  // CAUTION: Replace 'BaseMRG31' with any inheriting class constructor!
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
 * @code
-*     BaseMRG31 diceRoll();
+*     BaseMRG31 diceRoll();  // CAUTION: Replace 'BaseMRG31' with any inheriting class constructor!
 *     std::cout << int(diceRoll(1, 7)) << std::endl;    // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
@@ -87,15 +87,15 @@ SOFTWARE.
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
-*   the expected characteristics for a pretty good PRG;
+*   the expected characteristics for a pretty good PRNG;
 *
 *   * _crush_ is a bigger set of tests that test more deeply  expected  random
 *   characteristics;
 *
-*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
+*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
-template<const size_t SIZE>
+template<const std::uint32_t SIZE>
 class BaseMRG31 : public BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uint32_t, 31>
 {
 public:
@@ -104,15 +104,21 @@ public:
 
     using output_type = MyBaseClass::output_type;
     using state_type = MyBaseClass::state_type;
+    using value_type = typename state_type::value_type;
 
     static constexpr std::uint32_t SEED_SIZE{ SIZE };
 
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
-    inline BaseMRG31() noexcept
-        : MyBaseClass()
-    {}
+    inline BaseMRG31() noexcept;
+
+    /** @brief Valued construtor. */
+    template<typename T>
+    inline BaseMRG31(const T seed_) noexcept;
+
+    /** @brief Valued constructor (full state). */
+    inline BaseMRG31(const state_type& internal_state) noexcept;
 
     /** @brief Default Destructor. */
     virtual ~BaseMRG31() noexcept = default;
@@ -120,47 +126,59 @@ public:
 
     //---   Operations   ----------------------------------------------------
     /** @brief Sets the internal state of this PRNG from current time (empty signature). */
-    virtual void setstate() noexcept override
-    {
-        setstate(utils::set_random_seed31());
-    }
+    virtual inline void seed() noexcept override;
 
     /** @brief Sets the internal state of this PRNG with an integer seed. */
-    template<typename IntT>
-    inline void setstate(const IntT seed)
-    {
-        if (!std::is_integral<IntT>::value)
-            throw MyBaseClass::IntegralValueTypeException();
-
-        utils::SplitMix31 splitmix_31(seed);
-        for( auto& s : MyBaseClass::_state.seed.list)
-            s = splitmix_31();
-    }
-
-    /** @brief Sets the internal state of this PRNG with a double seed. */
-    inline void setstate(const double seed) noexcept
-    {
-        const double s = (seed <= 0.0) ? 0.0 : (seed >= 1.0) ? 1.0 : seed;
-        setstate(uint32_t(s * double(_MODULO)));
-    }
-
-    /** @brief Restores the internal state of this PRNG from seed. */
-    inline void setstate(const state_type& seed) noexcept
-    {
-        MyBaseClass::_state.seed = seed;
-        MyBaseClass::_state.gauss_valid = false;
-    }
-
-    /** @brief Restores the internal state of this PRNG from seed and gauss_next. */
-    inline  void setstate(const state_type& seed, const double gauss_next) noexcept
-    {
-        MyBaseClass::_state.seed = seed;
-        MyBaseClass::_state.gauss_next = gauss_next;
-        MyBaseClass::_state.gauss_valid = true;
-    }
-
-
-protected:
-    static constexpr std::uint64_t _MODULO{ 0x7fff'ffffull };
+    virtual inline void _setstate(const std::uint64_t seed) noexcept override;
 
 };
+
+
+//===========================================================================
+//---   TEMPLATES IMPLEMENTATION   ------------------------------------------
+//---------------------------------------------------------------------------
+/** Empty constructor. */
+template<const std::uint32_t SIZE>
+inline BaseMRG31<SIZE>::BaseMRG31() noexcept
+    : MyBaseClass()
+{
+    seed();
+}
+
+//---------------------------------------------------------------------------
+/** Valued construtor. */
+template<const std::uint32_t SIZE>
+template<typename T>
+inline BaseMRG31<SIZE>::BaseMRG31(const T seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (full state). */
+template<const std::uint32_t SIZE>
+inline BaseMRG31<SIZE>::BaseMRG31(const state_type& internal_state) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::setstate(internal_state);
+}
+
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG from current time (empty signature). */
+template<const std::uint32_t SIZE>
+inline void BaseMRG31<SIZE>::seed() noexcept
+{
+    _setstate(utils::set_random_seed31());
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG with an integer seed. */
+template<const std::uint32_t SIZE>
+inline void BaseMRG31<SIZE>::_setstate(const std::uint64_t seed) noexcept
+{
+    utils::SplitMix31 splitmix_31(std::uint32_t(seed & 0x7fff'ffff));
+    for (auto& s : MyBaseClass::_internal_state.state.list)
+        s = splitmix_31();
+}

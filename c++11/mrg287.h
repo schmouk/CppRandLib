@@ -27,11 +27,10 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <chrono>
+#include <cstdint>
 
-#include "basemrg32.h"
-#include "fastrand32.h"
-#include "listseedstate.h"
+#include "baseclasses/basemrg32.h"
+#include "internalstates/listseedstate.h"
 
 
 //===========================================================================
@@ -75,12 +74,11 @@ SOFTWARE.
 *   and offers a period of about 2^287 - i.e. 2.49e+86 - with low computation time due
 *   to the use of a 2^32 modulo.
 *   
-*
 *   See Mrg1457 for a longer period MR-Generator  (2^1457,  i.e. 4.0e+438)  and longer
 *   computation  time  (2^31-1 modulus calculations) but less memory space consumption
 *   (i.e. 47 integers).
-*   See Mrg49507 for  a  far  longer  period  (2^49_507,  i.e. 1.2e+14_903)  with  low
-*   computation  time  too  (31-bits  modulus)  but  use  of  more memory space (1_597
+*   See Mrg49507 for  a  far  longer  period  (2^49,507,  i.e. 1.2e+14,903)  with  low
+*   computation  time  too  (31-bits  modulus)  but  use  of  more memory space (1,597
 *   integers).
 *
 *   Furthermore this class is callable:
@@ -110,12 +108,12 @@ SOFTWARE.
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
-*   the expected characteristics for a pretty good PRG;
+*   the expected characteristics for a pretty good PRNG;
 *
 *   * _crush_ is a bigger set of tests that test more deeply  expected  random
 *   characteristics;
 *
-*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
+*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
 class Mrg287 : public BaseMRG32<256>
@@ -124,35 +122,29 @@ public:
     //---   Wrappers   ------------------------------------------------------
     using MyBaseClass = BaseMRG32<256>;
 
+    using output_type = MyBaseClass::output_type;
+    using state_type = MyBaseClass::state_type;
+    using value_type = typename state_type::value_type;
+
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
     inline Mrg287() noexcept
         : MyBaseClass()
-    {
-        MyBaseClass::setstate();
-    }
+    {}
 
-    /** @brief Valued construtor (integer). */
-    inline Mrg287(const uint32_t seed) noexcept
+    /** @brief Valued construtor. */
+    template<typename T>
+    inline Mrg287(const T seed_) noexcept
         : MyBaseClass()
     {
-        MyBaseClass::setstate(seed);
-    }
-
-    /** @brief Valued construtor (double). */
-    inline Mrg287(const double seed) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::setstate(seed);
+        MyBaseClass::MyBaseClass::seed(seed_);
     }
 
     /** @brief Valued constructor (full state). */
-    inline Mrg287(const state_type& seed) noexcept
-        : MyBaseClass()
-    {
-        setstate(seed);
-    }
+    inline Mrg287(const state_type& seed_internal_state) noexcept
+        : MyBaseClass(seed_internal_state)
+    {}
 
     Mrg287(const Mrg287&) noexcept = default;   //!< default copy constructor.
     Mrg287(Mrg287&&) noexcept = default;        //!< default move constructor.

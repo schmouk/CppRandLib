@@ -1,8 +1,9 @@
-#pragma once
 /*
 MIT License
 
-Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+
+This file is part of library CppRandLib.
 
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
@@ -25,15 +26,32 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <array>
+#include "melg44497.h"
 
 
 //===========================================================================
-/** @brief The internal state of LFib and MRG Pseudo Random Numbers Generators. */
-template<typename ValueType, const std::uint32_t SIZE>
-class ListSeedState
+/** The internal PRNG algorithm. */
+const Melg44497::output_type Melg44497::next() noexcept
 {
-public:
-    std::array<ValueType, SIZE>  list;
-    std::uint32_t                index;
-};
+    const std::uint32_t i{ _internal_state.state.index };
+    const std::uint32_t i_1{ (i + 1) % 695 };
+
+    // sets next index in states list
+    _internal_state.state.index = i_1;
+
+    // modifies the internal states
+    const value_type x{
+        (_internal_state.state.list[i]   & 0xffff'8000'0000'0000ull) |  // notice: | instead of ^ as erroneously printed in [11]
+        (_internal_state.state.list[i_1] & 0x0000'7fff'ffff'ffffull)
+    };
+    value_type s695{ _internal_state.state.list[695] };
+
+    s695 = (x >> 1) ^ _A_COND[x & 0x01] ^ _internal_state.state.list[(i + 373) % 695] ^ s695 ^ (s695 << 37);
+    _internal_state.state.list[695] = s695;
+
+    const value_type si{ x ^ s695 ^ (s695 >> 14) };
+    _internal_state.state.list[i] = si;
+
+    // finally, returns pseudo random value as a 64-bits integer
+    return si ^ (si << 6) ^ (_internal_state.state.list[(i + 95) % 695] & 0x06fb'bee2'9aae'fd91);
+}

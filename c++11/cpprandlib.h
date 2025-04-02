@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 /*
 MIT License
 
@@ -34,6 +33,21 @@ SOFTWARE.
 #include "lfib116.h"
 #include "lfib668.h"
 #include "lfib1340.h"
+#include "melg607.h"
+#include "melg19937.h"
+#include "melg44497.h"
 #include "mrg287.h"
 #include "mrg1457.h"
 #include "mrg49507.h"
+#include "pcg64_32.h"
+#include "pcg128_64.h"
+#include "pcg1024_32.h"
+#include "squares32.h"
+#include "squares64.h"
+#include "well512a.h"
+#include "well1024a.h"
+#include "well19937c.h"
+#include "well44497b.h"
+#include "xoroshiro256.h"
+#include "xoroshiro512.h"
+#include "xoroshiro1024.h"
