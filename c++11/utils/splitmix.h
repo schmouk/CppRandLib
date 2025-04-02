@@ -57,25 +57,25 @@ namespace utils
     public:
         /** @brief Empty constructor, uses current time to initialize the internal state. */
         inline SplitMix64()  noexcept
-            : _internal_state(utils::get_time_us())
+            : _state(utils::get_time_us())
         {}
 
         /** @brief Valued constructor - integer. */
         template<typename IntT>
         inline SplitMix64(const IntT seed)
-            : _internal_state(seed)
+            : _state(seed)
         {}
 
         /** @brief Valued constructor - double in range [0.0, 1.0). */
         inline SplitMix64(const double seed) noexcept
-            : _internal_state((seed <= 0.0) ? 0ull : (seed >= 1.0) ? 0xffff'ffff'ffff'ffffull : std::uint64_t(0xffff'ffff'ffff'ffffull * seed))
+            : _state((seed <= 0.0) ? 0ull : (seed >= 1.0) ? 0xffff'ffff'ffff'ffffull : std::uint64_t(0xffff'ffff'ffff'ffffull * seed))
         {}
 
         /** @brief Evaluates next pseudorandom value. */
         const std::uint64_t operator() () noexcept;
 
     private:
-        std::uint64_t _internal_state;
+        std::uint64_t _state;
 
     };
     
