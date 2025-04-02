@@ -1,4 +1,3 @@
-#pragma once
 /*
 MIT License
 
@@ -27,27 +26,32 @@ SOFTWARE.
 
 
 //===========================================================================
-#include "fastrand32.h"
-#include "fastrand63.h"
-#include "lfib78.h"
-#include "lfib116.h"
-#include "lfib668.h"
-#include "lfib1340.h"
-#include "melg607.h"
-#include "melg19937.h"
 #include "melg44497.h"
-#include "mrg287.h"
-#include "mrg1457.h"
-#include "mrg49507.h"
-#include "pcg64_32.h"
-#include "pcg128_64.h"
-#include "pcg1024_32.h"
-#include "squares32.h"
-#include "squares64.h"
-#include "well512a.h"
-#include "well1024a.h"
-#include "well19937c.h"
-#include "well44497b.h"
-#include "xoroshiro256.h"
-#include "xoroshiro512.h"
-#include "xoroshiro1024.h"
+
+
+//===========================================================================
+/** The internal PRNG algorithm. */
+const Melg44497::output_type Melg44497::next() noexcept
+{
+    const std::uint32_t i{ _internal_state.state.index };
+    const std::uint32_t i_1{ (i + 1) % 695 };
+
+    // sets next index in states list
+    _internal_state.state.index = i_1;
+
+    // modifies the internal states
+    const value_type x{
+        (_internal_state.state.list[i]   & 0xffff'8000'0000'0000ull) |  // notice: | instead of ^ as erroneously printed in [11]
+        (_internal_state.state.list[i_1] & 0x0000'7fff'ffff'ffffull)
+    };
+    value_type s695{ _internal_state.state.list[695] };
+
+    s695 = (x >> 1) ^ _A_COND[x & 0x01] ^ _internal_state.state.list[(i + 373) % 695] ^ s695 ^ (s695 << 37);
+    _internal_state.state.list[695] = s695;
+
+    const value_type si{ x ^ s695 ^ (s695 >> 14) };
+    _internal_state.state.list[i] = si;
+
+    // finally, returns pseudo random value as a 64-bits integer
+    return si ^ (si << 6) ^ (_internal_state.state.list[(i + 95) % 695] & 0x06fb'bee2'9aae'fd91);
+}

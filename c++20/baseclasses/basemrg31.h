@@ -63,14 +63,14 @@ SOFTWARE.
 *
 *   Furthermore this class is callable:
 * @code
-*     BaseMRG31 rand(); // CAUTION: Replace 'BaseMRG31' with any inheriting class constructor!
+*     BaseMRG31 rand();  // CAUTION: Replace 'BaseMRG31' with any inheriting class constructor!
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
 * @code
-*     BaseMRG31 diceRoll();
+*     BaseMRG31 diceRoll();  // CAUTION: Replace 'BaseMRG31' with any inheriting class constructor!
 *     std::cout << int(diceRoll(1, 7)) << std::endl;    // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
@@ -96,7 +96,7 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
-template<const size_t SIZE>
+template<const std::uint32_t SIZE>
 class BaseMRG31 : public BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uint32_t, 31>
 {
 public:
@@ -139,7 +139,7 @@ public:
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
 //---------------------------------------------------------------------------
 /** Empty constructor. */
-template<const size_t SIZE>
+template<const std::uint32_t SIZE>
 inline BaseMRG31<SIZE>::BaseMRG31() noexcept
     : MyBaseClass()
 {
@@ -148,17 +148,17 @@ inline BaseMRG31<SIZE>::BaseMRG31() noexcept
 
 //---------------------------------------------------------------------------
 /** Valued construtor. */
-template<const size_t SIZE>
+template<const std::uint32_t SIZE>
 template<typename T>
 inline BaseMRG31<SIZE>::BaseMRG31(const T seed_) noexcept
     : MyBaseClass()
 {
-    seed();
+    MyBaseClass::seed(seed_);
 }
 
 //---------------------------------------------------------------------------
 /** Valued constructor (full state). */
-template<const size_t SIZE>
+template<const std::uint32_t SIZE>
 inline BaseMRG31<SIZE>::BaseMRG31(const state_type& internal_state) noexcept
     : MyBaseClass()
 {
@@ -168,7 +168,7 @@ inline BaseMRG31<SIZE>::BaseMRG31(const state_type& internal_state) noexcept
 
 //---------------------------------------------------------------------------
 /** Sets the internal state of this PRNG from current time (empty signature). */
-template<const size_t SIZE>
+template<const std::uint32_t SIZE>
 inline void BaseMRG31<SIZE>::seed() noexcept
 {
     _setstate(utils::set_random_seed31());
@@ -176,7 +176,7 @@ inline void BaseMRG31<SIZE>::seed() noexcept
 
 //---------------------------------------------------------------------------
 /** Sets the internal state of this PRNG with an integer seed. */
-template<const size_t SIZE>
+template<const std::uint32_t SIZE>
 inline void BaseMRG31<SIZE>::_setstate(const std::uint64_t seed) noexcept
 {
     utils::SplitMix31 splitmix_31(std::uint32_t(seed & 0x7fff'ffff));

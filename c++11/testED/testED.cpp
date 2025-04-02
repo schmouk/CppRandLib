@@ -341,6 +341,21 @@ int main()
     }
 
     {
+        Melg607 melg607;
+        ok = test_algo("Melg607", &melg607) && ok;
+    }
+
+    {
+        Melg19937 melg19937;
+        ok = test_algo("Melg19937", &melg19937) && ok;
+    }
+
+    {
+        Melg44497 melg44497;
+        ok = test_algo("Melg44497", &melg44497) && ok;
+    }
+
+    {
         Mrg287 mrg287;
         ok = test_algo("Mrg287", &mrg287) && ok;
     }

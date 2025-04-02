@@ -2,7 +2,7 @@
 /*
 MIT License
 
-Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
 
 This file is part of library CppRandLib.
 
@@ -35,41 +35,41 @@ SOFTWARE.
 
 
 //===========================================================================
-/** @brief The base support for 32-bits MRG Pseudo Random Number Generators.
+/** @brief The base class for all Maximally Equidistributed Long-period Linear Generators (MELG).
 *
-*   Multiple Recursive Generators (MRGs)  use  recurrence  to  evaluate  pseudo-random
-*   numbers suites. Recurrence is of the form:
+*   Maximally  Equidistributed  Long-period  Linear  Generators  (MELG)   use   linear
+*   recurrence  based  on  state  transitions  with double feedbacks and linear output
+*   transformations with several memory references. See reference [11] in README.md.
 *
-*      x(i) = A * SUM[ x(i-k) ]  mod M
+*   MELGs offer large to very large periods with best known results in the  evaluation
+*   of their randomness.  They ensure a maximally equidistributed generation of pseudo
+*   random numbers.  They pass all TestU01 tests and newer ones but are the slowest to
+*   compute ones in the base of PRNGs that have been implemented in PyRandLib.
 *
-*   for 2 to more k different values.
+*   Notice: while the WELL algorithms use 32-bits integers as their internal state and
+*   output pseudo-random 32-bits integers also, the MELG algorithm is full 64-bits.
 *
-*   MRGs offer very large periods with the best known results  in  the  evaluation  of
-*   their  randomness,  as  stated  in  the  evaluation  done  by  Pierre L'Ecuyer and
-*   Richard Simard (Universite de Montreal)  in "TestU01:  A C Library  for  Empirical
-*   Testing of Random  Number Generators  - ACM Transactions on Mathematical Software,
-*   vol.33 n.4, pp.22-40, August 2007".  It is recommended to use  such  pseudo-random
-*   numbers generators rather than LCG ones for serious simulation applications.
-*
-*   See Mrg287 for  a  short  period  MR-Generator  (2^287,  i.e. 2.49e+86)  with  low
-*   computation time but 256 integers memory consumption (2^32 modulus calculations).
-*   See Mrg1457 for a longer period MR-Generator  (2^1457,  i.e. 4.0e+438)  and longer
-*   computation  time  (2^31-1 modulus calculations) but less memory space consumption
-*   (i.e. 47 integers).
-*   See Mrg49507 for  a  far  longer  period  (2^49_507,  i.e. 1.2e+14_903)  with  low
-*   computation  time  too  (31-bits  modulus)  but  use  of  more memory space (1_597
-*   integers).
+*   See Melg607 for a large period MELG-Generator (2^607, i.e. 5.31e+182)  with medium
+*   computation  time  and  the  equivalent  of  21  32-bits  integers  memory  little
+*   consumption. This is the shortest period version proposed in paper [11].
+* 
+*   See Melg19937 for an even larger period MELG-Generator (2^19,937, i.e. 4.32e+6001),
+*   same computation time and equivalent of 625 integers memory consumption.
+* 
+*   See Melg44497 for a very large period (2^44,497,  i.e. 8.55e+13,395)  with  similar
+*   computation  time  but  use  of even more memory space (equivalent of 1,393 32-bits
+*   integers). This is the longest period version proposed in paper [11].
 *
 *   Furthermore this class is callable:
 * @code
-*     BaseMRG31 rand();  // CAUTION: Replace 'BaseMRG31' with any inheriting class constructor!
+*     BaseMELG rand();  // CAUTION: Replace 'BaseMELG' with any inheriting class constructor!
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
 * @code
-*     BaseMRG31 diceRoll();  // CAUTION: Replace 'BaseMRG31' with any inheriting class constructor!
+*     BaseMELG diceRoll();  // CAUTION: Replace 'BaseMELG' with any inheriting class constructor!
 *     std::cout << int(diceRoll(1, 7)) << std::endl;    // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
@@ -81,9 +81,9 @@ SOFTWARE.
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
 * | PyRabndLib class | TU01 generator name | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
 * | ---------------- | ------------------- | --------------- | ------- | ----------- | ------------ | ---------------- | ----------- | -------------- |
-* | Mrg287           | Marsa-LFIB4         |   256 x 4-bytes | 2^287   |    3.40     |     0.8      |          0       |       0     |       0        |
-* | Mrg1457          | DX-47-3             |    47 x 4-bytes | 2^1457  |    n.a.     |     1.4      |          0       |       0     |       0        |
-* | Mrg49507         | DX-1597-2-7         | 1,597 x 4-bytes | 2^49507 |    n.a.     |     1.4      |          0       |       0     |       0        |
+* | Melg607          | melg607-64          |    21 x 4-bytes | 2^607   |    n.a.     |      n.a.    |        n.a.      |     n.a.    |     n.a.       |
+* | Melg19937        | melg19937-64        |   625 x 4-bytes | 2^19937 |    n.a.     |     4.21     |          0       |       0     |       0        |
+* | Melg44497        | melg44497-64        | 1,393 x 4-bytes | 2^44497 |    n.a.     |      n.a.    |        n.a.      |     n.a.    |     n.a.       |
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
@@ -96,32 +96,30 @@ SOFTWARE.
 *   should definitively pass.
 */
 template<const std::uint32_t SIZE>
-class BaseMRG31 : public BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uint32_t, 31>
+class BaseMELG : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uint32_t, 31>;
+    using MyBaseClass = BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t>;
 
-    using output_type = MyBaseClass::output_type;
-    using state_type = MyBaseClass::state_type;
-    using value_type = typename state_type::value_type;
-
-    static constexpr std::uint32_t SEED_SIZE{ SIZE };
+    using output_type = typename MyBaseClass::output_type;
+    using state_type  = typename MyBaseClass::state_type;
+    using value_type  = typename state_type::value_type;
 
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
-    inline BaseMRG31() noexcept;
+    inline BaseMELG() noexcept;
 
     /** @brief Valued construtor. */
     template<typename T>
-    inline BaseMRG31(const T seed_) noexcept;
+    inline BaseMELG(const T seed_) noexcept;
 
     /** @brief Valued constructor (full state). */
-    inline BaseMRG31(const state_type& internal_state) noexcept;
+    inline BaseMELG(const state_type& internal_state) noexcept;
 
     /** @brief Default Destructor. */
-    virtual ~BaseMRG31() noexcept = default;
+    virtual ~BaseMELG() noexcept = default;
 
 
     //---   Operations   ----------------------------------------------------
@@ -139,7 +137,7 @@ public:
 //---------------------------------------------------------------------------
 /** Empty constructor. */
 template<const std::uint32_t SIZE>
-inline BaseMRG31<SIZE>::BaseMRG31() noexcept
+inline BaseMELG<SIZE>::BaseMELG() noexcept
     : MyBaseClass()
 {
     seed();
@@ -149,7 +147,7 @@ inline BaseMRG31<SIZE>::BaseMRG31() noexcept
 /** Valued construtor. */
 template<const std::uint32_t SIZE>
 template<typename T>
-inline BaseMRG31<SIZE>::BaseMRG31(const T seed_) noexcept
+inline BaseMELG<SIZE>::BaseMELG(const T seed_) noexcept
     : MyBaseClass()
 {
     MyBaseClass::seed(seed_);
@@ -158,27 +156,26 @@ inline BaseMRG31<SIZE>::BaseMRG31(const T seed_) noexcept
 //---------------------------------------------------------------------------
 /** Valued constructor (full state). */
 template<const std::uint32_t SIZE>
-inline BaseMRG31<SIZE>::BaseMRG31(const state_type& internal_state) noexcept
+inline BaseMELG<SIZE>::BaseMELG(const state_type& internal_state) noexcept
     : MyBaseClass()
 {
     MyBaseClass::setstate(internal_state);
 }
 
-
 //---------------------------------------------------------------------------
 /** Sets the internal state of this PRNG from current time (empty signature). */
 template<const std::uint32_t SIZE>
-inline void BaseMRG31<SIZE>::seed() noexcept
+inline void BaseMELG<SIZE>::seed() noexcept
 {
-    _setstate(utils::set_random_seed31());
+    _setstate(utils::set_random_seed64());
 }
 
 //---------------------------------------------------------------------------
 /** Sets the internal state of this PRNG with an integer seed. */
 template<const std::uint32_t SIZE>
-inline void BaseMRG31<SIZE>::_setstate(const std::uint64_t seed) noexcept
+inline void BaseMELG<SIZE>::_setstate(const std::uint64_t seed) noexcept
 {
-    utils::SplitMix31 splitmix_31(std::uint32_t(seed & 0x7fff'ffff));
-    for (auto& s : MyBaseClass::_internal_state.state.list)
-        s = splitmix_31();
+    utils::SplitMix64 splitmix_64(seed);
+    for (value_type& s : MyBaseClass::_internal_state.state.list)
+        s = splitmix_64();
 }
