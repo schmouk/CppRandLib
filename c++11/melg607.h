@@ -33,19 +33,19 @@ SOFTWARE.
 //===========================================================================
 /** @brief A 64-bits Maximally Equidistributed Long-period Linear Generators with a long period (5.31e+182).
 *
-*   Maximally  Equidistributed  Long-period  Linear  Generators  (MELG)   use   linear
-*   recurrence  based  on  state  transitions  with double feedbacks and linear output
+*   Maximally  Equidistributed  Long-period  Linear  Generators   (MELG)   use   linear
+*   recurrence  based  on  state  transitions  with  double feedbacks and linear output
 *   transformations with several memory references. See reference [11] in README.md.
 *
-*   MELGs offer large to very large periods with best known results in the  evaluation
-*   of their randomness.  They ensure a maximally equidistributed generation of pseudo
-*   random numbers.  They pass all TestU01 tests and newer ones but are the slowest to
+*   MELGs offer large to very large periods with best known results in  the  evaluation
+*   of  their randomness.  They ensure a maximally equidistributed generation of pseudo
+*   random numbers.  They pass all TestU01 tests and newer ones but are the slowest  to
 *   compute ones in the base of PRNGs that have been implemented in PyRandLib.
 *
 *   See Melg19937 for an even larger period MELG-Generator (2^19,937, i.e. 4.32e+6001),
-*   same computation time and equivalent of 626 integers memory consumption.
+*   same computation time and equivalent of 625 integers memory consumption.
 *
-*   See Melg44497 for a very large period (2^44,497,  i.e. 15.1e+13,466)  with  similar
+*   See Melg44497 for a very large period (2^44,497,  i.e. 8.55e+13,395)  with  similar
 *   computation  time  but  use  of even more memory space (equivalent of 1,393 32-bits
 *   integers). This is the longest period version proposed in paper [11].
 *

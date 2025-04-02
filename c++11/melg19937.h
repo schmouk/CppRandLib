@@ -31,7 +31,7 @@ SOFTWARE.
 
 
 //===========================================================================
-/** @brief A 64-bits Maximally Equidistributed Long-period Linear Generators with a long period (5.31e+182).
+/** @brief A 64-bits Maximally Equidistributed Long-period Linear Generators with a long period (4.32e+6,001).
 *
 *   Maximally  Equidistributed  Long-period  Linear  Generators  (MELG)   use   linear
 *   recurrence  based  on  state  transitions  with double feedbacks and linear output
@@ -46,7 +46,7 @@ SOFTWARE.
 *   computation  time  and  the  equivalent  of  21  32-bits  integers  memory  little
 *   consumption. This is the shortest period version proposed in paper [11].
 *
-*   See Melg44497 for a very large period (2^44,497,  i.e. 15.1e+13,466)  with  similar
+*   See Melg44497 for a very large period (2^44,497,  i.e. 8.55e+13,395)  with  similar
 *   computation  time  but  use  of even more memory space (equivalent of 1,393 32-bits
 *   integers). This is the longest period version proposed in paper [11].
 *

@@ -35,6 +35,7 @@ SOFTWARE.
 #include "lfib1340.h"
 #include "melg607.h"
 #include "melg19937.h"
+#include "melg44497.h"
 #include "mrg287.h"
 #include "mrg1457.h"
 #include "mrg49507.h"

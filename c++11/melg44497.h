@@ -27,49 +27,38 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <cstdint>
-
-#include "baserandom.h"
-#include "internalstates/listseedstate.h"
-#include "utils/splitmix.h"
+#include "baseclasses/basemelg.h"
 
 
 //===========================================================================
-/** @brief The base class for all Maximally Equidistributed Long-period Linear Generators (MELG).
+/** @brief A 64-bits Maximally Equidistributed Long-period Linear Generators with a long period (8.55e+13,395).
 *
-*   Maximally  Equidistributed  Long-period  Linear  Generators  (MELG)   use   linear
-*   recurrence  based  on  state  transitions  with double feedbacks and linear output
+*   Maximally  Equidistributed  Long-period  Linear  Generators   (MELG)   use   linear
+*   recurrence  based  on  state  transitions  with  double feedbacks and linear output
 *   transformations with several memory references. See reference [11] in README.md.
 *
-*   MELGs offer large to very large periods with best known results in the  evaluation
-*   of their randomness.  They ensure a maximally equidistributed generation of pseudo
-*   random numbers.  They pass all TestU01 tests and newer ones but are the slowest to
+*   MELGs offer large to very large periods with best known results in  the  evaluation
+*   of  their randomness.  They ensure a maximally equidistributed generation of pseudo
+*   random numbers.  They pass all TestU01 tests and newer ones but are the slowest  to
 *   compute ones in the base of PRNGs that have been implemented in PyRandLib.
 *
-*   Notice: while the WELL algorithms use 32-bits integers as their internal state and
-*   output pseudo-random 32-bits integers also, the MELG algorithm is full 64-bits.
-*
-*   See Melg607 for a large period MELG-Generator (2^607, i.e. 5.31e+182)  with medium
-*   computation  time  and  the  equivalent  of  21  32-bits  integers  memory  little
+*   See Melg607 for a large period MELG-Generator (2^607, i.e. 5.31e+182)  with  medium
+*   computation   time  and  the  equivalent  of  21  32-bits  integers  memory  little
 *   consumption. This is the shortest period version proposed in paper [11].
-* 
+*
 *   See Melg19937 for an even larger period MELG-Generator (2^19,937, i.e. 4.32e+6001),
 *   same computation time and equivalent of 625 integers memory consumption.
-* 
-*   See Melg44497 for a very large period (2^44,497,  i.e. 8.55e+13,395)  with  similar
-*   computation  time  but  use  of even more memory space (equivalent of 1,393 32-bits
-*   integers). This is the longest period version proposed in paper [11].
 *
 *   Furthermore this class is callable:
 * @code
-*     BaseMELG rand();  // CAUTION: Replace 'BaseMELG' with any inheriting class constructor!
+*     Melg44497 rand();
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
 * @code
-*     BaseMELG diceRoll();  // CAUTION: Replace 'BaseMELG' with any inheriting class constructor!
+*     Melg44497 diceRoll();
 *     std::cout << int(diceRoll(1, 7)) << std::endl;    // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
@@ -95,87 +84,53 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
-template<const std::uint32_t SIZE>
-class BaseMELG : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t>
+class Melg44497 : public BaseMELG<696>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t>;
+    using MyBaseClass = BaseMELG<696>;
 
-    using output_type = typename MyBaseClass::output_type;
-    using state_type  = typename MyBaseClass::state_type;
-    using value_type  = typename state_type::value_type;
+    using output_type = MyBaseClass::output_type;
+    using state_type = MyBaseClass::state_type;
+    using value_type = typename state_type::value_type;
 
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
-    inline BaseMELG() noexcept;
+    inline Melg44497() noexcept
+        : MyBaseClass()
+    {
+    }
 
     /** @brief Valued construtor. */
     template<typename T>
-    inline BaseMELG(const T seed_) noexcept;
+    inline Melg44497(const T seed_) noexcept
+        : MyBaseClass()
+    {
+        MyBaseClass::MyBaseClass::seed(seed_);
+    }
 
     /** @brief Valued constructor (full state). */
-    inline BaseMELG(const state_type& internal_state) noexcept;
+    inline Melg44497(const state_type& seed_internal_state) noexcept
+        : MyBaseClass(seed_internal_state)
+    {
+    }
 
-    /** @brief Default Destructor. */
-    virtual ~BaseMELG() noexcept = default;
+    Melg44497(const Melg44497&) noexcept = default;   //!< default copy constructor.
+    Melg44497(Melg44497&&) noexcept = default;        //!< default move constructor.
+    virtual ~Melg44497() noexcept = default;        //!< default destructor.
 
 
-    //---   Operations   ----------------------------------------------------
-    /** @brief Sets the internal state of this PRNG from current time (empty signature). */
-    virtual inline void seed() noexcept override;
+    //---   Internal PRNG   -------------------------------------------------
+    /** @brief The internal PRNG algorithm.
+    *
+    * @return an integer value coded on OUTPUT_BITS (i.e. 64) bits.
+    */
+    virtual const output_type next() noexcept override;
 
-    /** @brief Sets the internal state of this PRNG with an integer seed. */
-    virtual inline void _setstate(const std::uint64_t seed) noexcept override;
+
+private:
+    // this definition will avoid an 'if' in method 'next()'
+    static constexpr value_type _A_COND[]{ 0ull, 0x4fa9'ca36'f293'c9a9ull };
 
 };
-
-
-//===========================================================================
-//---   TEMPLATES IMPLEMENTATION   ------------------------------------------
-//---------------------------------------------------------------------------
-/** Empty constructor. */
-template<const std::uint32_t SIZE>
-inline BaseMELG<SIZE>::BaseMELG() noexcept
-    : MyBaseClass()
-{
-    seed();
-}
-
-//---------------------------------------------------------------------------
-/** Valued construtor. */
-template<const std::uint32_t SIZE>
-template<typename T>
-inline BaseMELG<SIZE>::BaseMELG(const T seed_) noexcept
-    : MyBaseClass()
-{
-    MyBaseClass::seed(seed_);
-}
-
-//---------------------------------------------------------------------------
-/** Valued constructor (full state). */
-template<const std::uint32_t SIZE>
-inline BaseMELG<SIZE>::BaseMELG(const state_type& internal_state) noexcept
-    : MyBaseClass()
-{
-    MyBaseClass::setstate(internal_state);
-}
-
-//---------------------------------------------------------------------------
-/** Sets the internal state of this PRNG from current time (empty signature). */
-template<const std::uint32_t SIZE>
-inline void BaseMELG<SIZE>::seed() noexcept
-{
-    _setstate(utils::set_random_seed64());
-}
-
-//---------------------------------------------------------------------------
-/** Sets the internal state of this PRNG with an integer seed. */
-template<const std::uint32_t SIZE>
-inline void BaseMELG<SIZE>::_setstate(const std::uint64_t seed) noexcept
-{
-    utils::SplitMix64 splitmix_64(seed);
-    for (value_type& s : MyBaseClass::_internal_state.state.list)
-        s = splitmix_64();
-}

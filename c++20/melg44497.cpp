@@ -26,32 +26,32 @@ SOFTWARE.
 
 
 //===========================================================================
-#include "melg19937.h"
+#include "melg44497.h"
 
 
 //===========================================================================
 /** The internal PRNG algorithm. */
-const Melg19937::output_type Melg19937::next() noexcept
+const Melg44497::output_type Melg44497::next() noexcept
 {
     const std::uint32_t i{ _internal_state.state.index };
-    const std::uint32_t i_1{ (i + 1) % 311 };
+    const std::uint32_t i_1{ (i + 1) % 695 };
 
     // sets next index in states list
     _internal_state.state.index = i_1;
 
     // modifies the internal states
     const value_type x{
-        (_internal_state.state.list[i]   & 0xffff'fffe'0000'0000ull) |  // notice: | instead of ^ as erroneously printed in [11]
-        (_internal_state.state.list[i_1] & 0x0000'0001'ffff'ffffull)
+        (_internal_state.state.list[i]   & 0xffff'8000'0000'0000ull) |  // notice: | instead of ^ as erroneously printed in [11]
+        (_internal_state.state.list[i_1] & 0x0000'7fff'ffff'ffffull)
     };
-    value_type s311{ _internal_state.state.list[311] };
+    value_type s695{ _internal_state.state.list[695] };
 
-    s311 = (x >> 1) ^ _A_COND[x & 0x01] ^ _internal_state.state.list[(i + 81) % 311] ^ s311 ^ (s311 << 23);
-    _internal_state.state.list[311] = s311;
+    s695 = (x >> 1) ^ _A_COND[x & 0x01] ^ _internal_state.state.list[(i + 373) % 695] ^ s695 ^ (s695 << 37);
+    _internal_state.state.list[695] = s695;
 
-    const value_type si{ x ^ s311 ^ (s311 >> 33) };
+    const value_type si{ x ^ s695 ^ (s695 >> 14) };
     _internal_state.state.list[i] = si;
 
     // finally, returns pseudo random value as a 64-bits integer
-    return si ^ (si << 16) ^ (_internal_state.state.list[(i + 9) % 311] & 0x6aed'e6fd'97b3'38ec);
+    return si ^ (si << 6) ^ (_internal_state.state.list[(i + 95) % 695] & 0x06fb'bee2'9aae'fd91);
 }

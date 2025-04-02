@@ -41,7 +41,7 @@ const Melg19937::output_type Melg19937::next() noexcept
 
     // modifies the internal states
     const value_type x{
-        (_internal_state.state.list[i] & 0xffff'fffe'0000'0000ull) |  // notice: | instead of ^ as erroneously printed in [11]
+        (_internal_state.state.list[i]   & 0xffff'fffe'0000'0000ull) |  // notice: | instead of ^ as erroneously printed in [11]
         (_internal_state.state.list[i_1] & 0x0000'0001'ffff'ffffull)
     };
     value_type s311{ _internal_state.state.list[311] };
