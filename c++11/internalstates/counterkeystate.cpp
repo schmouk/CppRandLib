@@ -1,4 +1,3 @@
-#pragma once
 /*
 MIT License
 
@@ -28,21 +27,37 @@ SOFTWARE.
 
 //===========================================================================
 #include <type_traits>
+#include <vector>
+
+#include "counterkeystate.h"
+#include "../utils/splitmix.h"
 
 
 //===========================================================================
-/** @brief The internal state of counter-based Pseudo Random Numbers Generators. */
-struct CounterKeyState
+void CounterKeyState::init_key(const value_type seed) noexcept
 {
-    using value_type = std::uint64_t;
+    constexpr double NORMALIZE{ 0.5 / double(0x8000'0000'0000'0000ull) };
 
-    value_type counter{ 0 };
-    value_type key{ 0 };
+    std::vector<value_type> hex_digits{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf };
+    utils::SplitMix64 splitmix_64(seed);
 
-    inline void init_key() noexcept
-    {}
+    key = 0;
 
-    /** @brief Initalizes the attribute key according to the original recommendations in document [9] - see file README.md. */
-    void init_key(const value_type seed) noexcept;
+    // let's initialize the 8 high hexa digits of the key - all different
+    for (std::uint32_t n = 15; n >= 8; ) {
+        const std::uint32_t i{ std::uint32_t(double(n) * double(splitmix_64()) * NORMALIZE) };
 
-};
+        key = (key << 4) + hex_digits[i];
+        std::swap(hex_digits[i], hex_digits[--n]);
+    }
+
+    // then let's initialize the 8 low hexa digits of the key - all different
+    for (std::uint32_t n = 15; n >= 8; ) {
+        const std::uint32_t i{ std::uint32_t(double(n) * double(splitmix_64()) * NORMALIZE) };
+
+        key = (key << 4) + hex_digits[i];
+        std::swap(hex_digits[i], hex_digits[--n]);
+    }
+
+    key |= 1;  // notice: key must be odd
+}
