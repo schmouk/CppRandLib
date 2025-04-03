@@ -26,40 +26,10 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <type_traits>
-
 #include "collatzweylstate.h"
-#include "../utils/splitmix.h"
-#include "../utils/uint128.h"
 
 
 //===========================================================================
-/** Initalizes the internal state according to a 64-bits integer seed. */
-void CollatzWeylState::seed(const std::uint64_t seed_) noexcept
-{
-    utils::SplitMix64 splitmix_64(seed_);
-
-    _a = _weyl = 0;
-
-    _state.hi = splitmix_64();  // Notice: in the original paper, this seems to be erroneously initialized on sole 64 lowest bits
-    _state.lo = splitmix_64();
-    
-    _s.hi = splitmix_64();
-    _s.lo = splitmix_64() | 1; // Notice : _s must be odd
-}
-
-//===========================================================================
-/** Initalizes the internal state according to a 128-bits integer seed. */
-void CollatzWeylState::seed(const value_type seed_) noexcept
-{
-    utils::SplitMix64 splitmix_hi(seed_.hi);
-    utils::SplitMix64 splitmix_lo(seed_.lo);
-
-    _a = _weyl = 0;
-
-    _state.hi = splitmix_hi();  // Notice: in the original paper, this seems to be erroneously initialized on sole 64 lowest bits
-    _state.lo = splitmix_lo();
-
-    _s.hi = splitmix_hi();
-    _s.lo = splitmix_lo() | 1; // Notice : _s must be odd
-}
+CollatzWeylState<std::uint64_t, std::uint64_t> cws_64;
+CollatzWeylState<std::uint64_t, utils::UInt128> cws_128_64;
+CollatzWeylState<utils::UInt128, utils::UInt128> cws_128;
