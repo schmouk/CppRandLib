@@ -951,7 +951,7 @@ protected:
     static const double SG_MAGICCONST;
     static const double TWO_PI;
 
-    static constexpr std::uint64_t _MODULO{ (((1ull << (OUTPUT_BITS - 1)) - 1) << 1) | 0xf };  // notice: complex formula to avoid marning on bits overflow, should be (1 << OUTPUT_BITS) - 1
+    static constexpr std::uint64_t _MODULO{ (((1ull << (OUTPUT_BITS - 1)) - 1) << 1) | 0xf };  // notice: complex formula to avoid warning on bits overflow, should be (1 << OUTPUT_BITS) - 1
     static constexpr double _NORMALIZE{ 1.0 / (_MODULO + 1.0) };
 
 
