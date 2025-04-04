@@ -28,6 +28,7 @@ SOFTWARE.
 
 //===========================================================================
 #include <type_traits>
+#include <xutility>
 
 #include "../utils/splitmix.h"
 #include "../utils/uint128.h"
@@ -42,15 +43,24 @@ public:
     using value_type = ValueType;
     using state_value_type = StateValueType;
 
+    inline CollatzWeylState() noexcept = default;                     //!< Default empty constructor.
+    inline virtual ~CollatzWeylState() noexcept = default;            //!< Default destructor.
+
+    inline CollatzWeylState(const CollatzWeylState& other) noexcept;  //!< Copy constructor.
+    inline CollatzWeylState(CollatzWeylState&& other) noexcept;       //!< Move constructor.
+
+    inline CollatzWeylState& operator=(const CollatzWeylState& other) noexcept; //!< Assignment operator.
+
     /** @brief Initalizes the internal state according to a 64-bits integer seed. */
     void seed(const std::uint64_t seed_) noexcept;
 
     /** @brief Initalizes the internal state according to a 128-bits integer seed. */
     void seed(const utils::UInt128& seed_) noexcept;
 
+
 private:
     value_type       _a{ value_type(0) };
-    value_type       _s{ value_type(0) };
+    value_type       _s{ value_type(1) };  // notice: _s must be odd
     state_value_type _state{ state_value_type(0) };
     value_type       _weyl{ value_type(0) };
 
@@ -60,6 +70,36 @@ private:
 
 //===========================================================================
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
+//---------------------------------------------------------------------------
+/** Copy constructor. */
+template<typename ValueType, typename StateValueType>
+inline CollatzWeylState<ValueType, StateValueType>::CollatzWeylState(const CollatzWeylState& other) noexcept
+{
+    *this = other;
+}
+
+//---------------------------------------------------------------------------
+/** Move constructor. */
+template<typename ValueType, typename StateValueType>
+inline CollatzWeylState<ValueType, StateValueType>::CollatzWeylState(CollatzWeylState&& other) noexcept
+{
+    *this = std::move(other);
+    _s |= 1;  // notice: _s must be odd
+}
+
+//---------------------------------------------------------------------------
+/** Assignment operator. */
+template<typename ValueType, typename StateValueType>
+inline CollatzWeylState<ValueType, StateValueType>& CollatzWeylState<ValueType, StateValueType>::operator=(
+    const CollatzWeylState& other
+) noexcept
+{
+    _a = other._a;
+    _s = other._s | 1;  // notice: _s must be odd
+    _state = other._state;
+    _weyl = other._weyl;
+}
+
 //---------------------------------------------------------------------------
 /** Initalizes the internal state according to a 64-bits integer seed. */
 template<typename ValueType, typename StateValueType>
