@@ -268,7 +268,7 @@ public:
     * This method MUST be implemented in inheriting classes.
     * @return an integer value coded on OUTPUT_BITS bits, related to the uniform distribution.
     */
-    inline virtual const output_type next()
+    inline virtual const output_type next() noexcept
     {
         return output_type(0);
     }

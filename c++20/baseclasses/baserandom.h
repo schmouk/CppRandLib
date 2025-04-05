@@ -266,7 +266,7 @@ public:
     * This method is pure virtual. It MUST be overriden in inheriting classes.
     * @return an integer value coded on OUTPUT_BITS bits.
     */
-    inline virtual const output_type next()
+    inline virtual const output_type next() noexcept
     {
         return output_type(0);
     }
