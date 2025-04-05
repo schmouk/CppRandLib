@@ -37,11 +37,16 @@ SOFTWARE.
 //===========================================================================
 /** @brief The internal state of counter-based Pseudo Random Numbers Generators. */
 template<typename ValueType, typename StateValueType>
-class CollatzWeylState
+struct CollatzWeylState
 {
-public:
-    using value_type = ValueType;
+    using value_type       = ValueType;
     using state_value_type = StateValueType;
+
+    value_type       a{ value_type(0) };
+    value_type       s{ value_type(1) };  // notice: _s must be odd
+    state_value_type state{ state_value_type(0) };
+    value_type       weyl{ value_type(0) };
+
 
     inline CollatzWeylState() noexcept = default;                     //!< Default empty constructor.
     inline virtual ~CollatzWeylState() noexcept = default;            //!< Default destructor.
@@ -56,13 +61,6 @@ public:
 
     /** @brief Initalizes the internal state according to a 128-bits integer seed. */
     void seed(const utils::UInt128& seed_) noexcept;
-
-
-private:
-    value_type       _a{ value_type(0) };
-    value_type       _s{ value_type(1) };  // notice: _s must be odd
-    state_value_type _state{ state_value_type(0) };
-    value_type       _weyl{ value_type(0) };
 
 };
 
@@ -84,7 +82,7 @@ template<typename ValueType, typename StateValueType>
 inline CollatzWeylState<ValueType, StateValueType>::CollatzWeylState(CollatzWeylState&& other) noexcept
 {
     *this = std::move(other);
-    _s |= 1;  // notice: _s must be odd
+    s |= 1;  // notice: s must be odd
 }
 
 //---------------------------------------------------------------------------
@@ -94,95 +92,95 @@ inline CollatzWeylState<ValueType, StateValueType>& CollatzWeylState<ValueType, 
     const CollatzWeylState& other
 ) noexcept
 {
-    _a = other._a;
-    _s = other._s | 1;  // notice: _s must be odd
-    _state = other._state;
-    _weyl = other._weyl;
+    a = other.a;
+    s = other.s | 1;  // notice: s must be odd
+    state = other.state;
+    weyl = other.weyl;
 }
 
 //---------------------------------------------------------------------------
 /** Initalizes the internal state according to a 64-bits integer seed. */
 template<typename ValueType, typename StateValueType>
-void CollatzWeylState<ValueType, StateValueType>::seed(const std::uint64_t seed_) noexcept
+inline void CollatzWeylState<ValueType, StateValueType>::seed(const std::uint64_t seed_) noexcept
 {}
 
 template<>
-void CollatzWeylState<std::uint64_t, std::uint64_t>::seed(const std::uint64_t seed_) noexcept
+inline void CollatzWeylState<std::uint64_t, std::uint64_t>::seed(const std::uint64_t seed_) noexcept
 {
     utils::SplitMix64 splitmix_64(seed_);
 
-    _a = _weyl = 0;
-    _s = splitmix_64() | 1; // Notice : _s must be odd
-    _state = splitmix_64();
+    a = weyl = 0;
+    s = splitmix_64() | 1;  // Notice : s must be odd
+    state = splitmix_64();
 }
 
 template<>
-void CollatzWeylState<std::uint64_t, utils::UInt128>::seed(const std::uint64_t seed_) noexcept
+inline void CollatzWeylState<std::uint64_t, utils::UInt128>::seed(const std::uint64_t seed_) noexcept
 {
     utils::SplitMix64 splitmix_64(seed_);
 
-    _a = _weyl = 0;
-    _s = splitmix_64() | 1; // Notice : _s must be odd
+    a = weyl = 0;
+    s = splitmix_64() | 1;  // Notice : s must be odd
 
-    _state.hi = splitmix_64();  // Notice: in the original paper, this seems to be erroneously initialized on sole 64 lowest bits
-    _state.lo = splitmix_64();
+    state.hi = splitmix_64();  // Notice: in the original paper, this seems to be erroneously initialized on sole 64 lowest bits
+    state.lo = splitmix_64();
 }
 
 template<>
-void CollatzWeylState<utils::UInt128, utils::UInt128>::seed(const std::uint64_t seed_) noexcept
+inline void CollatzWeylState<utils::UInt128, utils::UInt128>::seed(const std::uint64_t seed_) noexcept
 {
     utils::SplitMix64 splitmix_64(seed_);
 
-    _a = _weyl = utils::UInt128(0);
+    a = weyl = utils::UInt128(0);
 
-    _s.hi = splitmix_64();
-    _s.lo = splitmix_64() | 1; // Notice : _s must be odd
+    s.hi = splitmix_64();
+    s.lo = splitmix_64() | 1;  // Notice : s must be odd
 
-    _state.hi = splitmix_64();  // Notice: in the original paper, this seems to be erroneously initialized on sole 64 lowest bits
-    _state.lo = splitmix_64();
+    state.hi = splitmix_64();  // Notice: in the original paper, this seems to be erroneously initialized on sole 64 lowest bits
+    state.lo = splitmix_64();
 }
 
 
 //---------------------------------------------------------------------------
 /** Initalizes the internal state according to a 128-bits integer seed. */
 template<typename ValueType, typename StateValueType>
-void CollatzWeylState<ValueType, StateValueType>::seed(const utils::UInt128& seed_) noexcept
+inline void CollatzWeylState<ValueType, StateValueType>::seed(const utils::UInt128& seed_) noexcept
 {}
 
 template<>
-void CollatzWeylState<std::uint64_t, std::uint64_t>::seed(const utils::UInt128& seed_) noexcept
+inline void CollatzWeylState<std::uint64_t, std::uint64_t>::seed(const utils::UInt128& seed_) noexcept
 {
     utils::SplitMix64 splitmix_64(seed_.lo);
 
-    _a = _weyl = 0;
-    _s = splitmix_64() | 1; // Notice : _s must be odd
-    _state = splitmix_64();
+    a = weyl = 0;
+    s = splitmix_64() | 1;  // Notice : s must be odd
+    state = splitmix_64();
 }
 
 template<>
-void CollatzWeylState<std::uint64_t, utils::UInt128>::seed(const utils::UInt128& seed_) noexcept
+inline void CollatzWeylState<std::uint64_t, utils::UInt128>::seed(const utils::UInt128& seed_) noexcept
 {
     utils::SplitMix64 splitmix_hi(seed_.hi);
     utils::SplitMix64 splitmix_lo(seed_.lo);
 
-    _a = _weyl = 0;
-    _s = splitmix_lo() | 1; // Notice : _s must be odd
+    a = weyl = 0;
+    s = splitmix_lo() | 1;  // Notice : s must be odd
 
-    _state.hi = splitmix_hi();  // Notice: in the original paper, this seems to be erroneously initialized on sole 64 lowest bits
-    _state.lo = splitmix_lo();
+    state.hi = splitmix_hi();  // Notice: in the original paper, this seems to be erroneously initialized on sole 64 lowest bits
+    state.lo = splitmix_lo();
 }
 
 template<>
-void CollatzWeylState<utils::UInt128, utils::UInt128>::seed(const utils::UInt128& seed_) noexcept
+inline void CollatzWeylState<utils::UInt128, utils::UInt128>::seed(const utils::UInt128& seed_) noexcept
 {
     utils::SplitMix64 splitmix_hi(seed_.hi);
     utils::SplitMix64 splitmix_lo(seed_.lo);
 
-    _a = _weyl = utils::UInt128(0);
+    a = weyl = utils::UInt128(0);
 
-    _s.hi = splitmix_hi();
-    _s.lo = splitmix_lo() | 1; // Notice : _s must be odd
+    s.hi = splitmix_hi();
+    s.lo = splitmix_lo() | 1;  // Notice : s must be odd
 
-    _state.hi = splitmix_hi();  // Notice: in the original paper, this seems to be erroneously initialized on sole 64 lowest bits
-    _state.lo = splitmix_lo();
+    state.hi = splitmix_hi();  // Notice: in the original paper, this seems to be erroneously initialized on sole 64 lowest bits
+    state.lo = splitmix_lo();
 }

@@ -311,6 +311,11 @@ int main()
     bool ok{ true };
 
     {
+        Cwg64 cwg64;
+        ok = test_algo("Cwg64", &cwg64) && ok;
+    }
+
+    {
         FastRand32 frand32;
         ok = test_algo("FastRand32", &frand32) && ok;
     }

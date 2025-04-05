@@ -1,0 +1,136 @@
+#pragma once
+/*
+MIT License
+
+Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+
+This file is part of library CppRandLib.
+
+Permission is hereby granted,  free of charge,  to any person obtaining a copy
+of this software and associated documentation files (the "Software"),  to deal
+in the Software without restriction,  including without limitation the  rights
+to use,  copy,  modify,  merge,  publish,  distribute, sublicense, and/or sell
+copies of the Software,  and  to  permit  persons  to  whom  the  Software  is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS",  WITHOUT WARRANTY OF ANY  KIND,  EXPRESS  OR
+IMPLIED,  INCLUDING  BUT  NOT  LIMITED  TO  THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT  SHALL  THE
+AUTHORS  OR  COPYRIGHT  HOLDERS  BE  LIABLE  FOR  ANY CLAIM,  DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,  ARISING FROM,
+OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+
+//===========================================================================
+#include <cstdint>
+
+#include "baseclasses/basecwg.h"
+
+
+//===========================================================================
+/** @brief A 64-bits Collatz-Weyl pseudorandom Generator with a long period (4.32e+6,001).
+*
+*   Pseudo-random numbers generator  -  Collatz-Weyl  pseudorandom  Generators
+*   dedicated  to  64-bits  calculations  and 64-bits output values with small
+*   period (min 2^70, i.e. 1.18e+21)  but  short  computation  time.  All  CWG
+*   algorithms offer multi streams features, by simply using different initial
+*   settings for control value 's' - see below.
+*
+*   This CWG model evaluates pseudo-random numbers suites  x(i)  as  a  simple
+*   mathematical function of
+*
+*       x(i+1) = (x(i) >> 1) * ((a += x(i)) | 1) ^ (weyl += s)
+*
+*   and returns as the output value the xored shifted: a >> 48 ^ x(i+1)
+*
+*   where a, weyl and s are the control values and x the internal state of the
+*   PRNG.  's' must be initally odd.  'a', 'weyl' and initial state 'x' may be
+*   initialized each with any 64-bits value.
+*
+*   See Cwg128_64 for a minimum 2^71 (i.e. about 2.36e+21) period CW-Generator
+*   with very low computation time,  medium period,  64-bits output values and
+*   very good randomness characteristics.
+*
+*   See Cwg128 for a minimum 2^135 (i.e. about 4.36e+40)  period  CW-generator
+*   with very low computation time, medium period,  128-bits output values and
+*   very good randomness characteristics.
+*
+*   Furthermore this class is callable:
+* @code
+*     Cwg64 rand();
+*     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
+*     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
+* @endcode
+*
+*   Notice that for simulating the roll of a dice you should program:
+* @code
+*     Cwg64 diceRoll();
+*     std::cout << int(diceRoll(1, 7)) << std::endl;    // prints a uniform roll within range {1, ..., 6}
+*     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
+* @endcode
+*
+*   Reminder:
+*   We give you here below a copy of the table of tests for the CWGs that have
+*   been  implemented  in  PyRandLib,  as  presented in paper [8]  -  see file
+*   README.md.
+*
+* +-----------------------------------------------------------------------------------------------------------------------------------------------+
+* | PyRandLib class | [8] generator name | Memory Usage | Period   | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
+* | --------------- | ------------------ | ------------ | -------- | ----------- | ------------ | ---------------- | ----------- | -------------- |
+* | Cwg64           | CWG64              |  8 x 4-bytes | >= 2^70  |    n.a.     |     n.a.     |         0        |      0      |       0        |
+* | Cwg128_64       | CWG128_64          | 10 x 4-bytes | >= 2^71  |    n.a.     |     n.a.     |         0        |      0      |       0        |
+* | Cwg128          | CWG128             | 16 x 4-bytes | >= 2^135 |    n.a.     |     n.a.     |         0        |      0      |       0        |
+* +-----------------------------------------------------------------------------------------------------------------------------------------------+
+*
+*   * _small crush_ is a small set of simple tests that quickly tests some  of
+*   the expected characteristics for a pretty good PRNG;
+*
+*   * _crush_ is a bigger set of tests that test more deeply  expected  random
+*   characteristics;
+*
+*   * _big crush_ is the ultimate set of difficult tests that  any  GOOD  PRNG
+*   should definitively pass.
+*/
+
+class Cwg64 : public BaseCWG<std::uint64_t, std::uint64_t, std::uint64_t, 64>
+{
+public:
+    //---   Wrappers   ------------------------------------------------------
+    using MyBaseClass = BaseCWG<std::uint64_t, std::uint64_t, std::uint64_t, 64>;
+
+    using output_type = typename MyBaseClass::output_type;
+    using state_type  = typename MyBaseClass::state_type;
+    using value_type  = typename state_type::value_type;
+
+
+    //---   Constructors / Destructor   -------------------------------------
+    /** @brief Empty constructor. */
+    inline Cwg64() noexcept
+        : MyBaseClass()
+    {}
+
+    /** @brief Valued construtor (1/2). */
+    template<typename T>
+    inline Cwg64(const T seed_) noexcept
+        : MyBaseClass(seed_)
+    {}
+
+    /** @brief Valued constructor (full state). */
+    inline Cwg64(const state_type& internal_state) noexcept
+        : MyBaseClass(internal_state)
+    {}
+
+    /** @brief Default Destructor. */
+    virtual ~Cwg64() noexcept = default;
+
+
+    //---   Internal PRNG   -------------------------------------------------
+    /** @brief The internal PRNG algorithm. */
+    virtual const output_type next() noexcept override;
+
+};

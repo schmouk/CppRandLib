@@ -27,28 +27,21 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <cstdint>
+
 #include "cwg64.h"
-#include "fastrand32.h"
-#include "fastrand63.h"
-#include "lfib78.h"
-#include "lfib116.h"
-#include "lfib668.h"
-#include "lfib1340.h"
-#include "melg607.h"
-#include "melg19937.h"
-#include "melg44497.h"
-#include "mrg287.h"
-#include "mrg1457.h"
-#include "mrg49507.h"
-#include "pcg64_32.h"
-#include "pcg128_64.h"
-#include "pcg1024_32.h"
-#include "squares32.h"
-#include "squares64.h"
-#include "well512a.h"
-#include "well1024a.h"
-#include "well19937c.h"
-#include "well44497b.h"
-#include "xoroshiro256.h"
-#include "xoroshiro512.h"
-#include "xoroshiro1024.h"
+
+
+//===========================================================================
+/** The internal PRNG algorithm. */
+const Cwg64::output_type Cwg64::next() noexcept
+{
+    // evaluates next internal state
+    _internal_state.state.a    += _internal_state.state.state;
+    _internal_state.state.weyl += _internal_state.state.s;
+    _internal_state.state.state = ((_internal_state.state.state >> 1) * (_internal_state.state.a | 1)) ^ _internal_state.state.weyl;
+
+    // returns the xored - shifted output value
+    return _internal_state.state.state ^ (_internal_state.state.a >> 48);
+}
+
