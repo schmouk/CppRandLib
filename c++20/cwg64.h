@@ -33,7 +33,7 @@ SOFTWARE.
 
 
 //===========================================================================
-/** @brief A 64-bits Collatz-Weyl pseudorandom Generator with a long period (4.32e+6,001).
+/** @brief A 64-bits Collatz-Weyl pseudorandom Generator with a long period (1.18e+21).
 *
 *   Pseudo-random numbers generator  -  Collatz-Weyl  pseudorandom  Generators
 *   dedicated  to  64-bits  calculations  and 64-bits output values with small

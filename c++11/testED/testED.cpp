@@ -316,6 +316,11 @@ int main()
     }
 
     {
+        Cwg128_64 cwg128_64;
+        ok = test_algo("Cwg128_64", &cwg128_64) && ok;
+    }
+
+    {
         FastRand32 frand32;
         ok = test_algo("FastRand32", &frand32) && ok;
     }

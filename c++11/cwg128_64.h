@@ -30,21 +30,22 @@ SOFTWARE.
 #include <cstdint>
 
 #include "baseclasses/basecwg.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================
-/** @brief A 64-bits Collatz-Weyl pseudorandom Generator with a long period (1.18e+21).
+/** @brief A 128-/64- bits Collatz-Weyl pseudorandom Generator with a short period (1.18e+21).
 *
 *   Pseudo-random numbers generator  -  Collatz-Weyl  pseudorandom  Generators
-*   dedicated  to  64-bits  calculations  and 64-bits output values with small
-*   period (min 2^70, i.e. 1.18e+21)  but  short  computation  time.  All  CWG
+*   dedicated  to  128-bits  calculations and 64-bits output values with small
+*   period (min 2^71, i.e. 2.36e+21)  but  short  computation  time.  All  CWG
 *   algorithms offer multi streams features, by simply using different initial
 *   settings for control value 's' - see below.
 *
 *   This CWG model evaluates pseudo-random numbers suites  x(i)  as  a  simple
 *   mathematical function of
 *
-*       x(i+1) = (x(i) >> 1) * ((a += x(i)) | 1) ^ (weyl += s)
+*       x(i+1) = (x(i) | 1) * ((a += x(i)) >> 1) ^ (weyl += s) 
 *
 *   and returns as the output value the xored shifted: a >> 48 ^ x(i+1)
 *
@@ -52,8 +53,8 @@ SOFTWARE.
 *   PRNG.  's' must be initally odd.  'a', 'weyl' and initial state 'x' may be
 *   initialized each with any 64-bits value.
 *
-*   See Cwg128_64 for a minimum 2^71 (i.e. about 2.36e+21) period CW-Generator
-*   with very low computation time,  medium period,  64-bits output values and
+*   See Cwg64 for a minimum  2^70  (i.e. about 1.18e+21)  period  CW-Generator
+*   with very low computation time, medium period,  64- bits output values and
 *   very good randomness characteristics.
 *
 *   See Cwg128 for a minimum 2^135 (i.e. about 4.36e+40)  period  CW-generator
@@ -62,14 +63,14 @@ SOFTWARE.
 *
 *   Furthermore this class is callable:
 * @code
-*     Cwg128_64 rand();
+*     Cwg64 rand();
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
 * @code
-*     Cwg128_64 diceRoll();
+*     Cwg64 diceRoll();
 *     std::cout << int(diceRoll(1, 7)) << std::endl;    // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
@@ -97,11 +98,11 @@ SOFTWARE.
 *   should definitively pass.
 */
 
-class Cwg64 : public BaseCWG<std::uint64_t, std::uint64_t, std::uint64_t, 64>
+class Cwg128_64 : public BaseCWG<std::uint64_t, utils::UInt128, std::uint64_t, 64>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseCWG<std::uint64_t, std::uint64_t, std::uint64_t, 64>;
+    using MyBaseClass = BaseCWG<std::uint64_t, utils::UInt128, std::uint64_t, 64>;
 
     using output_type = typename MyBaseClass::output_type;
     using state_type  = typename MyBaseClass::state_type;
@@ -110,23 +111,23 @@ public:
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
-    inline Cwg64() noexcept
+    inline Cwg128_64() noexcept
         : MyBaseClass()
     {}
 
     /** @brief Valued construtor (1/2). */
     template<typename T>
-    inline Cwg64(const T seed_) noexcept
+    inline Cwg128_64(const T seed_) noexcept
         : MyBaseClass(seed_)
     {}
 
     /** @brief Valued constructor (full state). */
-    inline Cwg64(const state_type& internal_state) noexcept
+    inline Cwg128_64(const state_type& internal_state) noexcept
         : MyBaseClass(internal_state)
     {}
 
     /** @brief Default Destructor. */
-    virtual ~Cwg64() noexcept = default;
+    virtual ~Cwg128_64() noexcept = default;
 
 
     //---   Internal PRNG   -------------------------------------------------

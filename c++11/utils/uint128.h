@@ -171,6 +171,38 @@ namespace utils
         }
 
 
+        //---   Bit-or   --------------------------------------------------------
+        inline UInt128& operator|= (const UInt128& other) noexcept
+        {
+            hi |= other.hi;
+            lo |= other.lo;
+            return *this;
+        }
+
+        inline UInt128& operator|= (const std::uint64_t value) noexcept
+        {
+            lo |= value;
+            return *this;
+        }
+
+        inline const UInt128 operator| (const UInt128& other) const noexcept
+        {
+            UInt128 t{ *this };
+            return t |= other;
+        }
+
+        inline const UInt128 operator| (const std::uint64_t value) const noexcept
+        {
+            UInt128 t{ *this };
+            return t |= value;
+        }
+
+        inline friend const UInt128 operator| (const std::uint64_t lhs, const UInt128& rhs)
+        {
+            return rhs | lhs;  // notice: xor operator is commutative
+        }
+
+
         //---   Comparisons   ---------------------------------------------------
         // notice: mainly for test purposes
         inline const bool operator== (const UInt128& other) const noexcept

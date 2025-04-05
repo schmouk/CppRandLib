@@ -28,6 +28,7 @@ SOFTWARE.
 
 //===========================================================================
 #include "cwg64.h"
+#include "cwg128_64.h"
 #include "fastrand32.h"
 #include "fastrand63.h"
 #include "lfib78.h"
