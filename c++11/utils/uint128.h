@@ -65,19 +65,6 @@ namespace utils
         inline virtual ~UInt128() noexcept = default;           //!< Default destructor
 
 
-        //---   Cast operators   ------------------------------------------------
-        inline operator long double() const noexcept           //!< 128-bits float casting operator
-        {
-            return hi * 18.446'744'073'709'551'616e+18l + lo;
-        }
-
-        inline operator const long double() const noexcept     //!< 128-bits float const casting operator
-        {
-            return hi * 18.446'744'073'709'551'616e+18l + lo;
-        }
-
-        // 2,9387358770557187699218413430556e-39
-
         //---   Assignment   ----------------------------------------------------
         inline UInt128& operator=(const UInt128&) noexcept = default;   //!< Default copy assignment
         inline UInt128& operator=(UInt128&&) noexcept = default;        //!< Default move assignment
@@ -87,6 +74,18 @@ namespace utils
             hi = 0;
             lo = val;
             return *this;
+        }
+
+
+        //---   Cast operators   ------------------------------------------------
+        inline operator long double() const noexcept           //!< 128-bits float casting operator
+        {
+            return hi * 18.446'744'073'709'551'616e+18l + lo;
+        }
+
+        inline operator const long double() const noexcept     //!< 128-bits float const casting operator
+        {
+            return hi * 18.446'744'073'709'551'616e+18l + lo;
         }
 
 

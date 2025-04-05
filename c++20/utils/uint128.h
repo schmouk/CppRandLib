@@ -91,6 +91,7 @@ namespace utils
             return hi * 18.446'744'073'709'551'616e+18l + lo;  // Notice: 'l' suffix at end of +18, for long double literal
         }
 
+
         //---   Add   -----------------------------------------------------------
         UInt128& operator+= (const UInt128& other) noexcept;
         UInt128& operator+= (const std::uint64_t other) noexcept;
