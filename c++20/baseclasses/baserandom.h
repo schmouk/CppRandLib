@@ -277,9 +277,11 @@ public:
     *
     * @return a double value uniformly contained within range [0.0, 1.0).
     */
-    inline const double random() noexcept
+    template<typename T = double>
+        requires std::is_floating_point_v<T>
+    inline const T random()
     {
-        return next() * _NORMALIZE;
+        return T(next() * (std::is_same_v<T, long double> ? _NORMALIZE_LD : _NORMALIZE));
     }
 
 
@@ -298,9 +300,10 @@ public:
     *
     * @return a value that is uniformly contained within range [0.0, 1.0).
     */
-    inline const double operator() () noexcept
+    template<typename T>
+    inline const T operator() () noexcept
     {
-        return uniform();
+        return uniform<T>();
     }
 
     /** @brief Valued call operator (1 scalar).
@@ -445,7 +448,7 @@ public:
     */
     template<typename T>
         requires std::is_integral_v<T>
-    inline const T randint(const T a, const int b) noexcept;
+    inline const T randint(const T a, const T b) noexcept;
 
 
     /** @brief Chooses a random item from range [start, stop) with specified step.
@@ -770,8 +773,10 @@ public:
     const T triangular(T low, T high, const T mode) noexcept;
 
 
-    /** @brief Uniform distribution [0.0, 1.0). */
-    inline const double uniform() noexcept;
+    /** @brief Uniform distribution in [0.0, 1.0). */
+    template<typename T = double>
+        requires std::is_floating_point_v<T>
+    inline const T uniform() noexcept;
 
 
     /** @brief Uniform distribution (0.0, max). */
@@ -779,8 +784,14 @@ public:
         requires std::is_arithmetic_v<T>
     inline const T uniform(const T max) noexcept;
 
+    template<>
+    inline const long double uniform<long double>(const long double max) noexcept
+    {
+        return max * random<long double>();
+    }
 
-    /** @brief Uniform distribution (min and max values).*/
+
+    /** @brief Uniform distribution in [min, max).*/
     template<typename T>
         requires std::is_arithmetic_v<T>
     inline const T uniform(const T min, const T max) noexcept;
@@ -919,6 +930,7 @@ protected:
 
     static constexpr std::uint64_t _MODULO{ (((1ull << (OUTPUT_BITS - 1)) - 1) << 1) | 0xf };  // notice: complex formula to avoid marning on bits overflow, should be (1 << OUTPUT_BITS) - 1
     static constexpr double _NORMALIZE{ 1.0 / (_MODULO + 1.0) };
+    static constexpr double _NORMALIZE_LD{ 1.0l / ((long double)_MODULO + 1.0l) };
 
 
     //---   Attributes   ----------------------------------------------------
@@ -1083,7 +1095,7 @@ const CountT BaseRandom<StateT, OutputT, OUTPUT_BITS>::binomialvariate(CountT n,
 
     CountT count{ 0 };
     while (n > 0) {
-        count += uniform() < p;
+        count += uniform<ProbaT>() < p;
         --n;
     }
 
@@ -1099,7 +1111,7 @@ const T& BaseRandom<StateT, OutputT, OUTPUT_BITS>::choice(const std::vector<T>& 
     const std::size_t n{ seq.size() };
     if (n == 0)
         throw ChoiceEmptySequenceException();
-    return seq[uniform(n)];
+    return seq[uniform<T>(n)];
 }
 
 //---------------------------------------------------------------------------
@@ -1110,7 +1122,7 @@ const T& BaseRandom<StateT, OutputT, OUTPUT_BITS>::choice(const std::array<T, n>
 {
     if (n == 0)
         throw ChoiceEmptySequenceException();
-    return seq[uniform(n)];
+    return seq[uniform<T>(n)];
 }
 
 //---------------------------------------------------------------------------
@@ -1128,7 +1140,7 @@ template<typename T>
     requires std::is_floating_point_v<T>
 inline std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate(const std::size_t n) noexcept
 {
-    return (*this)(1.0, n);
+    return (*this)(T(1.0), n);
 }
 
 //---------------------------------------------------------------------------
@@ -1223,7 +1235,7 @@ inline std::vector<std::uint8_t> BaseRandom<StateT, OutputT, OUTPUT_BITS>::randb
 
     std::vector<std::uint8_t> out(n);
     for (std::uint8_t& b : out)
-        b = (std::uint8_t)uniform(256ul);
+        b = std::uint8_t(uniform(256ul));
     return out;
 }
 
@@ -1232,10 +1244,11 @@ inline std::vector<std::uint8_t> BaseRandom<StateT, OutputT, OUTPUT_BITS>::randb
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 template<typename T>
     requires std::is_integral_v<T>
-inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::randint(const T a, const int b) noexcept
+inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::randint(const T a, const T b) noexcept
 {
     return uniform(a, b + 1);
 }
+
 
 //---------------------------------------------------------------------------
 /** Chooses a random item from range [start, stop) with specified step. */
@@ -1628,31 +1641,33 @@ const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::triangular(T low, T high, cons
 }
 
 //---------------------------------------------------------------------------
-/** Uniform distribution [0.0, 1.0). */
+/** Uniform distribution in [0.0, 1.0). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::uniform() noexcept
+template<typename T>
+    requires std::is_floating_point_v<T>
+inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::uniform() noexcept
 {
-    return random();
+    return random<T>();
 }
 
 //---------------------------------------------------------------------------
-/** Uniform distribution (0.0, max). */
+/** Uniform distribution in [0.0, max). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 template<typename T>
     requires std::is_arithmetic_v<T>
 inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::uniform(const T max) noexcept
 {
-    return T(max * random());
+    return T(max * random<double>());
 }
 
 //---------------------------------------------------------------------------
-/** Uniform distribution (min and max values).*/
+/** Uniform distribution in [min, max). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 template<typename T>
     requires std::is_arithmetic_v<T>
 inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::uniform(const T min, const T max) noexcept
 {
-    return min + T(double(max - min) * random());
+    return min + (max - min) * random<T>();
 }
 
 //---------------------------------------------------------------------------
