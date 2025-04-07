@@ -35,7 +35,7 @@ SOFTWARE.
 //===========================================================================
 /** @brief A 64-bits Collatz-Weyl pseudorandom Generator with a long period (1.18e+21).
 *
-*   Pseudo-random numbers generator  -  Collatz-Weyl  pseudorandom  Generators
+*   Pseudo-random numbers  generator  -  Collatz-Weyl  pseudorandom  Generator
 *   dedicated  to  64-bits  calculations  and 64-bits output values with small
 *   period (min 2^70, i.e. 1.18e+21)  but  short  computation  time.  All  CWG
 *   algorithms offer multi streams features, by simply using different initial
@@ -96,7 +96,6 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests that  any  GOOD  PRNG
 *   should definitively pass.
 */
-
 class Cwg64 : public BaseCWG<std::uint64_t, std::uint64_t, std::uint64_t, 64>
 {
 public:

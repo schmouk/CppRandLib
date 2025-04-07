@@ -36,7 +36,7 @@ SOFTWARE.
 //===========================================================================
 /** @brief A 128-/64- bits Collatz-Weyl pseudorandom Generator with a short period (1.18e+21).
 *
-*   Pseudo-random numbers generator  -  Collatz-Weyl  pseudorandom  Generators
+*   Pseudo-random numbers  generator  -  Collatz-Weyl  pseudorandom  Generator
 *   dedicated  to  128-bits  calculations and 64-bits output values with small
 *   period (min 2^71, i.e. 2.36e+21)  but  short  computation  time.  All  CWG
 *   algorithms offer multi streams features, by simply using different initial
@@ -63,14 +63,14 @@ SOFTWARE.
 *
 *   Furthermore this class is callable:
 * @code
-*     Cwg64 rand();
+*     Cwg128_64 rand();
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
 * @code
-*     Cwg64 diceRoll();
+*     Cwg128_64 diceRoll();
 *     std::cout << int(diceRoll(1, 7)) << std::endl;    // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
@@ -97,7 +97,6 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests that  any  GOOD  PRNG
 *   should definitively pass.
 */
-
 class Cwg128_64 : public BaseCWG<std::uint64_t, utils::UInt128, std::uint64_t, 64>
 {
 public:
