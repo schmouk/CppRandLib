@@ -33,10 +33,12 @@ SOFTWARE.
 #include <numeric>
 #include <ranges>
 #include <stdexcept>
+#include <type_traits>
 #include <vector>
 
 #include "utils/seed_generation.h"
 #include "utils/type_traits.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================
@@ -244,12 +246,15 @@ template<
     typename OutputT = std::uint32_t,
     const std::uint8_t OUTPUT_BITS = 8 * sizeof(OutputT)
 >
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 class BaseRandom
 {
 public:
     //---   Wrappers   ------------------------------------------------------
     using state_type = StateT;
     using output_type = OutputT;
+
+    static_assert(std::is_integral<OutputT>::value || std::is_same<OutputT, utils::UInt128>::value);
 
 
     //---   Constructors / Destructor   -------------------------------------
@@ -266,7 +271,7 @@ public:
     * This method is pure virtual. It MUST be overriden in inheriting classes.
     * @return an integer value coded on OUTPUT_BITS bits.
     */
-    inline virtual const output_type next()
+    inline virtual const output_type next() noexcept
     {
         return output_type(0);
     }
@@ -277,9 +282,17 @@ public:
     *
     * @return a double value uniformly contained within range [0.0, 1.0).
     */
-    inline const double random() noexcept
+    template<typename T>
+        requires std::is_floating_point_v<T>
+    inline const T random()
     {
-        return next() * _NORMALIZE;
+        return T(double(next()) * _NORMALIZE);
+    }
+
+    template<>
+    inline const long double random()
+    {
+        return (long double)next() * _NORMALIZE_LD;
     }
 
 
@@ -298,9 +311,10 @@ public:
     *
     * @return a value that is uniformly contained within range [0.0, 1.0).
     */
-    inline const double operator() () noexcept
+    template<typename T>
+    inline const T operator() () noexcept
     {
-        return uniform();
+        return uniform<T>();
     }
 
     /** @brief Valued call operator (1 scalar).
@@ -445,7 +459,7 @@ public:
     */
     template<typename T>
         requires std::is_integral_v<T>
-    inline const T randint(const T a, const int b) noexcept;
+    inline const T randint(const T a, const T b) noexcept;
 
 
     /** @brief Chooses a random item from range [start, stop) with specified step.
@@ -770,8 +784,10 @@ public:
     const T triangular(T low, T high, const T mode) noexcept;
 
 
-    /** @brief Uniform distribution [0.0, 1.0). */
-    inline const double uniform() noexcept;
+    /** @brief Uniform distribution in [0.0, 1.0). */
+    template<typename T = double>
+        requires std::is_floating_point_v<T>
+    inline const T uniform() noexcept;
 
 
     /** @brief Uniform distribution (0.0, max). */
@@ -779,8 +795,26 @@ public:
         requires std::is_arithmetic_v<T>
     inline const T uniform(const T max) noexcept;
 
+    template<>
+    inline const float uniform(const float max)
+    {
+        return max * random<float>();
+    }
 
-    /** @brief Uniform distribution (min and max values).*/
+    template<>
+    inline const double uniform(const double max)
+    {
+        return max * random<double>();
+    }
+
+    template<>
+    inline const long double uniform(const long double max)
+    {
+        return max * random<long double>();
+    }
+
+
+    /** @brief Uniform distribution in [min, max).*/
     template<typename T>
         requires std::is_arithmetic_v<T>
     inline const T uniform(const T min, const T max) noexcept;
@@ -917,8 +951,13 @@ protected:
     static const double RECIP_BPF;
     static const double SG_MAGICCONST;
 
-    static constexpr std::uint64_t _MODULO{ (((1ull << (OUTPUT_BITS - 1)) - 1) << 1) | 0xf };  // notice: complex formula to avoid marning on bits overflow, should be (1 << OUTPUT_BITS) - 1
-    static constexpr double _NORMALIZE{ 1.0 / (_MODULO + 1.0) };
+    static constexpr std::uint64_t _MODULO{ (((1ull << ((OUTPUT_BITS > 64 ? 64 : OUTPUT_BITS) - 1)) - 1) << 1) | 0xf };  // notice: complex formula to avoid warning on bits overflow, should be (1 << OUTPUT_BITS) - 1
+
+    static constexpr long double _NORMALIZE_LD{ (OUTPUT_BITS <= 64)
+        ? 1.0l / ((long double)_MODULO + 1.0l)
+        : 2.938'735'877'055'718'769'921'841'343'055'6e-39l  // i.e. 1.0 / (1 << 128). Notice: no other case than 128 here
+    };
+    static constexpr double _NORMALIZE{ double(_NORMALIZE_LD) };
 
 
     //---   Attributes   ----------------------------------------------------
@@ -946,24 +985,30 @@ protected:
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
 //---------------------------------------------------------------------------
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::E{ std::exp(1.0) };
 
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::LOG4{ std::log(4.0) };
 
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::NV_MAGICCONST{ 4 * std::exp(-0.5) / std::sqrt(2.0) };
 
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::RECIP_BPF{ std::exp2(-BPF) };
 
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::SG_MAGICCONST{ 1.0 + std::log(4.5) };
 
 
 //---------------------------------------------------------------------------
 /** Valued call operator (1 scalar). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T>
     requires std::is_arithmetic_v<T>
 const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::operator() (const T max) noexcept
@@ -974,6 +1019,7 @@ const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::operator() (const T max) noexc
 //---------------------------------------------------------------------------
 /** Valued call operator (max and n scalars). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T>
     requires std::is_arithmetic_v<T>
 std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::operator() (const T max, const std::size_t n)  noexcept(false)
@@ -990,6 +1036,7 @@ std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::operator() (const T max
 //---------------------------------------------------------------------------
 /** Valued call operator (min, max and n scalars). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T>
     requires std::is_arithmetic_v<T>
 std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::operator() (const T min, const T max, const std::size_t n) noexcept(false)
@@ -1006,6 +1053,7 @@ std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::operator() (const T min
 //---------------------------------------------------------------------------
 /** Valued call operator (1 std::vector of scalars). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T>
     requires std::is_arithmetic_v<T>
 std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::operator() (const std::vector<T>& max) noexcept(false)
@@ -1020,6 +1068,7 @@ std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::operator() (const std::
 //---------------------------------------------------------------------------
 /** Valued call operator (1 std::array of scalars). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T, const std::size_t n>
     requires std::is_arithmetic_v<T>
 std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::operator() (const std::array<T, n>& max) noexcept(false)
@@ -1037,6 +1086,7 @@ std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::operator() (const std
 //---------------------------------------------------------------------------
 /** Valued call operator (2 std::vector of scalars). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T>
     requires std::is_arithmetic_v<T>
 std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::operator() (const std::vector<T>& min, const std::vector<T>& max) noexcept
@@ -1053,6 +1103,7 @@ std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::operator() (const std::
 //---------------------------------------------------------------------------
 /** Valued call operator (2 std::array of scalars). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T, const std::size_t n>
     requires std::is_arithmetic_v<T>
 std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::operator() (const std::array<T, n>& min, const std::array<T, n>& max) noexcept(false)
@@ -1072,6 +1123,7 @@ std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::operator() (const std
 //---------------------------------------------------------------------------
 /** Returns the number of successes for n>=0 independent trials. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename CountT, typename ProbaT>
     requires std::is_integral_v<CountT> && std::is_floating_point_v<ProbaT>
 const CountT BaseRandom<StateT, OutputT, OUTPUT_BITS>::binomialvariate(CountT n, const ProbaT p) noexcept(false)
@@ -1083,7 +1135,7 @@ const CountT BaseRandom<StateT, OutputT, OUTPUT_BITS>::binomialvariate(CountT n,
 
     CountT count{ 0 };
     while (n > 0) {
-        count += uniform() < p;
+        count += uniform<ProbaT>() < p;
         --n;
     }
 
@@ -1093,29 +1145,32 @@ const CountT BaseRandom<StateT, OutputT, OUTPUT_BITS>::binomialvariate(CountT n,
 //---------------------------------------------------------------------------
 /** Chooses a random element from a non-empty sequence (std::vector). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T>
 const T& BaseRandom<StateT, OutputT, OUTPUT_BITS>::choice(const std::vector<T>& seq) noexcept(false)
 {
     const std::size_t n{ seq.size() };
     if (n == 0)
         throw ChoiceEmptySequenceException();
-    return seq[uniform(n)];
+    return seq[uniform<T>(n)];
 }
 
 //---------------------------------------------------------------------------
 /** Chooses a random element from a non-empty sequence (std::array). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T, const std::size_t n>
 const T& BaseRandom<StateT, OutputT, OUTPUT_BITS>::choice(const std::array<T, n>& seq) noexcept(false)
 {
     if (n == 0)
         throw ChoiceEmptySequenceException();
-    return seq[uniform(n)];
+    return seq[uniform<T>(n)];
 }
 
 //---------------------------------------------------------------------------
 /** Returns the internal state of this PRNG; can be passed to setstate() later. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 inline struct _InternalState& BaseRandom<StateT, OutputT, OUTPUT_BITS>::getstate() const noexcept
 {
     return _internal_state;
@@ -1124,16 +1179,18 @@ inline struct _InternalState& BaseRandom<StateT, OutputT, OUTPUT_BITS>::getstate
 //---------------------------------------------------------------------------
 /** Returns n values that are uniformly contained within range [0.0, 1.0). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T>
     requires std::is_floating_point_v<T>
 inline std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate(const std::size_t n) noexcept
 {
-    return (*this)(1.0, n);
+    return (*this)(T(1.0), n);
 }
 
 //---------------------------------------------------------------------------
 /** Returns a vector of n vectors that each contain m values in range [min[i]; max[i]). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T>
     requires std::is_arithmetic_v<T>
 std::vector<std::vector<T>> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate(const std::size_t n, const std::vector<T>& min, const std::vector<T>& max) noexcept
@@ -1151,6 +1208,7 @@ std::vector<std::vector<T>> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate
 //---------------------------------------------------------------------------
 /** Returns an array of n values that are uniformly contained within range [0.0, 1.0). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T, const std::size_t n>
     requires std::is_floating_point_v<T>
 inline std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate() noexcept
@@ -1164,6 +1222,7 @@ inline std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate() n
 //---------------------------------------------------------------------------
 /** Returns n values that are uniformly contained within range [0, max). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T, const std::size_t n>
     requires std::is_arithmetic_v<T>
 std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate(const T max) noexcept
@@ -1177,6 +1236,7 @@ std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate(const T ma
 //---------------------------------------------------------------------------
 /** Returns n values that are uniformly contained within range [min, max). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T, const std::size_t n>
     requires std::is_arithmetic_v<T>
 std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate(const T min, const T max) noexcept
@@ -1190,6 +1250,7 @@ std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate(const T mi
 //---------------------------------------------------------------------------
 /** Returns an array of n arrays that each contain m values in range [0; max[i]). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T, const std::size_t n, const std::size_t m>
     requires std::is_arithmetic_v<T>
 std::array<std::array<T, m>, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate(const std::array<T, m>& max) noexcept
@@ -1203,6 +1264,7 @@ std::array<std::array<T, m>, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_eval
 //---------------------------------------------------------------------------
 /** Returns an array of n arrays that each contain m values in range [min[i]; max[i]). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T, const std::size_t n, const std::size_t m>
     requires std::is_arithmetic_v<T>
 std::array<std::array<T, m>, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate(const std::array<T, m>& min, const std::array<T, m>& max) noexcept
@@ -1216,6 +1278,7 @@ std::array<std::array<T, m>, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_eval
 //---------------------------------------------------------------------------
 /** Generates n random bytes. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 inline std::vector<std::uint8_t> BaseRandom<StateT, OutputT, OUTPUT_BITS>::randbytes(const std::size_t n) noexcept(false)
 {
     if (n == 0)
@@ -1223,23 +1286,26 @@ inline std::vector<std::uint8_t> BaseRandom<StateT, OutputT, OUTPUT_BITS>::randb
 
     std::vector<std::uint8_t> out(n);
     for (std::uint8_t& b : out)
-        b = (std::uint8_t)uniform(256ul);
+        b = std::uint8_t(uniform(256ul));
     return out;
 }
 
 //---------------------------------------------------------------------------
 /** Returns random integer in range [a, b], including both end points. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T>
     requires std::is_integral_v<T>
-inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::randint(const T a, const int b) noexcept
+inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::randint(const T a, const T b) noexcept
 {
     return uniform(a, b + 1);
 }
 
+
 //---------------------------------------------------------------------------
 /** Chooses a random item from range [start, stop) with specified step. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T>
     requires std::is_integral_v<T>
 const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::randrange(const T start, const T stop, const T step) noexcept(false)
@@ -1259,6 +1325,7 @@ const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::randrange(const T start, const
 //---------------------------------------------------------------------------
 /** Chooses k unique random elements from a population sequence (out std::vector, in container, default counts = 1). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T>
 void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(std::vector<T>& out, const std::vector<T>& population, const std::size_t k) noexcept(false)
 {
@@ -1280,6 +1347,7 @@ void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(std::vector<T>& out, const
 //---------------------------------------------------------------------------
 /** Chooses k unique random elements from a population sequence (out std::array<>, in std::array<>, default counts = 1). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T, const std::size_t k, const std::size_t n>
 void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(std::array<T, k>& out, const std::array<T, n>& population) noexcept(false)
 {
@@ -1298,6 +1366,7 @@ void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(std::array<T, k>& out, con
 //---------------------------------------------------------------------------
 /** Chooses k unique random elements from a population sequence (std::vector<>, with counts vector). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T, typename C>
     requires std::is_integral_v<C>
 inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(
@@ -1334,6 +1403,7 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(
 //---------------------------------------------------------------------------
 /** Chooses k unique random elements from a population sequence (std::array<>, with counts array). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T, typename C, const std::size_t k, const std::size_t n>
     requires std::is_integral_v<C>
 inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(std::array<T, k>& out, const std::array<T, n>& population, const std::array<C, n>& counts) noexcept(false)
@@ -1360,6 +1430,7 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(std::array<T, k>& o
 //---------------------------------------------------------------------------
 /** Initializes internal state (empty signature). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed() noexcept
 {
     seed(utils::set_random_seed64());
@@ -1368,6 +1439,7 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed() noexcept
 //---------------------------------------------------------------------------
 /** Initializes internal state from a 32-bits unsigned integer seed. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed(const unsigned long seed) noexcept
 {
     _setstate(seed);
@@ -1377,6 +1449,7 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed(const unsigned long s
 //---------------------------------------------------------------------------
 /** Initializes internal state from a 64-bits unsigned integer seed. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed(const unsigned long long seed) noexcept
 {
     _setstate(seed);
@@ -1386,6 +1459,7 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed(const unsigned long l
 //---------------------------------------------------------------------------
 /** ief Initalizes internal state from a double seed. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed(const double seed_) noexcept
 {
     const double s{ (seed_ < 0.0) ? -seed_ : seed_ };
@@ -1395,6 +1469,7 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed(const double seed_) n
 //---------------------------------------------------------------------------
 /** Restores the internal state of this PRNG from seed. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::setstate(const StateT& new_internal_state) noexcept
 {
     _internal_state.state = new_internal_state;
@@ -1404,6 +1479,7 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::setstate(const StateT& new
 //---------------------------------------------------------------------------
 /** Restores the internal state of this PRNG from seed and gauss_next. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::setstate(const StateT& new_internal_state, const double gauss_next) noexcept
 {
     _internal_state.state = new_internal_state;
@@ -1414,6 +1490,7 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::setstate(const StateT& new
 //---------------------------------------------------------------------------
 /** Returns the current internal state value. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 inline const StateT BaseRandom<StateT, OutputT, OUTPUT_BITS>::state() const noexcept
 {
     return _internal_state.state;
@@ -1422,6 +1499,7 @@ inline const StateT BaseRandom<StateT, OutputT, OUTPUT_BITS>::state() const noex
 //---------------------------------------------------------------------------
 /** Shuffles specified sequence in place. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename ContainerType>
     requires utils::is_indexable_v<ContainerType>
 void BaseRandom<StateT, OutputT, OUTPUT_BITS>::shuffle(ContainerType& seq) noexcept(false)
@@ -1436,6 +1514,7 @@ void BaseRandom<StateT, OutputT, OUTPUT_BITS>::shuffle(ContainerType& seq) noexc
 //---------------------------------------------------------------------------
 /** Beta distribution. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::betavariate(const double alpha, const double beta) noexcept(false)
 {
     if (alpha <= 0.0 || beta <= 0.0)
@@ -1448,6 +1527,7 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::betavariate(const double 
 //---------------------------------------------------------------------------
 /** Exponential distribution. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::expovariate(const double lambda) noexcept(false)
 {
     if (lambda == 0.0)
@@ -1459,6 +1539,7 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::expovariate(const double 
 //---------------------------------------------------------------------------
 /** Gamma distribution. This is NOT the gamma function! */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gammavariate(const double alpha, const double beta) noexcept(false)
 {
     if (alpha <= 0.0 || beta <= 0.0)
@@ -1515,6 +1596,7 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gammavariate(const double
 //---------------------------------------------------------------------------
 /** Default Gaussian distribution (mean=0.0, stdev=1.0). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gauss() noexcept
 {
     return gauss(0.0, 1.0);
@@ -1523,6 +1605,7 @@ inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gauss() noexcept
 //---------------------------------------------------------------------------
 /** Gaussian distribution (mean=mu, stdev=sigma). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gauss(const double mu, const double sigma) noexcept(false)
 {
     if (sigma <= 0.0)
@@ -1547,6 +1630,7 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gauss(const double mu, co
 //---------------------------------------------------------------------------
 /** Default Log normal distribution (mean=0.0, stdev=1.0). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::lognormvariate() noexcept
 {
     return lognormvariate(0.0, 1.0);
@@ -1555,6 +1639,7 @@ inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::lognormvariate() n
 //---------------------------------------------------------------------------
 /** Log normal distribution (mean=mu, stdev=sigma). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::lognormvariate(const double mu, const double sigma) noexcept
 {
     return std::exp(gauss(mu, sigma));
@@ -1563,6 +1648,7 @@ inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::lognormvariate(con
 //---------------------------------------------------------------------------
 /** Normal distribution (mean=0.0, stdev=1.0). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::normalvariate() noexcept
 {
     return gauss();
@@ -1571,6 +1657,7 @@ inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::normalvariate() no
 //---------------------------------------------------------------------------
 /** Normal distribution (mean=mu, stdev=sigma). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::normalvariate(const double mu, const double sigma) noexcept
 {
     return gauss(mu, sigma);
@@ -1579,18 +1666,20 @@ inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::normalvariate(cons
 //---------------------------------------------------------------------------
 /** Pareto distribution. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::paretovariate(const double alpha) noexcept(false)
 {
     if (alpha == 0.0)
         throw ParetoArgsValueException();
 
-    // Jain, pg. 495
-    return std::pow(1.0 - random(), -1.0 / alpha);
+    // according to Jain, pg. 495
+    return std::pow(1.0 - uniform(), -1.0 / alpha);
 }
 
 //---------------------------------------------------------------------------
 /** Triangular distribution (low=0.0, high=1.0, mode=0.5). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::triangular() noexcept
 {
     return triangular(0.0, 1.0, 0.5);
@@ -1599,6 +1688,7 @@ inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::triangular() noexc
 //---------------------------------------------------------------------------
 /** Triangular distribution (low, high, default mode). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T>
     requires std::is_arithmetic_v<T>
 const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::triangular(const T low, const T high) noexcept
@@ -1609,6 +1699,7 @@ const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::triangular(const T low, const 
 //---------------------------------------------------------------------------
 /** Triangular distribution (low, high, mode). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T>
     requires std::is_arithmetic_v<T>
 const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::triangular(T low, T high, const T mode) noexcept
@@ -1628,36 +1719,42 @@ const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::triangular(T low, T high, cons
 }
 
 //---------------------------------------------------------------------------
-/** Uniform distribution [0.0, 1.0). */
+/** Uniform distribution in [0.0, 1.0). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::uniform() noexcept
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
+template<typename T>
+    requires std::is_floating_point_v<T>
+inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::uniform() noexcept
 {
-    return random();
+    return random<T>();
 }
 
 //---------------------------------------------------------------------------
-/** Uniform distribution (0.0, max). */
+/** Uniform distribution in [0.0, max). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T>
     requires std::is_arithmetic_v<T>
 inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::uniform(const T max) noexcept
 {
-    return T(max * random());
+    return T(double(max) * random<double>());
 }
 
 //---------------------------------------------------------------------------
-/** Uniform distribution (min and max values).*/
+/** Uniform distribution in [min, max). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 template<typename T>
     requires std::is_arithmetic_v<T>
 inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::uniform(const T min, const T max) noexcept
 {
-    return min + T(double(max - min) * random());
+    return min + (max - min) * random<T>();
 }
 
 //---------------------------------------------------------------------------
 /** Circular data distribution. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::vonmisesvariate(const double mu, const double kappa) noexcept
 {
     // extracted from Python 3.11 comments:
@@ -1692,6 +1789,7 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::vonmisesvariate(const dou
 //---------------------------------------------------------------------------
 /** Weibull distribution. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+    requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::weibullvariate(const double alpha, const double beta) noexcept(false)
 {
     if (beta <= 0.0)

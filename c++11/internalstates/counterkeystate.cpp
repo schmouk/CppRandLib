@@ -1,4 +1,3 @@
-#pragma once
 /*
 MIT License
 
@@ -27,30 +26,38 @@ SOFTWARE.
 
 
 //===========================================================================
-#include "cwg64.h"
-#include "cwg128.h"
-#include "cwg128_64.h"
-#include "fastrand32.h"
-#include "fastrand63.h"
-#include "lfib78.h"
-#include "lfib116.h"
-#include "lfib668.h"
-#include "lfib1340.h"
-#include "melg607.h"
-#include "melg19937.h"
-#include "melg44497.h"
-#include "mrg287.h"
-#include "mrg1457.h"
-#include "mrg49507.h"
-#include "pcg64_32.h"
-#include "pcg128_64.h"
-#include "pcg1024_32.h"
-#include "squares32.h"
-#include "squares64.h"
-#include "well512a.h"
-#include "well1024a.h"
-#include "well19937c.h"
-#include "well44497b.h"
-#include "xoroshiro256.h"
-#include "xoroshiro512.h"
-#include "xoroshiro1024.h"
+#include <type_traits>
+#include <vector>
+
+#include "counterkeystate.h"
+#include "../utils/splitmix.h"
+
+
+//===========================================================================
+void CounterKeyState::init_key(const value_type seed) noexcept
+{
+    constexpr double NORMALIZE{ 0.5 / double(0x8000'0000'0000'0000ull) };
+
+    std::vector<value_type> hex_digits{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf };
+    utils::SplitMix64 splitmix_64(seed);
+
+    key = 0;
+
+    // let's initialize the 8 high hexa digits of the key - all different
+    for (std::uint32_t n = 15; n >= 8; ) {
+        const std::uint32_t i{ std::uint32_t(double(n) * double(splitmix_64()) * NORMALIZE) };
+
+        key = (key << 4) + hex_digits[i];
+        std::swap(hex_digits[i], hex_digits[--n]);
+    }
+
+    // then let's initialize the 8 low hexa digits of the key - all different
+    for (std::uint32_t n = 15; n >= 8; ) {
+        const std::uint32_t i{ std::uint32_t(double(n) * double(splitmix_64()) * NORMALIZE) };
+
+        key = (key << 4) + hex_digits[i];
+        std::swap(hex_digits[i], hex_digits[--n]);
+    }
+
+    key |= 1;  // notice: key must be odd
+}

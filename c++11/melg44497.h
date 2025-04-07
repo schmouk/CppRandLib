@@ -31,7 +31,7 @@ SOFTWARE.
 
 
 //===========================================================================
-/** @brief A 64-bits Maximally Equidistributed Long-period Linear Generators with a long period (8.55e+13,395).
+/** @brief A 64-bits Maximally Equidistributed Long-period Linear Generator with a long period (8.55e+13,395).
 *
 *   Maximally  Equidistributed  Long-period  Linear  Generators   (MELG)   use   linear
 *   recurrence  based  on  state  transitions  with  double feedbacks and linear output

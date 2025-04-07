@@ -223,7 +223,7 @@ const bool test_algo(
         expected_max_diff_mean_median = 0.5;
 
     for (std::uint32_t i = 0; i < nb_loops; ++i) {
-        const std::uint32_t index{ std::uint32_t((*rnd_algo_ptr)() * nb_entries) };
+        const std::uint32_t index{ std::uint32_t((*rnd_algo_ptr)(nb_entries)) };
         hist[index]++;
     }
 
@@ -308,6 +308,21 @@ inline const bool test_algo(
 int main()
 {
     bool ok{ true };
+
+    {
+        Cwg64 cwg64;
+        ok = test_algo("Cwg64", &cwg64) && ok;
+    }
+
+    {
+        Cwg128 cwg128;
+        ok = test_algo("Cwg128", &cwg128) && ok;
+    }
+
+    {
+        Cwg128_64 cwg128_64;
+        ok = test_algo("Cwg128_64", &cwg128_64) && ok;
+    }
 
     {
         FastRand32 frand32;

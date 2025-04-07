@@ -75,8 +75,8 @@ SOFTWARE.
 * @endcode
 *
 *   Reminder:
-*   We give you here below a copy of the table of tests for the LCGs that have
-*   been implemented in PyRandLib, as provided in paper "TestU01, ..."  -  see
+*   We give you here below a copy of the table of tests for the MELGs that have
+*   been implemented in PyRandLib,  as provided in paper "TestU01, ..."  -  see
 *   file README.md.
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
 * | PyRabndLib class | TU01 generator name | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
