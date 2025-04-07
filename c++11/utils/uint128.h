@@ -78,14 +78,14 @@ namespace utils
 
 
         //---   Cast operators   ------------------------------------------------
-        inline operator long double() const noexcept           //!< 128-bits float casting operator
+        inline explicit operator const double() const noexcept           //!< 64-bits float const casting operator
         {
-            return hi * 18.446'744'073'709'551'616e+18l + lo;
+            return hi * 18.446'744'073'709'551'616e+18 + double(lo);
         }
 
-        inline operator const long double() const noexcept     //!< 128-bits float const casting operator
+        inline explicit operator const long double() const noexcept     //!< 128-bits float const casting operator
         {
-            return hi * 18.446'744'073'709'551'616e+18l + lo;
+            return hi * 18.446'744'073'709'551'616e+18l + (long double)lo;
         }
 
 

@@ -316,6 +316,11 @@ int main()
     }
 
     {
+        Cwg128 cwg128;
+        ok = test_algo("Cwg128", &cwg128) && ok;
+    }
+
+    {
         Cwg128_64 cwg128_64;
         ok = test_algo("Cwg128_64", &cwg128_64) && ok;
     }

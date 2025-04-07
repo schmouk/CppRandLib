@@ -37,6 +37,7 @@ SOFTWARE.
 
 #include "utils/seed_generation.h"
 #include "utils/type_traits.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================
@@ -247,7 +248,7 @@ class BaseRandom
 {
 public:
 
-    static_assert(std::is_integral<OutputT>::value);
+    static_assert(std::is_integral<OutputT>::value || std::is_same<OutputT, utils::UInt128>::value);
 
     //---   Wrappers   ------------------------------------------------------
     using state_type = StateT;
@@ -279,13 +280,19 @@ public:
     *
     * @return a double value uniformly contained within range [0.0, 1.0).
     */
-    template<typename T = double>
+    template<typename T>
     inline const T random()
     {
         if (!std::is_floating_point<T>::value)
             throw FloatingPointTypeException();
 
-        return T(next() * (std::is_same<T, long double>::value ? _NORMALIZE_LD : _NORMALIZE));
+        return T(double(next()) * _NORMALIZE);
+    }
+
+    template<>
+    inline const long double random()
+    {
+        return (long double)next() * _NORMALIZE_LD;
     }
 
 
@@ -766,7 +773,19 @@ public:
     inline const T uniform(const T max);
 
     template<>
-    inline const long double uniform<long double>(const long double max) noexcept
+    inline const float uniform(const float max)
+    {
+        return max * random<float>();
+    }
+
+    template<>
+    inline const double uniform(const double max)
+    {
+        return max * random<double>();
+    }
+
+    template<>
+    inline const long double uniform(const long double max)
     {
         return max * random<long double>();
     }
@@ -963,9 +982,13 @@ protected:
     static const double SG_MAGICCONST;
     static const double TWO_PI;
 
-    static constexpr std::uint64_t _MODULO{ (((1ull << (OUTPUT_BITS - 1)) - 1) << 1) | 0xf };  // notice: complex formula to avoid warning on bits overflow, should be (1 << OUTPUT_BITS) - 1
-    static constexpr double _NORMALIZE{ 1.0 / (_MODULO + 1.0) };
-    static constexpr double _NORMALIZE_LD{ 1.0l / ((long double)_MODULO + 1.0l) };
+    static constexpr std::uint64_t _MODULO{ (((1ull << ((OUTPUT_BITS > 64 ? 64 : OUTPUT_BITS) - 1)) - 1) << 1) | 0xf };  // notice: complex formula to avoid warning on bits overflow, should be (1 << OUTPUT_BITS) - 1
+
+    static constexpr long double _NORMALIZE_LD{ (OUTPUT_BITS <= 64)
+        ? 1.0l / ((long double)_MODULO + 1.0l)
+        : 2.938'735'877'055'718'769'921'841'343'055'6e-39l  // i.e. 1.0 / (1 << 128). Notice: no other case than 128 here
+    };
+    static constexpr double _NORMALIZE{ double(_NORMALIZE_LD)};
 
 
     //---   Attributes   ----------------------------------------------------
@@ -1017,6 +1040,7 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::SG_MAGICCONST{ 1.0 + std:
 
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::TWO_PI{ 2.0 * BaseRandom<StateT, OutputT, OUTPUT_BITS>::PI };
+
 
 //---------------------------------------------------------------------------
 /** Valued call operator (1 scalar). */
@@ -1672,8 +1696,8 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::paretovariate(const doubl
     if (alpha == 0.0)
         throw ParetoArgsValueException();
 
-    // Jain, pg. 495
-    return std::pow(1.0 - random(), -1.0 / alpha);
+    // according to Jain, pg. 495
+    return std::pow(1.0 - uniform(), -1.0 / alpha);
 }
 
 //---------------------------------------------------------------------------
@@ -1740,10 +1764,7 @@ inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::uniform(const T max)
     if (!std::is_arithmetic<T>::value)
         throw ArithmeticValueTypeException();
 
-    if (std::is_floating_point<T>::value)
-        return T(max * random<T>());
-    else
-        return T(max * random<double>());
+    return T(double(max) * random<double>());
 }
 
 //---------------------------------------------------------------------------

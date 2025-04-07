@@ -187,6 +187,11 @@ int main()
     }
 
     {
+        Cwg128 cwg128(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Cwg128", &cwg128);
+    }
+
+    {
         FastRand32 frand32(0x3ca5'8796ul);
         test_perf("FastRand32", &frand32);
     }
