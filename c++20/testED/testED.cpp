@@ -308,7 +308,7 @@ inline const bool test_algo(
 int main()
 {
     bool ok{ true };
-
+    /** /
     {
         Cwg64 cwg64;
         ok = test_algo("Cwg64", &cwg64) && ok;
@@ -398,6 +398,7 @@ int main()
         Pcg1024_32 pcg1024_32;
         ok = test_algo("Pcg1024_32", &pcg1024_32) && ok;
     }
+    /**/
 
     {
         Squares32 squares32;

@@ -34,20 +34,40 @@ SOFTWARE.
 //===========================================================================
 /** @brief The internal state of many Pseudo Random Numbers Generators. */
 template<typename StateType, typename ExtendedValueType, const size_t EXTENDED_SIZE>
+    requires std::is_integral_v<ExtendedValueType>
 struct ExtendedState
 {
-    static_assert(std::is_integral<ExtendedValueType>::value);
-
     using value_type = typename StateType::value_type;
     using extended_value_type = ExtendedValueType;
 
     std::vector<extended_value_type> extended_state{};
     StateType                        state{};
 
-    inline ExtendedState() noexcept
-        : state{}
-    {
-        extended_state.resize(EXTENDED_SIZE);
-    }
+    inline ExtendedState() noexcept;    //!< Empty constructor
+
+    inline void seed(const std::uint64_t seed_) noexcept;   //!< state and external state inbitialization
 
 };
+
+
+//===========================================================================
+//---   TEMPLATES IMPLEMENTATION   ------------------------------------------
+//---------------------------------------------------------------------------
+template<typename StateType, typename ExtendedValueType, const size_t EXTENDED_SIZE>
+    requires std::is_integral_v<ExtendedValueType>
+inline ExtendedState<StateType, ExtendedValueType, EXTENDED_SIZE>::ExtendedState() noexcept
+    : state{}
+{
+    extended_state.resize(EXTENDED_SIZE);
+}
+
+//---------------------------------------------------------------------------
+template<typename StateType, typename ExtendedValueType, const size_t EXTENDED_SIZE>
+    requires std::is_integral_v<ExtendedValueType>
+inline void ExtendedState<StateType, ExtendedValueType, EXTENDED_SIZE>::seed(const std::uint64_t seed_) noexcept
+{
+    state = StateType(seed_);
+
+    utils::SplitMix32 splitmix_32(seed_);
+    std::ranges::generate(extended_state, [&] { return splitmix_32(); });
+}

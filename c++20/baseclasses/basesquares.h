@@ -157,6 +157,6 @@ inline BaseSquares<OutputT>::BaseSquares(const state_type& internal_state) noexc
 template<typename OutputT>
 inline void BaseSquares<OutputT>::_setstate(const std::uint64_t seed) noexcept
 {
-    MyBaseClass::_internal_state.state.init_key(seed);  // notice: the std::uint64_t specialization of this method is automatically called here
+    MyBaseClass::_internal_state.state.seed(seed);  // notice: the std::uint64_t specialization of this method is automatically called here
     MyBaseClass::_internal_state.state.counter = 0;
 }

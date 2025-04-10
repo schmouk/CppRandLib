@@ -39,7 +39,8 @@ namespace utils
     template<typename IntT>
     inline const IntT rot_left(const IntT value, const int rot_count, const int BITS_COUNT = 8 * sizeof IntT)
     {
-        static_assert(std::is_unsigned<IntT>::value, "bits rotation are only applied on unsigned integer values.");
+        static_assert(std::is_unsigned<IntT>::value, "left bits rotation are only applied on unsigned integer values.");
+
         assert(rot_count >= 1);
         assert(rot_count <= BITS_COUNT);
 

@@ -30,7 +30,7 @@ SOFTWARE.
 #include <cstdint>
 
 #include "baserandom.h"
-#include "internalstates/counterkeystate.h"
+#include "../internalstates/counterkeystate.h"
 
 
 //===========================================================================
@@ -155,8 +155,8 @@ inline BaseSquares<OutputT>::BaseSquares(const state_type& internal_state) noexc
 //---------------------------------------------------------------------------
 /** Sets the internal state of this PRNG with an integer seed. */
 template<typename OutputT>
-inline void BaseSquares<OutputT>::_setstate(const std::uint64_t seed) noexcept
+inline void BaseSquares<OutputT>::_setstate(const std::uint64_t seed_) noexcept
 {
-    MyBaseClass::_internal_state.state.init_key(seed);  // notice: the std::uint64_t specialization of this method is automatically called here
+    MyBaseClass::_internal_state.state.seed(seed_);  // notice: the std::uint64_t specialization of this method is automatically called here
     MyBaseClass::_internal_state.state.counter = 0;
 }

@@ -27,7 +27,10 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <type_traits>
+#include <cstdint>
+
+#include "../utils/balanced_bits_generation.h"
+#include "../utils/splitmix.h"
 
 
 //===========================================================================
@@ -37,12 +40,15 @@ struct CounterKeyState
     using value_type = std::uint64_t;
 
     value_type counter{ 0 };
-    value_type key{ 0 };
+    value_type key{ 1 };  // Notice: key must be odd
 
-    inline void init_key() noexcept
+    inline void seed() noexcept
     {}
 
     /** @brief Initalizes the attribute key according to the original recommendations in document [9] - see file README.md. */
-    void init_key(const value_type seed) noexcept;
+    inline void seed(const value_type seed_) noexcept
+    {
+        key = utils::balanced_bits_generation(seed_) | 1;  // Notice: key must be odd
+    }
 
 };

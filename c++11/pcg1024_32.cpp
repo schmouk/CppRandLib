@@ -97,11 +97,7 @@ const Pcg1024_32::extended_value_type Pcg1024_32::_invxrs(
 
 //---------------------------------------------------------------------------
 /** Sets the internal state with an integer seed. */
-void Pcg1024_32::_setstate(const std::uint64_t seed) noexcept
+void Pcg1024_32::_setstate(const std::uint64_t seed_) noexcept
 {
-    _internal_state.state.state.seed(seed);
-
-    utils::SplitMix32 splitmix_32(seed);
-    for (auto& e : _internal_state.state.extended_state)
-        e = splitmix_32();
+    _internal_state.state.state.seed(seed_);
 }

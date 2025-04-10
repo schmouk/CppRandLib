@@ -137,6 +137,7 @@ public:
     virtual const output_type next() noexcept override;  // notice: output_type is defined in base class.
 
 
+protected:
     //---   Operations   ----------------------------------------------------
     /** @brief Sets the internal state with an integer seed. */
     virtual void _setstate(const std::uint64_t seed) noexcept override;
