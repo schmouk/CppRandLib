@@ -42,8 +42,8 @@ namespace utils
         assert(rot_count >= 1);
         assert(rot_count <= BITS_COUNT);
 
-        const IntT lo_mask{ (IntT(1) << IntT(BITS_COUNT - rot_count)) - IntT(1) };
-        const IntT hi_mask{ IntT(-1) ^ lo_mask};
+        const IntT lo_mask{ IntT((IntT(1) << IntT(BITS_COUNT - rot_count)) - IntT(1)) };
+        const IntT hi_mask{ IntT(IntT(-1) ^ lo_mask) };
 
         return ((value & lo_mask) << rot_count) | ((value & hi_mask) >> (BITS_COUNT - rot_count));
     }

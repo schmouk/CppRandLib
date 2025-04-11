@@ -37,15 +37,15 @@ namespace utils
     //=======================================================================
     /** @brief Bits left rotation on unsigned integers. */
     template<typename IntT>
-    inline const IntT rot_left(const IntT value, const int rot_count, const int BITS_COUNT = 8 * sizeof IntT)
+    inline const IntT rot_left(const IntT value, const int rot_count, const int BITS_COUNT = 8 * sizeof(IntT))
     {
         static_assert(std::is_unsigned<IntT>::value, "left bits rotation are only applied on unsigned integer values.");
 
         assert(rot_count >= 1);
         assert(rot_count <= BITS_COUNT);
 
-        const IntT lo_mask{ (IntT(1) << IntT(BITS_COUNT - rot_count)) - IntT(1)};
-        const IntT hi_mask{ IntT(-1) ^ lo_mask};
+        const IntT lo_mask{ IntT((IntT(1) << IntT(BITS_COUNT - rot_count)) - IntT(1)) };
+        const IntT hi_mask{ IntT(IntT(-1) ^ lo_mask) };
 
         return ((value & lo_mask) << rot_count) | ((value & hi_mask) >> (BITS_COUNT - rot_count));
     }
