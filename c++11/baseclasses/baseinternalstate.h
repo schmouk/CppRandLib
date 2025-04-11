@@ -38,9 +38,21 @@ SOFTWARE.
 class BaseInternalState
 {
 protected:
-    /** @brief Initializes the internal state container items. */
+    /** @brief Initializes the internal state container items.
+    *
+    * Initializes the container associated with the internal state of PRNGs.
+    * template argument ItemT must be an integral type.
+    * Notice:  MELG algorithm states that at least one of its internal state
+    * items must be non zero. Since we now use an internal implementation of
+    * `SplitMix` that never uses its internal state when its value is 0, not
+    * more  than  one  item  in the list of internal state items of any PRNG 
+    * will be zero. 
+    */
     template<typename ItemT, const std::uint32_t STATE_ITEM_BITS_COUNT>
-    inline void _init_state(std::vector<ItemT>& state_content, const std::uint64_t seed_) noexcept;
+    inline void _init_state(
+        std::vector<ItemT>& state_content,
+        const std::uint64_t seed
+    ) noexcept;
 
 };
 
@@ -50,36 +62,48 @@ protected:
 //---------------------------------------------------------------------------
 /** Initializes the internal state container items - General case, 64-bits items. */
 template<typename ItemT, const std::uint32_t STATE_ITEM_BITS_COUNT>
-inline void BaseInternalState::_init_state(std::vector<ItemT>& state_content, const std::uint64_t seed_) noexcept
+inline void BaseInternalState::_init_state(
+    std::vector<ItemT>& state_content,
+    const std::uint64_t seed
+) noexcept
 {
-    utils::SplitMix64 splitmix_64(seed_);
+    utils::SplitMix64 splitmix_64(seed);
     for (ItemT& s : state_content)
         s = ItemT(splitmix_64());
 }
 
 /** Specialization for 64-bits items. */
 template<>
-inline void BaseInternalState::_init_state<std::uint64_t, 64>(std::vector<std::uint64_t>& state_content, const std::uint64_t seed_) noexcept
+inline void BaseInternalState::_init_state<std::uint64_t, 64>(
+    std::vector<std::uint64_t>& state_content,
+    const std::uint64_t seed
+) noexcept
 {
-    utils::SplitMix64 splitmix_64(seed_);
+    utils::SplitMix64 splitmix_64(seed);
     for (std::uint64_t& s : state_content)
         s = splitmix_64();
 }
 
 /** Specialization for 32-bits items. */
 template<>
-inline void BaseInternalState::_init_state<std::uint32_t, 32>(std::vector<std::uint32_t>& state_content, const std::uint64_t seed_) noexcept
+inline void BaseInternalState::_init_state<std::uint32_t, 32>(
+    std::vector<std::uint32_t>&state_content,
+    const std::uint64_t seed
+) noexcept
 {
-    utils::SplitMix32 splitmix_32(seed_);
+    utils::SplitMix32 splitmix_32(seed);
     for (std::uint32_t& s : state_content)
         s = splitmix_32();
 }
 
 /** Specialization for 31-bits items. */
 template<>
-inline void BaseInternalState::_init_state<std::uint32_t, 31>(std::vector<std::uint32_t>& state_content, const std::uint64_t seed_) noexcept
+inline void BaseInternalState::_init_state<std::uint32_t, 31>(
+    std::vector<std::uint32_t>&state_content,
+    const std::uint64_t seed
+) noexcept
 {
-    utils::SplitMix31 splitmix_31(seed_);
+    utils::SplitMix31 splitmix_31(seed);
     for (std::uint32_t& s : state_content)
         s = splitmix_31();
 }
