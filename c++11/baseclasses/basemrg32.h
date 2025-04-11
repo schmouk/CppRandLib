@@ -29,6 +29,7 @@ SOFTWARE.
 //===========================================================================
 #include <cstdint>
 
+#include "baseinternalstate.h"
 #include "baserandom.h"
 #include "internalstates/listseedstate.h"
 #include "utils/splitmix.h"
@@ -96,7 +97,7 @@ SOFTWARE.
 *   should definitively pass.
 */
 template<const std::uint32_t SIZE>
-class BaseMRG32 : public BaseRandom<ListSeedState<std::uint32_t, SIZE>>
+class BaseMRG32 : public BaseRandom<ListSeedState<std::uint32_t, SIZE>>, private BaseInternalState
 {
 public:
     //---   Wrappers   ------------------------------------------------------
@@ -177,7 +178,10 @@ inline void BaseMRG32<SIZE>::seed() noexcept
 template<const std::uint32_t SIZE>
 inline void BaseMRG32<SIZE>::_setstate(const std::uint64_t seed) noexcept
 {
+    /** /
     utils::SplitMix32 splitmix_32(std::uint32_t(seed & 0xffff'ffff));
     for (auto& s : MyBaseClass::_internal_state.state.list)
         s = splitmix_32();
+    /**/
+    _init_state<std::uint32_t, 32>(MyBaseClass::_internal_state.state.list, seed);
 }

@@ -29,6 +29,7 @@ SOFTWARE.
 //===========================================================================
 #include <cstdint>
 
+#include "baseinternalstate.h"
 #include "baserandom.h"
 #include "internalstates/listseedstate.h"
 #include "utils/splitmix.h"
@@ -96,7 +97,7 @@ SOFTWARE.
 *   should definitively pass.
 */
 template<const std::uint32_t SIZE>
-class BaseMELG : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t>
+class BaseMELG : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t>, private BaseInternalState
 {
 public:
     //---   Wrappers   ------------------------------------------------------
@@ -175,7 +176,10 @@ inline void BaseMELG<SIZE>::seed() noexcept
 template<const std::uint32_t SIZE>
 inline void BaseMELG<SIZE>::_setstate(const std::uint64_t seed) noexcept
 {
+    /** /
     utils::SplitMix64 splitmix_64(seed);
     for (value_type& s : MyBaseClass::_internal_state.state.list)
         s = splitmix_64();
+    /**/
+    _init_state<std::uint64_t, 64>(MyBaseClass::_internal_state.state.list, seed);
 }

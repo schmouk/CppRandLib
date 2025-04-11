@@ -29,6 +29,7 @@ SOFTWARE.
 //===========================================================================
 #include <cstdint>
 
+#include "baseinternalstate.h"
 #include "baserandom.h"
 #include "internalstates/listseedstate.h"
 #include "utils/splitmix.h"
@@ -102,7 +103,7 @@ SOFTWARE.
 *   should definitively pass.
 */
 template<const std::uint32_t SIZE, const std::uint32_t K>
-class BaseLFib64 : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>
+class BaseLFib64 : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>, private BaseInternalState
 {
 public:
     //---   Wrappers   ------------------------------------------------------
@@ -205,9 +206,12 @@ const typename BaseLFib64<SIZE, K>::output_type BaseLFib64<SIZE, K>::next() noex
 template<const std::uint32_t SIZE, std::uint32_t K >
 inline void BaseLFib64<SIZE, K>::_setstate(const std::uint64_t seed) noexcept
 {
+    /** /
     utils::SplitMix64 splitmix_64(seed);
     for (std::uint64_t& s : MyBaseClass::_internal_state.state.list)
         s = splitmix_64();
+    /**/
+    _init_state<std::uint64_t, 64>(MyBaseClass::_internal_state.state.list, seed);
 }
 
 //---------------------------------------------------------------------------

@@ -29,6 +29,7 @@ SOFTWARE.
 //===========================================================================
 #include <cstdint>
 
+#include "baseinternalstate.h"
 #include "baserandom.h"
 #include "internalstates/listseedstate.h"
 #include "utils/splitmix.h"
@@ -111,7 +112,7 @@ SOFTWARE.
 *   definitively pass.
 */
 template<const std::uint32_t SIZE>
-class BaseWell : public BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uint32_t, 32>
+class BaseWell : public BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uint32_t, 32>, private BaseInternalState
 {
 public:
     //---   Wrappers   ------------------------------------------------------
@@ -205,9 +206,12 @@ inline BaseWell<SIZE>::BaseWell(const state_type& internal_state) noexcept
 template<const std::uint32_t SIZE>
 inline void BaseWell<SIZE>::_setstate(const std::uint64_t seed) noexcept
 {
+    /** /
     utils::SplitMix32 splitmix_32(std::uint32_t(seed & 0xffff'fffful));
     for (std::uint32_t& s : MyBaseClass::_internal_state.state.list)
         s = splitmix_32();
+    /**/
+    _init_state<std::uint32_t, 32>(MyBaseClass::_internal_state.state.list, seed);
     MyBaseClass::_internal_state.state.index = 0;
 }
 

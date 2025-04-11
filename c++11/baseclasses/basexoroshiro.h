@@ -29,6 +29,7 @@ SOFTWARE.
 //===========================================================================
 #include <cstdint>
 
+#include "baseinternalstate.h"
 #include "baserandom.h"
 #include "internalstates/listseedstate.h"
 #include "utils/splitmix.h"
@@ -103,7 +104,7 @@ SOFTWARE.
 *   should definitively pass.
 */
 template<const std::uint32_t SIZE>
-class BaseXoroshiro : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>
+class BaseXoroshiro : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>, private BaseInternalState
 {
 public:
     //---   Wrappers   ------------------------------------------------------
@@ -171,8 +172,11 @@ inline BaseXoroshiro<SIZE>::BaseXoroshiro(const state_type& internal_state) noex
 template<const std::uint32_t SIZE>
 inline void BaseXoroshiro<SIZE>::_setstate(const std::uint64_t seed) noexcept
 {
+    /** /
     utils::SplitMix64 splitmix_64(seed);
     for (std::uint64_t& s : MyBaseClass::_internal_state.state.list)
         s = splitmix_64();
+    /**/
+    _init_state<std::uint64_t, 64>(MyBaseClass::_internal_state.state.list, seed);
     MyBaseClass::_internal_state.state.index = 0;
 }
