@@ -43,6 +43,10 @@ namespace tests_utils
         std::uint64_t now_us{ utils::get_time_us() };
         std::uint64_t now_ns{ utils::get_time_ns() };
 
+        EXPECT_NE(0ull, now_ms);
+        EXPECT_NE(0ull, now_us);
+        EXPECT_NE(0ull, now_ns);
+
         EXPECT_LE(now_ms, now_us / 1000 + 1);       // Should be equal most of the time, let's be careful nevertheless
         EXPECT_LE(now_us, now_ns / 1000 + 1);       // Should be equal most of the time, let's be careful nevertheless
         EXPECT_LE(now_ms, now_ns / 1'000'000 + 1);  // Should be equal most of the time, let's be careful nevertheless
