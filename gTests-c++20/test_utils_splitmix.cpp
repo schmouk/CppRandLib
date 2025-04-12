@@ -30,81 +30,62 @@ SOFTWARE.
 
 #include "gtest/gtest.h"
 
-#include "utils/seed_generation.h"
+#include "utils/splitmix.h"
 
 
 //===========================================================================
 namespace tests_utils
 {
     //-----------------------------------------------------------------------
-    TEST(TestSuiteUtils, TestsUtilsSeedGeneration)
+    TEST(TestSuiteUtils, TestsUtilsSplitmix)
     {
-        // checks correctness of utils::set_random_seed64
+        // checks correctness of utils::splitmix_64
         {
-            std::uint64_t val_prec{ utils::set_random_seed64() - 1 };
-            std::uint64_t val{};
+            utils::SplitMix64 splitmix_64;
 
-            for (int i = 0; i < 100'000; ++i) {
-                val = utils::set_random_seed64() + i;
+            std::uint64_t val_prec{ splitmix_64() };
+            for (int i = 0; i < 1'000'000; ++i) {
+                std::uint64_t val{ splitmix_64() };
                 EXPECT_NE(val_prec, val);
                 val_prec = val;
             }
         }
 
-        // checks correctness of utils::set_random_seed63
+        // Notice:  SplitMix implementation is done on a 64-bits  integer
+        // internal state. Should we get 'random' values on less bits, it 
+        // may  happen that two successive values will be the same on the 
+        // checked bits.  This is to occur with a bigger probability when 
+        // returned bits count is smaller,  even if the probability of it 
+        // to happen remains very low. So, we don't check in the belowing
+        // tests the difference of two successive values.
+
+        // checks correctness of utils::splitmix_63
         {
-            std::uint64_t val_prec{ utils::set_random_seed63() };
-            EXPECT_LE(val_prec, 0x7fff'ffff'ffff'ffffull);
+            utils::SplitMix63 splitmix_63;
 
-            val_prec = (val_prec - 1) & 0x7fff'ffff'ffff'ffffull;
-            std::uint64_t val{};
-
-            for (int i = 0; i < 100'000; ++i) {
-                val = utils::set_random_seed63();
+            for (int i = 0; i < 1'000'000; ++i) {
+                std::uint64_t val{ splitmix_63() };
                 EXPECT_LE(val, 0x7fff'ffff'ffff'ffffull);
-
-                val = (val + i) & 0x7fff'ffff'ffff'ffffull;
-                EXPECT_NE(val_prec, val);
-
-                val_prec = val;
             }
         }
 
-        // checks correctness of utils::set_random_seed32
+        // checks correctness of utils::splitmix_32
         {
-            std::uint64_t val_prec{ utils::set_random_seed32() };
-            EXPECT_LE(val_prec, 0xffff'ffffull);
+            utils::SplitMix32 splitmix_32;
 
-            val_prec = (val_prec - 1) & 0xffff'ffffull;
-            std::uint64_t val{};
-
-            for (int i = 0; i < 100'000; ++i) {
-                val = utils::set_random_seed32();
+            for (int i = 0; i < 1'000'000; ++i) {
+                std::uint64_t val{ splitmix_32() };
                 EXPECT_LE(val, 0xffff'ffffull);
-
-                val = (val + i) & 0xffff'ffffull;
-                EXPECT_NE(val_prec, val);
-
-                val_prec = val;
             }
         }
 
         // checks correctness of utils::set_random_seed31
         {
-            std::uint64_t val_prec{ utils::set_random_seed31() };
-            EXPECT_LE(val_prec, 0x7fff'ffffull);
+            utils::SplitMix31 splitmix_31;
 
-            val_prec = (val_prec - 1) & 0x7fff'ffffull;
-            std::uint64_t val{};
-
-            for (int i = 0; i < 100'000; ++i) {
-                val = utils::set_random_seed31();
+            for (int i = 0; i < 1'000'000; ++i) {
+                std::uint64_t val = splitmix_31();
                 EXPECT_LE(val, 0x7fff'ffffull);
-
-                val = (val + i) & 0x7fff'ffffull;
-                EXPECT_NE(val_prec, val);
-
-                val_prec = val;
             }
         }
 
