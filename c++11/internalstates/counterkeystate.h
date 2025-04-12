@@ -48,7 +48,7 @@ struct CounterKeyState
     /** @brief Initalizes the attribute key according to the original recommendations in document [9] - see file README.md. */
     inline void seed(const value_type seed_) noexcept
     {
-        key = utils::balanced_bits_generation(seed_) | 1;  // Notice: key must be odd
+        key = utils::balanced_bits_generation<value_type>(seed_) | 1;  // Notice: key must be odd
     }
 
 };

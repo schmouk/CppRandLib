@@ -59,7 +59,7 @@ namespace utils
     * finaly the same on their 9 lowest hexa digits.
     */
     template<typename IntT>
-    inline const IntT balanced_bits_generation(const IntT seed)
+    inline const IntT balanced_bits_generation(const std::uint64_t seed)
     {
         static_assert(std::is_integral<IntT>::value, "balanced bits are only generated for integers.");
 
@@ -99,5 +99,4 @@ namespace utils
 
         return balanced_value;
     }
-
 }

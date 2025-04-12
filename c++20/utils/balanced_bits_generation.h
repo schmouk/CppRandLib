@@ -59,7 +59,7 @@ namespace utils
     */
     template<typename IntT>
         requires std::is_integral_v<IntT>
-    inline const IntT balanced_bits_generation(const IntT seed)
+    inline const IntT balanced_bits_generation(const std::uint64_t seed)
     {
         constexpr std::uint32_t HEX_DIGITS_COUNT{ 2 * sizeof(IntT) };
         constexpr double NORMALIZE{ 0.5 / double(0x8000'0000'0000'0000ull) };  // i.e. 1.0 / (1 << 64)
