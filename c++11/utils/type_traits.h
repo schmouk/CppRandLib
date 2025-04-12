@@ -42,6 +42,9 @@ namespace utils
         static const bool value{ false };
     };
 
+    template<typename ContainerType>
+    static constexpr bool is_indexable_v{ is_indexable<ContainerType>::value };
+
 
     //-----------------------------------------------------------------------
     template<typename T>
