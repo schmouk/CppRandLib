@@ -69,7 +69,7 @@ namespace tests_utils
         EXPECT_FALSE(utils::is_indexable_v<long double>);
 
 
-        EXPECT_FALSE(utils::is_indexable<Map>::value);
+        EXPECT_FALSE(utils::is_indexable_v<Map>);
         EXPECT_FALSE(utils::is_indexable_v<std::list<PleasedToMeetYou>>);
         EXPECT_FALSE(utils::is_indexable_v<std::list<int>>);
         EXPECT_FALSE(utils::is_indexable_v<std::list<double>>);

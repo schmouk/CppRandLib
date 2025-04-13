@@ -28,6 +28,7 @@ SOFTWARE.
 
 //===========================================================================
 #include <cstdint>
+#include <type_traits>
 
 
 namespace utils
@@ -38,31 +39,27 @@ namespace utils
     *   Visual Studio provides no 128-bits integer arithmetic. Some of the
     *   implemented  PRNGs in CppRandLib use this type of arithmetic.  So,
     *   this class implements a minimalist version of 128-bits arithmetic:
-    *   addition, multiplication and xor operators.
+    *   addition, multiplication and bit -shift, -or and -xor operators.
     */
     class UInt128
     {
     public:
 
         //---   Constructors / Destructor   -------------------------------------
-        inline UInt128() noexcept
-            : hi(0ull)
-            , lo(0ull)
-        {
-        }
-
-        inline UInt128(const std::uint64_t hi_, const std::uint64_t lo_)
+        inline UInt128(const std::uint64_t hi_, const std::uint64_t lo_)    //!< Valued constructor (UInt128)
             : hi(hi_)
             , lo(lo_)
         {
         }
 
-        inline UInt128(const std::uint64_t val)
+        template<typename IntT>
+            requires std::is_integral_v<IntT>
+        inline UInt128(const IntT val)  //!< Valued constructor (integer)
             : hi(0ull)
-            , lo(val)
-        {
-        }
+            , lo(std::uint64_t(val))
+        {}
 
+        inline UInt128() noexcept = default;                    //!< Default empty constructor
         inline UInt128(const UInt128&) noexcept = default;      //!< Default copy constructor
         inline UInt128(UInt128&&) noexcept = default;           //!< Default move constructor
         inline virtual ~UInt128() noexcept = default;           //!< Default destructor
@@ -72,7 +69,9 @@ namespace utils
         inline UInt128& operator=(const UInt128&) noexcept = default;   //!< Default copy assignment
         inline UInt128& operator=(UInt128&&) noexcept = default;        //!< Default move assignment
 
-        inline UInt128& operator= (const std::uint64_t val) noexcept
+        template<typename IntT>
+            requires std::is_integral_v<IntT>
+        inline UInt128& operator= (const IntT val) noexcept
         {
             hi = 0;
             lo = val;
@@ -108,15 +107,46 @@ namespace utils
             return t += other;
         }
 
-        inline friend const UInt128 operator+ (const std::uint64_t lhs, const UInt128& rhs) noexcept
+        inline friend const UInt128 operator+ (const std::uint64_t lhs, const UInt128& rhs)
         {
             return rhs + lhs;  // notice: addition is commutative
         }
 
 
+        //---   Bit-or   --------------------------------------------------------
+        inline UInt128& operator|= (const UInt128& other) noexcept
+        {
+            hi |= other.hi;
+            lo |= other.lo;
+            return *this;
+        }
+
+        inline UInt128& operator|= (const std::uint64_t value) noexcept
+        {
+            lo |= value;
+            return *this;
+        }
+
+        inline const UInt128 operator| (const UInt128& other) const noexcept
+        {
+            UInt128 t{ *this };
+            return t |= other;
+        }
+
+        inline const UInt128 operator| (const std::uint64_t value) const noexcept
+        {
+            UInt128 t{ *this };
+            return t |= value;
+        }
+
+        inline friend const UInt128 operator| (const std::uint64_t lhs, const UInt128& rhs)
+        {
+            return rhs | lhs;  // notice: xor operator is commutative
+        }
+
+
         //---   Mul   -----------------------------------------------------------
         UInt128& operator*= (const UInt128& other) noexcept;
-
         UInt128& operator*= (const std::uint64_t other) noexcept;
 
         inline const UInt128 operator* (const UInt128& other) const noexcept
@@ -131,7 +161,7 @@ namespace utils
             return t *= value;
         }
 
-        inline friend const UInt128 operator* (const std::uint64_t lhs, const UInt128& rhs) noexcept
+        inline friend const UInt128 operator* (const std::uint64_t lhs, const UInt128& rhs)
         {
             return rhs * lhs;  // notice: multiplication is commutative
         }
@@ -180,41 +210,9 @@ namespace utils
             return t ^= value;
         }
 
-        inline friend const UInt128 operator^ (const std::uint64_t lhs, const UInt128& rhs) noexcept
+        inline friend const UInt128 operator^ (const std::uint64_t lhs, const UInt128& rhs)
         {
             return rhs ^ lhs;  // notice: xor operator is commutative
-        }
-
-
-        //---   Bit-or   --------------------------------------------------------
-        inline UInt128& operator|= (const UInt128& other) noexcept
-        {
-            hi |= other.hi;
-            lo |= other.lo;
-            return *this;
-        }
-
-        inline UInt128& operator|= (const std::uint64_t value) noexcept
-        {
-            lo |= value;
-            return *this;
-        }
-
-        inline const UInt128 operator| (const UInt128& other) const noexcept
-        {
-            UInt128 t{ *this };
-            return t |= other;
-        }
-
-        inline const UInt128 operator| (const std::uint64_t value) const noexcept
-        {
-            UInt128 t{ *this };
-            return t |= value;
-        }
-
-        inline friend const UInt128 operator| (const std::uint64_t lhs, const UInt128& rhs)
-        {
-            return rhs | lhs;  // notice: xor operator is commutative
         }
 
 
@@ -225,9 +223,18 @@ namespace utils
             return hi == other.hi && lo == other.lo;
         }
 
-        inline const bool operator== (const std::uint64_t value) const noexcept
+        template<typename IntT>
+            requires std::is_integral_v<IntT>
+        inline const bool operator== (const IntT value) const noexcept
         {
-            return hi == 0 && lo == value;
+            return hi == 0 && lo == std::uint64_t(value);
+        }
+
+        template<typename IntT>
+            requires std::is_integral_v<IntT>
+        inline friend const bool operator== (const IntT lhs, const UInt128& rhs) noexcept
+        {
+            return rhs == lhs;
         }
 
         inline const bool operator!= (const UInt128& other) const noexcept
@@ -235,9 +242,18 @@ namespace utils
             return hi != other.hi || lo != other.lo;
         }
 
-        inline const bool operator!= (const std::uint64_t value) const noexcept
+        template<typename IntT>
+            requires std::is_integral_v<IntT>
+        inline const bool operator!= (const IntT value) const noexcept
         {
-            return hi != 0 || lo != value;
+            return hi != 0 || lo != std::uint64_t(value);
+        }
+
+        template<typename IntT>
+            requires std::is_integral_v<IntT>
+        inline friend const bool operator!= (const IntT lhs, const UInt128& rhs) noexcept
+        {
+            return rhs != lhs;
         }
 
 
@@ -247,9 +263,8 @@ namespace utils
 
 
     private:
-
         //---   internal operations   -------------------------------------------
-        static inline const bool _add_carry(std::uint32_t& w, const std::uint32_t a, const bool carry = false) noexcept
+        static inline const bool _add_carry(std::uint32_t& w, const std::uint32_t a, const bool carry = false)
         {
             std::uint64_t t{ w };
             t += std::uint64_t(a) + carry;
