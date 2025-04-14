@@ -27,8 +27,7 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <type_traits>
-#include <xutility>
+#include <cstdint>
 
 #include "../utils/splitmix.h"
 #include "../utils/uint128.h"
@@ -48,16 +47,21 @@ struct CollatzWeylState
     value_type       weyl{ value_type(0) };
 
 
-    inline CollatzWeylState() noexcept = default;                     //!< Default empty constructor.
-    inline virtual ~CollatzWeylState() noexcept = default;            //!< Default destructor.
+    inline CollatzWeylState() noexcept = default;                                           //!< Default empty constructor.
 
-    inline CollatzWeylState(const CollatzWeylState& other) noexcept;  //!< Copy constructor.
-    inline CollatzWeylState(CollatzWeylState&& other) noexcept;       //!< Move constructor.
+    inline CollatzWeylState(const CollatzWeylState& other) noexcept = default;              //!< Copy constructor.
+    inline CollatzWeylState(CollatzWeylState&& other) noexcept = default;                   //!< Move constructor.
 
-    inline CollatzWeylState& operator=(const CollatzWeylState& other) noexcept; //!< Assignment operator.
+    inline virtual ~CollatzWeylState() noexcept = default;                                  //!< Default destructor.
+
+
+    inline CollatzWeylState& operator=(const CollatzWeylState& other) noexcept = default;   //!< Assignment copy operator.
+    inline CollatzWeylState& operator=(CollatzWeylState&& other) noexcept = default;        //!< Assignment move operator.
+    
 
     /** @brief Initalizes the internal state according to a 64-bits integer seed. */
     void seed(const std::uint64_t seed_) noexcept;
+
 
     /** @brief Initalizes the internal state according to a 128-bits integer seed. */
     void seed(const utils::UInt128& seed_) noexcept;
@@ -68,40 +72,15 @@ struct CollatzWeylState
 //===========================================================================
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
 //---------------------------------------------------------------------------
-/** Copy constructor. */
-template<typename ValueType, typename StateValueType>
-inline CollatzWeylState<ValueType, StateValueType>::CollatzWeylState(const CollatzWeylState& other) noexcept
-{
-    *this = other;
-}
-
-//---------------------------------------------------------------------------
-/** Move constructor. */
-template<typename ValueType, typename StateValueType>
-inline CollatzWeylState<ValueType, StateValueType>::CollatzWeylState(CollatzWeylState&& other) noexcept
-{
-    *this = std::move(other);
-}
-
-//---------------------------------------------------------------------------
-/** Assignment operator. */
-template<typename ValueType, typename StateValueType>
-inline CollatzWeylState<ValueType, StateValueType>& CollatzWeylState<ValueType, StateValueType>::operator=(
-    const CollatzWeylState& other
-) noexcept
-{
-    a = other.a;
-    s = other.s;
-    state = other.state;
-    weyl = other.weyl;
-}
-
-//---------------------------------------------------------------------------
 /** Initalizes the internal state according to a 64-bits integer seed. */
 template<typename ValueType, typename StateValueType>
 inline void CollatzWeylState<ValueType, StateValueType>::seed(const std::uint64_t seed_) noexcept
 {
-    s |= 1;  // Notice: we MUST ensure that s is odd
+    utils::SplitMix64 splitmix_64(seed_);
+
+    a = weyl = ValueType(0);
+    s = ValueType(splitmix_64()) | 1;  // Notice : s must be odd
+    state = StateValueType(splitmix_64());
 }
 
 template<>
@@ -146,7 +125,11 @@ inline void CollatzWeylState<utils::UInt128, utils::UInt128>::seed(const std::ui
 template<typename ValueType, typename StateValueType>
 inline void CollatzWeylState<ValueType, StateValueType>::seed(const utils::UInt128& seed_) noexcept
 {
-    s |= 1;  // Notice: we MUST ensure that s is odd
+    utils::SplitMix64 splitmix_64(seed_.lo);
+
+    a = weyl = ValueType(0);
+    s = ValueType(splitmix_64()) | 1;  // Notice : s must be odd
+    state = StateValueType(splitmix_64());
 }
 
 template<>
