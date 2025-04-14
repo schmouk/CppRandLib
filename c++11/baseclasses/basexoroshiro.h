@@ -104,11 +104,11 @@ SOFTWARE.
 *   should definitively pass.
 */
 template<const std::uint32_t SIZE>
-class BaseXoroshiro : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>, private BaseInternalState
+class BaseXoroshiro : public BaseRandom<ListSeedState<utils::SplitMix64, std::uint64_t, SIZE>, std::uint64_t, 64>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>;
+    using MyBaseClass = BaseRandom<ListSeedState<utils::SplitMix64, std::uint64_t, SIZE>, std::uint64_t, 64>;
     using output_type = MyBaseClass::output_type;
     using state_type = MyBaseClass::state_type;
     using value_type = typename state_type::value_type;
@@ -170,13 +170,7 @@ inline BaseXoroshiro<SIZE>::BaseXoroshiro(const state_type& internal_state) noex
 //---------------------------------------------------------------------------
 /** Sets the internal state of this PRNG with an integer seed. */
 template<const std::uint32_t SIZE>
-inline void BaseXoroshiro<SIZE>::_setstate(const std::uint64_t seed) noexcept
+inline void BaseXoroshiro<SIZE>::_setstate(const std::uint64_t seed_) noexcept
 {
-    /** /
-    utils::SplitMix64 splitmix_64(seed);
-    for (std::uint64_t& s : MyBaseClass::_internal_state.state.list)
-        s = splitmix_64();
-    /**/
-    _init_state<std::uint64_t, 64>(MyBaseClass::_internal_state.state.list, seed);
-    MyBaseClass::_internal_state.state.index = 0;
+    MyBaseClass::_internal_state.state.seed(seed_);
 }

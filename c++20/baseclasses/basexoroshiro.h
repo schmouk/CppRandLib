@@ -27,8 +27,7 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <algorithm>
-#include <array>
+#include <cstdint>
 
 #include "baseinternalstate.h"
 #include "baserandom.h"
@@ -87,13 +86,13 @@ SOFTWARE.
 *   been  implemented  in PyRandLib,  as  described  by the authors of xoroshiro - see
 *   reference [10] in file README.md.
 *
-* +------------------------------------------------------------------------------------------------------------------------------------------------------+
+* +-------------------------------------------------------------------------------------------------------------------------------------------------------+
 * | PyRandLib class | initial xoroshiro algo name | Memory Usage | Period | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
 * | --------------- | --------------------------- | ------------ | ------ | ----------- | ------------ | ---------------- | ----------- | -------------- |
 * | Xoroshiro256    | xoroshiro256**              |  8 x 4-bytes | 2^256  |    n.a.     |     0.84     |          0       |       0     |       0        |
 * | Xoroshiro512    | xoroshiro512**              | 16 x 4-bytes | 2^512  |    n.a.     |     0.99     |          0       |       0     |       0        |
 * | Xoroshiro1024   | xoroshiro1024**             | 32 x 4-bytes | 2^1024 |    n.a.     |     1.17     |          0       |       0     |       0        |
-* +------------------------------------------------------------------------------------------------------------------------------------------------------+
+* +-------------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
 *   the expected characteristics for a pretty good PRNG;
@@ -104,13 +103,12 @@ SOFTWARE.
 *   * _big crush_ is the ultimate set of difficult tests that  any  GOOD  PRNG
 *   should definitively pass.
 */
-
 template<const std::uint32_t SIZE>
-class BaseXoroshiro : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>, private BaseInternalState
+class BaseXoroshiro : public BaseRandom<ListSeedState<utils::SplitMix64, std::uint64_t, SIZE>, std::uint64_t, 64>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>;
+    using MyBaseClass = BaseRandom<ListSeedState<utils::SplitMix64, std::uint64_t, SIZE>, std::uint64_t, 64>;
     using output_type = MyBaseClass::output_type;
     using state_type = MyBaseClass::state_type;
     using value_type = typename state_type::value_type;
@@ -172,8 +170,7 @@ inline BaseXoroshiro<SIZE>::BaseXoroshiro(const state_type& internal_state) noex
 //---------------------------------------------------------------------------
 /** Sets the internal state of this PRNG with an integer seed. */
 template<const std::uint32_t SIZE>
-inline void BaseXoroshiro<SIZE>::_setstate(const std::uint64_t seed) noexcept
+inline void BaseXoroshiro<SIZE>::_setstate(const std::uint64_t seed_) noexcept
 {
-    _init_state<std::uint64_t, 64>(MyBaseClass::_internal_state.state.list, seed);
-    MyBaseClass::_internal_state.state.index = 0;
+    MyBaseClass::_internal_state.state.seed(seed_);
 }

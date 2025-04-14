@@ -27,7 +27,6 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <algorithm>
 #include <cstdint>
 
 #include "baseinternalstate.h"
@@ -104,11 +103,11 @@ SOFTWARE.
 *   should definitively pass.
 */
 template<const std::uint32_t SIZE, const std::uint32_t K>
-class BaseLFib64 : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>, private BaseInternalState
+class BaseLFib64 : public BaseRandom<ListSeedState<utils::SplitMix64, std::uint64_t, SIZE>, std::uint64_t, 64>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>;
+    using MyBaseClass = BaseRandom<ListSeedState<utils::SplitMix64, std::uint64_t, SIZE>, std::uint64_t, 64>;
     using output_type = MyBaseClass::output_type;
     using state_type = MyBaseClass::state_type;
     using value_type = typename state_type::value_type;
@@ -205,9 +204,9 @@ const typename BaseLFib64<SIZE, K>::output_type BaseLFib64<SIZE, K>::next() noex
 //---------------------------------------------------------------------------
 /** Sets the internal state of this PRNG with an integer seed. */
 template<const std::uint32_t SIZE, std::uint32_t K >
-inline void BaseLFib64<SIZE, K>::_setstate(const std::uint64_t seed) noexcept
+inline void BaseLFib64<SIZE, K>::_setstate(const std::uint64_t seed_) noexcept
 {
-    _init_state<std::uint64_t, 64>(MyBaseClass::_internal_state.state.list, seed);
+    MyBaseClass::_internal_state.state.seed(seed_);
 }
 
 //---------------------------------------------------------------------------

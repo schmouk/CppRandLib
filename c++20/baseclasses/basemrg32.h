@@ -27,12 +27,11 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <algorithm>
 #include <cstdint>
 
 #include "baseinternalstate.h"
 #include "baserandom.h"
-#include "internalstates/listseedstate.h"
+#include "../internalstates/listseedstate.h"
 #include "utils/splitmix.h"
 
 
@@ -98,11 +97,10 @@ SOFTWARE.
 *   should definitively pass.
 */
 template<const std::uint32_t SIZE>
-class BaseMRG32 : public BaseRandom<ListSeedState<std::uint32_t, SIZE>>, private BaseInternalState
+struct BaseMRG32 : public BaseRandom<ListSeedState<utils::SplitMix32, std::uint32_t, SIZE>, std::uint32_t, 32>
 {
-public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<ListSeedState<std::uint32_t, 256>>;
+    using MyBaseClass = BaseRandom<ListSeedState<utils::SplitMix32, std::uint32_t, SIZE>, std::uint32_t, 32>;
 
     using output_type = MyBaseClass::output_type;
     using state_type = MyBaseClass::state_type;
@@ -154,7 +152,7 @@ template<typename T>
 inline BaseMRG32<SIZE>::BaseMRG32(const T seed_) noexcept
     : MyBaseClass()
 {
-    seed(seed_);
+    MyBaseClass::seed(seed_);
 }
 
 //---------------------------------------------------------------------------
@@ -177,7 +175,7 @@ inline void BaseMRG32<SIZE>::seed() noexcept
 //---------------------------------------------------------------------------
 /** Sets the internal state of this PRNG with an integer seed. */
 template<const std::uint32_t SIZE>
-inline void BaseMRG32<SIZE>::_setstate(const std::uint64_t seed) noexcept
+inline void BaseMRG32<SIZE>::_setstate(const std::uint64_t seed_) noexcept
 {
-    _init_state<std::uint32_t, 32>(MyBaseClass::_internal_state.state.list, seed);
+    MyBaseClass::_internal_state.state.seed(seed_);
 }

@@ -27,23 +27,45 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <type_traits>
 #include <vector>
 
 
 //===========================================================================
 /** @brief The internal state of many Pseudo Random Numbers Generators. */
-template<typename ValueType, const size_t SIZE>
+template<typename RandomT, typename ItemT, const std::uint32_t SIZE>
 struct ListSeedState
 {
-    using value_type = ValueType;
+    static_assert(!std::is_signed<ItemT>::value);
 
-    std::vector<ValueType> list{};
-    std::uint32_t          index{ 0 };
+    using value_type = ItemT;
 
-    inline ListSeedState() noexcept
-        : index(0)
+    std::vector<ItemT> list{};
+    std::uint32_t      index{ 0UL };
+
+
+    inline ListSeedState() noexcept  //!< Empty constructor.
     {
         list.resize(SIZE);
+    }
+
+
+    /** @brief Initializes the internal state container items.
+    *
+    * Initializes the container associated with the internal state of PRNGs.
+    * template argument ItemT must be an integral type.
+    * Notice:  MELG algorithm states that at least one of its internal state
+    * items must be non zero. Since we now use an internal implementation of
+    * `SplitMix` that never uses its internal state when its value is 0, not
+    * more  than  one  item  in the list of internal state items of any PRNG
+    * will be zero.
+    */
+    inline void seed(const std::uint64_t seed_) noexcept
+    {
+        index = 0UL;
+        RandomT init_rand(seed_);
+        for (ItemT& item : list)
+            item = ItemT(init_rand());
     }
 
 };

@@ -31,7 +31,7 @@ SOFTWARE.
 
 #include "baseinternalstate.h"
 #include "baserandom.h"
-#include "internalstates/listseedstate.h"
+#include "../internalstates/listseedstate.h"
 #include "utils/splitmix.h"
 
 
@@ -97,11 +97,11 @@ SOFTWARE.
 *   should definitively pass.
 */
 template<const std::uint32_t SIZE>
-class BaseMELG : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t>, private BaseInternalState
+class BaseMELG : public BaseRandom<ListSeedState<utils::SplitMix64, std::uint64_t, SIZE>, std::uint64_t>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t>;
+    using MyBaseClass = BaseRandom<ListSeedState<utils::SplitMix64, std::uint64_t, SIZE>, std::uint64_t>;
 
     using output_type = typename MyBaseClass::output_type;
     using state_type  = typename MyBaseClass::state_type;
@@ -174,12 +174,7 @@ inline void BaseMELG<SIZE>::seed() noexcept
 //---------------------------------------------------------------------------
 /** Sets the internal state of this PRNG with an integer seed. */
 template<const std::uint32_t SIZE>
-inline void BaseMELG<SIZE>::_setstate(const std::uint64_t seed) noexcept
+inline void BaseMELG<SIZE>::_setstate(const std::uint64_t seed_) noexcept
 {
-    /** /
-    utils::SplitMix64 splitmix_64(seed);
-    for (value_type& s : MyBaseClass::_internal_state.state.list)
-        s = splitmix_64();
-    /**/
-    _init_state<std::uint64_t, 64>(MyBaseClass::_internal_state.state.list, seed);
+    MyBaseClass::_internal_state.state.seed(seed_);
 }

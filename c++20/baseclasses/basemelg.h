@@ -27,12 +27,11 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <algorithm>
 #include <cstdint>
 
 #include "baseinternalstate.h"
 #include "baserandom.h"
-#include "internalstates/listseedstate.h"
+#include "../internalstates/listseedstate.h"
 #include "utils/splitmix.h"
 
 
@@ -54,31 +53,31 @@ SOFTWARE.
 *   See Melg607 for a large period MELG-Generator (2^607, i.e. 5.31e+182)  with medium
 *   computation  time  and  the  equivalent  of  21  32-bits  integers  memory  little
 *   consumption. This is the shortest period version proposed in paper [11].
-* 
+*
 *   See Melg19937 for an even larger period MELG-Generator (2^19,937, i.e. 4.32e+6001),
 *   same computation time and equivalent of 625 integers memory consumption.
-* 
+*
 *   See Melg44497 for a very large period (2^44,497,  i.e. 8.55e+13,395)  with  similar
 *   computation  time  but  use  of even more memory space (equivalent of 1,393 32-bits
 *   integers). This is the longest period version proposed in paper [11].
 *
 *   Furthermore this class is callable:
 * @code
-*     BaseMELG rand(); // CAUTION: Replace 'BaseMELG' with any inheriting class constructor!
+*     BaseMELG rand();  // CAUTION: Replace 'BaseMELG' with any inheriting class constructor!
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
 * @code
-*     BaseMELG diceRoll();
+*     BaseMELG diceRoll();  // CAUTION: Replace 'BaseMELG' with any inheriting class constructor!
 *     std::cout << int(diceRoll(1, 7)) << std::endl;    // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
 *
 *   Reminder:
-*   We give you here below a copy of the table of tests for the LCGs that have
-*   been implemented in PyRandLib, as provided in paper "TestU01, ..."  -  see
+*   We give you here below a copy of the table of tests for the MELGs that have
+*   been implemented in PyRandLib,  as provided in paper "TestU01, ..."  -  see
 *   file README.md.
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
 * | PyRabndLib class | TU01 generator name | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
@@ -98,14 +97,14 @@ SOFTWARE.
 *   should definitively pass.
 */
 template<const std::uint32_t SIZE>
-class BaseMELG : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t>, private BaseInternalState
+class BaseMELG : public BaseRandom<ListSeedState<utils::SplitMix64, std::uint64_t, SIZE>, std::uint64_t>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t>;
+    using MyBaseClass = BaseRandom<ListSeedState<utils::SplitMix64, std::uint64_t, SIZE>, std::uint64_t>;
 
-    using output_type = MyBaseClass::output_type;
-    using state_type = MyBaseClass::state_type;
+    using output_type = typename MyBaseClass::output_type;
+    using state_type = typename MyBaseClass::state_type;
     using value_type = typename state_type::value_type;
 
 
@@ -175,7 +174,7 @@ inline void BaseMELG<SIZE>::seed() noexcept
 //---------------------------------------------------------------------------
 /** Sets the internal state of this PRNG with an integer seed. */
 template<const std::uint32_t SIZE>
-inline void BaseMELG<SIZE>::_setstate(const std::uint64_t seed) noexcept
+inline void BaseMELG<SIZE>::_setstate(const std::uint64_t seed_) noexcept
 {
-    _init_state<std::uint64_t, 64>(MyBaseClass::_internal_state.state.list, seed);
+    MyBaseClass::_internal_state.state.seed(seed_);
 }
