@@ -28,6 +28,7 @@ SOFTWARE.
 
 //===========================================================================
 #include <cstdint>
+#include <limits>
 #include <vector>
 
 #include "../utils/splitmix.h"
@@ -35,9 +36,8 @@ SOFTWARE.
 
 //===========================================================================
 /** @brief The base class for all internal states of PRNGs that contain vectors of integers. */
-class BaseInternalState
+struct BaseInternalState
 {
-protected:
     /** @brief Initializes the internal state container items.
     *
     * Initializes the container associated with the internal state of PRNGs.
@@ -48,8 +48,8 @@ protected:
     * more  than  one  item  in the list of internal state items of any PRNG 
     * will be zero. 
     */
-    template<typename ItemT, const std::uint32_t STATE_ITEM_BITS_COUNT>
-    inline void _init_state(
+    template<typename ItemT, const std::uint32_t STATE_ITEM_BITS_COUNT = 8 * sizeof(ItemT)>
+    static inline void _init_state(
         std::vector<ItemT>& state_content,
         const std::uint64_t seed
     ) noexcept;
@@ -60,21 +60,24 @@ protected:
 //===========================================================================
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
 //---------------------------------------------------------------------------
-/** Initializes the internal state container items - General case, 64-bits items. */
-template<typename ItemT, const std::uint32_t STATE_ITEM_BITS_COUNT>
-inline void BaseInternalState::_init_state(
+/** Initializes the internal state container items - General case. */
+template<typename ItemT, const std::uint32_t STATE_ITEM_BITS_COUNT>  //, const std::uint32_t STATE_ITEM_BITS_COUNT>
+static inline void BaseInternalState::_init_state(
     std::vector<ItemT>& state_content,
     const std::uint64_t seed
 ) noexcept
 {
+    static_assert(!std::is_signed<ItemT>::value);
+    
     utils::SplitMix64 splitmix_64(seed);
     for (ItemT& s : state_content)
         s = ItemT(splitmix_64());
 }
 
+
 /** Specialization for 64-bits items. */
 template<>
-inline void BaseInternalState::_init_state<std::uint64_t, 64>(
+static inline void BaseInternalState::_init_state<std::uint64_t, 64>(
     std::vector<std::uint64_t>& state_content,
     const std::uint64_t seed
 ) noexcept
@@ -84,9 +87,10 @@ inline void BaseInternalState::_init_state<std::uint64_t, 64>(
         s = splitmix_64();
 }
 
+
 /** Specialization for 32-bits items. */
 template<>
-inline void BaseInternalState::_init_state<std::uint32_t, 32>(
+static inline void BaseInternalState::_init_state<std::uint32_t, 32>(
     std::vector<std::uint32_t>&state_content,
     const std::uint64_t seed
 ) noexcept
@@ -96,9 +100,10 @@ inline void BaseInternalState::_init_state<std::uint32_t, 32>(
         s = splitmix_32();
 }
 
+
 /** Specialization for 31-bits items. */
 template<>
-inline void BaseInternalState::_init_state<std::uint32_t, 31>(
+static inline void BaseInternalState::_init_state<std::uint32_t, 31>(
     std::vector<std::uint32_t>&state_content,
     const std::uint64_t seed
 ) noexcept

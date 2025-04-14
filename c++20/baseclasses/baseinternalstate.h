@@ -29,7 +29,7 @@ SOFTWARE.
 //===========================================================================
 #include <algorithm>
 #include <cstdint>
-#include <type_traits>
+#include <limits>
 #include <vector>
 
 #include "../utils/splitmix.h"
@@ -37,9 +37,8 @@ SOFTWARE.
 
 //===========================================================================
 /** @brief The base class for all internal states of PRNGs that contain vectors of integers. */
-class BaseInternalState
+struct BaseInternalState
 {
-protected:
     /** @brief Initializes the internal state container items.
     *
     * Initializes the container associated with the internal state of PRNGs.
@@ -50,9 +49,9 @@ protected:
     * more  than  one  item  in the list of internal state items of any PRNG
     * will be zero.
     */
-    template<typename ItemT, const std::uint32_t STATE_ITEM_BITS_COUNT>
+    template<typename ItemT, const std::uint32_t STATE_ITEM_BITS_COUNT = 8 * sizeof(ItemT)>
         requires std::is_integral_v<ItemT>
-    inline void _init_state(
+    static inline void _init_state(
         std::vector<ItemT>& state_content,
         const std::uint64_t seed
     ) noexcept;
@@ -66,7 +65,7 @@ protected:
 /** Initializes the internal state container items - General case, 64-bits items. */
 template<typename ItemT, const std::uint32_t STATE_ITEM_BITS_COUNT>
     requires std::is_integral_v<ItemT>
-inline void BaseInternalState::_init_state(
+static inline void BaseInternalState::_init_state(
     std::vector<ItemT>& state_content,
     const std::uint64_t seed
 ) noexcept
@@ -75,9 +74,10 @@ inline void BaseInternalState::_init_state(
     std::ranges::generate(state_content, [&] { return ItemT(splitmix_64()); });
 }
 
+
 /** Specialization for 64-bits items. */
 template<>
-inline void BaseInternalState::_init_state<std::uint64_t, 64>(
+static inline void BaseInternalState::_init_state<std::uint64_t, 64>(
     std::vector<std::uint64_t>& state_content,
     const std::uint64_t seed
 ) noexcept
@@ -86,9 +86,10 @@ inline void BaseInternalState::_init_state<std::uint64_t, 64>(
     std::ranges::generate(state_content, [&] { return splitmix_64(); });
 }
 
+
 /** Specialization for 32-bits items. */
 template<>
-inline void BaseInternalState::_init_state<std::uint32_t, 32>(
+static inline void BaseInternalState::_init_state<std::uint32_t, 32>(
     std::vector<std::uint32_t>& state_content,
     const std::uint64_t seed
 ) noexcept
@@ -97,9 +98,10 @@ inline void BaseInternalState::_init_state<std::uint32_t, 32>(
     std::ranges::generate(state_content, [&] { return splitmix_32(); });
 }
 
+
 /** Specialization for 31-bits items. */
 template<>
-inline void BaseInternalState::_init_state<std::uint32_t, 31>(
+static inline void BaseInternalState::_init_state<std::uint32_t, 31>(
     std::vector<std::uint32_t>& state_content,
     const std::uint64_t seed
 ) noexcept
