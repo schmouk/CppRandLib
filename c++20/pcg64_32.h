@@ -120,6 +120,11 @@ public:
     virtual ~Pcg64_32() noexcept = default;         //!< default destructor.
 
 
+    //---   Assignments operators   -----------------------------------------
+    Pcg64_32& operator= (const Pcg64_32&) noexcept = default;   //!< default copy assignment.
+    Pcg64_32& operator= (Pcg64_32&&) noexcept = default;        //!< default move assignment.
+
+
     //---   Internal PRNG   -------------------------------------------------
     /** @brief The internal PRNG algorithm.
     *

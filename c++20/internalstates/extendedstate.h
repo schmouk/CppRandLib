@@ -30,6 +30,8 @@ SOFTWARE.
 #include <type_traits>
 #include <vector>
 
+#include "../utils/splitmix.h"
+
 
 //===========================================================================
 /** @brief The internal state of many Pseudo Random Numbers Generators. */
