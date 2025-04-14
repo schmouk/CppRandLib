@@ -35,7 +35,7 @@ SOFTWARE.
 
 
 //===========================================================================
-namespace tests_utils
+namespace tests_bases
 {
     //-----------------------------------------------------------------------
     TEST(TestSuiteBases, TestsBaseInternalState)
@@ -46,9 +46,9 @@ namespace tests_utils
             std::vector<std::uint16_t> internal_state(N, 0);  // creates a vector containing 23 items all set to zero
             BaseInternalState::_init_state(internal_state, 0x94ae'17f0'563c'28bdULL);
 
-            for (auto i : internal_state) {
-                EXPECT_GT(i, 0);    // well, expect no state item is null
-                EXPECT_LE(i, 0xffffU);
+            for (auto is : internal_state) {
+                EXPECT_NE(is, 0);    // well, expect no state item is null
+                EXPECT_LE(is, 0xffffU);
             }
 
             for (int i = 0; i < internal_state.size() - 1; ++i)
@@ -61,9 +61,9 @@ namespace tests_utils
             std::vector<std::uint64_t> internal_state(N, 0);  // creates a vector containing 23 items all set to zero
             BaseInternalState::_init_state(internal_state, 0x94ae'17f0'563c'28bdULL);
 
-            for (auto i : internal_state) {
-                EXPECT_GT(i, 0);    // well, expect no state item is null
-                EXPECT_LE(i, 0xffff'ffff'ffff'ffffULL);
+            for (auto is : internal_state) {
+                EXPECT_NE(is, 0);    // well, expect no state item is null
+                EXPECT_LE(is, 0xffff'ffff'ffff'ffffULL);
             }
 
             for (int i = 0; i < internal_state.size() - 1; ++i)
@@ -76,9 +76,9 @@ namespace tests_utils
             std::vector<std::uint32_t> internal_state(N, 0);  // creates a vector containing 23 items all set to zero
             BaseInternalState::_init_state(internal_state, 0x94ae'17f0'563c'28bdULL);
 
-            for (auto i : internal_state) {
-                EXPECT_GT(i, 0);    // well, expect no state item is null
-                EXPECT_LE(i, 0xffff'ffffULL);
+            for (auto is : internal_state) {
+                EXPECT_NE(is, 0);    // well, expect no state item is null
+                EXPECT_LE(is, 0xffff'ffffUL);
             }
 
             for (int i = 0; i < internal_state.size() - 1; ++i)
@@ -91,9 +91,9 @@ namespace tests_utils
             std::vector<std::uint32_t> internal_state(N, 0);  // creates a vector containing 23 items all set to zero
             BaseInternalState::_init_state<std::uint32_t, 31>(internal_state, 0x94ae'17f0'563c'28bdULL);
 
-            for (auto i : internal_state) {
-                EXPECT_GT(i, 0);    // well, expect no state item is null
-                EXPECT_LE(i, 0x7fff'ffff'ffff'ffffULL);
+            for (auto is : internal_state) {
+                EXPECT_NE(is, 0);    // well, expect no state item is null
+                EXPECT_LE(is, 0x7fff'ffff'ffff'ffffULL);
             }
 
             for (int i = 0; i < internal_state.size() - 1; ++i)
