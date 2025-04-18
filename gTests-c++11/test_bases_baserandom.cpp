@@ -681,6 +681,22 @@ namespace tests_bases
         EXPECT_THROW((br33.n_evaluate<double, 1>(std::array<std::uint32_t, 0>(), std::array<int, 0>())), ZeroLengthException);
 
 
+        //-- tests randbytes(n)
+        std::vector<std::uint8_t> vb0{ br0.randbytes(7) };
+        for (auto b : vb0)
+            EXPECT_EQ(0, b);
+
+        std::vector<unsigned char> vb1{ br1.randbytes(3) };
+        for (auto b : vb1)
+            EXPECT_EQ(255, b);
+
+        std::vector<unsigned char> vb33{ br33.randbytes(11) };
+        for (auto b : vb33)
+            EXPECT_EQ(std::uint8_t(256 * 0.333333f), b);
+
+
+        //-- tests
+
 
 
         int DBG{ 0 };

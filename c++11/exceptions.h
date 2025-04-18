@@ -115,6 +115,12 @@ struct ProbaOutOfRangeException : public std::exception
     const char* what() noexcept { return "probabilitiy values must range in [0.0, 1.0]."; }
 };
 
+/** @brief Range arguments with incoherent values exception. */
+struct RangeIncoherentValuesException : public std::exception
+{
+    const char* what() noexcept { return "'stop' value will never be reached associated with 'start' and 'step' arguments."; }
+};
+
 /** @brief Range arguments with same value exception. */
 struct RangeSameValuesException : public std::exception
 {

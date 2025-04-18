@@ -463,7 +463,7 @@ public:
     inline const T randint(const T a, const T b);
 
 
-    /** @brief Chooses a random item from range [start, stop) with specified step. */
+    /** @brief Returns a random value from range [start, stop) with specified step. */
     template<typename T>
     const T randrange(const T start, const T stop, const T step = T(1));
 
@@ -1281,7 +1281,7 @@ inline std::vector<std::uint8_t> BaseRandom<StateT, OutputT, OUTPUT_BITS>::randb
 
     std::vector<std::uint8_t> out(n);
     for (std::uint8_t& b : out)
-        b = std::uint8_t(uniform(256ul));
+        b = uniform< std::uint8_t>(256ul);
     return out;
 }
 
@@ -1298,17 +1298,21 @@ inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::randint(const T a, cons
 }
 
 //---------------------------------------------------------------------------
-/** Chooses a random item from range [start, stop) with specified step. */
+/** Returns a random value from range [start, stop) with specified step. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 template<typename T>
 const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::randrange(const T start, const T stop, const T step)
 {
     if (!std::is_arithmetic<T>::value)
         throw MaxValueTypeException();
-    if (start == stop)
-        throw RangeSameValuesException();
+    if (step == 0)
+        throw RangeZeroStepException();
 
-    const T width{ stop - start };
+    const std::int64_t width{ stop - start };
+    if (width == 0)
+        throw RangeSameValuesException();
+    if ((width > 0 && step < 0) || (width < 0 && step > 0))
+        throw RangeIncoherentValuesException();
 
     if (step == 1)
         return start + uniform<T>(width);
