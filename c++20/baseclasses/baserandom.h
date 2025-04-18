@@ -32,10 +32,10 @@ SOFTWARE.
 #include <cstdint>
 #include <numeric>
 #include <ranges>
-#include <stdexcept>
 #include <type_traits>
 #include <vector>
 
+#include "exceptions.h"
 #include "utils/seed_generation.h"
 #include "utils/type_traits.h"
 #include "utils/uint128.h"
@@ -842,100 +842,6 @@ public:
     * @param beta: double, the shape parameter. Must be non null.
     */
     const double weibullvariate(const double alpha, const double beta) noexcept(false);
-
-
-    //---   Exceptions   ----------------------------------------------------
-    /** @brief Exponential law null lambda exception. */
-    class AlphaBetaArgsException : public std::exception
-    {
-    public:
-        const char* what() noexcept { return "both arguments alpha and beta must be greater than 0.0."; }
-    };
-
-    /** @brief Empty sequence exception. */
-    class ChoiceEmptySequenceException : public std::exception
-    {
-    public:
-        const char* what() noexcept { return "cannot make a choice from an empty sequence."; }
-    };
-
-    /** @brief Exponential law null lambda exception. */
-    class ExponentialZeroLambdaException : public std::exception
-    {
-    public:
-        const char* what() noexcept { return "lambda value cannot be 0.0 (currently is)."; }
-    };
-
-    /** @brief Exponential law null lambda exception. */
-    class GaussSigmaException : public std::exception
-    {
-    public:
-        const char* what() noexcept { return "value for argument sigma must be greater than 0.0."; }
-    };
-
-    /** @brief Not same sizes of containers exception. */
-    class ParetoArgsValueException : public std::exception
-    {
-    public:
-        const char* what() noexcept { return "shape argument 'alpha' must not be 0.0."; }
-    };
-
-    /** @brief Not a positive value exception. */
-    class PositiveValueException : public std::exception
-    {
-    public:
-        const char* what() noexcept { return "argument value must not be negative."; }
-    };
-
-    /** @brief Probability value out of range exception. */
-    class ProbaOutOfRangeException : public std::exception
-    {
-    public:
-        const char* what() noexcept { return "probabilitiy values must range in [0.0, 1.0]."; }
-    };
-
-    /** @brief Range arguments with same value exception. */
-    class RangeSameValuesException : public std::exception
-    {
-    public:
-        const char* what() noexcept { return "'start' and 'stop' arguments must be different."; }
-    };
-
-    /** @brief Range arguments with same value exception. */
-    class RangeZeroStepException : public std::exception
-    {
-    public:
-        const char* what() noexcept { return "'step' argument cannot be 0."; }
-    };
-
-    /** @brief Range arguments with same value exception. */
-    class SampleCountException : public std::exception
-    {
-    public:
-        const char* what() noexcept { return "cannot sample a number of items that is greater than the overall population."; }
-    };
-
-    /** @brief Range arguments with same value exception. */
-    class SampleSizesException : public std::exception
-    {
-    public:
-        const char* what() noexcept { return "sizes of arguments 'population' and 'counts' must be the same."; }
-    };
-
-    /** @brief Weibull law arguments exception. */
-    class WeibullArgsValueException : public std::exception
-    {
-    public:
-        const char* what() noexcept { return "shape argument 'beta' must not be 0.0."; }
-    };
-
-    /** @brief Not a positive value exception. */
-    class ZeroLengthException : public std::exception
-    {
-    public:
-        const char* what() noexcept { return "argument length must not be zero."; }
-    };
-
 
 
 protected:

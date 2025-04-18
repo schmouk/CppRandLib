@@ -31,7 +31,7 @@ SOFTWARE.
 
 #include "gtest/gtest.h"
 
-#include "baseclasses/baseinternalstate.h"
+#include "baseclasses/baserandom.h"
 
 
 //===========================================================================
