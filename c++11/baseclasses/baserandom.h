@@ -464,8 +464,8 @@ public:
 
 
     /** @brief Returns a random value from range [start, stop) with specified step. */
-    template<typename T>
-    const T randrange(const T start, const T stop, const T step = T(1));
+    template<typename T, typename S = T>
+    const T randrange(const T start, const T stop, const S step = S(1));
 
 
     /** @brief Chooses k unique random elements from a population sequence (out std::vector, in container, default counts = 1).
@@ -1294,31 +1294,38 @@ inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::randint(const T a, cons
     if (!std::is_integral<T>::value)
         throw IntegralValueTypeException();
 
-    return uniform<T>(a, b + 1);
+    const T m{ a < b ? a : b };
+    const T n{ a < b ? b : a };
+    return uniform<T>(m, n + 1);
 }
 
 //---------------------------------------------------------------------------
 /** Returns a random value from range [start, stop) with specified step. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-template<typename T>
-const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::randrange(const T start, const T stop, const T step)
+template<typename T, typename S>
+const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::randrange(const T start, const T stop, const S step)
 {
     if (!std::is_arithmetic<T>::value)
-        throw MaxValueTypeException();
+        throw ValueTypeException();
+    if (!std::is_arithmetic<S>::value)
+        throw StepValueTypeException();
     if (step == 0)
         throw RangeZeroStepException();
-
-    const std::int64_t width{ stop - start };
-    if (width == 0)
+    if (start == stop)
         throw RangeSameValuesException();
-    if ((width > 0 && step < 0) || (width < 0 && step > 0))
+    if ((stop > start && step < 0) || (stop < start && step > 0))
         throw RangeIncoherentValuesException();
 
     if (step == 1)
-        return start + uniform<T>(width);
+        return start + uniform<T>(stop - start);
 
-    const T n{ (width + step + (step > 0 ? -1 : 1)) / step };
-    return start + step * uniform<T>(n);
+    const std::uint64_t n_steps{
+        std::uint64_t(step > 0
+            ? (stop - start + (step / 2)) / step
+            : (start - stop - (step / 2)) / -step
+        )
+    };
+    return start + step * T(uniform<std::uint64_t>(n_steps));
 }
 
 //---------------------------------------------------------------------------

@@ -48,38 +48,116 @@ namespace tests_bases
         Object() = default;
         Object(const Object&) = default;
 
-        inline const bool operator<= (const Object& other) const { return true; }
+        inline const bool operator== (const Object& rhs) { return true; }
+        inline const bool operator== (const std::uint8_t rhs) const { return true; }
+        inline const bool operator== (const std::uint16_t rhs) const { return true; }
+        inline const bool operator== (const std::uint32_t rhs) const { return true; }
+        inline const bool operator== (const int rhs) const { return true; }
+        inline const bool operator== (const std::uint64_t rhs) const { return true; }
+        inline const bool operator== (const float rhs) const { return true; }
+        inline const bool operator== (const double rhs) const { return true; }
+        inline const bool operator== (const long double rhs) const { return true; }
+
+        inline const bool operator<= (const Object& rhs) { return true; }
+        inline const bool operator<= (const std::uint8_t rhs) const { return true; }
+        inline const bool operator<= (const std::uint16_t rhs) const { return true; }
+        inline const bool operator<= (const std::uint32_t rhs) const { return true; }
         inline const bool operator<= (const int rhs) const { return true; }
-        inline const bool operator<= (const unsigned int rhs) const { return true; }
+        inline const bool operator<= (const std::uint64_t rhs) const { return true; }
+        inline const bool operator<= (const float rhs) const { return true; }
         inline const bool operator<= (const double rhs) const { return true; }
         inline const bool operator<= (const long double rhs) const { return true; }
 
-        inline const bool operator< (const Object& other) const { return true; }
+        inline const bool operator>= (const Object& rhs) { return true; }
+        inline const bool operator>= (const std::uint8_t rhs) const { return true; }
+        inline const bool operator>= (const std::uint16_t rhs) const { return true; }
+        inline const bool operator>= (const std::uint32_t rhs) const { return true; }
+        inline const bool operator>= (const int rhs) const { return true; }
+        inline const bool operator>= (const std::uint64_t rhs) const { return true; }
+        inline const bool operator>= (const float rhs) const { return true; }
+        inline const bool operator>= (const double rhs) const { return true; }
+        inline const bool operator>= (const long double rhs) const { return true; }
+
+        inline const bool operator< (const Object& rhs) { return true; }
+        inline const bool operator< (const std::uint8_t rhs) const { return true; }
+        inline const bool operator< (const std::uint16_t rhs) const { return true; }
+        inline const bool operator< (const std::uint32_t rhs) const { return true; }
         inline const bool operator< (const int rhs) const { return true; }
-        inline const bool operator< (const unsigned int rhs) const { return true; }
+        inline const bool operator< (const std::uint64_t rhs) const { return true; }
+        inline const bool operator< (const float rhs) const { return true; }
         inline const bool operator< (const double rhs) const { return true; }
         inline const bool operator< (const long double rhs) const { return true; }
 
-        friend inline const bool operator<= (const int lhs, const Object& rhs) { return false; };
-        friend inline const bool operator<= (const float lhs, const Object& rhs) { return false; };
+        inline const bool operator> (const Object& rhs) { return true; }
+        inline const bool operator> (const std::uint8_t rhs) const { return true; }
+        inline const bool operator> (const std::uint16_t rhs) const { return true; }
+        inline const bool operator> (const std::uint32_t rhs) const { return true; }
+        inline const bool operator> (const int rhs) const { return true; }
+        inline const bool operator> (const std::uint64_t rhs) const { return true; }
+        inline const bool operator> (const float rhs) const { return true; }
+        inline const bool operator> (const double rhs) const { return true; }
+        inline const bool operator> (const long double rhs) const { return true; }
 
-        inline const int operator+ (const int rhs) const { return 0; }
-        inline const unsigned int operator+ (const unsigned int rhs) { return 0; }
-        inline const double operator+ (const double rhs) const { return 0.0; }
-        inline const double operator+ (const long double rhs) const { return 0.0; }
-        inline const int operator+ (const Object& rhs) const { return 0; }
+        inline const Object& operator+ (const Object& rhs) { return rhs; }
+        inline const std::uint8_t operator+ (const std::uint8_t rhs) const { return rhs; }
+        inline const std::uint16_t operator+ (const std::uint16_t rhs) const { return rhs; }
+        inline const std::uint32_t operator+ (const std::uint32_t rhs) const { return rhs; }
+        inline const int operator+ (const int rhs) const { return rhs; }
+        inline const std::uint64_t operator+ (const std::uint64_t rhs) const { return rhs; }
+        inline const float operator+ (const float rhs) const { return rhs; }
+        inline const double operator+ (const double rhs) const { return rhs; }
+        inline const long double operator+ (const long double rhs) const { return rhs; }
 
-        inline const int operator- (const Object& other) { return 0; }
+        inline const Object& operator- (const Object& rhs) { return rhs; }
+        inline const std::uint8_t operator- (const std::uint8_t rhs) const { return rhs; }
+        inline const std::uint16_t operator- (const std::uint16_t rhs) const { return rhs; }
+        inline const std::uint32_t operator- (const std::uint32_t rhs) const { return rhs; }
+        inline const int operator- (const int rhs) const { return rhs; }
+        inline const std::uint64_t operator- (const std::uint64_t rhs) const { return rhs; }
+        inline const float operator- (const float rhs) const { return rhs; }
+        inline const double operator- (const double rhs) const { return rhs; }
+        inline const long double operator- (const long double rhs) const { return rhs; }
 
-        inline const double operator* (const double rhs) { return 0.0; }
-        inline const double operator* (const long double rhs) { return 0.0; }
-        inline const double operator* (const Object& rhs) { return 0.0; }
+        inline const Object& operator-() const { return *this; };
+
+        inline const Object& operator* (const Object& rhs) { return rhs; }
+        inline const std::uint8_t operator* (const std::uint8_t rhs) const { return rhs; }
+        inline const std::uint16_t operator* (const std::uint16_t rhs) const { return rhs; }
+        inline const std::uint32_t operator* (const std::uint32_t rhs) const { return rhs; }
+        inline const int operator* (const int rhs) const { return rhs; }
+        inline const std::uint64_t operator* (const std::uint64_t rhs) const { return rhs; }
+        inline const float operator* (const float rhs) const { return rhs; }
+        inline const double operator* (const double rhs) const { return rhs; }
+        inline const long double operator* (const long double rhs) const { return rhs; }
+
+        inline const Object& operator/ (const Object& rhs) { return rhs; }
+        inline const std::uint8_t operator/ (const std::uint8_t rhs) const { return rhs; }
+        inline const std::uint16_t operator/ (const std::uint16_t rhs) const { return rhs; }
+        inline const std::uint32_t operator/ (const std::uint32_t rhs) const { return rhs; }
+        inline const int operator/ (const int rhs) const { return rhs; }
+        inline const std::uint64_t operator/ (const std::uint64_t rhs) const { return rhs; }
+        inline const float operator/ (const float rhs) const { return rhs; }
+        inline const double operator/ (const double rhs) const { return rhs; }
+        inline const long double operator/ (const long double rhs) const { return rhs; }
+
+        template<typename T = Object&>
+        friend inline const bool operator<= (const T lhs, const Object& rhs) { return false; };
+
+        template<typename T>
+        friend inline const int operator+ (const T lhs, const Object& rhs) { return lhs; };
+
+        template<typename T>
+        friend inline const int operator- (const T lhs, const Object& rhs) { return lhs; };
+
+        template<typename T>
+        friend inline const int operator* (const T lhs, const Object& rhs) { return lhs; };
+
+        template<typename T>
+        friend inline const int operator/ (const T lhs, const Object& rhs) { return lhs; };
+
 
         inline operator int() const { return 0; }
-        inline operator unsigned int() const { return 0; }
-        inline operator float() const { return 0.0f; }
-        inline operator double() const { return 0.0; }
-        inline operator long double() const { return 0.0L; }
+
     };
 
 
@@ -694,8 +772,72 @@ namespace tests_bases
         for (auto b : vb33)
             EXPECT_EQ(std::uint8_t(256 * 0.333333f), b);
 
+        EXPECT_THROW(br0.randbytes(0), ZeroLengthException);
+        EXPECT_THROW(br1.randbytes(0), ZeroLengthException);
+        EXPECT_THROW(br33.randbytes(0), ZeroLengthException);
 
-        //-- tests
+
+        //-- tests randint()
+        EXPECT_EQ(1, br0.randint(1, 5));
+        EXPECT_EQ(10ULL, br1.randint(0ULL, 10ULL));
+        EXPECT_EQ(std::int8_t(double(7 * .3333333 - 7)), br33.randint(std::int8_t(-7), std::int8_t(-1)));
+
+        EXPECT_EQ(1, br0.randint(5, 1));
+        EXPECT_EQ(10ULL, br1.randint(10ULL, 0ULL));
+        EXPECT_EQ(std::int8_t(double(7 * .3333333 - 7)), br33.randint(std::int8_t(-1), std::int8_t(-7)));
+
+        EXPECT_THROW(br0.randint(1.9, 3.0), IntegralValueTypeException);
+        EXPECT_THROW(br1.randint(Object(), Object()), IntegralValueTypeException);
+        EXPECT_THROW(br33.randint(-7.0f, -1.0f), IntegralValueTypeException);
+
+
+        //-- tests randrange()
+        /** /
+        if (!std::is_arithmetic<T>::value)
+            throw ValueTypeException();
+        if (step == 0)
+            throw RangeZeroStepException();
+
+        if (start == stop)
+            throw RangeSameValuesException();
+        if ((stop > start && step < 0) || (stop < start && step > 0))
+            throw RangeIncoherentValuesException();
+
+        if (step == 1)
+            return start + uniform<T>(stop - start);
+
+        const T n{ (stop - start + step + (step > 0 ? -1 : 1)) / step };
+        return start + step * uniform<T>(n);
+    /**/
+        EXPECT_EQ(br0.randrange(std::uint8_t(1), std::uint8_t(4)), std::uint8_t(1));
+        EXPECT_EQ(br1.randrange(std::uint8_t(1), std::uint8_t(4)), std::uint8_t(3));
+        EXPECT_EQ(br33.randrange(std::uint8_t(1), std::uint8_t(5)), std::uint8_t(4 * 0.333333 + 1));
+
+        EXPECT_EQ(br0.randrange(std::uint8_t(4), std::uint8_t(1), -1), std::uint8_t(4));
+        EXPECT_EQ(br1.randrange(std::uint8_t(4), std::uint8_t(1), -1), std::uint8_t(2));
+        EXPECT_EQ(br33.randrange(std::uint8_t(5), std::uint8_t(1), -1), std::uint8_t(4));
+
+        EXPECT_EQ(br0.randrange(1, 4, 2), 1);
+        EXPECT_EQ(br1.randrange(1, 5, 2), 3);
+        EXPECT_NEAR(br33.randrange(1.0, 5.0, 0.5), 2.0, 1.0e-6);
+        EXPECT_NEAR(br33.randrange(1.0, 5.0, 0.25), 2.25, 1.0e-6);
+        EXPECT_NEAR(br1.randrange(1.0, 5.5, 0.35), 5.2, 1.0e-6);
+
+        EXPECT_EQ(br0.randrange(4, 1, -2), 4);
+        EXPECT_EQ(br1.randrange(5, 1, -2), 3);
+        EXPECT_NEAR(br33.randrange(5.0, 1.0, -0.5), 4.0, 1.0e-6);
+        EXPECT_NEAR(br33.randrange(5.0, 1.0, -0.25), 3.75, 1.0e-6);
+        EXPECT_NEAR(br1.randrange(5.5, 1.0, -0.35), 1.3, 1.0e-6);
+
+        EXPECT_THROW(br0.randrange(Object(), Object(), Object()), ValueTypeException);
+        EXPECT_THROW(br1.randrange(15, 25, 0), RangeZeroStepException);
+        EXPECT_THROW(br33.randrange(25ULL, 25ULL, 2ULL), RangeSameValuesException);
+        EXPECT_THROW(br0.randrange(15L, 25L, -1L), RangeIncoherentValuesException);
+        EXPECT_THROW(br1.randrange(25UL, 15UL, 3UL), RangeIncoherentValuesException);
+
+
+
+
 
 
 

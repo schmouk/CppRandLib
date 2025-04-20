@@ -79,16 +79,16 @@ struct IntegralValueTypeException : public std::exception
     const char* what() noexcept { return "Argument(s) must be an integral type."; }
 };
 
-/** @brief Empty sequence exception. */
+/** @brief Max value type exception. */
 struct MaxValueTypeException : public std::exception
 {
-    const char* what() noexcept { return "Type of values embedded in 'max' container must be arithmetic ones."; }
+    const char* what() noexcept { return "Type of 'max' values must be arithmetic."; }
 };
 
-/** @brief Empty sequence exception. */
+/** @brief Min value type exception. */
 struct MinValueTypeException : public std::exception
 {
-    const char* what() noexcept { return "Type of values embedded in 'min' container must be arithmetic ones."; }
+    const char* what() noexcept { return "Type of 'min' values must be arithmetic."; }
 };
 
 /** @brief Not same sizes of containers exception. */
@@ -151,10 +151,16 @@ struct SampleSizesException : public std::exception
     const char* what() noexcept { return "sizes of arguments 'population' and 'counts' must be the same."; }
 };
 
+/** @brief Step value type exception. */
+struct StepValueTypeException : public std::exception
+{
+    const char* what() noexcept { return "Type of 'step' values must be arithmetic."; }
+};
+
 /** @brief Empty sequence exception. */
 struct ValueTypeException : public std::exception
 {
-    const char* what() noexcept { return "Type of values embedded in container must be arithmetic ones."; }
+    const char* what() noexcept { return "Type of values must be arithmetic."; }
 };
 
 /** @brief Weibull law arguments exception. */
