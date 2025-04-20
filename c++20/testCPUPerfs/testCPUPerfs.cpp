@@ -162,16 +162,18 @@ void test_perf(
         p = end - start;
     }
 
+    std::cout << std::fixed << std::setprecision(4);
+
     const double nanoseconds{ 1.0 / nb_loops };
     std::ranges::for_each(
         perfs,
         [nanoseconds] (const std::uint64_t p) {
-            std::cout << std::fixed << std::setprecision(4) << p * nanoseconds << ' ';
+            std::cout << p * nanoseconds << ' ';
         }
     );
     std::cout << std::endl;
 
-    std::cout << "--> " << std::fixed << std::setprecision(4) << std::ranges::min(perfs) * nanoseconds << " ns\n\n";
+    std::cout << "--> " << std::ranges::min(perfs) * nanoseconds << " ns\n\n";
 }
 
 
