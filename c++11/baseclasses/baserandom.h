@@ -1390,12 +1390,12 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(
     const std::size_t k
 )
 {
-    if (!std::is_integral<T>::value)
-        throw IntegralValueTypeException();
-    if (counts.size() != population.size())
-        throw SampleSizesException();
+    //if (!std::is_integral<T>::value)
+    //    throw IntegralValueTypeException();
     if (!std::is_integral<C>::value)
         throw SampleCountsTypeException();
+    if (counts.size() != population.size())
+        throw SampleSizesException();
 
     const std::size_t samples_count = std::size_t(std::accumulate(counts.begin(), counts.end(), C(0)));
     if (k > samples_count)
@@ -1431,7 +1431,7 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(
 )
 {
     if (!std::is_integral<C>::value)
-        throw IntegralValueTypeException();
+        throw SampleCountsTypeException();
 
     const std::size_t samples_count = std::size_t(std::accumulate(counts.begin(), counts.end(), C(0)));
     if (k > samples_count)
