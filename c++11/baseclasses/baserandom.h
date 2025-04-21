@@ -468,7 +468,7 @@ public:
     const T randrange(const T start, const T stop, const S step = S(1));
 
 
-    /** @brief Chooses k unique random elements from a population sequence (out std::vector, in container, default counts = 1).
+    /** @brief Chooses k unique random elements from a population sequence (out std::vector, in container, default counts per element = 1).
     *
     * Evaluates a vector containing  elements  from  the  population  while
     * leaving  the  original  population  unchanged.  The resulting list is
@@ -496,7 +496,8 @@ public:
     template<typename T>
     void sample(std::vector<T>& out, const std::vector<T>& population, const std::size_t k);
 
-    /** @brief Chooses k unique random elements from a population sequence (out std::array<>, in std::array<>, default counts = 1).
+
+    /** @brief Chooses k unique random elements from a population sequence (out std::array<>, in std::array<>, default counts per element = 1).
     *
     * Evaluates a vector containing  elements  from  the  population  while
     * leaving  the  original  population  unchanged.  The resulting list is
@@ -1329,10 +1330,14 @@ const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::randrange(const T start, const
 }
 
 //---------------------------------------------------------------------------
-/** Chooses k unique random elements from a population sequence (out std::vector, in container, default counts = 1). */
+/** Chooses k unique random elements from a population sequence (out std::vector, in container, default count per element = 1). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 template<typename T>
-void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(std::vector<T>& out, const std::vector<T>& population, const std::size_t k)
+void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(
+    std::vector<T>& out,
+    const std::vector<T>& population,
+    const std::size_t k
+)
 {
     const std::size_t n{ population.size() };
     if (k > n)
@@ -1342,28 +1347,35 @@ void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(std::vector<T>& out, const
     out.resize(k);
     std::vector<T> samples{ population };
 
+    auto out_it = out.begin();
     for (std::size_t i = 0; i < k; ++i) {
-        const std::size_t index = uniform(i, n);
-        out.emplace_back(samples[index]);
-        std::swap(samples[i], samples[index]);
+        const std::size_t index = uniform<std::size_t>(i, n);
+        *out_it++ = samples[index];
+        if (i != index)
+            std::swap(samples[i], samples[index]);
     }
 }
 
 //---------------------------------------------------------------------------
-/** Chooses k unique random elements from a population sequence (out std::array<>, in std::array<>, default counts = 1). */
+/** Chooses k unique random elements from a population sequence (out std::array<>, in std::array<>, default count per element = 1). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 template<typename T, const std::size_t k, const std::size_t n>
-void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(std::array<T, k>& out, const std::array<T, n>& population)
+void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(
+    std::array<T, k>& out,
+    const std::array<T, n>& population
+)
 {
     if (k > n)
         throw SampleCountException();
 
     std::array<T, n> samples{ population };
 
+    auto out_it{ out.begin() };
     for (std::size_t i = 0; i < k; ++i) {
-        const std::size_t index = uniform(i, n);
-        out[i] = samples[index];
-        std::swap(samples[i], samples[index]);
+        const std::size_t index = uniform<std::size_t>(i, n);
+        *out_it++ = samples[index];
+        if (i != index)
+            std::swap(samples[i], samples[index]);
     }
 }
 
@@ -1371,7 +1383,12 @@ void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(std::array<T, k>& out, con
 /** Chooses k unique random elements from a population sequence (std::vector<>, with counts vector). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 template<typename T, typename C>
-inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(std::vector<T>& out, const std::vector<T>& population, const std::vector<C>& counts, const std::size_t k)
+inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(
+    std::vector<T>& out,
+    const std::vector<T>& population,
+    const std::vector<C>& counts,
+    const std::size_t k
+)
 {
     if (!std::is_integral<T>::value)
         throw IntegralValueTypeException();
@@ -1385,8 +1402,8 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(std::vector<T>& out
         throw SampleCountException();
 
     std::vector<T> samples(samples_count);
-    auto c_it = counts.cbegin();
-    auto s_it = samples.begin();
+    auto c_it{ counts.cbegin() };
+    auto s_it{ samples.begin() };
     for (auto& p : population) {
         for (std::size_t j = std::size_t(*c_it++); j > 0; --j)
             *s_it++ = p;
@@ -1394,10 +1411,12 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(std::vector<T>& out
 
     out.clear();
     out.resize(k);
+    auto out_it{ out.begin() };
     for (std::size_t i = 0; i < k; ++i) {
-        const std::size_t index = uniform(i, samples_count);
-        out.emplace_back(samples[index]);
-        std::swap(samples[i], samples[index]);
+        const std::size_t index = uniform<std::size_t>(i, samples_count);
+        *out_it++ = samples[index];
+        if (i != index)
+            std::swap(samples[i], samples[index]);
     }
 }
 
@@ -1405,7 +1424,11 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(std::vector<T>& out
 /** Chooses k unique random elements from a population sequence (std::array<>, with counts array). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 template<typename T, typename C, const std::size_t k, const std::size_t n>
-inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(std::array<T, k>& out, const std::array<T, n>& population, const std::array<C, n>& counts)
+inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(
+    std::array<T, k>& out,
+    const std::array<T, n>& population,
+    const std::array<C, n>& counts
+)
 {
     if (!std::is_integral<C>::value)
         throw IntegralValueTypeException();
@@ -1414,18 +1437,20 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(std::array<T, k>& o
     if (k > samples_count)
         throw SampleCountException();
 
-    std::vector<T> samples;
-    samples.resize(samples_count);
-    auto c_it = counts.begin();
+    std::vector<T> samples(samples_count);
+    auto c_it{ counts.cbegin() };
+    auto s_it{ samples.begin() };
     for (auto& p : population) {
         for (std::size_t j = std::size_t(*c_it++); j > 0; --j)
-            samples.emplace_back(p);
+            *s_it++ = p;
     }
 
+    auto out_it{ out.begin() };
     for (std::size_t i = 0; i < k; ++i) {
-        const std::size_t index = uniform(i, samples_count);
-        out[i] = samples[index];
-        std::swap(samples[i], samples[index]);
+        const std::size_t index = uniform<std::size_t>(i, samples_count);
+        *out_it++ = samples[index];
+        if (i != index)
+            std::swap(samples[i], samples[index]);
     }
 }
 

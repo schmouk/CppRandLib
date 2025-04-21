@@ -792,23 +792,6 @@ namespace tests_bases
 
 
         //-- tests randrange()
-        /** /
-        if (!std::is_arithmetic<T>::value)
-            throw ValueTypeException();
-        if (step == 0)
-            throw RangeZeroStepException();
-
-        if (start == stop)
-            throw RangeSameValuesException();
-        if ((stop > start && step < 0) || (stop < start && step > 0))
-            throw RangeIncoherentValuesException();
-
-        if (step == 1)
-            return start + uniform<T>(stop - start);
-
-        const T n{ (stop - start + step + (step > 0 ? -1 : 1)) / step };
-        return start + step * uniform<T>(n);
-    /**/
         EXPECT_EQ(br0.randrange(std::uint8_t(1), std::uint8_t(4)), std::uint8_t(1));
         EXPECT_EQ(br1.randrange(std::uint8_t(1), std::uint8_t(4)), std::uint8_t(3));
         EXPECT_EQ(br33.randrange(std::uint8_t(1), std::uint8_t(5)), std::uint8_t(4 * 0.333333 + 1));
@@ -827,13 +810,108 @@ namespace tests_bases
         EXPECT_EQ(br1.randrange(5, 1, -2), 3);
         EXPECT_NEAR(br33.randrange(5.0, 1.0, -0.5), 4.0, 1.0e-6);
         EXPECT_NEAR(br33.randrange(5.0, 1.0, -0.25), 3.75, 1.0e-6);
-        EXPECT_NEAR(br1.randrange(5.5, 1.0, -0.35), 1.3, 1.0e-6);
+        EXPECT_NEAR(br1.randrange(5.5, 1.0, -0.35), 1.30, 1.0e-6);
 
         EXPECT_THROW(br0.randrange(Object(), Object(), Object()), ValueTypeException);
         EXPECT_THROW(br1.randrange(15, 25, 0), RangeZeroStepException);
         EXPECT_THROW(br33.randrange(25ULL, 25ULL, 2ULL), RangeSameValuesException);
         EXPECT_THROW(br0.randrange(15L, 25L, -1L), RangeIncoherentValuesException);
         EXPECT_THROW(br1.randrange(25UL, 15UL, 3UL), RangeIncoherentValuesException);
+
+
+        //-- tests samples(vector, vector, k)
+        std::vector<char> vect_population{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M' };
+        const size_t N_vect_population{ vect_population.size()};
+        std::vector<char> vect_c;
+
+        int k{ 0 };
+        br0.sample(vect_c, vect_population, k);
+        for (int i = 0; i < k; ++i)
+            EXPECT_EQ(vect_population[i], vect_c[i]);
+        k = 5;
+        br0.sample(vect_c, vect_population, k);
+        for (int i = 0; i < k; ++i)
+            EXPECT_EQ(vect_population[i], vect_c[i]);
+        k = N_vect_population;
+        br0.sample(vect_c, vect_population, k);
+        for (int i = 0; i < k; ++i)
+            EXPECT_EQ(vect_population[i], vect_c[i]);
+
+        k = 0;
+        br1.sample(vect_c, vect_population, k);
+        for (int i = 0; i < k; ++i)
+            EXPECT_EQ(vect_population[N_vect_population - i - 1], vect_c[i]);
+        k = 5;
+        br1.sample(vect_c, vect_population, k);
+        for (int i = 0; i < k; ++i)
+            EXPECT_EQ("MABCD"[i], vect_c[i]);
+        k = N_vect_population;
+        br1.sample(vect_c, vect_population, k);
+        for (int i = 0; i < k; ++i)
+            EXPECT_EQ("MABCDEFGHIJKL"[i], vect_c[i]);
+
+        k = 0;
+        br33.sample(vect_c, vect_population, k);
+        for (int i = 0; i < k; ++i)
+            EXPECT_EQ(vect_population[N_vect_population - i - 1], vect_c[i]);
+        k = 5;
+        br33.sample(vect_c, vect_population, k);
+        for (int i = 0; i < k; ++i)
+            EXPECT_EQ("EAFGD"[i], vect_c[i]);
+        k = N_vect_population;
+        br33.sample(vect_c, vect_population, k);
+        for (int i = 0; i < k; ++i)
+            EXPECT_EQ("EAFGDHIBJKCLM"[i], vect_c[i]);
+
+        EXPECT_THROW(br0.sample(vect_c, vect_population, N_vect_population + 1), SampleCountException);
+
+
+        //-- tests samples(array, k)
+        std::array<char, 13> arr_population{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M' };
+
+        std::array<char, 0> arr_c0;
+        std::array<char, 5> arr_c5;
+        std::array<char, 13> arr_c13;
+        std::array<char, 14> arr_c14;
+
+        br0.sample(arr_c0, arr_population);
+        for (int i = 0; i < 0; ++i)
+            EXPECT_EQ(arr_population[i], arr_c0[i]);
+        br0.sample(arr_c5, arr_population);
+        for (int i = 0; i < 5; ++i)
+            EXPECT_EQ(arr_population[i], arr_c5[i]);
+        br0.sample(arr_c13, arr_population);
+        for (int i = 0; i < 13; ++i)
+            EXPECT_EQ(arr_population[i], arr_c13[i]);
+
+        br1.sample(arr_c0, arr_population);
+        for (int i = 0; i < 0; ++i)
+            EXPECT_EQ(arr_population[13 - i - 1], arr_c0[i]);
+        br1.sample(arr_c5, arr_population);
+        for (int i = 0; i < 5; ++i)
+            EXPECT_EQ("MABCD"[i], arr_c5[i]);
+        br1.sample(arr_c13, arr_population);
+        for (int i = 0; i < 13; ++i)
+            EXPECT_EQ("MABCDEFGHIJKL"[i], arr_c13[i]);
+
+        br33.sample(arr_c0, arr_population);
+        for (int i = 0; i < 0; ++i)
+            EXPECT_EQ(arr_population[13 - i - 1], arr_c0[i]);
+        br33.sample(arr_c5, arr_population);
+        for (int i = 0; i < 5; ++i)
+            EXPECT_EQ("EAFGD"[i], vect_c[i]);
+        br33.sample(arr_c13, arr_population);
+        for (int i = 0; i < 13; ++i)
+            EXPECT_EQ("EAFGDHIBJKCLM"[i], vect_c[i]);
+
+        EXPECT_THROW(br0.sample(arr_c14, arr_population), SampleCountException);
+
+
+        //-- tests samples(vector, vector, vector, k)
+
+
+        //-- tests samples(array, array, k)
+
 
 
 
