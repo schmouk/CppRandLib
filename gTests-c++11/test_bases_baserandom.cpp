@@ -28,6 +28,8 @@ SOFTWARE.
 //===========================================================================
 #include <array>
 #include <cstdint>
+#include <list>
+#include <map>
 #include <vector>
 
 #include "gtest/gtest.h"
@@ -1217,9 +1219,41 @@ namespace tests_bases
         EXPECT_DOUBLE_EQ(0.321, br33.gauss_next());
 
 
+        //-- tests shuffle()
+        std::vector<char> vec_s(vect_population);
+        std::array<char, 13> arr_s(arr_population);
 
+        br0.shuffle(vec_s);
+        for (int i = 0; i < 13; ++i)
+            EXPECT_EQ("ABCDEFGHIJKLM"[i], vec_s[i]);
 
+        vec_s = vect_population;
+        br1.shuffle(vec_s);
+        for (int i = 0; i < 13; ++i)
+            EXPECT_EQ("MABCDEFGHIJKL"[i], vec_s[i]);
 
+        vec_s = vect_population;
+        br33.shuffle(vec_s);
+        for (int i = 0; i < 13; ++i)
+            EXPECT_EQ("EAFGDHIBJKCLM"[i], vec_s[i]);
+
+        br0.shuffle(arr_s);
+        for (int i = 0; i < 13; ++i)
+            EXPECT_EQ("ABCDEFGHIJKLM"[i], arr_s[i]);
+
+        arr_s = arr_population;
+        br1.shuffle(arr_s);
+        for (int i = 0; i < 13; ++i)
+            EXPECT_EQ("MABCDEFGHIJKL"[i], arr_s[i]);
+
+        arr_s = arr_population;
+        br33.shuffle(arr_s);
+        for (int i = 0; i < 13; ++i)
+            EXPECT_EQ("EAFGDHIBJKCLM"[i], arr_s[i]);
+
+        EXPECT_THROW(br0.shuffle(std::map<int, Object>()), IndexableContainerException);
+
+        
 
 
         int DBG{ 0 };

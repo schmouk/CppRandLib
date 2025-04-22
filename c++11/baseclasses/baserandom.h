@@ -1526,9 +1526,12 @@ void BaseRandom<StateT, OutputT, OUTPUT_BITS>::shuffle(ContainerType& seq)
         throw IndexableContainerException();
 
     const std::size_t n{ seq.size() };
-    for (std::size_t i = 0; i < n - 1; ++i) {
-        const std::size_t index = uniform(i, n);
-        std::swap(seq[i], seq[index]);
+
+    if (n != 0) {
+        for (std::size_t i = 0; i < n - 1; ++i) {
+            const std::size_t index = uniform<std::size_t>(i, n);
+            std::swap(seq[i], seq[index]);
+        }
     }
 }
 
