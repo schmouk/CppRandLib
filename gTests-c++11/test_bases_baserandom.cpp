@@ -1154,6 +1154,68 @@ namespace tests_bases
         EXPECT_THROW(br33.sample(arr_c13, arr_population, std::array<long double, 13>()), SampleCountsTypeException);
 
 
+        //-- tests seed() -- notice: tests _setstate() and state() also
+        br0.seed();
+        EXPECT_EQ(br0.state(), 0ULL);
+        br1.seed();
+        EXPECT_EQ(br1.state(), 0ULL);
+        br33.seed();
+        EXPECT_EQ(br33.state(), 0UL);
+
+        br0.seed(123UL);
+        EXPECT_EQ(br0.state(), 0ULL);
+        br1.seed(456789UL);
+        EXPECT_EQ(br1.state(), 0ULL);
+        br33.seed(0xffff'ffffUL);
+        EXPECT_EQ(br33.state(), 0UL);
+
+        br0.seed(0ULL);
+        EXPECT_EQ(br0.state(), 0ULL);
+        br1.seed(0x999'777'555'333ULL);
+        EXPECT_EQ(br1.state(), 0ULL);
+        br33.seed(0xffff'ffff'ffff'ffffULL);
+        EXPECT_EQ(br33.state(), 0UL);
+
+        br0.seed(0.0f);
+        EXPECT_EQ(br0.state(), 0ULL);
+        br1.seed(123.0);
+        EXPECT_EQ(br1.state(), 0ULL);
+        br33.seed(-1.0);
+        EXPECT_EQ(br33.state(), 0UL);
+
+
+        //-- tests setstate()
+        br0.setstate(0xffff'ffff'ffff'ffffULL);
+        EXPECT_EQ(br0.state(), 0xffff'ffff'ffff'ffffULL);
+        EXPECT_FALSE(br0.gauss_valid());
+        EXPECT_DOUBLE_EQ(0.0, br0.gauss_next());
+
+        br1.setstate(0x1234'5678'9abc'def0ULL);
+        EXPECT_EQ(br1.state(), 0x1234'5678'9abc'def0ULL);
+        EXPECT_FALSE(br1.gauss_valid());
+        EXPECT_DOUBLE_EQ(0.0, br1.gauss_next());
+
+        br33.setstate(0x1'0123'4567ULL);
+        EXPECT_EQ(br33.state(), 0x123'4567ULL);
+        EXPECT_FALSE(br33.gauss_valid());
+        EXPECT_DOUBLE_EQ(0.0, br33.gauss_next());
+
+
+        br0.setstate(0xffff'ffff'ffff'ffffULL, 0.987);
+        EXPECT_EQ(br0.state(), 0xffff'ffff'ffff'ffffULL);
+        EXPECT_TRUE(br0.gauss_valid());
+        EXPECT_DOUBLE_EQ(0.987, br0.gauss_next());
+
+        br1.setstate(0x1234'5678'9abc'def0ULL, 0.654f);
+        EXPECT_EQ(br1.state(), 0x1234'5678'9abc'def0ULL);
+        EXPECT_TRUE(br1.gauss_valid());
+        EXPECT_DOUBLE_EQ(double(0.654f), br1.gauss_next());
+
+        br33.setstate(0x1'0123'4567ULL, 0.321);
+        EXPECT_EQ(br33.state(), 0x123'4567ULL);
+        EXPECT_TRUE(br33.gauss_valid());
+        EXPECT_DOUBLE_EQ(0.321, br33.gauss_next());
+
 
 
 
