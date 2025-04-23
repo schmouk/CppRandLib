@@ -1253,9 +1253,47 @@ namespace tests_bases
 
         EXPECT_THROW(br0.shuffle(std::map<int, Object>()), IndexableContainerException);
 
+
+        //-- tests betavariate()
+        EXPECT_DOUBLE_EQ(0.0, br0.betavariate(1.00, 0.20));
+        EXPECT_DOUBLE_EQ(0.0, br0.betavariate(1.00, 1.00));
+        EXPECT_DOUBLE_EQ(0.0, br0.betavariate(1.00, 2.23));
+        EXPECT_DOUBLE_EQ(0.0, br0.betavariate(0.13, 0.23));
+        EXPECT_DOUBLE_EQ(0.0, br0.betavariate(0.20, 1.00));
+        EXPECT_DOUBLE_EQ(0.0, br0.betavariate(0.13, 2.23));
+        EXPECT_DOUBLE_EQ(1.0, br0.betavariate(1.13, 0.23));
+        EXPECT_DOUBLE_EQ(1.0, br0.betavariate(1.13, 1.00));
+        EXPECT_DOUBLE_EQ(0.5, br0.betavariate(1.13, 2.23));
+
+        EXPECT_NEAR(1.0, br1.betavariate(1.00, 0.20), 1.0e-6);
+        EXPECT_DOUBLE_EQ(0.5, br1.betavariate(1.00, 1.00));
+        EXPECT_NEAR(0.956861, br1.betavariate(1.00, 2.23), 1.0e-6);
+        EXPECT_DOUBLE_EQ(0.5, br1.betavariate(0.13, 0.23));
+        EXPECT_NEAR(0.000000, br1.betavariate(0.20, 1.00), 1.0e-6);
+        EXPECT_NEAR(0.000000, br1.betavariate(0.13, 2.23), 1.0e-6);
+        EXPECT_NEAR(0.999999, br1.betavariate(1.13, 0.23), 1.0e-6);
+        EXPECT_NEAR(0.043139, br1.betavariate(1.13, 1.00), 1.0e-6);
+        EXPECT_DOUBLE_EQ(0.5, br1.betavariate(1.13, 2.23));
+
+        EXPECT_NEAR(0.985732, br33.betavariate(1.00, 0.20), 1.0e-6);
+        EXPECT_DOUBLE_EQ(0.5, br33.betavariate(1.00, 1.00));
+        EXPECT_NEAR(0.208299, br33.betavariate(1.00, 2.23), 1.0e-6);
+        EXPECT_NEAR(0.024890, br33.betavariate(0.13, 0.23), 1.0e-6);
+        EXPECT_NEAR(0.014268, br33.betavariate(0.20, 1.00), 1.0e-6);
+        EXPECT_NEAR(0.000199, br33.betavariate(0.13, 2.23), 1.0e-6);
+        EXPECT_NEAR(0.980101, br33.betavariate(1.13, 0.23), 1.0e-6);
+        EXPECT_NEAR(0.592979, br33.betavariate(1.13, 1.00), 1.0e-6);
+        EXPECT_NEAR(0.277096, br33.betavariate(1.13, 2.23), 1.0e-6);
+
+
+        EXPECT_THROW(br0.betavariate(-0.23, 0.31), AlphaBetaArgsException);
+        EXPECT_THROW(br1.betavariate(0.23, -0.31), AlphaBetaArgsException);
+        EXPECT_THROW(br33.betavariate(-0.23, -0.31), AlphaBetaArgsException);
+
+
+
         
 
 
-        int DBG{ 0 };
     }
 }

@@ -1563,6 +1563,9 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::expovariate(const double 
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gammavariate(const double alpha, const double beta)
 {
+    constexpr int N_MAX_LOOPS{ 1000 };
+    int n_loops{ 0 };
+
     if (alpha <= 0.0 || beta <= 0.0)
         throw AlphaBetaArgsException();
 
@@ -1570,15 +1573,16 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gammavariate(const double
         // Uses R.C.H.Cheng paper
         // "The generation of Gamma variables with non - integral shape parameters",
         // Applied Statistics, (1977), 26, No. 1, p71 - 74
+        // (modified here with n_loops testing against max loops count and default returned value)
         constexpr double EPSILON{ 1e-7 };
         const double     INV_A{ std::sqrt(2.0 * alpha - 1.0) };
         const double     B{ alpha - LOG4 };
         const double     C{ alpha + INV_A };
 
-        while (true) {
-            const double u1{ uniform() };
+        while (n_loops < N_MAX_LOOPS) {  // Notice: while (true) in initial Cheng's algorithm
+            const double u1{ uniform<double>() };
             if (EPSILON < u1 && u1 < 1.0 - EPSILON) {
-                const double u2{ 1.0 - uniform() };
+                const double u2{ 1.0 - uniform<double>() };
                 const double v{ std::log(u1 / (1.0 - u1)) / INV_A };
                 const double x{ alpha - std::exp(v) };
                 const double z{ u1 * u1 * u2 };
@@ -1587,30 +1591,38 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gammavariate(const double
                     // this will eventually happen
                     return x * beta;
             }
+            ++n_loops;  // added to initial algorithm
         }
+        return 0.999999;  // added to initial algorithm: returned default value
     }
     else if (alpha == 1.0) {
         // this is exponential distribution with lambda = 1 / beta
-        return -std::log(1.0 - uniform()) * beta;
+        return -std::log(1.0 - uniform<double>()) * beta;
     }
     else {
         // alpha is between 0 and 1 (exclusive)
         // so, uses ALGORITHM GS of Statistical Computing - Kennedy & Gentle
+        // (modified here with n_loops testing against max loops count and default returned value)
         double x, u;
-        while (true) {
-            u = uniform();
+        while (n_loops < N_MAX_LOOPS) {  // Notice: while (true) in initial Kennedy & Gentle's algorithm
+            u = uniform<double>();
             const double b{ (E + alpha) / E };
             const double p{ b * u };
             x = p <= 1.0 ? std::pow(p, 1.0 / alpha) : -std::log((b - p) / alpha);
-            u = uniform();
+            u = uniform<double>();
             if (p <= 1.0) {
                 if (u <= std::exp(-x))
                     break;
             }
             else if (u <= std::pow(x, alpha - 1.0))
                 break;
+
+            ++n_loops;  // added to initial algorithm
         }
-        return x * beta;
+        if (n_loops < N_MAX_LOOPS)  // added to initial algorithm
+            return x * beta;
+        else
+            return 0.000001;  // added to initial algorithm: returned default value
     }
 }
 
