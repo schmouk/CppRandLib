@@ -1552,10 +1552,14 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::betavariate(const double 
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::expovariate(const double lambda)
 {
-    if (lambda == 0.0)
+    if (lambda <= 0.0)
         throw ExponentialZeroLambdaException();
 
-    return -std::log(1.0 - uniform<double>());
+    const double u{ uniform<double>() };
+    if (u < 1.0)  // should always happen, let's check for it nevertheless
+        return -std::log(1.0 - u) / lambda;
+    else
+        return 0.0;
 }
 
 //---------------------------------------------------------------------------
@@ -1573,27 +1577,29 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gammavariate(const double
         // Uses R.C.H.Cheng paper
         // "The generation of Gamma variables with non - integral shape parameters",
         // Applied Statistics, (1977), 26, No. 1, p71 - 74
-        // (modified here with n_loops testing against max loops count and default returned value)
+        // (modified here with n_loops testing against max loops count and with default returned value)
         constexpr double EPSILON{ 1e-7 };
         const double     INV_A{ std::sqrt(2.0 * alpha - 1.0) };
         const double     B{ alpha - LOG4 };
         const double     C{ alpha + INV_A };
 
+        double u1;
         while (n_loops < N_MAX_LOOPS) {  // Notice: while (true) in initial Cheng's algorithm
-            const double u1{ uniform<double>() };
-            if (EPSILON < u1 && u1 < 1.0 - EPSILON) {
+            u1 = std::min(uniform<double>(), 1.0 - EPSILON);  // Notice: modification from initial algorithm u1 is always less than 1-epsilon
+            if (EPSILON < u1) {          // Notice: modification from initial algorithm, removed the test u1 < 1-epsilon
                 const double u2{ 1.0 - uniform<double>() };
                 const double v{ std::log(u1 / (1.0 - u1)) / INV_A };
                 const double x{ alpha - std::exp(v) };
                 const double z{ u1 * u1 * u2 };
                 const double r{ B + C * v - x };
                 if (r + SG_MAGICCONST - 4.5 * z >= 0.0 || r >= std::log(z))
-                    // this will eventually happen
-                    return x * beta;
+                    // this should eventually happen
+                    return x < 0 ? -x * beta : x * beta;
             }
-            ++n_loops;  // added to initial algorithm
+            ++n_loops;  
         }
-        return 0.999999;  // added to initial algorithm: returned default value
+        // added to initial algorithm : u1 < EPSILON happened too many successive times
+        return 0.0;
     }
     else if (alpha == 1.0) {
         // this is exponential distribution with lambda = 1 / beta
@@ -1602,27 +1608,25 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gammavariate(const double
     else {
         // alpha is between 0 and 1 (exclusive)
         // so, uses ALGORITHM GS of Statistical Computing - Kennedy & Gentle
-        // (modified here with n_loops testing against max loops count and default returned value)
-        double x, u;
+        // (modified here with n_loops testing against max loops count and with default returned value)
+        double b, p, x, u;
         while (n_loops < N_MAX_LOOPS) {  // Notice: while (true) in initial Kennedy & Gentle's algorithm
             u = uniform<double>();
-            const double b{ (E + alpha) / E };
-            const double p{ b * u };
+            b = (E + alpha) / E;
+            p =  b * u;
             x = p <= 1.0 ? std::pow(p, 1.0 / alpha) : -std::log((b - p) / alpha);
             u = uniform<double>();
             if (p <= 1.0) {
                 if (u <= std::exp(-x))
-                    break;
+                    return x * beta;
             }
             else if (u <= std::pow(x, alpha - 1.0))
-                break;
+                return x * beta;
 
             ++n_loops;  // added to initial algorithm
         }
-        if (n_loops < N_MAX_LOOPS)  // added to initial algorithm
-            return x * beta;
-        else
-            return 0.000001;  // added to initial algorithm: returned default value
+        // added to initial algorithm
+        return beta * -std::log(b - p) / alpha;
     }
 }
 

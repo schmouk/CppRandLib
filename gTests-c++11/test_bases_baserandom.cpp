@@ -27,6 +27,7 @@ SOFTWARE.
 
 //===========================================================================
 #include <array>
+#include <cmath>
 #include <cstdint>
 #include <list>
 #include <map>
@@ -188,6 +189,16 @@ namespace tests_bases
             inline virtual const std::uint32_t next() noexcept override
             {
                 return 0xffff'ffffUL;
+            }
+
+        };
+
+        // Notice: random() always returns 1.0
+        struct BaseRandom1_0 : public BaseRandom0
+        {
+            inline const double random() noexcept
+            {
+                return 1.0;
             }
 
         };
@@ -1255,34 +1266,37 @@ namespace tests_bases
 
 
         //-- tests betavariate()
-        EXPECT_DOUBLE_EQ(0.0, br0.betavariate(1.00, 0.20));
-        EXPECT_DOUBLE_EQ(0.0, br0.betavariate(1.00, 1.00));
-        EXPECT_DOUBLE_EQ(0.0, br0.betavariate(1.00, 2.23));
-        EXPECT_DOUBLE_EQ(0.0, br0.betavariate(0.13, 0.23));
-        EXPECT_DOUBLE_EQ(0.0, br0.betavariate(0.20, 1.00));
-        EXPECT_DOUBLE_EQ(0.0, br0.betavariate(0.13, 2.23));
-        EXPECT_DOUBLE_EQ(1.0, br0.betavariate(1.13, 0.23));
-        EXPECT_DOUBLE_EQ(1.0, br0.betavariate(1.13, 1.00));
-        EXPECT_DOUBLE_EQ(0.5, br0.betavariate(1.13, 2.23));
+        // br0
+        for (double alpha : {0.13, 0.23, 1.00, 1.13, 2.23})
+            for (double beta : {0.13, 0.23, 1.00, 1.13, 2.23})
+                EXPECT_DOUBLE_EQ(0.0, br0.gammavariate(alpha, beta));
 
-        EXPECT_NEAR(1.0, br1.betavariate(1.00, 0.20), 1.0e-6);
+        // br1
+        EXPECT_NEAR(0.16711240545381284, br1.betavariate(1.00, 0.20), 1.0e-6);
         EXPECT_DOUBLE_EQ(0.5, br1.betavariate(1.00, 1.00));
-        EXPECT_NEAR(0.956861, br1.betavariate(1.00, 2.23), 1.0e-6);
-        EXPECT_DOUBLE_EQ(0.5, br1.betavariate(0.13, 0.23));
-        EXPECT_NEAR(0.000000, br1.betavariate(0.20, 1.00), 1.0e-6);
-        EXPECT_NEAR(0.000000, br1.betavariate(0.13, 2.23), 1.0e-6);
-        EXPECT_NEAR(0.999999, br1.betavariate(1.13, 0.23), 1.0e-6);
-        EXPECT_NEAR(0.043139, br1.betavariate(1.13, 1.00), 1.0e-6);
-        EXPECT_DOUBLE_EQ(0.5, br1.betavariate(1.13, 2.23));
+        EXPECT_NEAR(0.0038129414259181348, br1.betavariate(1.00, 2.23), 1.0e-6);
+        EXPECT_DOUBLE_EQ(0.63924876589595836, br1.betavariate(0.13, 0.23));
+        EXPECT_DOUBLE_EQ(0.36075123410404181, br1.betavariate(0.23, 0.13));
+        EXPECT_DOUBLE_EQ(0.5, br1.betavariate(0.23, 0.23));
+        EXPECT_NEAR(0.8328875945461871, br1.betavariate(0.20, 1.00), 1.0e-6);
+        EXPECT_NEAR(0.0285419914624108, br1.betavariate(0.13, 2.23), 1.0e-6);
+        EXPECT_NEAR(0.9999442127674986, br1.betavariate(1.13, 0.23), 1.0e-6);
+        EXPECT_NEAR(0.9999871212259168, br1.betavariate(1.13, 1.00), 1.0e-6);
+        EXPECT_DOUBLE_EQ(0.5, br1.betavariate(1.13, 1.13));
+        EXPECT_NEAR(0.99664647140794072, br1.betavariate(1.13, 2.23), 1.0e-6);
 
+        // br33
         EXPECT_NEAR(0.985732, br33.betavariate(1.00, 0.20), 1.0e-6);
         EXPECT_DOUBLE_EQ(0.5, br33.betavariate(1.00, 1.00));
         EXPECT_NEAR(0.208299, br33.betavariate(1.00, 2.23), 1.0e-6);
         EXPECT_NEAR(0.024890, br33.betavariate(0.13, 0.23), 1.0e-6);
+        EXPECT_NEAR(0.975110, br33.betavariate(0.23, 0.13), 1.0e-6);
+        EXPECT_NEAR(0.500000, br33.betavariate(0.23, 0.23), 1.0e-6);
         EXPECT_NEAR(0.014268, br33.betavariate(0.20, 1.00), 1.0e-6);
         EXPECT_NEAR(0.000199, br33.betavariate(0.13, 2.23), 1.0e-6);
         EXPECT_NEAR(0.980101, br33.betavariate(1.13, 0.23), 1.0e-6);
         EXPECT_NEAR(0.592979, br33.betavariate(1.13, 1.00), 1.0e-6);
+        EXPECT_NEAR(0.500000, br33.betavariate(1.13, 1.13), 1.0e-6);
         EXPECT_NEAR(0.277096, br33.betavariate(1.13, 2.23), 1.0e-6);
 
 
@@ -1291,8 +1305,105 @@ namespace tests_bases
         EXPECT_THROW(br33.betavariate(-0.23, -0.31), AlphaBetaArgsException);
 
 
+        //-- tests expovariate()
+        BaseRandom1_0 br1_0;
+        constexpr double LAMBDAS[] = { 0.10, 0.50, 1.00, 3.33, 20.0 };
 
+        for (int i=0; i < 5; ++i)
+            EXPECT_DOUBLE_EQ(0.0, br0.expovariate(LAMBDAS[i]));
+
+        for (int i = 0; i < 5; ++i)
+            EXPECT_DOUBLE_EQ(-std::log(1.0 - double(0xffff'ffffUL) / double(1ULL << 32)) / LAMBDAS[i], br1.expovariate(LAMBDAS[i]));
         
+        for (int i=0; i<5; ++i)
+            EXPECT_DOUBLE_EQ(0.0, br1_0.expovariate(LAMBDAS[i]));
+
+        for (int i = 0; i < 5; ++i)
+            EXPECT_DOUBLE_EQ(-std::log(1.0 - double(0x5555'5555UL) / double(1ULL << 32)) / LAMBDAS[i], br33.expovariate(LAMBDAS[i]));
+
+        EXPECT_THROW(br0.expovariate(0.0), ExponentialZeroLambdaException);
+        EXPECT_THROW(br1_0.expovariate(-0.00001), ExponentialZeroLambdaException);
+
+
+        //-- tests gammavariate()
+        // br0
+        for (double alpha : {0.13, 0.23, 1.00, 1.13, 2.23})
+            for (double beta : {0.13, 0.23, 1.00, 1.13, 2.23})
+                EXPECT_DOUBLE_EQ(0.0, br0.gammavariate(alpha, beta));
+
+        // br1
+        EXPECT_NEAR(22.133994234816, br1.gammavariate(0.13, 0.13), 1.0e-7);
+        EXPECT_NEAR(39.160143646214, br1.gammavariate(0.13, 0.23), 1.0e-7);
+        EXPECT_NEAR(170.26149411397, br1.gammavariate(0.13, 1.00), 1.0e-7);
+        EXPECT_NEAR(192.39548834879, br1.gammavariate(0.13, 1.13), 1.0e-7);
+        EXPECT_NEAR(379.68313187416, br1.gammavariate(0.13, 2.23), 1.0e-7);
+
+        EXPECT_NEAR(12.491014706411, br1.gammavariate(0.23, 0.13), 1.0e-7);
+        EXPECT_NEAR(22.099487557497, br1.gammavariate(0.23, 0.23), 1.0e-7);
+        EXPECT_NEAR(96.084728510857, br1.gammavariate(0.23, 1.00), 1.0e-7);
+        EXPECT_NEAR(108.57574321727, br1.gammavariate(0.23, 1.13), 1.0e-7);
+        EXPECT_NEAR(214.26894457921, br1.gammavariate(0.23, 2.23), 1.0e-7);
+
+        EXPECT_NEAR(2.8834922711298, br1.gammavariate(1.00, 0.13), 1.0e-7);
+        EXPECT_NEAR(5.1015632489212, br1.gammavariate(1.00, 0.23), 1.0e-7);
+        EXPECT_NEAR(22.180709777918, br1.gammavariate(1.00, 1.00), 1.0e-7);
+        EXPECT_NEAR(25.064202049048, br1.gammavariate(1.00, 1.13), 1.0e-7);
+        EXPECT_NEAR(49.462982804758, br1.gammavariate(1.00, 2.23), 1.0e-7);
+
+        EXPECT_NEAR(223892.05033507, br1.gammavariate(1.13, 0.13), 1.0e-7);
+        EXPECT_NEAR(396116.70443896, br1.gammavariate(1.13, 0.23), 1.0e-7);
+        EXPECT_NEAR(1722246.5410390, br1.gammavariate(1.13, 1.00), 1.0e-7);
+        EXPECT_NEAR(1946138.5913740, br1.gammavariate(1.13, 1.13), 1.0e-7);
+        EXPECT_NEAR(3840609.7865169, br1.gammavariate(1.13, 2.23), 1.0e-7);
+
+        EXPECT_NEAR(753.35478915882, br1.gammavariate(2.23, 0.13), 1.0e-7);
+        EXPECT_NEAR(1332.8584731271, br1.gammavariate(2.23, 0.23), 1.0e-7);
+        EXPECT_NEAR(5795.0368396832, br1.gammavariate(2.23, 1.00), 1.0e-7);
+        EXPECT_NEAR(6548.3916288420, br1.gammavariate(2.23, 1.13), 1.0e-7);
+        EXPECT_NEAR(12922.932152493, br1.gammavariate(2.23, 2.23), 1.0e-7);
+
+        // br33
+        EXPECT_NEAR(3.9796516918848e-5, br33.gammavariate(0.13, 0.13), 1.0e-7);
+        EXPECT_NEAR(7.0409222241039e-5, br33.gammavariate(0.13, 0.23), 1.0e-7);
+        EXPECT_NEAR(0.0003061270532, br33.gammavariate(0.13, 1.00), 1.0e-7);
+        EXPECT_NEAR(0.0003459235701, br33.gammavariate(0.13, 1.13), 1.0e-7);
+        EXPECT_NEAR(0.0006826633287, br33.gammavariate(0.13, 2.23), 1.0e-7);
+
+        EXPECT_NEAR(0.0015590877717, br33.gammavariate(0.23, 0.13), 1.0e-7);
+        EXPECT_NEAR(0.0027583860575, br33.gammavariate(0.23, 0.23), 1.0e-7);
+        EXPECT_NEAR(0.0119929828589, br33.gammavariate(0.23, 1.00), 1.0e-7);
+        EXPECT_NEAR(0.0135520706305, br33.gammavariate(0.23, 1.13), 1.0e-7);
+        EXPECT_NEAR(0.0267443517753, br33.gammavariate(0.23, 2.23), 1.0e-7);
+
+        EXPECT_NEAR(0.0527104640389, br33.gammavariate(1.00, 0.13), 1.0e-7);
+        EXPECT_NEAR(0.0932569748381, br33.gammavariate(1.00, 0.23), 1.0e-7);
+        EXPECT_NEAR(0.4054651079917, br33.gammavariate(1.00, 1.00), 1.0e-7);
+        EXPECT_NEAR(0.4581755720307, br33.gammavariate(1.00, 1.13), 1.0e-7);
+        EXPECT_NEAR(0.9041871908216, br33.gammavariate(1.00, 2.23), 1.0e-7);
+
+        EXPECT_NEAR(0.0767924941018, br33.gammavariate(1.13, 0.13), 1.0e-7);
+        EXPECT_NEAR(0.1358636434109, br33.gammavariate(1.13, 0.23), 1.0e-7);
+        EXPECT_NEAR(0.5907114930907, br33.gammavariate(1.13, 1.00), 1.0e-7);
+        EXPECT_NEAR(0.6675039871925, br33.gammavariate(1.13, 1.13), 1.0e-7);
+        EXPECT_NEAR(1.3172866295924, br33.gammavariate(1.13, 2.23), 1.0e-7);
+
+        EXPECT_NEAR(0.2003411261479, br33.gammavariate(2.23, 0.13), 1.0e-7);
+        EXPECT_NEAR(0.3544496847232, br33.gammavariate(2.23, 0.23), 1.0e-7);
+        EXPECT_NEAR(1.5410855857529, br33.gammavariate(2.23, 1.00), 1.0e-7);
+        EXPECT_NEAR(1.7414267119008, br33.gammavariate(2.23, 1.13), 1.0e-7);
+        EXPECT_NEAR(3.4366208562290, br33.gammavariate(2.23, 2.23), 1.0e-7);
+
+
+        EXPECT_THROW(br0.gammavariate(-0.01, 1.00), AlphaBetaArgsException);
+        EXPECT_THROW(br1.gammavariate(0.01, -1.00), AlphaBetaArgsException);
+        EXPECT_THROW(br33.gammavariate(-0.01, -1.00), AlphaBetaArgsException);
+
+        EXPECT_THROW(br0.gammavariate(0, 1.00), AlphaBetaArgsException);
+        EXPECT_THROW(br1.gammavariate(0.01, 0), AlphaBetaArgsException);
+        EXPECT_THROW(br33.gammavariate(0, 0), AlphaBetaArgsException);
+
+
+
 
 
     }
