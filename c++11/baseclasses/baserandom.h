@@ -784,8 +784,8 @@ public:
 
 
     /** @brief Triangular distribution (low, high, default mode). */
-    template<typename T>
-    const T triangular(const T low, const T high);
+    template<typename T, typename U = T>
+    const T triangular(const T low, const U high);
 
 
     /** @brief Triangular distribution (low, high, mode).
@@ -793,8 +793,8 @@ public:
     * Important notice:  the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
-    template<typename T>
-    const T triangular(T low, T high, const T mode);
+    template<typename T, typename U = T, typename V = U>
+    const T triangular(T low, U high, const V mode);
 
 
     /** @brief Uniform distribution in [0.0, 1.0). */
@@ -1576,7 +1576,7 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::expovariate(const double 
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gammavariate(const double alpha, const double beta)
 {
-    constexpr int N_MAX_LOOPS{ 1000 };
+    constexpr int N_MAX_LOOPS{ 10 };
     int n_loops{ 0 };
 
     if (alpha <= 0.0 || beta <= 0.0)
@@ -1703,7 +1703,7 @@ inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::normalvariate(cons
     if (sigma <= 0.0)
         throw NormalSigmaException();
 
-    constexpr int N_MAX_LOOPS{ 100 };
+    constexpr int N_MAX_LOOPS{ 10 };
     int n_loops{ 0 };
 
     double u1{ 0.0 };
@@ -1743,10 +1743,10 @@ inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::triangular()
 //---------------------------------------------------------------------------
 /** Triangular distribution (low, high, default mode). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-template<typename T>
-const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::triangular(const T low, const T high)
+template<typename T, typename U>
+const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::triangular(const T low, const U high)
 {
-    if (!std::is_arithmetic<T>::value)
+    if (!std::is_arithmetic<T>::value || !std::is_arithmetic<U>::value)
         throw ArithmeticValueTypeException();
 
     return triangular(low, high, (low + high) / 2);
@@ -1755,10 +1755,10 @@ const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::triangular(const T low, const 
 //---------------------------------------------------------------------------
 /** Triangular distribution (low, high, mode). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-template<typename T>
-const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::triangular(T low, T high, const T mode)
+template<typename T, typename U, typename V>
+const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::triangular(T low, U high, const V mode)
 {
-    if (!std::is_arithmetic<T>::value)
+    if (!std::is_arithmetic<T>::value || !std::is_arithmetic<U>::value || !std::is_arithmetic<V>::value)
         throw ArithmeticValueTypeException();
 
     if (high == low)

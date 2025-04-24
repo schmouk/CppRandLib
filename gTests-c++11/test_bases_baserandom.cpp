@@ -1506,6 +1506,88 @@ namespace tests_bases
         EXPECT_THROW(br33.lognormvariate(-0.21, -0.01), NormalSigmaException);
 
 
+        //-- tests normalvariate()
+        // Notice: hard coded values here all come from same calls in PyRandLib. See README.md
+        EXPECT_EQ(br0.normalvariate(0.0, 1.0), br0.normalvariate());
+        EXPECT_EQ(br1.normalvariate(0.0, 1.0), br1.normalvariate());
+        EXPECT_EQ(br33.normalvariate(0.0, 1.0), br33.normalvariate());
+
+        EXPECT_DOUBLE_EQ(0.0 + 1.0 * 6.67 * 0.0, br0.normalvariate(0.0, 1.0));
+        EXPECT_DOUBLE_EQ(0.0 + 1.0 * 6.67 * double(0xffff'ffffULL) / double(1ULL << 32), br1.normalvariate(0.0, 1.0));
+        EXPECT_DOUBLE_EQ(-0.4288819426301386, br33.normalvariate(0.0, 1.0));
+
+        EXPECT_DOUBLE_EQ(1.0 + 2.5 * 6.67 * 0.0, br0.normalvariate(1.0, 2.5));
+        EXPECT_DOUBLE_EQ(1.0 + 2.5 * 6.67 * double(0xffff'ffffULL) / double(1ULL << 32), br1.normalvariate(1.0, 2.5));
+        EXPECT_DOUBLE_EQ(-0.07220485657534659, br33.normalvariate(1.0, 2.5));
+
+        EXPECT_DOUBLE_EQ(-0.21 + 0.17 * 6.67 * 0.0, br0.normalvariate(-0.21, 0.17));
+        EXPECT_DOUBLE_EQ(-0.21 + 0.17 * 6.67 * double(0xffff'ffffULL) / double(1ULL << 32), br1.normalvariate(-0.21, 0.17));
+        EXPECT_DOUBLE_EQ(-0.2829099302471236, br33.normalvariate(-0.21, 0.17));
+
+        EXPECT_THROW(br33.normalvariate(-0.21, -0.01), NormalSigmaException);
+
+
+        //-- tests paretovariate()
+        std::vector<double> alphas{ 0.5, 0.75, 1.0, 1.25, 1.50, 1.75, 2.00, 2.25, 2.50, 2.75, 3.00, 3.50, 4.00, 5.00 };
+
+        for (double alpha : alphas) {
+            EXPECT_EQ(1.0, br0.paretovariate(alpha));
+            EXPECT_DOUBLE_EQ(std::pow(1.0 - double(0xffff'ffffULL) / double(1ULL << 32), -1.0 / alpha), br1.paretovariate(alpha));
+            EXPECT_DOUBLE_EQ(std::pow(1.0 - double(0x5555'5555ULL) / double(1ULL << 32), -1.0 / alpha), br33.paretovariate(alpha));
+        }
+
+        for (double alpha : alphas) {
+            EXPECT_EQ(1.0, br0.paretovariate(-alpha));
+            EXPECT_DOUBLE_EQ(std::pow(1.0 - double(0xffff'ffffULL) / double(1ULL << 32), -1.0 / -alpha), br1.paretovariate(-alpha));
+            EXPECT_DOUBLE_EQ(std::pow(1.0 - double(0x5555'5555ULL) / double(1ULL << 32), -1.0 / -alpha), br33.paretovariate(-alpha));
+        }
+
+        // Notice: hard coded values here all come from same calls in PyRandLib. See README.md
+        std::vector<double> expected{
+            1.8446744073709552e+19, 6981463658331.548 , 4294967296.0      , 50859008.46224668 ,
+            2642245.949629131     , 319557.11536777776, 65536.0           , 19112.411784415082,
+            7131.5502145218525    , 3183.4240650668435, 1625.4986772154357, 565.2938310009918 ,
+            256.0                 , 84.44850628946526
+        };
+        for (auto alpha_it = alphas.cbegin(), expected_it = expected.cbegin(); alpha_it != alphas.cend(); ++alpha_it, ++expected_it)
+            EXPECT_DOUBLE_EQ(*expected_it, br1.paretovariate(*alpha_it));
+
+        expected = {
+            5.421010862427522e-20 , 1.4323643994144677e-13, 2.3283064365386963e-10, 1.9662200074984027e-08,
+            3.78465903274584e-07  , 3.1293310394578496e-06, 1.52587890625e-05     , 5.232202043780965e-05 ,
+            0.00014022196716272393, 0.00031412717236558387, 0.0006151958251439813 , 0.0017689915317654432 ,
+            0.00390625            , 0.011841535675862483
+
+        };
+        for (auto alpha_it = alphas.cbegin(), expected_it = expected.cbegin(); alpha_it != alphas.cend(); ++alpha_it, ++expected_it)
+            EXPECT_DOUBLE_EQ(*expected_it, br1.paretovariate(-*alpha_it));
+
+        expected = {
+            2.249999999476131 , 1.7170713635634731, 1.499999999825377 , 1.3831618670937746,
+            1.3103706970027502, 1.2607343232374941, 1.2247448713202995, 1.1974648710864466,
+            1.176079022469908 , 1.1588659034539632, 1.1447142425089112, 1.1228242619562039,
+            1.1066819196681128, 1.0844717711724488
+        };
+        for (auto alpha_it = alphas.cbegin(), expected_it = expected.cbegin(); alpha_it != alphas.cend(); ++alpha_it, ++expected_it)
+            EXPECT_DOUBLE_EQ(*expected_it, br33.paretovariate(*alpha_it));
+
+        expected = {
+            0.44444444454792476, 0.5823869765812643, 0.6666666667442769, 0.7229811808657985,
+            0.7631428284281156 , 0.7931885263756894, 0.8164965809752524, 0.8350975666557225,
+            0.8502830004567883 , 0.8629126088010111, 0.8735804647701982, 0.8906113217199124,
+            0.9036020036361431 , 0.9221079115031973
+        };
+        for (auto alpha_it = alphas.cbegin(), expected_it = expected.cbegin(); alpha_it != alphas.cend(); ++alpha_it, ++expected_it)
+            EXPECT_DOUBLE_EQ(*expected_it, br33.paretovariate(-*alpha_it));
+
+
+        EXPECT_THROW(br1.paretovariate(0.0), ParetoArgsValueException);
+
+
+        //-- tests triangular()
+        EXPECT_EQ(br0.triangular<double>(0.0, 1.0, 0.5), br0.triangular());
+        EXPECT_EQ(br1.triangular<double>(0.0, 1.0, 0.5), br1.triangular());
+        EXPECT_EQ(br33.triangular<double>(0.0, 1.0, 0.5), br33.triangular());
 
 
 
