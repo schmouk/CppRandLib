@@ -713,7 +713,7 @@ public:
     * Important notice:  the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
-    inline const double lognormvariate() noexcept;
+    inline const double lognormvariate();
 
 
     /** @brief Log normal distribution (mean=mu, stdev=sigma).
@@ -725,7 +725,7 @@ public:
     * Important notice:  the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
-    inline const double lognormvariate(const double mu, const double sigma) noexcept;
+    inline const double lognormvariate(const double mu, const double sigma);
 
 
     /** @brief Normal distribution (mean=0.0, stdev=1.0).
@@ -734,13 +734,17 @@ public:
     * Reference: Kinderman, A.J.and Monahan, J.F., "Computer generation of 
     * random variables using the ratio of  uniform  deviates",  ACM  Trans
     * Math Software, 3, (1977), pp257 - 260.
-    * This method is slightlly slower than the gauss  method,  so  we  call 
-    * gauss() instead here, in CppRandLib.
+    * This method is slightlly slower than the gauss method.  Furthermore,
+    * we've s lightly modified the original algorithm here to fulfill very
+    * special cases that might happen in very  specific  conditions.  This
+    * slows  down  also  the  running  of  normalvariate()  in  these very
+    * specific  conditions.  You should prefer then to use method  gauss()
+    * instead of this one.
     *
     * Important notice:  the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
-    inline const double normalvariate() noexcept;
+    inline const double normalvariate();
 
 
     /** @brief Normal distribution (mean=mu, stdev=sigma).
@@ -752,13 +756,17 @@ public:
     * Reference: Kinderman, A.J.and Monahan, J.F., "Computer generation of
     * random variables using the ratio of  uniform  deviates",  ACM  Trans
     * Math Software, 3, (1977), pp257 - 260.
-    * This method is slightlly slower than the gauss method,  so  we  call
-    * gauss() instead here, in CppRandLib.
+    * This method is slightlly slower than the gauss method.  Furthermore,
+    * we've s lightly modified the original algorithm here to fulfill very
+    * special cases that might happen in very  specific  conditions.  This
+    * slows  down  also  the  running  of  normalvariate()  in  these very 
+    * specific  conditions.  You should prefer then to use method  gauss() 
+    * instead of this one.
     *
     * Important notice:  the implemented code is a translation from Python
     * https://github.com/python/cpython/blob/3.11/Lib/random.py into c++.
     */
-    inline const double normalvariate(const double mu, const double sigma) noexcept;
+    inline const double normalvariate(const double mu, const double sigma);
 
 
     /** @brief Pareto distribution.
@@ -1495,6 +1503,7 @@ template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::setstate(const StateT& new_internal_state) noexcept
 {
     _internal_state.state = new_internal_state;
+    _internal_state.gauss_next = 0.0;
     _internal_state.gauss_valid = false;
 }
 
@@ -1645,15 +1654,15 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gauss(const double mu, co
 {
     if (sigma <= 0.0)
         throw GaussSigmaException();
-
+    
     double z;
     if (_internal_state.gauss_valid) {
         z = _internal_state.gauss_next;
         _internal_state.gauss_valid = false;
     }
     else {
-        const double u{ uniform(TWO_PI) };
-        const double g{ std::sqrt(-2.0 * std::log(1.0 - uniform())) };
+        const double u{ uniform<double>(TWO_PI) };
+        const double g{ std::sqrt(-2.0 * std::log(1.0 - uniform<double>())) };
         z = std::cos(u) * g;
         _internal_state.gauss_next = std::sin(u) * g;
         _internal_state.gauss_valid = true;
@@ -1665,7 +1674,7 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gauss(const double mu, co
 //---------------------------------------------------------------------------
 /** Default Log normal distribution (mean=0.0, stdev=1.0). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::lognormvariate() noexcept
+inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::lognormvariate()
 {
     return lognormvariate(0.0, 1.0);
 }
@@ -1673,25 +1682,42 @@ inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::lognormvariate() n
 //---------------------------------------------------------------------------
 /** Log normal distribution (mean=mu, stdev=sigma). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::lognormvariate(const double mu, const double sigma) noexcept
+inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::lognormvariate(const double mu, const double sigma)
 {
-    return std::exp(gauss(mu, sigma));
+    return std::exp(normalvariate(mu, sigma));
 }
 
 //---------------------------------------------------------------------------
 /** Normal distribution (mean=0.0, stdev=1.0). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::normalvariate() noexcept
+inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::normalvariate()
 {
-    return gauss();
+    return normalvariate(0.0, 1.0);
 }
 
 //---------------------------------------------------------------------------
 /** Normal distribution (mean=mu, stdev=sigma). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
-inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::normalvariate(const double mu, const double sigma) noexcept
+inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::normalvariate(const double mu, const double sigma)
 {
-    return gauss(mu, sigma);
+    if (sigma <= 0.0)
+        throw NormalSigmaException();
+
+    constexpr int N_MAX_LOOPS{ 100 };
+    int n_loops{ 0 };
+
+    double u1{ 0.0 };
+    while (n_loops++ < N_MAX_LOOPS) {
+        u1 = uniform<double>();
+        const double u2{ 1.0 - u1 };
+        const double z{ NV_MAGICCONST * (u1 - 0.5) / u2 };
+        if (z * z / 4.0 <= -std::log(u2))
+            return mu + z * sigma;
+    }
+
+    return mu + u1 * 6.67 * sigma;  //  notice: modification from original algorithm - should happen in very rare cases
+
+    // notice: could have been as simple as "return gauss(mu, sigma);" also
 }
 
 //---------------------------------------------------------------------------
@@ -1703,7 +1729,7 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::paretovariate(const doubl
         throw ParetoArgsValueException();
 
     // according to Jain, pg. 495
-    return std::pow(1.0 - uniform(), -1.0 / alpha);
+    return std::pow(1.0 - uniform<double>(), -1.0 / alpha);
 }
 
 //---------------------------------------------------------------------------
@@ -1738,7 +1764,7 @@ const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::triangular(T low, T high, cons
     if (high == low)
         return high;
 
-    double u{ uniform() };
+    double u{ uniform<double>() };
     double c{ double(mode - low) / double(high - low) };
     if (u > c) {
         u = 1.0 - u;
@@ -1805,16 +1831,16 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::vonmisesvariate(const dou
     // Thanks to Magnus Kessler for a correction to the implementation of step 4.
 
     if (kappa <= 1e-6)
-        return uniform(TWO_PI);
+        return uniform<double>(TWO_PI);
 
     const double s = 0.5 / kappa;
     const double r = s + std::sqrt(1.0 + s * s);
     double z;
 
     while (true) {
-        z = std::cos(uniform(PI));
+        z = std::cos(uniform<double>(PI));
         const double d{ z / (r + z) };
-        const double u{ uniform() };
+        const double u{ uniform<double>() };
         if (u < 1.0 - d * d || u < (1.0 - d) * std::exp(d))
             break;
     }
@@ -1835,5 +1861,5 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::weibullvariate(const doub
     if (beta <= 0.0)
         throw WeibullArgsValueException();
 
-    return alpha * std::pow(-std::log(1.0 - uniform()), 1.0 / beta);
+    return alpha * std::pow(-std::log(1.0 - uniform<double>()), 1.0 / beta);
 }

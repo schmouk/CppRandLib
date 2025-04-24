@@ -61,7 +61,7 @@ struct FloatingPointTypeException : public std::exception
     const char* what() noexcept { return "Argument(s) must be a floating pointg type."; }
 };
 
-/** @brief Exponential law null lambda exception. */
+/** @brief Negative value for sigma paramater of Gauss law exception. */
 struct GaussSigmaException : public std::exception
 {
     const char* what() noexcept { return "value for argument sigma must be greater than 0.0."; }
@@ -73,7 +73,7 @@ struct IndexableContainerException : public std::exception
     const char* what() noexcept { return "Container type must be std::array or std::vector."; }
 };
 
-/** @brief Wrong argument type - not integral. */
+/** @brief Wrong argument type - not integral exception. */
 struct IntegralValueTypeException : public std::exception
 {
     const char* what() noexcept { return "Argument(s) must be an integral type."; }
@@ -97,7 +97,11 @@ struct MinMaxSizesException : public std::exception
     const char* what() noexcept { return "'min' and 'max' container arguments must have same sizes."; }
 };
 
-/** @brief Not same sizes of containers exception. */
+/** @brief Negative value for sigma paramater of Gauss law exception. */
+struct NormalSigmaException : public GaussSigmaException
+{};
+
+/** @brief Zero value for alpha parameter of Pareto law exception. */
 struct ParetoArgsValueException : public std::exception
 {
     const char* what() noexcept { return "shape argument 'alpha' must not be 0.0."; }

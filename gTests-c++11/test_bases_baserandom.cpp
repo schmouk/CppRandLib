@@ -1266,6 +1266,7 @@ namespace tests_bases
 
 
         //-- tests betavariate()
+        // Notice: hard coded values here all come from same calls in PyRandLib. See README.md
         // br0
         for (double alpha : {0.13, 0.23, 1.00, 1.13, 2.23})
             for (double beta : {0.13, 0.23, 1.00, 1.13, 2.23})
@@ -1326,6 +1327,7 @@ namespace tests_bases
 
 
         //-- tests gammavariate()
+        // Notice: hard coded values here all come from same calls in PyRandLib. See README.md
         // br0
         for (double alpha : {0.13, 0.23, 1.00, 1.13, 2.23})
             for (double beta : {0.13, 0.23, 1.00, 1.13, 2.23})
@@ -1401,6 +1403,108 @@ namespace tests_bases
         EXPECT_THROW(br0.gammavariate(0, 1.00), AlphaBetaArgsException);
         EXPECT_THROW(br1.gammavariate(0.01, 0), AlphaBetaArgsException);
         EXPECT_THROW(br33.gammavariate(0, 0), AlphaBetaArgsException);
+
+
+        //-- test gauss()
+        // Notice: hard coded values here all come from same calls in PyRandLib. See README.md
+        br0.setstate(0);
+        for (int i = 0; i < 2; ++i) {
+            EXPECT_EQ(0.0, br0.gauss());
+            EXPECT_TRUE(br0.gauss_valid());
+            EXPECT_EQ(0.0, br0.gauss());
+            EXPECT_FALSE(br0.gauss_valid());
+        }
+
+        br1.setstate(0);
+        for (int i = 0; i < 2; ++i) {
+            EXPECT_DOUBLE_EQ(6.6604368892615815, br1.gauss());
+            EXPECT_TRUE(br1.gauss_valid());
+            EXPECT_DOUBLE_EQ(-9.743673225226533e-09, br1.gauss());
+            EXPECT_FALSE(br1.gauss_valid());
+        }
+
+        br33.setstate(0);
+        for (int i = 0; i < 2; ++i) {
+            EXPECT_DOUBLE_EQ(-0.45025831880534095, br33.gauss());
+            EXPECT_TRUE(br33.gauss_valid());
+            EXPECT_DOUBLE_EQ(0.7798702855796508, br33.gauss());
+            EXPECT_FALSE(br33.gauss_valid());
+        }
+
+
+        //-- test gauss(mu, sigma)
+        // Notice: hard coded values here all come from same calls in PyRandLib. See README.md
+        br0.setstate(0);
+        for (int i = 0; i < 2; ++i) {
+            EXPECT_EQ(1.0, br0.gauss(1.0, 2.5));
+            EXPECT_TRUE(br0.gauss_valid());
+            EXPECT_EQ(1.0, br0.gauss(1.0, 2.5));
+            EXPECT_FALSE(br0.gauss_valid());
+        }
+
+        br1.setstate(0);
+        for (int i = 0; i < 2; ++i) {
+            EXPECT_DOUBLE_EQ(17.651092223153952, br1.gauss(1.0, 2.5));
+            EXPECT_TRUE(br1.gauss_valid());
+            EXPECT_DOUBLE_EQ(0.9999999756408169, br1.gauss(1.0, 2.5));
+            EXPECT_FALSE(br1.gauss_valid());
+        }
+
+        br33.setstate(0);
+        for (int i = 0; i < 2; ++i) {
+            EXPECT_DOUBLE_EQ(-0.12564579701335243, br33.gauss(1.0, 2.5));
+            EXPECT_TRUE(br33.gauss_valid());
+            EXPECT_DOUBLE_EQ(2.949675713949127, br33.gauss(1.0, 2.5));
+            EXPECT_FALSE(br33.gauss_valid());
+        }
+
+        br0.setstate(0);
+        for (int i = 0; i < 2; ++i) {
+            EXPECT_EQ(-0.21, br0.gauss(-0.21, 0.17));
+            EXPECT_TRUE(br0.gauss_valid());
+            EXPECT_EQ(-0.21, br0.gauss(-0.21, 0.17));
+            EXPECT_FALSE(br0.gauss_valid());
+        }
+
+        br1.setstate(0);
+        for (int i = 0; i < 2; ++i) {
+            EXPECT_DOUBLE_EQ(0.9222742711744689, br1.gauss(-0.21, 0.17));
+            EXPECT_TRUE(br1.gauss_valid());
+            EXPECT_DOUBLE_EQ(-0.21000000165642443, br1.gauss(-0.21, 0.17));
+            EXPECT_FALSE(br1.gauss_valid());
+        }
+
+        br33.setstate(0);
+        for (int i = 0; i < 2; ++i) {
+            EXPECT_DOUBLE_EQ(-0.28654391419690795, br33.gauss(-0.21, 0.17));
+            EXPECT_TRUE(br33.gauss_valid());
+            EXPECT_DOUBLE_EQ(-0.07742205145145936, br33.gauss(-0.21, 0.17));
+            EXPECT_FALSE(br33.gauss_valid());
+        }
+
+        EXPECT_THROW(br33.gauss(-0.21, -0.01), GaussSigmaException);
+
+
+        //-- tests lognormvariate()
+        // Notice: hard coded values here all come from same calls in PyRandLib. See README.md
+        EXPECT_EQ(br0.lognormvariate(0.0, 1.0), br0.lognormvariate());
+        EXPECT_EQ(br1.lognormvariate(0.0, 1.0), br1.lognormvariate());
+        EXPECT_EQ(br33.lognormvariate(0.0, 1.0), br33.lognormvariate());
+
+        EXPECT_DOUBLE_EQ(std::exp(0.0 + 1.0 * 6.67 * 0.0), br0.lognormvariate(0.0, 1.0));
+        EXPECT_DOUBLE_EQ(std::exp(0.0 + 1.0 * 6.67 * double(0xffff'ffffULL) / double(1ULL << 32)), br1.lognormvariate(0.0, 1.0));
+        EXPECT_DOUBLE_EQ(0.651236807947594, br33.lognormvariate(0.0, 1.0));
+
+        EXPECT_DOUBLE_EQ(std::exp(1.0 + 2.5 * 6.67 * 0.0), br0.lognormvariate(1.0, 2.5));
+        EXPECT_DOUBLE_EQ(std::exp(1.0 + 2.5 * 6.67 * double(0xffff'ffffULL) / double(1ULL << 32)), br1.lognormvariate(1.0, 2.5));
+        EXPECT_DOUBLE_EQ(0.9303402899627329, br33.lognormvariate(1.0, 2.5));
+
+        EXPECT_DOUBLE_EQ(std::exp(-0.21 + 0.17 * 6.67 * 0.0), br0.lognormvariate(-0.21, 0.17));
+        EXPECT_DOUBLE_EQ(std::exp(-0.21 + 0.17 * 6.67 * double(0xffff'ffffULL) / double(1ULL << 32)), br1.lognormvariate(-0.21, 0.17));
+        EXPECT_DOUBLE_EQ(0.7535876602573764, br33.lognormvariate(-0.21, 0.17));
+
+        EXPECT_THROW(br33.lognormvariate(-0.21, -0.01), NormalSigmaException);
+
 
 
 
