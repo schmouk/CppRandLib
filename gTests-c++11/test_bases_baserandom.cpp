@@ -1585,9 +1585,320 @@ namespace tests_bases
 
 
         //-- tests triangular()
-        EXPECT_EQ(br0.triangular<double>(0.0, 1.0, 0.5), br0.triangular());
-        EXPECT_EQ(br1.triangular<double>(0.0, 1.0, 0.5), br1.triangular());
-        EXPECT_EQ(br33.triangular<double>(0.0, 1.0, 0.5), br33.triangular());
+        EXPECT_EQ(br0.triangular(0.0, 1.0, 0.5), br0.triangular());
+        EXPECT_EQ(br1.triangular(0.0, 1.0, 0.5), br1.triangular());
+        EXPECT_EQ(br33.triangular(0.0, 1.0, 0.5), br33.triangular());
+
+
+        //-- tests triangular(low, high)
+        double d_values[]{ -31.0, -1.0, 0.0, 1.2, 23.1 };
+        int i_values[]{ -31, -1, 0, 1, 23 };
+
+        for (double low : d_values)
+            for (double high : d_values) {
+                EXPECT_DOUBLE_EQ(br0.triangular(low, high, (low + high) / 2.0), br0.triangular(low, high));
+                EXPECT_DOUBLE_EQ(br1.triangular(low, high, (low + high) / 2.0), br1.triangular(low, high));
+                EXPECT_DOUBLE_EQ(br33.triangular(low, high, (low + high) / 2.0), br33.triangular(low, high));
+            }
+
+        for (int low : i_values)
+            for (int high : i_values) {
+                EXPECT_DOUBLE_EQ(br0.triangular(low, double(high), (low + high) / 2.0), br0.triangular(low, high));
+                EXPECT_DOUBLE_EQ(br1.triangular(low, double(high), (low + high) / 2.0), br1.triangular(low, high));
+                EXPECT_DOUBLE_EQ(br33.triangular(low, double(high), (low + high) / 2.0), br33.triangular(low, high));
+            }
+
+        for (short low : i_values)
+            for (double high : d_values) {
+                EXPECT_DOUBLE_EQ(br0.triangular(low, high, (low + high) / 2.0), br0.triangular(low, high));
+                EXPECT_DOUBLE_EQ(br1.triangular(low, high, (low + high) / 2.0), br1.triangular(low, high));
+                EXPECT_DOUBLE_EQ(br33.triangular(low, high, (low + high) / 2.0), br33.triangular(low, high));
+            }
+
+        for (float low : d_values)
+            for (long high : i_values) {
+                EXPECT_DOUBLE_EQ(br0.triangular(low, high, (double(low) + double(high)) / 2.0), br0.triangular(low, high));
+                EXPECT_DOUBLE_EQ(br1.triangular(low, high, (double(low) + double(high)) / 2.0), br1.triangular(low, high), 1.0e-7);
+                EXPECT_DOUBLE_EQ(br33.triangular(low, high, (double(low) + double(high)) / 2.0), br33.triangular(low, high), 1.0e-7);
+            }
+
+
+        //-- tests triangular(low, high, mode)
+        double d_modes[]{ -32.0, -31.0, -5.0, 0.0, 0.7, 15.0, 23.1, 32.0 };
+        int i_modes[]{ -32, -31, -5, 0, 1, 15, 23, 32 };
+
+        // br0
+        for (double low : d_values)
+            for (double high : d_values)
+                for (double mode : d_modes) {
+                    if (low == high || 0.0 <= double(mode - low) / double(high - low))
+                        EXPECT_EQ(low, br0.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt(1.0 * (1.0 - (mode - low) / (high - low))), br0.triangular(low, high, mode));
+                }
+
+        for (double low : d_values)
+            for (double high : d_values)
+                for (int mode : i_modes) {
+                    if (low == high || 0.0 <= double(mode - low) / double(high - low))
+                        EXPECT_EQ(low, br0.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt(1.0 * (1.0 - (mode - low) / (high - low))), br0.triangular(low, high, mode));
+                }
+
+        for (double low : d_values)
+            for (int high : i_values)
+                for (double mode : d_modes) {
+                    if (low == high || 0.0 <= double(mode - low) / double(high - low))
+                        EXPECT_EQ(low, br0.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt(1.0 * (1.0 - (mode - low) / (high - low))), br0.triangular(low, high, mode));
+                }
+
+        for (double low : d_values)
+            for (int high : i_values)
+                for (int mode : i_modes) {
+                    if (low == high || 0.0 <= double(mode - low) / double(high - low))
+                        EXPECT_EQ(low, br0.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt(1.0 * (1.0 - (mode - low) / (high - low))), br0.triangular(low, high, mode));
+                }
+
+        for (int low : i_values)
+            for (double high : d_values)
+                for (double mode : d_modes) {
+                    if (low == high || 0.0 <= double(mode - low) / double(high - low))
+                        EXPECT_EQ(low, br0.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt(1.0 * (1.0 - (mode - low) / (high - low))), br0.triangular(low, high, mode));
+                }
+
+        for (int low : i_values)
+            for (double high : d_values)
+                for (int mode : i_modes) {
+                    if (low == high || 0.0 <= double(mode - low) / double(high - low))
+                        EXPECT_EQ(low, br0.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt(1.0 * (1.0 - (mode - low) / (high - low))), br0.triangular(low, high, mode));
+                }
+
+        for (int low : i_values)
+            for (int high : i_values)
+                for (double mode : d_modes) {
+                    if (low == high || 0.0 <= double(mode - low) / double(high - low))
+                        EXPECT_EQ(low, br0.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt(1.0 * (1.0 - (mode - low) / (high - low))), br0.triangular(low, high, mode));
+                }
+
+        for (int low : i_values)
+            for (int high : i_values)
+                for (int mode : i_modes) {
+                    if (low == high || 0.0 <= double(mode - low) / double(high - low))
+                        EXPECT_EQ(low, br0.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt(1.0 * (1.0 - double(mode - low) / double(high - low))), br0.triangular(low, high, mode));
+                }
+
+        // br1
+        double u{ double(0xffff'ffffULL) / double(1ULL << 32) };
+
+        for (double low : d_values)
+            for (double high : d_values)
+                for (double mode : d_modes) {
+                    double c{ double(mode - low) / double(high - low) };
+                    if (low == high)
+                        EXPECT_EQ(low, br1.triangular(low, high, mode));
+                    else if (u > c)
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt((1.0 - u) * (1.0 - c)), br1.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(low + (high - low) * std::sqrt(u * c), br1.triangular(low, high, mode));
+                }
+
+        for (double low : d_values)
+            for (double high : d_values)
+                for (int mode : i_modes) {
+                    double c{ double(mode - low) / double(high - low) };
+                    if (low == high)
+                        EXPECT_EQ(low, br1.triangular(low, high, mode));
+                    else if (u > c)
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt((1.0 - u) * (1.0 - c)), br1.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(low + (high - low) * std::sqrt(u * c), br1.triangular(low, high, mode));
+                }
+
+        for (double low : d_values)
+            for (int high : i_values)
+                for (double mode : d_modes) {
+                    double c{ double(mode - low) / double(high - low) };
+                    if (low == high)
+                        EXPECT_EQ(low, br1.triangular(low, high, mode));
+                    else if (u > c)
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt((1.0 - u) * (1.0 - c)), br1.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(low + (high - low) * std::sqrt(u * c), br1.triangular(low, high, mode));
+                }
+
+        for (double low : d_values)
+            for (int high : i_values)
+                for (int mode : i_modes) {
+                    double c{ double(mode - low) / double(high - low) };
+                    if (low == high)
+                        EXPECT_EQ(low, br1.triangular(low, high, mode));
+                    else if (u > c)
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt((1.0 - u) * (1.0 - c)), br1.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(low + (high - low) * std::sqrt(u * c), br1.triangular(low, high, mode));
+                }
+
+        for (int low : i_values)
+            for (double high : d_values)
+                for (double mode : d_modes) {
+                    double c{ double(mode - low) / double(high - low) };
+                    if (low == high)
+                        EXPECT_EQ(low, br1.triangular(low, high, mode));
+                    else if (u > c)
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt((1.0 - u) * (1.0 - c)), br1.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(low + (high - low) * std::sqrt(u * c), br1.triangular(low, high, mode));
+                }
+
+        for (int low : i_values)
+            for (double high : d_values)
+                for (int mode : i_modes) {
+                    double c{ double(mode - low) / double(high - low) };
+                    if (low == high)
+                        EXPECT_EQ(low, br1.triangular(low, high, mode));
+                    else if (u > c)
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt((1.0 - u) * (1.0 - c)), br1.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(low + (high - low) * std::sqrt(u * c), br1.triangular(low, high, mode));
+                }
+
+        for (int low : i_values)
+            for (int high : i_values)
+                for (double mode : d_modes) {
+                    double c{ double(mode - low) / double(high - low) };
+                    if (low == high)
+                        EXPECT_EQ(low, br1.triangular(low, high, mode));
+                    else if (u > c)
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt((1.0 - u) * (1.0 - c)), br1.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(low + (high - low) * std::sqrt(u * c), br1.triangular(low, high, mode));
+                }
+
+        for (int low : i_values)
+            for (int high : i_values)
+                for (int mode : i_modes) {
+                    double c{ double(mode - low) / double(high - low) };
+                    if (low == high)
+                        EXPECT_EQ(low, br1.triangular(low, high, mode));
+                    else if (u > c)
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt((1.0 - u) * (1.0 - c)), br1.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(low + (high - low) * std::sqrt(u * c), br1.triangular(low, high, mode));
+                }
+
+        // br33
+        u = double(0x5555'5555ULL) / double(1ULL << 32);
+
+        for (double low : d_values)
+            for (double high : d_values)
+                for (double mode : d_modes) {
+                    double c{ double(mode - low) / double(high - low) };
+                    if (low == high)
+                        EXPECT_EQ(low, br33.triangular(low, high, mode));
+                    else if (u > c)
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt((1.0 - u) * (1.0 - c)), br33.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(low + (high - low) * std::sqrt(u * c), br33.triangular(low, high, mode));
+                }
+
+        for (double low : d_values)
+            for (double high : d_values)
+                for (int mode : i_modes) {
+                    double c{ double(mode - low) / double(high - low) };
+                    if (low == high)
+                        EXPECT_EQ(low, br33.triangular(low, high, mode));
+                    else if (u > c)
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt((1.0 - u) * (1.0 - c)), br33.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(low + (high - low) * std::sqrt(u * c), br33.triangular(low, high, mode));
+                }
+
+        for (double low : d_values)
+            for (int high : i_values)
+                for (double mode : d_modes) {
+                    double c{ double(mode - low) / double(high - low) };
+                    if (low == high)
+                        EXPECT_EQ(low, br33.triangular(low, high, mode));
+                    else if (u > c)
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt((1.0 - u) * (1.0 - c)), br33.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(low + (high - low) * std::sqrt(u * c), br33.triangular(low, high, mode));
+                }
+
+        for (double low : d_values)
+            for (int high : i_values)
+                for (int mode : i_modes) {
+                    double c{ double(mode - low) / double(high - low) };
+                    if (low == high)
+                        EXPECT_EQ(low, br33.triangular(low, high, mode));
+                    else if (u > c)
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt((1.0 - u) * (1.0 - c)), br33.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(low + (high - low) * std::sqrt(u * c), br33.triangular(low, high, mode));
+                }
+
+        for (int low : i_values)
+            for (double high : d_values)
+                for (double mode : d_modes) {
+                    double c{ double(mode - low) / double(high - low) };
+                    if (low == high)
+                        EXPECT_EQ(low, br33.triangular(low, high, mode));
+                    else if (u > c)
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt((1.0 - u) * (1.0 - c)), br33.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(low + (high - low) * std::sqrt(u * c), br33.triangular(low, high, mode));
+                }
+
+        for (int low : i_values)
+            for (double high : d_values)
+                for (int mode : i_modes) {
+                    double c{ double(mode - low) / double(high - low) };
+                    if (low == high)
+                        EXPECT_EQ(low, br33.triangular(low, high, mode));
+                    else if (u > c)
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt((1.0 - u) * (1.0 - c)), br33.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(low + (high - low) * std::sqrt(u * c), br33.triangular(low, high, mode));
+                }
+
+        for (int low : i_values)
+            for (int high : i_values)
+                for (double mode : d_modes) {
+                    double c{ double(mode - low) / double(high - low) };
+                    if (low == high)
+                        EXPECT_EQ(low, br33.triangular(low, high, mode));
+                    else if (u > c)
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt((1.0 - u) * (1.0 - c)), br33.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(low + (high - low) * std::sqrt(u * c), br33.triangular(low, high, mode));
+                }
+
+        for (int low : i_values)
+            for (int high : i_values)
+                for (int mode : i_modes) {
+                    double c{ double(mode - low) / double(high - low) };
+                    if (low == high)
+                        EXPECT_EQ(low, br33.triangular(low, high, mode));
+                    else if (u > c)
+                        EXPECT_DOUBLE_EQ(high + (low - high) * std::sqrt((1.0 - u) * (1.0 - c)), br33.triangular(low, high, mode));
+                    else
+                        EXPECT_DOUBLE_EQ(low + (high - low) * std::sqrt(u * c), br33.triangular(low, high, mode));
+                }
+
+
 
 
 
