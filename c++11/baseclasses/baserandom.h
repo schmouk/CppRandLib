@@ -1863,7 +1863,7 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::vonmisesvariate(const dou
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::weibullvariate(const double alpha, const double beta)
 {
-    if (beta <= 0.0)
+    if (alpha < 0.0 || beta <= 0.0)
         throw WeibullArgsValueException();
 
     return alpha * std::pow(-std::log(1.0 - uniform()), 1.0 / beta);

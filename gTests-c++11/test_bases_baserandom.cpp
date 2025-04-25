@@ -2048,10 +2048,31 @@ namespace tests_bases
         EXPECT_THROW(br33.vonmisesvariate(1.7, -1), NegativeKappaException);
 
 
+        //-- tests weibull
+        alphas = { 0.0, 0.5, 1.0, 1.3, 1.6 };
+        double betas[]{0.1, 0.5, 1.0, 1.5, 2.0, 3.0, 5.0};
 
+        for (double alpha : alphas)
+            for (double beta : betas)
+                EXPECT_EQ(0.0, br0.weibullvariate(alpha, beta));
 
+        u = double(0xffff'ffffULL) / double(1ULL << 32);
+        for (double alpha : alphas)
+            for (double beta : betas)
+                EXPECT_EQ(alpha * std::pow(-std::log(1.0 - u), 1.0 / beta), br1.weibullvariate(alpha, beta));
 
+        u = double(0x5555'5555ULL) / double(1ULL << 32);
+        for (double alpha : alphas)
+            for (double beta : betas)
+                EXPECT_EQ(alpha * std::pow(-std::log(1.0 - u), 1.0 / beta), br33.weibullvariate(alpha, beta));
 
+        EXPECT_THROW(br0.weibullvariate(-1, -1), WeibullArgsValueException);
+        EXPECT_THROW(br0.weibullvariate(-1, 0), WeibullArgsValueException);
+        EXPECT_THROW(br0.weibullvariate(-1, 1), WeibullArgsValueException);
+        EXPECT_THROW(br0.weibullvariate(0, -1), WeibullArgsValueException);
+        EXPECT_THROW(br0.weibullvariate(0, 0), WeibullArgsValueException);
+        EXPECT_THROW(br0.weibullvariate(1, -0.0001), WeibullArgsValueException);
+        EXPECT_THROW(br0.weibullvariate(1, 0), WeibullArgsValueException);
 
     }
 }
