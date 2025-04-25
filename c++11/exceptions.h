@@ -97,6 +97,12 @@ struct MinMaxSizesException : public std::exception
     const char* what() noexcept { return "'min' and 'max' container arguments must have same sizes."; }
 };
 
+/** @brief Negative value for kappa parameter exception. */
+struct NegativeKappaException : public std::exception
+{
+    const char* what() noexcept { return "'kappa' parameter cannot be negative."; }
+};
+
 /** @brief Negative value for sigma paramater of Gauss law exception. */
 struct NormalSigmaException : public GaussSigmaException
 {};

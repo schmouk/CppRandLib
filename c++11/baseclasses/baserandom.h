@@ -1818,28 +1818,44 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::vonmisesvariate(const dou
     // "Statistical Analysis of Circular Data", Cambridge University Press, 1993.
     //
     // Thanks to Magnus Kessler for a correction to the implementation of step 4.
+    // (modified here with n_loops testing against max loops count and with default returned value)
+
+    if (kappa < 0)
+        throw NegativeKappaException();
 
     if (kappa <= 1e-6)
         return uniform(TWO_PI);
 
     const double s = 0.5 / kappa;
     const double r = s + std::sqrt(1.0 + s * s);
-    double z;
+    double d, u, z;
 
-    while (true) {
+    constexpr int N_MAX_LOOPS{ 10 };  // notice: modification from initial algorithm, avoids infinite looping in specific cases
+    int n_loops{ 0 };
+    while (n_loops++ < N_MAX_LOOPS) {
         z = std::cos(uniform(PI));
-        const double d{ z / (r + z) };
-        const double u{ uniform() };
-        if (u < 1.0 - d * d || u < (1.0 - d) * std::exp(d))
+        d = z / (r + z);
+        u = uniform();
+        if (u < 1.0 - d * d || u <= (1.0 - d) * std::exp(d))
             break;
+    }
+
+    // notice: modification from initial algorithm, after too much looping in specific cases
+    if (n_loops == N_MAX_LOOPS) {
+        const double du1{ u - (1.0 - d * d) };
+        const double du2{ u - (1.0 - d) * std::exp(d) };
+        u -= std::min(du1, du2) + 1.0e-7;
     }
 
     const double q{ 1.0 / r };
     const double f{ (q + z) / (1.0 + q * z) };
-    if (uniform() >= 0.5)
-        return std::fmod(mu + std::acos(f), TWO_PI);
+    double theta;
+    if (uniform() > 0.5)
+        theta = std::fmod(mu + std::acos(f), TWO_PI);
     else
-        return std::fmod(mu - std::acos(f), TWO_PI);
+        theta = std::fmod(mu - std::acos(f), TWO_PI);
+
+    return (theta < 0.0) ? TWO_PI + theta : theta;
 }
 
 //---------------------------------------------------------------------------

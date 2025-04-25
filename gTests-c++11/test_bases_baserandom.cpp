@@ -1974,8 +1974,78 @@ namespace tests_bases
         EXPECT_EQ(-157.0L + (long double)u * 296.0L, br33.uniform<long double>(-157.0L, 139.0L));
 
 
+        //-- tests vonmisesvariate()
+        double mus[]{ 0.0, 0.8, 3.141592653 / 2, 2.6, 3.141592653 };
+        double kappas[]{ 0.01, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0 };
+
+        for (double mu : mus) {
+            EXPECT_EQ(0.0, br0.vonmisesvariate(mu, 0.0));
+            for (double kap : kappas)
+                EXPECT_EQ(mu, br0.vonmisesvariate(mu, kap));
+        }
+
+        u = double(0xffff'ffffULL) / double(1ULL << 32);
+        for (double mu : mus) {
+            EXPECT_NEAR(2 * 3.141592653, br1.vonmisesvariate(mu, 0.0), 1.0e-7);
+            for (double kap : kappas)
+                EXPECT_NEAR(mu + 3.141592653, br1.vonmisesvariate(mu, kap), 1.0e-7);
+        }
+
+        // Notice: hard coded expected values here below have been evaluated with PyRandLib
+        u = double(0x5555'5555ULL) / double(1ULL << 32);
+        EXPECT_NEAR(2.0943951019055, br33.vonmisesvariate(0.0            , 0.0), 1.0e-7);
+        EXPECT_NEAR(5.5716486148173, br33.vonmisesvariate(0.0            , 0.5), 1.0e-7);
+        EXPECT_NEAR(5.7362107270429, br33.vonmisesvariate(0.0            , 1.0), 1.0e-7);
+        EXPECT_NEAR(5.8261542345922, br33.vonmisesvariate(0.0            , 1.5), 1.0e-7);
+        EXPECT_NEAR(5.8834514689426, br33.vonmisesvariate(0.0            , 2.0), 1.0e-7);
+        EXPECT_NEAR(5.9540007159598, br33.vonmisesvariate(0.0            , 3.0), 1.0e-7);
+        EXPECT_NEAR(5.9970387621021, br33.vonmisesvariate(0.0            , 4.0), 1.0e-7);
+        EXPECT_NEAR(6.0267227633299, br33.vonmisesvariate(0.0            , 5.0), 1.0e-7);
+        EXPECT_NEAR(6.0487664484707, br33.vonmisesvariate(0.0            , 6.0), 1.0e-7);
+        EXPECT_NEAR(6.0798640040855, br33.vonmisesvariate(0.0            , 8.0), 1.0e-7);
+        EXPECT_NEAR(2.0943951019055, br33.vonmisesvariate(0.8            , 0.0), 1.0e-7);
+        EXPECT_NEAR(0.0884633076377, br33.vonmisesvariate(0.8            , 0.5), 1.0e-7);
+        EXPECT_NEAR(0.2530254198633, br33.vonmisesvariate(0.8            , 1.0), 1.0e-7);
+        EXPECT_NEAR(0.3429689274126, br33.vonmisesvariate(0.8            , 1.5), 1.0e-7);
+        EXPECT_NEAR(0.4002661617630, br33.vonmisesvariate(0.8            , 2.0), 1.0e-7);
+        EXPECT_NEAR(0.4708154087802, br33.vonmisesvariate(0.8            , 3.0), 1.0e-7);
+        EXPECT_NEAR(0.5138534549225, br33.vonmisesvariate(0.8            , 4.0), 1.0e-7);
+        EXPECT_NEAR(0.5435374561503, br33.vonmisesvariate(0.8            , 5.0), 1.0e-7);
+        EXPECT_NEAR(0.5655811412911, br33.vonmisesvariate(0.8            , 6.0), 1.0e-7);
+        EXPECT_NEAR(0.5966786969059, br33.vonmisesvariate(0.8            , 8.0), 1.0e-7);
+        EXPECT_NEAR(2.0943951019055, br33.vonmisesvariate(3.141592653 / 2, 0.0), 1.0e-7);
+        EXPECT_NEAR(0.8592596341377, br33.vonmisesvariate(3.141592653 / 2, 0.5), 1.0e-7);
+        EXPECT_NEAR(1.0238217463633, br33.vonmisesvariate(3.141592653 / 2, 1.0), 1.0e-7);
+        EXPECT_NEAR(1.1137652539126, br33.vonmisesvariate(3.141592653 / 2, 1.5), 1.0e-7);
+        EXPECT_NEAR(1.1710624882630, br33.vonmisesvariate(3.141592653 / 2, 2.0), 1.0e-7);
+        EXPECT_NEAR(1.2416117352802, br33.vonmisesvariate(3.141592653 / 2, 3.0), 1.0e-7);
+        EXPECT_NEAR(1.2846497814225, br33.vonmisesvariate(3.141592653 / 2, 4.0), 1.0e-7);
+        EXPECT_NEAR(1.3143337826503, br33.vonmisesvariate(3.141592653 / 2, 5.0), 1.0e-7);
+        EXPECT_NEAR(1.3363774677911, br33.vonmisesvariate(3.141592653 / 2, 6.0), 1.0e-7);
+        EXPECT_NEAR(1.3674750234059, br33.vonmisesvariate(3.141592653 / 2, 8.0), 1.0e-7);
+        EXPECT_NEAR(2.0943951019055, br33.vonmisesvariate(2.6            , 0.0), 1.0e-7);
+        EXPECT_NEAR(1.8884633076377, br33.vonmisesvariate(2.6            , 0.5), 1.0e-7);
+        EXPECT_NEAR(2.0530254198633, br33.vonmisesvariate(2.6            , 1.0), 1.0e-7);
+        EXPECT_NEAR(2.1429689274126, br33.vonmisesvariate(2.6            , 1.5), 1.0e-7);
+        EXPECT_NEAR(2.2002661617630, br33.vonmisesvariate(2.6            , 2.0), 1.0e-7);
+        EXPECT_NEAR(2.2708154087802, br33.vonmisesvariate(2.6            , 3.0), 1.0e-7);
+        EXPECT_NEAR(2.3138534549225, br33.vonmisesvariate(2.6            , 4.0), 1.0e-7);
+        EXPECT_NEAR(2.3435374561503, br33.vonmisesvariate(2.6            , 5.0), 1.0e-7);
+        EXPECT_NEAR(2.3655811412911, br33.vonmisesvariate(2.6            , 6.0), 1.0e-7);
+        EXPECT_NEAR(2.3966786969059, br33.vonmisesvariate(2.6            , 8.0), 1.0e-7);
+        EXPECT_NEAR(2.0943951019055, br33.vonmisesvariate(3.141592653    , 0.0), 1.0e-7);
+        EXPECT_NEAR(2.4300559606377, br33.vonmisesvariate(3.141592653    , 0.5), 1.0e-7);
+        EXPECT_NEAR(2.5946180728633, br33.vonmisesvariate(3.141592653    , 1.0), 1.0e-7);
+        EXPECT_NEAR(2.6845615804126, br33.vonmisesvariate(3.141592653    , 1.5), 1.0e-7);
+        EXPECT_NEAR(2.7418588147630, br33.vonmisesvariate(3.141592653    , 2.0), 1.0e-7);
+        EXPECT_NEAR(2.8124080617802, br33.vonmisesvariate(3.141592653    , 3.0), 1.0e-7);
+        EXPECT_NEAR(2.8554461079225, br33.vonmisesvariate(3.141592653    , 4.0), 1.0e-7);
+        EXPECT_NEAR(2.8851301091503, br33.vonmisesvariate(3.141592653    , 5.0), 1.0e-7);
+        EXPECT_NEAR(2.9071737942911, br33.vonmisesvariate(3.141592653    , 6.0), 1.0e-7);
+        EXPECT_NEAR(2.9382713499059, br33.vonmisesvariate(3.141592653    , 8.0), 1.0e-7);
 
 
+        EXPECT_THROW(br33.vonmisesvariate(1.7, -1), NegativeKappaException);
 
 
 
