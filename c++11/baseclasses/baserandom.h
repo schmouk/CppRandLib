@@ -300,7 +300,7 @@ public:
     *
     * @return a double value uniformly contained within range [0.0, 1.0).
     */
-    template<typename T>
+    template<typename T = double>
     inline const T random()
     {
         if (!std::is_floating_point<T>::value)
@@ -796,12 +796,12 @@ public:
 
 
     /** @brief Uniform distribution in [0.0, 1.0). */
-    template<typename T>
+    template<typename T = double>
     inline const T uniform();
 
 
     /** @brief Uniform distribution in [0.0, max). */
-    template<typename T, typename U = T>
+    template<typename T = double, typename U = T>
     inline const T uniform(const U max);
 
     template<>
@@ -1562,7 +1562,7 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::expovariate(const double 
     if (lambda <= 0.0)
         throw ExponentialZeroLambdaException();
 
-    const double u{ uniform<double>() };
+    const double u{ uniform() };
     if (u < 1.0)  // should always happen, let's check for it nevertheless
         return -std::log(1.0 - u) / lambda;
     else
@@ -1592,9 +1592,9 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gammavariate(const double
 
         double u1;
         while (n_loops < N_MAX_LOOPS) {  // Notice: while (true) in initial Cheng's algorithm
-            u1 = std::min(uniform<double>(), 1.0 - EPSILON);  // Notice: modification from initial algorithm u1 is always less than 1-epsilon
+            u1 = std::min(uniform(), 1.0 - EPSILON);  // Notice: modification from initial algorithm u1 is always less than 1-epsilon
             if (EPSILON < u1) {          // Notice: modification from initial algorithm, removed the test u1 < 1-epsilon
-                const double u2{ 1.0 - uniform<double>() };
+                const double u2{ 1.0 - uniform() };
                 const double v{ std::log(u1 / (1.0 - u1)) / INV_A };
                 const double x{ alpha - std::exp(v) };
                 const double z{ u1 * u1 * u2 };
@@ -1610,7 +1610,7 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gammavariate(const double
     }
     else if (alpha == 1.0) {
         // this is exponential distribution with lambda = 1 / beta
-        return -std::log(1.0 - uniform<double>()) * beta;
+        return -std::log(1.0 - uniform()) * beta;
     }
     else {
         // alpha is between 0 and 1 (exclusive)
@@ -1618,11 +1618,11 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gammavariate(const double
         // (modified here with n_loops testing against max loops count and with default returned value)
         double b, p, x, u;
         while (n_loops < N_MAX_LOOPS) {  // Notice: while (true) in initial Kennedy & Gentle's algorithm
-            u = uniform<double>();
+            u = uniform();
             b = (E + alpha) / E;
             p =  b * u;
             x = p <= 1.0 ? std::pow(p, 1.0 / alpha) : -std::log((b - p) / alpha);
-            u = uniform<double>();
+            u = uniform();
             if (p <= 1.0) {
                 if (u <= std::exp(-x))
                     return x * beta;
@@ -1659,8 +1659,8 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gauss(const double mu, co
         _internal_state.gauss_valid = false;
     }
     else {
-        const double u{ uniform<double>(TWO_PI) };
-        const double g{ std::sqrt(-2.0 * std::log(1.0 - uniform<double>())) };
+        const double u{ uniform(TWO_PI) };
+        const double g{ std::sqrt(-2.0 * std::log(1.0 - uniform())) };
         z = std::cos(u) * g;
         _internal_state.gauss_next = std::sin(u) * g;
         _internal_state.gauss_valid = true;
@@ -1706,7 +1706,7 @@ inline const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::normalvariate(cons
 
     double u1{ 0.0 };
     while (n_loops++ < N_MAX_LOOPS) {
-        u1 = uniform<double>();
+        u1 = uniform();
         const double u2{ 1.0 - u1 };
         const double z{ NV_MAGICCONST * (u1 - 0.5) / u2 };
         if (z * z / 4.0 <= -std::log(u2))
@@ -1727,7 +1727,7 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::paretovariate(const doubl
         throw ParetoArgsValueException();
 
     // according to Jain, pg. 495
-    return std::pow(1.0 - uniform<double>(), -1.0 / alpha);
+    return std::pow(1.0 - uniform(), -1.0 / alpha);
 }
 
 //---------------------------------------------------------------------------
@@ -1754,7 +1754,7 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::triangular(const double l
     if (high == low)
         return high;
 
-    double u{ uniform<double>() };
+    double u{ uniform() };
     double c{ (mode - low) / (high - low) };
     if (u > c)
         return high + (low - high) * std::sqrt((1.0 - u) * (1.0 - c));
@@ -1782,6 +1782,8 @@ inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::uniform(const U max)
 {
     if (!std::is_arithmetic<T>::value)
         throw ArithmeticValueTypeException();
+    if (!std::is_arithmetic<U>::value)
+        throw MaxValueTypeException();
 
     return T((long double)max * random<long double>());
 }
@@ -1818,16 +1820,16 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::vonmisesvariate(const dou
     // Thanks to Magnus Kessler for a correction to the implementation of step 4.
 
     if (kappa <= 1e-6)
-        return uniform<double>(TWO_PI);
+        return uniform(TWO_PI);
 
     const double s = 0.5 / kappa;
     const double r = s + std::sqrt(1.0 + s * s);
     double z;
 
     while (true) {
-        z = std::cos(uniform<double>(PI));
+        z = std::cos(uniform(PI));
         const double d{ z / (r + z) };
-        const double u{ uniform<double>() };
+        const double u{ uniform() };
         if (u < 1.0 - d * d || u < (1.0 - d) * std::exp(d))
             break;
     }
@@ -1848,5 +1850,5 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::weibullvariate(const doub
     if (beta <= 0.0)
         throw WeibullArgsValueException();
 
-    return alpha * std::pow(-std::log(1.0 - uniform<double>()), 1.0 / beta);
+    return alpha * std::pow(-std::log(1.0 - uniform()), 1.0 / beta);
 }

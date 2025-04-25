@@ -290,14 +290,17 @@ namespace tests_bases
         //-- tests random()
         EXPECT_FLOAT_EQ(0.0f, br0.random<float>());
         EXPECT_DOUBLE_EQ(0.0, br0.random<double>());
+        EXPECT_DOUBLE_EQ(0.0, br0.random());
         EXPECT_NEAR(0.0L, br0.random<long double>(), 1.0e-20L);
 
         EXPECT_FLOAT_EQ(1.0f, br1.random<float>());
         EXPECT_NEAR(1.0, br1.random<double>(), 1.0e-9);
+        EXPECT_NEAR(1.0, br1.random(), 1.0e-9);
         EXPECT_NEAR(1.0L, br1.random<long double>(), 1.0e-9L);
 
         EXPECT_FLOAT_EQ(0.333333333f, br33.random<float>());
         EXPECT_NEAR(1.0 / 3.0, br33.random<double>(), 1.0e-9);
+        EXPECT_NEAR(1.0 / 3.0, br33.random(), 1.0e-9);
         EXPECT_NEAR(1.0L / 3.0L, br33.random<long double>(), 1.0e-9L);
 
 
@@ -305,14 +308,17 @@ namespace tests_bases
         EXPECT_FLOAT_EQ(0.0f, br0.operator()<float>());
         EXPECT_DOUBLE_EQ(0.0, br0.operator()<double>());
         EXPECT_NEAR(0.0L, br0.operator()<long double>(), 1.0e-20L);
+        EXPECT_NEAR(0.0L, br0(), 1.0e-20L);
 
         EXPECT_FLOAT_EQ(1.0f, br1.operator()<float>());
         EXPECT_NEAR(1.0, br1.operator()<double>(), 1.0e-9);
         EXPECT_NEAR(1.0L, br1.operator()<long double>(), 1.0e-9L);
+        EXPECT_NEAR(1.0L, br1(), 1.0e-9L);
 
         EXPECT_FLOAT_EQ(0.333333333f, br33.operator()<float>());
         EXPECT_NEAR(1.0 / 3.0, br33.operator()<double>(), 1.0e-9);
         EXPECT_NEAR(1.0L / 3.0L, br33.operator()<long double>(), 1.0e-9L);
+        EXPECT_NEAR(1.0L / 3.0L, br33(), 1.0e-9L);
 
 
         //-- tests operator(max)
@@ -1897,6 +1903,80 @@ namespace tests_bases
                     else
                         EXPECT_DOUBLE_EQ(low + (high - low) * std::sqrt(u * c), br33.triangular(low, high, mode));
                 }
+
+
+        //-- tests uniform()
+        EXPECT_EQ(0.0f, br0.uniform<float>());
+        EXPECT_EQ(0.0, br0.uniform());
+        EXPECT_EQ(0.0L, br0.uniform<long double>());
+
+        u = double(0xffff'ffff) / double(1ULL << 32);
+        EXPECT_EQ(float(u), br1.uniform<float>());
+        EXPECT_EQ(u, br1.uniform());
+        EXPECT_EQ((long double)u, br1.uniform<long double>());
+
+        u = double(0x5555'5555) / double(1ULL << 32);
+        EXPECT_EQ(float(u), br33.uniform<float>());
+        EXPECT_EQ(u, br33.uniform());
+        EXPECT_EQ((long double)u, br33.uniform<long double>());
+
+        EXPECT_THROW(br0.uniform<int>(), FloatingPointTypeException);
+        EXPECT_THROW(br1.uniform<std::vector<double>>(), FloatingPointTypeException);
+        EXPECT_THROW(br33.uniform<Object>(), FloatingPointTypeException);
+
+
+        //-- test uniform(max)
+        EXPECT_EQ(0, br0.uniform(101));
+        EXPECT_EQ(0, br0.uniform<int>(101));
+        EXPECT_EQ(0.0f, br0.uniform(101.0f));
+        EXPECT_EQ(0LL, br0.uniform(0xffff'ffff'ffff'ffffLL));
+        EXPECT_EQ(0.0L, br0.uniform<long double>(-157L));
+
+        u = double(0xffff'ffff) / double(1ULL << 32);
+        EXPECT_EQ(u * 101, br1.uniform(101));
+        EXPECT_EQ(100, br1.uniform<int>(101));
+        EXPECT_EQ(u * 101.0f, br1.uniform(101.0f));
+        EXPECT_EQ(u * -1, br1.uniform(0xffff'ffff'ffff'ffffLL));
+        EXPECT_EQ((long double)u * -157L, br1.uniform<long double>(-157L));
+
+        u = double(0x5555'5555) / double(1ULL << 32);
+        EXPECT_EQ(u * 101, br33.uniform(101));
+        EXPECT_EQ(int(u * 101), br33.uniform<int>(101));
+        EXPECT_EQ(u * 101.0f, br33.uniform(101.0f));
+        EXPECT_EQ(u * -1, br33.uniform(0xffff'ffff'ffff'ffffLL));
+        EXPECT_EQ((long double)u * -157L, br33.uniform<long double>(-157L));
+
+
+        EXPECT_THROW(br0.uniform<Object>(101), ArithmeticValueTypeException);
+        EXPECT_THROW(br1.uniform(Object()), MaxValueTypeException);
+        EXPECT_THROW(br33.uniform<std::vector<int>>(Object()), ArithmeticValueTypeException);
+
+
+        //-- test uniform(min, max)
+        EXPECT_EQ(1.0, br0.uniform<double>(1.0f, 101));
+        EXPECT_EQ(1, br0.uniform<int>(1, 101));
+        EXPECT_EQ(1.0f, br0.uniform<float>(1.0f, 101.0));
+        EXPECT_EQ(-1LL, br0.uniform<long long>(129, 0xffff'ffff'ffff'ffffLL));
+        EXPECT_EQ(-157.0L, br0.uniform<long double>(-157.0L, 139.0L));
+
+        u = double(0xffff'ffff) / double(1ULL << 32);
+        EXPECT_EQ(1.0 + u * 100, br1.uniform<double>(1.0f, 101));
+        EXPECT_EQ(100, br1.uniform<int>(1, 101));
+        EXPECT_EQ(1.0 + float(u * 100.0), br1.uniform<float>(1.0f, 101.0));
+        EXPECT_EQ(128, br1.uniform<long long>(129, 0xffff'ffff'ffff'ffffLL));
+        EXPECT_EQ(-157.0L + (long double)u * 296.0L, br1.uniform<long double>(-157.0L, 139.0L));
+
+        u = double(0x5555'5555) / double(1ULL << 32);
+        EXPECT_EQ(1.0 + u * 100, br33.uniform<double>(1.0f, 101));
+        EXPECT_EQ(1 + 33, br33.uniform<int>(1, 101));
+        EXPECT_EQ(1.0 + float(u * 100.0), br33.uniform<float>(1.0f, 101.0));
+        EXPECT_EQ((long long)(-1 + 130 * u), br33.uniform<long long>(129, 0xffff'ffff'ffff'ffffLL));
+        EXPECT_EQ(-157.0L + (long double)u * 296.0L, br33.uniform<long double>(-157.0L, 139.0L));
+
+
+
+
+
 
 
 
