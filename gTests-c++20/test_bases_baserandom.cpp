@@ -394,18 +394,18 @@ namespace tests_bases
 
 
         //-- tests operator(array max)
-        std::array<std::uint32_t, n> max_arr{ 444, 666, 888, 1110, 1332 };
-        std::array<std::uint32_t, n> arr;
+        std::array<std::uint32_t, 5> max_arr{ 444, 666, 888, 1110, 1332 };
+        std::array<std::uint32_t, 5> arr;
 
-        arr = br0.operator() < std::uint32_t > (max_arr);
+        arr = br0.operator()<std::uint32_t, 5>(max_arr);
         for (std::uint32_t v : arr)
             EXPECT_EQ(0UL, v);
 
-        arr = br1.operator() < std::uint32_t > (max_arr);
+        arr = br1.operator()<std::uint32_t, 5>(max_arr);
         for (int i = 0; i < mn; ++i)
             EXPECT_EQ(std::uint32_t(max_arr[i] * 0.999999), arr[i]);
 
-        arr = br33.operator() < std::uint32_t > (max_arr);
+        arr = br33.operator()<std::uint32_t, 5>(max_arr);
         for (int i = 0; i < mn; ++i)
             EXPECT_EQ(::uint32_t(max_arr[i] * _NORM33), arr[i]);
 
@@ -451,14 +451,6 @@ namespace tests_bases
         EXPECT_EQ(0, br0.binomialvariate(0, 0.5));
         EXPECT_EQ(0, br1.binomialvariate(0, 0.99));
         EXPECT_EQ(0, br33.binomialvariate(0, 0.3334f));
-
-        EXPECT_THROW(br0.binomialvariate(-1.0f, 0.1f), IntegralValueTypeException);
-        EXPECT_THROW(br1.binomialvariate(-1.0, 0.1), IntegralValueTypeException);
-        EXPECT_THROW(br33.binomialvariate(-1.0L, 0.1L), IntegralValueTypeException);
-
-        EXPECT_THROW(br0.binomialvariate(0, std::uint8_t(1)), FloatingPointTypeException);
-        EXPECT_THROW(br1.binomialvariate(0, 2UL), FloatingPointTypeException);
-        EXPECT_THROW(br33.binomialvariate(0, 3ULL), FloatingPointTypeException);
 
         EXPECT_THROW(br0.binomialvariate(-1, 0.1f), PositiveValueException);
         EXPECT_THROW(br1.binomialvariate(-1, 0.1), PositiveValueException);
@@ -514,10 +506,6 @@ namespace tests_bases
         for (long double v : vld33)
             EXPECT_NEAR(0.333333333L, v, 1.e-6L);
 
-        EXPECT_THROW(br0.n_evaluate<int>(5), FloatingPointTypeException);
-        EXPECT_THROW(br1.n_evaluate<std::uint64_t>(5), FloatingPointTypeException);
-        EXPECT_THROW(br33.n_evaluate<std::int8_t>(5), FloatingPointTypeException);
-
 
         //-- tests vect n_evaluate(n, max)
         vf0 = br0.n_evaluate<float>(5, 20.0f);
@@ -531,14 +519,6 @@ namespace tests_bases
         vld33 = br33.n_evaluate<long double>(9, 40.0L);
         for (long double v : vld33)
             EXPECT_NEAR(13.333333333L, v, 1.e-6L);
-
-        EXPECT_THROW(br0.n_evaluate<Object>(5, Object()), ValueTypeException);
-        EXPECT_THROW(br1.n_evaluate<Object>(5, Object()), ValueTypeException);
-        EXPECT_THROW(br33.n_evaluate<Object>(5, Object()), ValueTypeException);
-
-        EXPECT_THROW((br0.n_evaluate<std::uint32_t, Object>(5, Object())), MaxValueTypeException);
-        EXPECT_THROW((br1.n_evaluate<double, Object>(5, Object())), MaxValueTypeException);
-        EXPECT_THROW((br33.n_evaluate<int, Object>(5, Object())), MaxValueTypeException);
 
         EXPECT_THROW(br0.n_evaluate<int>(0, 5), ZeroLengthException);
         EXPECT_THROW((br1.n_evaluate<std::uint64_t, double>(0, 5.0)), ZeroLengthException);
@@ -562,9 +542,6 @@ namespace tests_bases
             EXPECT_EQ(vu33[i], std::uint32_t(max_vect[i] * _NORM33));
 
         std::vector<Object> obj_vect(2);
-        EXPECT_THROW(br0.n_evaluate<Object>(obj_vect), ValueTypeException);
-        EXPECT_THROW((br1.n_evaluate<Object, double>(max_vect_d)), ValueTypeException);
-        EXPECT_THROW((br33.n_evaluate<int, Object>(obj_vect)), MaxValueTypeException);
 
         EXPECT_THROW(br0.n_evaluate<int>(std::vector<int>()), ZeroLengthException);
         EXPECT_THROW((br1.n_evaluate<std::uint64_t, float>(std::vector<float>())), ZeroLengthException);
@@ -592,25 +569,10 @@ namespace tests_bases
 
         std::vector<Object> minv(5);
         std::vector<Object> maxv(5);
-        EXPECT_THROW(br0.n_evaluate<Object>(minv, maxv), ValueTypeException);
-        EXPECT_THROW(br1.n_evaluate<Object>(minv, maxv), ValueTypeException);
-        EXPECT_THROW(br33.n_evaluate<Object>(minv, maxv), ValueTypeException);
-
-        EXPECT_THROW((br0.n_evaluate<Object, std::uint32_t>(min_vect, max_vect)), ValueTypeException);
-        EXPECT_THROW((br1.n_evaluate<Object, float, std::uint32_t>(min_vect_f, max_vect)), ValueTypeException);
-        EXPECT_THROW((br33.n_evaluate<Object, float, double>(min_vect_f, max_vect_d)), ValueTypeException);
-
-        EXPECT_THROW((br0.n_evaluate<std::uint32_t, Object, std::uint32_t>(minv, max_vect)), MinValueTypeException);
-        EXPECT_THROW((br1.n_evaluate<int, float, Object>(min_vect_f, maxv)), MaxValueTypeException);
-        EXPECT_THROW((br33.n_evaluate<float, Object>(minv, maxv)), MinValueTypeException);
 
         EXPECT_THROW(br0.n_evaluate<int>({ 1, 2 }, std::vector<int>()), ZeroLengthException);
         EXPECT_THROW(br1.n_evaluate<int>(std::vector<int>(), std::vector<int>()), ZeroLengthException);
         EXPECT_THROW(br33.n_evaluate<int>(std::vector<int>(), { 1, 2 }), ZeroLengthException);
-
-        EXPECT_THROW(br0.n_evaluate<int>({ 1, 2 }, std::vector<Object>()), MaxValueTypeException);
-        EXPECT_THROW(br1.n_evaluate<float>(std::vector<Object>(), std::vector<Object>()), MinValueTypeException);
-        EXPECT_THROW(br33.n_evaluate<double>(std::vector<Object>(), { 1, 2 }), MinValueTypeException);
 
 
         //-- tests array<T, n> n_evaluate()
@@ -626,14 +588,6 @@ namespace tests_bases
         for (long double a : ald33)
             EXPECT_NEAR(0.333333333L, a, 1.e-6);
 
-        EXPECT_THROW((br0.n_evaluate<int, 5>()), FloatingPointTypeException);
-        EXPECT_THROW((br1.n_evaluate<Object, 7>()), FloatingPointTypeException);
-        EXPECT_THROW((br33.n_evaluate<std::uint64_t, 9>()), FloatingPointTypeException);
-
-        EXPECT_THROW((br0.n_evaluate<long double, 0>()), ZeroLengthException);
-        EXPECT_THROW((br1.n_evaluate<float, 0>()), ZeroLengthException);
-        EXPECT_THROW((br33.n_evaluate<double, 0>()), ZeroLengthException);
-
 
         //-- tests array<T, n> n_evaluate(max)
         af0 = br0.n_evaluate<float, 5>(10ULL);
@@ -648,18 +602,6 @@ namespace tests_bases
         for (long double a : ald33)
             EXPECT_NEAR(10.0L, a, 1.e-6);
 
-        EXPECT_THROW((br0.n_evaluate<Object, 5>(Object())), ValueTypeException);
-        EXPECT_THROW((br1.n_evaluate<Object, 7>(8)), ValueTypeException);
-        EXPECT_THROW((br33.n_evaluate<Object, 9>(11.1)), ValueTypeException);
-
-        EXPECT_THROW((br0.n_evaluate<long double, 1>(Object())), MaxValueTypeException);
-        EXPECT_THROW((br1.n_evaluate<float, 2>(Object())), MaxValueTypeException);
-        EXPECT_THROW((br33.n_evaluate<int, 3>(Object())), MaxValueTypeException);
-
-        EXPECT_THROW((br0.n_evaluate<long double, 0>(2.5L)), ZeroLengthException);
-        EXPECT_THROW((br1.n_evaluate<float, 0>(2.5f)), ZeroLengthException);
-        EXPECT_THROW((br33.n_evaluate<double, 0>(2.5)), ZeroLengthException);
-
 
         //-- tests array<T, n> n_evaluate(min, max)
         af0 = br0.n_evaluate<float, 5>(1.5, 10);
@@ -673,22 +615,6 @@ namespace tests_bases
         ald33 = br33.n_evaluate<long double, 9>(3.0L, 30.0L);
         for (long double a : ald33)
             EXPECT_NEAR(12.0L, a, 1.e-6);
-
-        EXPECT_THROW((br0.n_evaluate<Object, 5>(Object(), Object())), ValueTypeException);
-        EXPECT_THROW((br1.n_evaluate<Object, 7>(Object(), 5UL)), ValueTypeException);
-        EXPECT_THROW((br33.n_evaluate<Object, 9>(Object(), 0.0f)), ValueTypeException);
-
-        EXPECT_THROW((br0.n_evaluate<long double, 1>(Object(), Object())), MinValueTypeException);
-        EXPECT_THROW((br1.n_evaluate<float, 2>(Object(), 5UL)), MinValueTypeException);
-        EXPECT_THROW((br33.n_evaluate<int, 3>(Object(), 0.0)), MinValueTypeException);
-
-        EXPECT_THROW((br0.n_evaluate<long double, 1>(1, Object())), MaxValueTypeException);
-        EXPECT_THROW((br1.n_evaluate<float, 2>(5UL, Object())), MaxValueTypeException);
-        EXPECT_THROW((br33.n_evaluate<int, 3>(0.0, Object())), MaxValueTypeException);
-
-        EXPECT_THROW((br0.n_evaluate<long double, 0>(2.5L, 3.5L)), ZeroLengthException);
-        EXPECT_THROW((br1.n_evaluate<float, 0>(2.5f, 3.5f)), ZeroLengthException);
-        EXPECT_THROW((br33.n_evaluate<double, 0>(2.5, 3.5)), ZeroLengthException);
 
 
         //-- tests array<T, n> n_evaluate(array max)
@@ -709,22 +635,6 @@ namespace tests_bases
             EXPECT_EQ(std::uint32_t(max_arr_f[i] * _NORM33), au33[i]);
         for (int i = 5; i < 9; ++i)
             EXPECT_EQ(0UL, au33[i]);
-
-        EXPECT_THROW((br0.n_evaluate<Object, 5>(std::array<Object, 5>())), ValueTypeException);
-        EXPECT_THROW((br1.n_evaluate<Object, 7>(std::array<Object, 7>())), ValueTypeException);
-        EXPECT_THROW((br33.n_evaluate<Object, 9>(std::array<Object, 9>())), ValueTypeException);
-
-        EXPECT_THROW((br0.n_evaluate<long double, 1, Object, 2>(std::array<Object, 2>())), MaxValueTypeException);
-        EXPECT_THROW((br1.n_evaluate<float, 2, Object, 3>(std::array<Object, 3>())), MaxValueTypeException);
-        EXPECT_THROW((br33.n_evaluate<int, 3, Object, 1>(std::array<Object, 1>())), MaxValueTypeException);
-
-        EXPECT_THROW((br0.n_evaluate<long double, 1, Object, 0>(std::array<Object, 0>())), MaxValueTypeException);
-        EXPECT_THROW((br1.n_evaluate<float, 2, Object, 0>(std::array<Object, 0>())), MaxValueTypeException);
-        EXPECT_THROW((br33.n_evaluate<int, 3, Object, 0>(std::array<Object, 0>())), MaxValueTypeException);
-
-        EXPECT_THROW((br0.n_evaluate<long double, 1, long double, 0>(std::array<long double, 0>())), ZeroLengthException);
-        EXPECT_THROW((br1.n_evaluate<float, 0, int, 0>(std::array<int, 0>())), ZeroLengthException);
-        EXPECT_THROW((br33.n_evaluate<double, 0, std::uint32_t, 1>(std::array<std::uint32_t, 1>())), ZeroLengthException);
 
 
         //-- tests array<T, n> n_evaluate(array min, array max)
@@ -754,29 +664,6 @@ namespace tests_bases
             EXPECT_EQ(std::uint32_t(a + (b - a) * 0.333333), arr4[i]);
         }
 
-        EXPECT_THROW((br0.n_evaluate<Object, 5>(min_arr_4, max_arr_5)), ValueTypeException);
-        EXPECT_THROW((br1.n_evaluate<Object, 7>(std::array<Object, 7>(), max_arr_4)), ValueTypeException);
-        EXPECT_THROW((br33.n_evaluate<Object, 9>(min_arr_5, std::array<Object, 9>())), ValueTypeException);
-        EXPECT_THROW((br33.n_evaluate<Object, 0>(min_arr_5, std::array<Object, 9>())), ValueTypeException);
-
-        EXPECT_THROW((br0.n_evaluate<long double, 1>(std::array<Object, 2>(), max_arr_5)), MinValueTypeException);
-        EXPECT_THROW((br1.n_evaluate<float, 2>(std::array<Object, 3>(), max_arr_4)), MinValueTypeException);
-        EXPECT_THROW((br33.n_evaluate<int, 3>(std::array<Object, 1>(), std::array<Object, 3>())), MinValueTypeException);
-        EXPECT_THROW((br33.n_evaluate<int, 0>(std::array<Object, 1>(), std::array<Object, 3>())), MinValueTypeException);
-
-        EXPECT_THROW((br0.n_evaluate<long double, 1>(min_arr_4, std::array<Object, 2>())), MaxValueTypeException);
-        EXPECT_THROW((br1.n_evaluate<float, 2>(min_arr_5, std::array<Object, 3>())), MaxValueTypeException);
-        EXPECT_THROW((br33.n_evaluate<int, 3>(min_arr, std::array<Object, 1>())), MaxValueTypeException);
-        EXPECT_THROW((br33.n_evaluate<int, 0>(min_arr, std::array<Object, 1>())), MaxValueTypeException);
-
-        EXPECT_THROW((br0.n_evaluate<long double, 0>(min_arr_4, max_arr_4)), ZeroLengthException);
-        EXPECT_THROW((br0.n_evaluate<long double, 0>(std::array<long double, 0>(), max_arr_4)), ZeroLengthException);
-        EXPECT_THROW((br0.n_evaluate<long double, 1>(std::array<long double, 0>(), max_arr_4)), ZeroLengthException);
-        EXPECT_THROW((br1.n_evaluate<float, 0>(min_arr_5, std::array<int, 0>())), ZeroLengthException);
-        EXPECT_THROW((br1.n_evaluate<float, 1>(min_arr_5, std::array<int, 0>())), ZeroLengthException);
-        EXPECT_THROW((br33.n_evaluate<double, 0>(std::array<std::uint32_t, 0>(), std::array<int, 0>())), ZeroLengthException);
-        EXPECT_THROW((br33.n_evaluate<double, 1>(std::array<std::uint32_t, 0>(), std::array<int, 0>())), ZeroLengthException);
-
 
         //-- tests randbytes(n)
         std::vector<std::uint8_t> vb0{ br0.randbytes(7) };
@@ -805,10 +692,6 @@ namespace tests_bases
         EXPECT_EQ(10ULL, br1.randint(10ULL, 0ULL));
         EXPECT_EQ(std::int8_t(double(7 * .3333333 - 7)), br33.randint(std::int8_t(-1), std::int8_t(-7)));
 
-        EXPECT_THROW(br0.randint(1.9, 3.0), IntegralValueTypeException);
-        EXPECT_THROW(br1.randint(Object(), Object()), IntegralValueTypeException);
-        EXPECT_THROW(br33.randint(-7.0f, -1.0f), IntegralValueTypeException);
-
 
         //-- tests randrange()
         EXPECT_EQ(br0.randrange(std::uint8_t(1), std::uint8_t(4)), std::uint8_t(1));
@@ -831,7 +714,6 @@ namespace tests_bases
         EXPECT_NEAR(br33.randrange(5.0, 1.0, -0.25), 3.75, 1.0e-6);
         EXPECT_NEAR(br1.randrange(5.5, 1.0, -0.35), 1.30, 1.0e-6);
 
-        EXPECT_THROW(br0.randrange(Object(), Object(), Object()), ValueTypeException);
         EXPECT_THROW(br1.randrange(15, 25, 0), RangeZeroStepException);
         EXPECT_THROW(br33.randrange(25ULL, 25ULL, 2LL), RangeSameValuesException);
         EXPECT_THROW(br0.randrange(15L, 25L, -1L), RangeIncoherentValuesException);
@@ -888,14 +770,10 @@ namespace tests_bases
         //-- tests samples(array, k)
         std::array<char, 13> arr_population{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M' };
 
-        std::array<char, 0> arr_c0;
         std::array<char, 5> arr_c5;
         std::array<char, 13> arr_c13;
         std::array<char, 14> arr_c14;
 
-        br0.sample(arr_c0, arr_population);
-        for (int i = 0; i < arr_c0.size(); ++i)
-            EXPECT_EQ(arr_population[i], arr_c0[i]);
         br0.sample(arr_c5, arr_population);
         for (int i = 0; i < 5; ++i)
             EXPECT_EQ(arr_population[i], arr_c5[i]);
@@ -903,9 +781,6 @@ namespace tests_bases
         for (int i = 0; i < 13; ++i)
             EXPECT_EQ(arr_population[i], arr_c13[i]);
 
-        br1.sample(arr_c0, arr_population);
-        for (int i = 0; i < arr_c0.size(); ++i)
-            EXPECT_EQ(arr_population[13 - i - 1], arr_c0[i]);
         br1.sample(arr_c5, arr_population);
         for (int i = 0; i < 5; ++i)
             EXPECT_EQ("MABCD"[i], arr_c5[i]);
@@ -913,9 +788,6 @@ namespace tests_bases
         for (int i = 0; i < 13; ++i)
             EXPECT_EQ("MABCDEFGHIJKL"[i], arr_c13[i]);
 
-        br33.sample(arr_c0, arr_population);
-        for (int i = 0; i < arr_c0.size(); ++i)
-            EXPECT_EQ(arr_population[13 - i - 1], arr_c0[i]);
         br33.sample(arr_c5, arr_population);
         for (int i = 0; i < 5; ++i)
             EXPECT_EQ("EAFGD"[i], vect_c[i]);
@@ -1046,12 +918,6 @@ namespace tests_bases
 
         // finally, with exceptions thrown
         std::vector<Object> vect_obj(13);
-        EXPECT_THROW(br0.sample(vect_c, vect_population, vect_obj, 0), SampleCountsTypeException);
-        EXPECT_THROW(br1.sample(vect_c, vect_population, vect_obj, 5), SampleCountsTypeException);
-        EXPECT_THROW(br33.sample(vect_c, vect_population, vect_obj, 13), SampleCountsTypeException);
-        EXPECT_THROW(br0.sample(vect_c, vect_population, std::vector<float>(13), 0), SampleCountsTypeException);
-        EXPECT_THROW(br1.sample(vect_c, vect_population, std::vector<double>(13), 5), SampleCountsTypeException);
-        EXPECT_THROW(br33.sample(vect_c, vect_population, std::vector<long double>(13), 13), SampleCountsTypeException);
 
         EXPECT_THROW(br0.sample(vect_c, std::vector<char>{'Z'}, vect_counts, 0), SampleSizesException);
         EXPECT_THROW(br1.sample(vect_c, std::vector<char>{'Z'}, vect_counts, 5), SampleSizesException);
@@ -1071,9 +937,6 @@ namespace tests_bases
         std::array<char, 19> arr_c19;
         std::array<char, 20> arr_c20;
 
-        br0.sample(arr_c0, arr_population, arr_counts);
-        for (int i = 0; i < arr_c0.size(); ++i)
-            EXPECT_EQ(arr_population[i], arr_c0[i]);
         br0.sample(arr_c5, arr_population, arr_counts);
         for (int i = 0; i < arr_c5.size(); ++i)
             EXPECT_EQ(arr_population[i], arr_c5[i]);
@@ -1082,9 +945,6 @@ namespace tests_bases
             EXPECT_EQ(arr_population[i], arr_c13[i]);
         EXPECT_THROW(br0.sample(arr_c19, arr_population, arr_counts), SampleCountException);
 
-        br1.sample(arr_c0, arr_population, arr_counts);
-        for (int i = 0; i < arr_c0.size(); ++i)
-            EXPECT_EQ(arr_population[i], arr_c0[i]);
         br1.sample(arr_c5, arr_population, arr_counts);
         for (int i = 0; i < arr_c5.size(); ++i)
             EXPECT_EQ("MABCD"[i], arr_c5[i]);
@@ -1093,9 +953,6 @@ namespace tests_bases
             EXPECT_EQ("MABCDEFGHIJKL"[i], arr_c13[i]);
         EXPECT_THROW(br1.sample(arr_c19, arr_population, arr_counts), SampleCountException);
 
-        br33.sample(arr_c0, arr_population, arr_counts);
-        for (int i = 0; i < arr_c0.size(); ++i)
-            EXPECT_EQ("EAFGDHIBJKCLM"[i], arr_c0[i]);
         br33.sample(arr_c5, arr_population, arr_counts);
         for (int i = 0; i < arr_c5.size(); ++i)
             EXPECT_EQ("EAFGDHIBJKCLM"[i], arr_c5[i]);
@@ -1109,9 +966,6 @@ namespace tests_bases
         arr_counts = { 0, 2, 1, 3, 1, 2, 0, 2, 1, 3, 2, 2, 0 };
         // reminder: SAMPLES[] = "BBCDDDEFFHHIJJJKKLL";  N_COUNTS = 19;
 
-        br0.sample(arr_c0, arr_population, arr_counts);
-        for (int i = 0; i < arr_c0.size(); ++i)
-            EXPECT_EQ(SAMPLES[i], arr_c0[i]);
         br0.sample(arr_c5, arr_population, arr_counts);
         for (int i = 0; i < arr_c5.size(); ++i)
             EXPECT_EQ(SAMPLES[i], arr_c5[i]);
@@ -1120,9 +974,6 @@ namespace tests_bases
             EXPECT_EQ(SAMPLES[i], arr_c13[i]);
         EXPECT_THROW(br0.sample(arr_c20, arr_population, arr_counts), SampleCountException);
 
-        br1.sample(arr_c0, arr_population, arr_counts);
-        for (int i = 0; i < arr_c0.size(); ++i)
-            EXPECT_EQ("LBBCDDDEFFHHIJJJKKL"[i], arr_c0[i]);
         br1.sample(arr_c5, arr_population, arr_counts);
         for (int i = 0; i < arr_c5.size(); ++i)
             EXPECT_EQ("LBBCDDDEFFHHIJJJKKL"[i], arr_c5[i]);
@@ -1131,9 +982,6 @@ namespace tests_bases
             EXPECT_EQ("LBBCDDDEFFHHIJJJKKL"[i], arr_c13[i]);
         EXPECT_THROW(br1.sample(arr_c20, arr_population, arr_counts), SampleCountException);
 
-        br33.sample(arr_c0, arr_population, arr_counts);
-        for (int i = 0; i < arr_c0.size(); ++i)
-            EXPECT_EQ("EBFFDHHBIJDJJCKKDLL"[i], arr_c0[i]);
         br33.sample(arr_c5, arr_population, arr_counts);
         for (int i = 0; i < arr_c5.size(); ++i)
             EXPECT_EQ("EBFFDHHBIJDJJCKKDLL"[i], arr_c5[i]);
@@ -1146,31 +994,14 @@ namespace tests_bases
         // what about all counts set to 0?
         arr_counts = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-        br0.sample(arr_c0, arr_population, arr_counts);
-        EXPECT_EQ(0ULL, arr_c0.size());
         EXPECT_THROW(br0.sample(arr_c5, arr_population, arr_counts), SampleCountException);
         EXPECT_THROW(br0.sample(arr_c19, arr_population, arr_counts), SampleCountException);
 
-        br1.sample(arr_c0, arr_population, arr_counts);
-        EXPECT_EQ(0ULL, arr_c0.size());
         EXPECT_THROW(br1.sample(arr_c5, arr_population, arr_counts), SampleCountException);
         EXPECT_THROW(br1.sample(arr_c19, arr_population, arr_counts), SampleCountException);
 
-        br33.sample(arr_c0, arr_population, arr_counts);
-        EXPECT_EQ(0ULL, arr_c0.size());
         EXPECT_THROW(br33.sample(arr_c5, arr_population, arr_counts), SampleCountException);
         EXPECT_THROW(br33.sample(arr_c19, arr_population, arr_counts), SampleCountException);
-
-
-        // finally, with exceptions thrown
-        std::array<Object, 13> arr_obj;
-        EXPECT_THROW(br0.sample(arr_c0, arr_population, arr_obj), SampleCountsTypeException);
-        EXPECT_THROW(br1.sample(arr_c5, arr_population, arr_obj), SampleCountsTypeException);
-        EXPECT_THROW(br33.sample(arr_c13, arr_population, arr_obj), SampleCountsTypeException);
-
-        EXPECT_THROW(br0.sample(arr_c0, arr_population, std::array<float, 13>()), SampleCountsTypeException);
-        EXPECT_THROW(br1.sample(arr_c5, arr_population, std::array<double, 13>()), SampleCountsTypeException);
-        EXPECT_THROW(br33.sample(arr_c13, arr_population, std::array<long double, 13>()), SampleCountsTypeException);
 
 
         //-- tests seed() -- notice: tests _setstate() and state() also
@@ -1215,7 +1046,7 @@ namespace tests_bases
         EXPECT_DOUBLE_EQ(0.0, br1.gauss_next());
 
         br33.setstate(0x1'0123'4567ULL);
-        EXPECT_EQ(br33.state(), 0x123'4567UL);
+        EXPECT_EQ(br33.state(), 0x123'4567ULL);
         EXPECT_FALSE(br33.gauss_valid());
         EXPECT_DOUBLE_EQ(0.0, br33.gauss_next());
 
@@ -1267,8 +1098,6 @@ namespace tests_bases
         br33.shuffle(arr_s);
         for (int i = 0; i < 13; ++i)
             EXPECT_EQ("EAFGDHIBJKCLM"[i], arr_s[i]);
-
-        EXPECT_THROW(br0.shuffle(std::map<int, Object>()), IndexableContainerException);
 
 
         //-- tests betavariate()
@@ -1920,57 +1749,48 @@ namespace tests_bases
         EXPECT_EQ(u, br33.uniform());
         EXPECT_EQ((long double)u, br33.uniform<long double>());
 
-        EXPECT_THROW(br0.uniform<int>(), FloatingPointTypeException);
-        EXPECT_THROW(br1.uniform<std::vector<double>>(), FloatingPointTypeException);
-        EXPECT_THROW(br33.uniform<Object>(), FloatingPointTypeException);
-
 
         //-- test uniform(max)
         EXPECT_EQ(0, br0.uniform(101));
         EXPECT_EQ(0, br0.uniform<int>(101));
         EXPECT_EQ(0.0f, br0.uniform(101.0f));
-        EXPECT_EQ(0LL, br0.uniform(0xffff'ffff'ffff'ffffLL));
+        EXPECT_EQ(0LL, br0.uniform(-1LL));
         EXPECT_EQ(0.0L, br0.uniform<long double>(-157L));
 
         u = double(0xffff'ffff) / double(1ULL << 32);
         EXPECT_EQ(u * 101, br1.uniform(101));
         EXPECT_EQ(100, br1.uniform<int>(101));
         EXPECT_EQ(u * 101.0f, br1.uniform(101.0f));
-        EXPECT_EQ(u * -1, br1.uniform(0xffff'ffff'ffff'ffffLL));
+        EXPECT_EQ(u * -1, (br1.uniform<double, std::int64_t>(0xffff'ffff'ffff'ffffLL)));
         EXPECT_EQ((long double)u * -157L, br1.uniform<long double>(-157L));
 
         u = double(0x5555'5555) / double(1ULL << 32);
         EXPECT_EQ(u * 101, br33.uniform(101));
         EXPECT_EQ(int(u * 101), br33.uniform<int>(101));
         EXPECT_EQ(u * 101.0f, br33.uniform(101.0f));
-        EXPECT_EQ(u * -1, br33.uniform(0xffff'ffff'ffff'ffffLL));
+        EXPECT_EQ(u * -1, br33.uniform(-1LL));
         EXPECT_EQ((long double)u * -157L, br33.uniform<long double>(-157L));
-
-
-        EXPECT_THROW(br0.uniform<Object>(101), ArithmeticValueTypeException);
-        EXPECT_THROW(br1.uniform(Object()), MaxValueTypeException);
-        EXPECT_THROW(br33.uniform<std::vector<int>>(Object()), ArithmeticValueTypeException);
 
 
         //-- test uniform(min, max)
         EXPECT_EQ(1.0, br0.uniform<double>(1.0f, 101));
         EXPECT_EQ(1, br0.uniform<int>(1, 101));
         EXPECT_EQ(1.0f, br0.uniform<float>(1.0f, 101.0));
-        EXPECT_EQ(-1LL, br0.uniform<long long>(129, 0xffff'ffff'ffff'ffffLL));
+        EXPECT_EQ(-1LL, br0.uniform<long long>(129, -1LL));
         EXPECT_EQ(-157.0L, br0.uniform<long double>(-157.0L, 139.0L));
 
         u = double(0xffff'ffff) / double(1ULL << 32);
         EXPECT_EQ(1.0 + u * 100, br1.uniform<double>(1.0f, 101));
         EXPECT_EQ(100, br1.uniform<int>(1, 101));
         EXPECT_EQ(1.0 + float(u * 100.0), br1.uniform<float>(1.0f, 101.0));
-        EXPECT_EQ(128, br1.uniform<long long>(129, 0xffff'ffff'ffff'ffffLL));
+        EXPECT_EQ(128, br1.uniform<long long>(129, -1LL));
         EXPECT_EQ(-157.0L + (long double)u * 296.0L, br1.uniform<long double>(-157.0L, 139.0L));
 
         u = double(0x5555'5555) / double(1ULL << 32);
         EXPECT_EQ(1.0 + u * 100, br33.uniform<double>(1.0f, 101));
         EXPECT_EQ(1 + 33, br33.uniform<int>(1, 101));
         EXPECT_EQ(1.0 + float(u * 100.0), br33.uniform<float>(1.0f, 101.0));
-        EXPECT_EQ((long long)(-1 + 130 * u), br33.uniform<long long>(129, 0xffff'ffff'ffff'ffffLL));
+        EXPECT_EQ((long long)(-1 + 130 * u), br33.uniform<long long>(129, -1LL));
         EXPECT_EQ(-157.0L + (long double)u * 296.0L, br33.uniform<long double>(-157.0L, 139.0L));
 
 

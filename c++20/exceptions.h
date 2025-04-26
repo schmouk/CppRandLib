@@ -60,6 +60,22 @@ public:
 };
 
 /** @brief Not same sizes of containers exception. */
+struct MinMaxSizesException : public std::exception
+{
+    const char* what() noexcept { return "'min' and 'max' container arguments must have same sizes."; }
+};
+
+/** @brief Negative value for kappa parameter exception. */
+struct NegativeKappaException : public std::exception
+{
+    const char* what() noexcept { return "'kappa' parameter cannot be negative."; }
+};
+
+/** @brief Negative value for sigma paramater of Gauss law exception. */
+struct NormalSigmaException : public GaussSigmaException
+{};
+
+/** @brief Not same sizes of containers exception. */
 class ParetoArgsValueException : public std::exception
 {
 public:
@@ -78,6 +94,12 @@ class ProbaOutOfRangeException : public std::exception
 {
 public:
     const char* what() noexcept { return "probabilitiy values must range in [0.0, 1.0]."; }
+};
+
+/** @brief Range arguments with incoherent values exception. */
+struct RangeIncoherentValuesException : public std::exception
+{
+    const char* what() noexcept { return "'stop' value will never be reached associated with 'start' and 'step' arguments."; }
 };
 
 /** @brief Range arguments with same value exception. */
@@ -108,6 +130,12 @@ public:
     const char* what() noexcept { return "sizes of arguments 'population' and 'counts' must be the same."; }
 };
 
+/** @brief Step value type exception. */
+struct StepValueTypeException : public std::exception
+{
+    const char* what() noexcept { return "Type of 'step' values must be arithmetic."; }
+};
+
 /** @brief Weibull law arguments exception. */
 class WeibullArgsValueException : public std::exception
 {
@@ -120,4 +148,10 @@ class ZeroLengthException : public std::exception
 {
 public:
     const char* what() noexcept { return "argument length must not be zero."; }
+};
+
+/** @brief Not a positive value exception. */
+struct ZeroValueException : public std::exception
+{
+    const char* what() noexcept { return "argument value must not be zero."; }
 };

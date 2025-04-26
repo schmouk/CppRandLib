@@ -109,9 +109,9 @@ SOFTWARE.
 *    |
 *    |      lambda is 1.0 divided by the desired mean.  It should be
 *    |      nonzero.
-*    |      Returned values range from 0 to
-*    |      positive infinity if lambda is positive, and from negative
-*    |      infinity to 0 if lambda is negative.
+*    |      Returned values range from 0 to positive infinity if lambda 
+*    |      is positive, and from negative infinity to 0 if lambda is
+*    |      negative.
 *    |
 *    |
 *    |  gammavariate(alpha, beta)
@@ -439,7 +439,7 @@ public:
     template<typename T, const std::size_t m, typename U = T, const std::size_t n = m>
     std::array<T, m> n_evaluate(const std::array<U, n>& max);
 
-    /** @brief Returns an array of n arrays that each contain m values in range [min[i]; max[i]). */
+    /** @brief Returns an array min(m, n, p) values in range [min[i]; max[i]). */
     template<
         typename T, const std::size_t m,
         typename U = T, const std::size_t n = m,
@@ -1024,7 +1024,6 @@ std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::operator() (const std
     if (n == 0)
         throw ZeroLengthException();
 
-    const std::size_t count = std::min(min.size(), max.size());
     std::array<T, n> out;
     auto min_it = min.cbegin();
     auto max_it = max.cbegin();
@@ -1078,7 +1077,7 @@ const T& BaseRandom<StateT, OutputT, OUTPUT_BITS>::choice(const std::array<T, n>
 {
     if (n == 0)
         throw ChoiceEmptySequenceException();
-    return seq[uniform<T>(n)];
+    return seq[uniform<std::size_t>(n)];
 }
 
 //---------------------------------------------------------------------------
@@ -1109,7 +1108,7 @@ std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate(const std::s
 
     std::vector<T> out(n);
     for (T& o : out)
-        o = T(uniform<U>(max));
+        o = uniform<T>(max);
     return out;
 }
 
@@ -1131,7 +1130,7 @@ std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate(const std::v
     std::vector<T> out(n);
     auto max_it = max.cbegin();
     for (auto out_it = out.begin(); out_it != out.end(); )
-        *out_it++ = T(uniform<U>(*max_it++));
+        *out_it++ = uniform<T>(*max_it++);
     return out;
 }
 
@@ -1155,12 +1154,8 @@ std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate(const std::v
     std::vector<T> out(n);
     auto min_it = min.cbegin();
     auto max_it = max.cbegin();
-    for (auto out_it = out.begin(); out_it != out.end(); ) {
-        if (*min_it <= *max_it)
-            *out_it++ = uniform<T>(*min_it++, *max_it++);
-        else
-            *out_it++ = uniform<T>(*max_it++, *min_it++);
-    }
+    for (auto out_it = out.begin(); out_it != out.end(); )
+        *out_it++ = uniform<T>(*min_it++, *max_it++);
     return out;
 }
 
@@ -1177,7 +1172,7 @@ inline std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate()
 
     std::array<T, n> out;
     for (T& o : out)
-        o = uniform<T>(T(1.0));
+        o = uniform<T>(1.0);
     return out;
 }
 
@@ -1196,7 +1191,7 @@ std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate(const U ma
 
     std::array<T, n> out;
     for (T& o : out)
-        o = T(uniform<U>(max));
+        o = uniform<T>(max);
     return out;
 }
 
@@ -1247,7 +1242,7 @@ std::array<T, m> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate(const std:
 }
 
 //---------------------------------------------------------------------------
-/** Returns an array of n arrays that each contain m values in range [min[i]; max[i]). */
+/** Returns an array min(m, n, p) values in range [min[i]; max[i]). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 template<
     typename T, const std::size_t m,
@@ -1301,9 +1296,10 @@ inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::randint(const T a, cons
     if (!std::is_integral<T>::value)
         throw IntegralValueTypeException();
 
-    const T m{ a < b ? a : b };
-    const T n{ a < b ? b : a };
-    return uniform<T>(m, n + 1);
+    if (a <= b)
+        return uniform<T>(a, b + 1);
+    else
+        return uniform<T>(b, a + 1);
 }
 
 //---------------------------------------------------------------------------
@@ -1403,7 +1399,7 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(
     if (counts.size() != population.size())
         throw SampleSizesException();
 
-    const std::size_t samples_count = std::size_t(std::accumulate(counts.begin(), counts.end(), C(0)));
+    const std::size_t samples_count = std::size_t(std::accumulate(counts.cbegin(), counts.cend(), C(0)));
     if (k > samples_count)
         throw SampleCountException();
 
@@ -1801,11 +1797,12 @@ inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::uniform(const U min, co
     if (!std::is_arithmetic<V>::value)
         throw MaxValueTypeException();
 
-    const long double mn{ (long double)min };
-    const long double mx{ (long double)max };
-    const long double a{ std::min(mn, mx) };
-    const long double b{ std::max(mn, mx) };
-    return T(a + (b - a) * random<long double>());
+    const long double a{ (long double)min };
+    const long double b{ (long double)max };
+    if (a <= b)
+        return T(a + (b - a) * random<long double>());
+    else
+        return T(b + (a - b) * random<long double>());
 }
 
 //---------------------------------------------------------------------------
