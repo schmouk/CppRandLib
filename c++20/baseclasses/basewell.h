@@ -29,7 +29,6 @@ SOFTWARE.
 //===========================================================================
 #include <cstdint>
 
-#include "baseinternalstate.h"
 #include "baserandom.h"
 #include "internalstates/listseedstate.h"
 #include "utils/splitmix.h"
