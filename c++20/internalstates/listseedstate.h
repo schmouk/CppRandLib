@@ -34,7 +34,7 @@ SOFTWARE.
 //===========================================================================
 /** @brief The internal state of many Pseudo Random Numbers Generators. */
 template<typename RandomT, typename ItemT, const std::uint32_t SIZE>
-    requires !std::is_signed_v<ItemT>
+    requires std::is_unsigned_v<ItemT>
 struct ListSeedState
 {
     using value_type = ItemT;

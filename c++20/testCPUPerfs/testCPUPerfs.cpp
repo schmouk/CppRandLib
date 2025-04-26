@@ -186,13 +186,13 @@ int main()
     }
 
     {
-        Cwg128 cwg128(0x3ca5'8796'1f2e'b45aull);
-        test_perf("Cwg128", &cwg128);
+        Cwg128_64 cwg128_64(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Cwg128_64", &cwg128_64);
     }
 
     {
-        Cwg128_64 cwg128_64(0x3ca5'8796'1f2e'b45aull);
-        test_perf("Cwg128_64", &cwg128_64);
+        Cwg128 cwg128(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Cwg128", &cwg128);
     }
 
     {
