@@ -55,8 +55,11 @@ struct CollatzWeylState
     inline virtual ~CollatzWeylState() noexcept = default;                                  //!< Default destructor.
 
 
-    inline CollatzWeylState& operator=(const CollatzWeylState& other) noexcept = default;   //!< Assignment copy operator.
-    inline CollatzWeylState& operator=(CollatzWeylState&& other) noexcept = default;        //!< Assignment move operator.
+    inline CollatzWeylState& operator= (const CollatzWeylState& other) noexcept = default;  //!< Assignment copy operator.
+    inline CollatzWeylState& operator= (CollatzWeylState&& other) noexcept = default;       //!< Assignment move operator. 
+
+    inline bool const operator== (const CollatzWeylState& other) const noexcept;            //!< equality operator.
+
 
 
     /** @brief Initalizes the internal state according to a 64-bits integer seed. */
@@ -71,6 +74,14 @@ struct CollatzWeylState
 
 //===========================================================================
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
+//---------------------------------------------------------------------------
+/** equality operator. */
+template<typename ValueType, typename StateValueType>
+inline const bool CollatzWeylState<ValueType, StateValueType>::operator== (const CollatzWeylState& other) const noexcept
+{
+    return a == other.a && s == other.s && state == other.state && weyl == other.weyl;
+}
+
 //---------------------------------------------------------------------------
 /** Initalizes the internal state according to a 64-bits integer seed. */
 template<typename ValueType, typename StateValueType>

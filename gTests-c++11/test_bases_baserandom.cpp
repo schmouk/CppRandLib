@@ -1195,11 +1195,25 @@ namespace tests_bases
         br33.seed(0xffff'ffff'ffff'ffffULL);
         EXPECT_EQ(br33.state(), 0UL);
 
+        br0.seed(-1);
+        EXPECT_EQ(br0.state(), 0ULL);
+        br1.seed((unsigned int)23);
+        EXPECT_EQ(br1.state(), 0ULL);
+        br33.seed(0xffff'ffff);
+        EXPECT_EQ(br33.state(), 0UL);
+
         br0.seed(0.0f);
         EXPECT_EQ(br0.state(), 0ULL);
         br1.seed(123.0);
         EXPECT_EQ(br1.state(), 0ULL);
         br33.seed(-1.0);
+        EXPECT_EQ(br33.state(), 0UL);
+
+        br0.seed(utils::UInt128());
+        EXPECT_EQ(br0.state(), 0ULL);
+        br1.seed(utils::UInt128(15));
+        EXPECT_EQ(br1.state(), 0ULL);
+        br33.seed(utils::UInt128(17, 19));
         EXPECT_EQ(br33.state(), 0UL);
 
 
@@ -1218,7 +1232,6 @@ namespace tests_bases
         EXPECT_EQ(br33.state(), 0x123'4567UL);
         EXPECT_FALSE(br33.gauss_valid());
         EXPECT_DOUBLE_EQ(0.0, br33.gauss_next());
-
 
         br0.setstate(0xffff'ffff'ffff'ffffULL, 0.987);
         EXPECT_EQ(br0.state(), 0xffff'ffff'ffff'ffffULL);

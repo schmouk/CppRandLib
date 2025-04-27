@@ -54,11 +54,11 @@ SOFTWARE.
 *   See Cwg64 for a minimum  2^70  (i.e. about 1.18e+21)  period  CW-Generator
 *   with low computation time, medium period,  64- bits output values and very
 *   good randomness characteristics.
-* 
+*
 *   See Cwg128_64 for a minimum 2^71 (i.e. about 2.36e+21) period CW-Generator
 *   with very low computation time,  medium period,  64-bits output values and
 *   very good randomness characteristics.
-* 
+*
 *   See Cwg128 for a minimum 2^135 (i.e. about 4.36e+40)  period  CW-generator
 *   with very low computation time, medium period,  128-bits output values and
 *   very good randomness characteristics.
@@ -79,7 +79,7 @@ SOFTWARE.
 *
 *   Reminder:
 *   We give you here below a copy of the table of tests for the CWGs that have
-*   been  implemented  in  PyRandLib,  as  presented in paper [8]  -  see file 
+*   been  implemented  in  PyRandLib,  as  presented in paper [8]  -  see file
     README.md.
 *
 * +-----------------------------------------------------------------------------------------------------------------------------------------------+
@@ -92,15 +92,15 @@ SOFTWARE.
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
 *   the expected characteristics for a pretty good PRNG;
-* 
+*
 *   * _crush_ is a bigger set of tests that test more deeply  expected  random
 *   characteristics;
-* 
+*
 *   * _big crush_ is the ultimate set of difficult tests that  any  GOOD  PRNG
 *   should definitively pass.
 */
 
-template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
+template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS = 8 * sizeof(OutputType)>
 class BaseCWG : public BaseRandom<CollatzWeylState<ValueType, StateValueType>, OutputType, OUTPUT_BITS>
 {
 public:
@@ -116,21 +116,23 @@ public:
     /** @brief Empty constructor. */
     inline BaseCWG() noexcept;
 
-    /** @brief Valued construtor (1/2). */
-    template<typename T>
-    inline BaseCWG(const T seed_) noexcept;
+    /** @brief Valued construtor (seed). */
+    inline BaseCWG(const int seed_) noexcept;
+    inline BaseCWG(const unsigned int seed_) noexcept;
+    inline BaseCWG(const long seed_) noexcept;
+    inline BaseCWG(const unsigned long seed_) noexcept;
+    inline BaseCWG(const long long seed_) noexcept;
+    inline BaseCWG(const unsigned long long seed_) noexcept;
+    inline BaseCWG(const double seed_) noexcept;
 
     /** @brief Valued constructor (full state). */
-    inline BaseCWG(const state_type& internal_state) noexcept;
+    explicit inline BaseCWG(const state_type& internal_state) noexcept;
 
     /** @brief Default Destructor. */
     virtual ~BaseCWG() noexcept = default;
 
 
     //---   Operations   ----------------------------------------------------
-    /** @brief Sets the internal state of this PRNG from current time (empty signature). */
-    virtual inline void seed() noexcept override;
-
     /** @brief Sets the internal state of this PRNG with a 64-bits integer seed. */
     virtual inline void _setstate(const std::uint64_t seed_) noexcept override;
 
@@ -148,14 +150,63 @@ template<typename ValueType, typename StateValueType, typename OutputType, const
 inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG() noexcept
     : MyBaseClass()
 {
-    seed();
+    MyBaseClass::seed();
 }
 
 //---------------------------------------------------------------------------
 /** Valued construtor. */
 template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
-template<typename T>
-inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const T seed_) noexcept
+inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued construtor. */
+template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
+inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued construtor. */
+template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
+inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued construtor. */
+template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
+inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued construtor. */
+template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
+inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued construtor. */
+template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
+inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued construtor. */
+template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
+inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const double seed_) noexcept
     : MyBaseClass()
 {
     MyBaseClass::seed(seed_);
@@ -168,14 +219,6 @@ inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(cons
     : MyBaseClass()
 {
     MyBaseClass::setstate(internal_state);
-}
-
-//---------------------------------------------------------------------------
-/** Sets the internal state of this PRNG from current time (empty signature). */
-template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
-inline void BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::seed() noexcept
-{
-    _setstate(utils::set_random_seed64());
 }
 
 //---------------------------------------------------------------------------
