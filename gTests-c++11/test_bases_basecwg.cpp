@@ -253,18 +253,18 @@ namespace tests_bases
 
         //-- tests _setstate(seed_)
         // Notice: hard coded value below have been evaluated with PyRandLib
-        cwg64._setstate(-1);
+        cwg64._setstate(-1LL);
         EXPECT_EQ(0, cwg64._internal_state.state.a);
-        EXPECT_EQ(0x40bf'733d'ee82'f38d, cwg64._internal_state.state.s);
-        EXPECT_EQ(0x4d06'97d5'd74c'2ec0, cwg64._internal_state.state.state);
+        EXPECT_EQ(0xe4d9'7177'1b65'2c20 | 1, cwg64._internal_state.state.s);
+        EXPECT_EQ(0xe99f'f867'dbf6'82c9, cwg64._internal_state.state.state);
         EXPECT_EQ(0, cwg64._internal_state.state.weyl);
         EXPECT_EQ(0.0, cwg64._internal_state.gauss_next);
         EXPECT_FALSE(cwg64._internal_state.gauss_valid);
 
         cwg128._setstate(utils::UInt128(1, 2));
         EXPECT_EQ(0, cwg128._internal_state.state.a);
-        EXPECT_EQ(utils::UInt128(0x9188'9fbe'0412'867bULL, 0x9dc2'b349'1d62'b565ULL), cwg128._internal_state.state.s);
-        EXPECT_EQ(utils::UInt128(0xbd3c'05b5'a97d'beecULL, 0x49b6'8b89'b51f'4d9dULL), cwg128._internal_state.state.state);
+        EXPECT_EQ(utils::UInt128(0x910a2dec89025cc1, 0x975835de1c9756ce | 1), cwg128._internal_state.state.s);
+        EXPECT_EQ(utils::UInt128(0xbeeb8da1658eec67, 0xbfc846100bfc1e42), cwg128._internal_state.state.state);
         EXPECT_EQ(0, cwg128._internal_state.state.weyl);
         EXPECT_EQ(0.0, cwg128._internal_state.gauss_next);
         EXPECT_FALSE(cwg128._internal_state.gauss_valid);
