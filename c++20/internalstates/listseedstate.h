@@ -49,6 +49,13 @@ struct ListSeedState
     }
 
 
+    /** @brief Initializes the internal index pointing to the internal list. */
+    inline void init_index(const std::uint32_t new_index) noexcept
+    {
+        index = new_index % SIZE;
+    }
+
+
     /** @brief Initializes the internal state container items.
     *
     * Initializes the container associated with the internal state of PRNGs.
