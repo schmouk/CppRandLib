@@ -29,6 +29,7 @@ SOFTWARE.
 //===========================================================================
 #include <cstdint>
 
+#include "../exceptions.h"
 #include "time.h"
 
 
@@ -60,22 +61,39 @@ namespace utils
             : _state(utils::get_time_us())
         {}
 
-        /** @brief Valued constructor - integer. */
-        template<typename IntT>
-        inline SplitMix64(const IntT seed)
+        /** @brief Valued constructor - 32-bits integer. */
+        inline SplitMix64(const long seed)
+            : _state(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits unsigned integer. */
+        inline SplitMix64(const unsigned long seed)
+            : _state(seed)
+        {}
+
+        /** @brief Valued constructor - 64-bits integer. */
+        inline SplitMix64(const long long seed)
+            : _state(seed)
+        {}
+
+        /** @brief Valued constructor - 64-bits unsigned integer. */
+        inline SplitMix64(const unsigned long long seed)
             : _state(seed)
         {}
 
         /** @brief Valued constructor - double in range [0.0, 1.0). */
-        inline SplitMix64(const double seed) noexcept
-            : _state((seed <= 0.0) ? 0ull : (seed >= 1.0) ? 0xffff'ffff'ffff'ffffull : std::uint64_t(0xffff'ffff'ffff'ffffull * seed))
-        {}
+        inline SplitMix64(double seed) noexcept
+        {
+            if (seed < 0.0)
+                seed = -seed;
+            _state = (seed <= 1.0) ? std::uint64_t(0xffff'ffff'ffff'ffffull * seed) : std::uint64_t(seed);
+        }
 
         /** @brief Evaluates next pseudorandom value. */
         const std::uint64_t operator() () noexcept;
 
     private:
-        std::uint64_t _state;
+        std::uint64_t _state{};
 
     };
     
@@ -105,9 +123,23 @@ namespace utils
             : SplitMix64()
         {}
 
-        /** @brief Valued constructor - integer. */
-        template<typename IntT>
-        inline SplitMix63(const IntT seed) noexcept
+        /** @brief Valued constructor - 32-bits integer. */
+        inline SplitMix63(const long seed)
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits unsigned integer. */
+        inline SplitMix63(const unsigned long seed)
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 64-bits integer. */
+        inline SplitMix63(const long long seed)
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 64-bits unsigned integer. */
+        inline SplitMix63(const unsigned long long seed)
             : SplitMix64(seed)
         {}
 
@@ -150,9 +182,23 @@ namespace utils
             : SplitMix64()
         {}
 
-        /** @brief Valued constructor - integer. */
-        template<typename IntT>
-        inline SplitMix32(const IntT seed) noexcept
+        /** @brief Valued constructor - 32-bits integer. */
+        inline SplitMix32(const long seed)
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits unsigned integer. */
+        inline SplitMix32(const unsigned long seed)
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 64-bits integer. */
+        inline SplitMix32(const long long seed)
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 64-bits unsigned integer. */
+        inline SplitMix32(const unsigned long long seed)
             : SplitMix64(seed)
         {}
 
@@ -195,9 +241,23 @@ namespace utils
             : SplitMix64()
         {}
 
-        /** @brief Valued constructor - integer. */
-        template<typename IntT>
-        inline SplitMix31(const IntT seed) noexcept
+        /** @brief Valued constructor - 32-bits integer. */
+        inline SplitMix31(const long seed)
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits unsigned integer. */
+        inline SplitMix31(const unsigned long seed)
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 64-bits integer. */
+        inline SplitMix31(const long long seed)
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 64-bits unsigned integer. */
+        inline SplitMix31(const unsigned long long seed)
             : SplitMix64(seed)
         {}
 

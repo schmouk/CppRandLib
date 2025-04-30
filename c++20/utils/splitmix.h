@@ -68,15 +68,18 @@ namespace utils
         {}
 
         /** @brief Valued constructor - double in range [0.0, 1.0). */
-        inline SplitMix64(const double seed) noexcept
-            : _state((seed <= 0.0) ? 0ull : (seed >= 1.0) ? 0xffff'ffff'ffff'ffffull : std::uint64_t(0xffff'ffff'ffff'ffffull * seed))
-        {}
+        inline SplitMix64(double seed) noexcept
+        {
+            if (seed < 0.0)
+                seed = -seed;
+            _state = (seed <= 1.0) ? std::uint64_t(0xffff'ffff'ffff'ffffull * seed) : std::uint64_t(seed);
+        }
 
         /** @brief Evaluates next pseudorandom value. */
         const std::uint64_t operator() () noexcept;
 
     private:
-        std::uint64_t _state;
+        std::uint64_t _state{};
 
     };
     
