@@ -62,6 +62,16 @@ namespace utils
         {}
 
         /** @brief Valued constructor - 32-bits integer. */
+        inline SplitMix64(const int seed)
+            : _state(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits unsigned integer. */
+        inline SplitMix64(const unsigned int seed)
+            : _state(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits integer. */
         inline SplitMix64(const long seed)
             : _state(seed)
         {}
@@ -69,7 +79,8 @@ namespace utils
         /** @brief Valued constructor - 32-bits unsigned integer. */
         inline SplitMix64(const unsigned long seed)
             : _state(seed)
-        {}
+        {
+        }
 
         /** @brief Valued constructor - 64-bits integer. */
         inline SplitMix64(const long long seed)
@@ -121,6 +132,16 @@ namespace utils
         /** @brief Empty constructor, uses the shuffled current time to initialize the internal state. */
         inline SplitMix63()  noexcept
             : SplitMix64()
+        {}
+
+        /** @brief Valued constructor - 32-bits integer. */
+        inline SplitMix63(const int seed)
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits unsigned integer. */
+        inline SplitMix63(const unsigned int seed)
+            : SplitMix64(seed)
         {}
 
         /** @brief Valued constructor - 32-bits integer. */
@@ -183,6 +204,16 @@ namespace utils
         {}
 
         /** @brief Valued constructor - 32-bits integer. */
+        inline SplitMix32(const int seed)
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits unsigned integer. */
+        inline SplitMix32(const unsigned int seed)
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits integer. */
         inline SplitMix32(const long seed)
             : SplitMix64(seed)
         {}
@@ -239,6 +270,16 @@ namespace utils
         /** @brief Empty constructor, uses the shuffled current time to initialize the internal state. */
         inline SplitMix31()  noexcept
             : SplitMix64()
+        {}
+
+        /** @brief Valued constructor - 32-bits integer. */
+        inline SplitMix31(const int seed)
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits unsigned integer. */
+        inline SplitMix31(const unsigned int seed)
+            : SplitMix64(seed)
         {}
 
         /** @brief Valued constructor - 32-bits integer. */
