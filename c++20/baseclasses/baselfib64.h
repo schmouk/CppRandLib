@@ -37,8 +37,8 @@ SOFTWARE.
 //===========================================================================
 /** @brief The base class for all LFib PRNG based on 64-bits numbers.
 *
-*   Definition of the base class for all LFib pseudo-random generators based
-*   on 64-bits generated numbers.
+*   Definition of the base class for all LFib pseudo-random generators based on 64-bits
+*   generated numbers.
 *
 *   Lagged Fibonacci generators LFib( m, r, k, op) use the recurrence
 *
@@ -50,18 +50,18 @@ SOFTWARE.
 *       * (multiplication),
 *       ^ (bitwise exclusive-or).
 *
-*   With the + or - operation, such generators are in fact MRGs. They offer very large
-*   periods  with  the  best  known  results in the evaluation of their randomness, as
-*   stated in the evaluation done by Pierre L'Ecuyer and Richard Simard (Universite de
-*   Montreal)  in  "TestU01:  A  C  Library  for Empirical Testing  of  Random  Number
-*   Generators - ACM Transactions  on  Mathematical  Software,  vol.33 n.4,  pp.22-40,
-*   August 2007".  It  is  recommended  to  use  such pseudo-random numbers generators
+*   With the + or - operation, such generators are in fact MRGs.  They offer very large
+*   periods  with  the  best  known  results  in the evaluation of their randomness, as
+*   stated in the evaluation done by Pierre L'Ecuyer and Richard Simard  (Universite de
+*   Montreal)  in  "TestU01:  A  C  Library  for  Empirical Testing  of  Random  Number
+*   Generators  - ACM Transactions  on  Mathematical  Software,  vol.33 n.4,  pp.22-40,
+*   August  2007".  It  is  recommended  to  use  such pseudo-random numbers generators
 *   rather than LCG ones for serious simulation applications.
 *
-*   See LFib78,  LFib116,  LFib668 and LFib1340 for long period LFib generators (resp.
-*   2^78,  2^116,  2^668 and 2^1340 periods, i.e. resp. 3.0e+23, 8.3e+34, 1.2e+201 and
-*   2.4e+403 periods) while same computation time and far  higher  precision  (64-bits
-*   calculations) than MRGs,  but more memory consumption (resp. 17,  55, 607 and 1279
+*   See LFib78,  LFib116,  LFib668 and LFib1340 for long period LFib generators  (resp.
+*   2^78,  2^116,  2^668  and 2^1340 periods, i.e. resp. 3.0e+23, 8.3e+34, 1.2e+201 and
+*   2.4e+403 periods) while same computation time and  far  higher  precision  (64-bits
+*   calculations)  than MRGs,  but more memory consumption (resp. 17,  55, 607 and 1279
 *   integers).
 *
 *   Please notice that this class and all its  inheriting  sub-classes  are  callable.
@@ -227,7 +227,6 @@ inline BaseLFib64<SIZE, K>::BaseLFib64(const state_type& internal_state) noexcep
 {
     MyBaseClass::setstate(internal_state);
 }
-
 
 //---------------------------------------------------------------------------
 /** The internal PRNG algorithm. */

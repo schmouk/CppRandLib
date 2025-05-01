@@ -59,10 +59,10 @@ namespace tests_bases
         }
 
 
-        //-- tests Valued construtor (seed). */
+        //-- tests Valued construtor (seed).
         // notice: hard coded values below have been evaluated with PyRandLib.
         {
-            BaseLFib64< 5, 2> lfib_5_2(-1LL);  //0xffff'ffff'ffff'ffffULL);
+            BaseLFib64< 5, 2> lfib_5_2(-1LL);
             std::uint64_t state[]{
                 0xe4d9'7177'1b65'2c20, 0xe99f'f867'dbf6'82c9, 0x382f'f84c'b272'81e9,
                 0x6d1d'b36c'cba9'82d2, 0xb4a0'472e'5780'69ae
