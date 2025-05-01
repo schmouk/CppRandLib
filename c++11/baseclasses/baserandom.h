@@ -1548,7 +1548,7 @@ template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed(const double seed_) noexcept
 {
     const double s{ (seed_ < 0.0) ? -seed_ : seed_ };
-    seed(s > 1.0 ? std::uint64_t(s) : std::uint64_t(s * double(_MODULO)));
+    seed(s > 1.0 ? std::uint64_t(s) : std::uint64_t(s * double(0xffff'ffff'ffff'ffffULL)));
 }
 
 //---------------------------------------------------------------------------

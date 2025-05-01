@@ -113,8 +113,13 @@ struct BaseMRG31 : public BaseRandom<ListSeedState<utils::SplitMix31, std::uint3
     inline BaseMRG31() noexcept;
 
     /** @brief Valued construtor. */
-    template<typename T>
-    inline BaseMRG31(const T seed_) noexcept;
+    inline BaseMRG31(const int seed_) noexcept;
+    inline BaseMRG31(const unsigned int seed_) noexcept;
+    inline BaseMRG31(const long seed_) noexcept;
+    inline BaseMRG31(const unsigned long seed_) noexcept;
+    inline BaseMRG31(const long long seed_) noexcept;
+    inline BaseMRG31(const unsigned long long seed_) noexcept;
+    inline BaseMRG31(const double seed_) noexcept;
 
     /** @brief Valued constructor (full state). */
     inline BaseMRG31(const state_type& internal_state) noexcept;
@@ -144,11 +149,57 @@ inline BaseMRG31<SIZE>::BaseMRG31() noexcept
     seed();
 }
 
-//---------------------------------------------------------------------------
-/** Valued construtor. */
+//-------------------------------------------
 template<const std::uint32_t SIZE>
-template<typename T>
-inline BaseMRG31<SIZE>::BaseMRG31(const T seed_) noexcept
+inline BaseMRG31<SIZE>::BaseMRG31(const int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseMRG31<SIZE>::BaseMRG31(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseMRG31<SIZE>::BaseMRG31(const long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseMRG31<SIZE>::BaseMRG31(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseMRG31<SIZE>::BaseMRG31(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseMRG31<SIZE>::BaseMRG31(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseMRG31<SIZE>::BaseMRG31(const double seed_) noexcept
     : MyBaseClass()
 {
     MyBaseClass::seed(seed_);
