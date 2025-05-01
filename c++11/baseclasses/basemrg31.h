@@ -150,6 +150,7 @@ inline BaseMRG31<SIZE>::BaseMRG31() noexcept
 }
 
 //-------------------------------------------
+/** Valued constructor. */
 template<const std::uint32_t SIZE>
 inline BaseMRG31<SIZE>::BaseMRG31(const int seed_) noexcept
     : MyBaseClass()
