@@ -112,8 +112,13 @@ public:
     inline BaseMELG() noexcept;
 
     /** @brief Valued construtor. */
-    template<typename T>
-    inline BaseMELG(const T seed_) noexcept;
+    inline BaseMELG(const int seed_) noexcept;
+    inline BaseMELG(const unsigned int seed_) noexcept;
+    inline BaseMELG(const long seed_) noexcept;
+    inline BaseMELG(const unsigned long seed_) noexcept;
+    inline BaseMELG(const long long seed_) noexcept;
+    inline BaseMELG(const unsigned long long seed_) noexcept;
+    inline BaseMELG(const double seed_) noexcept;
 
     /** @brief Valued constructor (full state). */
     inline BaseMELG(const state_type& internal_state) noexcept;
@@ -144,10 +149,57 @@ inline BaseMELG<SIZE>::BaseMELG() noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued construtor. */
+/** Valued constructor. */
 template<const std::uint32_t SIZE>
-template<typename T>
-inline BaseMELG<SIZE>::BaseMELG(const T seed_) noexcept
+inline BaseMELG<SIZE>::BaseMELG(const int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseMELG<SIZE>::BaseMELG(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseMELG<SIZE>::BaseMELG(const long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseMELG<SIZE>::BaseMELG(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseMELG<SIZE>::BaseMELG(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseMELG<SIZE>::BaseMELG(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseMELG<SIZE>::BaseMELG(const double seed_) noexcept
     : MyBaseClass()
 {
     MyBaseClass::seed(seed_);
