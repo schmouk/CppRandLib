@@ -126,7 +126,7 @@ public:
     inline BaseCWG(const double seed_) noexcept;
 
     /** @brief Valued constructor (full state). */
-    explicit inline BaseCWG(const state_type& internal_state) noexcept;
+    inline BaseCWG(const state_type& internal_state) noexcept;
 
     /** @brief Default Destructor. */
     virtual ~BaseCWG() noexcept = default;
