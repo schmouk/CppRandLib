@@ -128,21 +128,25 @@ public:
     inline BaseWell() noexcept;
 
     /** @brief Valued construtor. */
-    template<typename T>
-    inline BaseWell(const T seed_) noexcept;
+    inline BaseWell(const int seed_) noexcept;
+    inline BaseWell(const unsigned int seed_) noexcept;
+    inline BaseWell(const long seed_) noexcept;
+    inline BaseWell(const unsigned long seed_) noexcept;
+    inline BaseWell(const long long seed_) noexcept;
+    inline BaseWell(const unsigned long long seed_) noexcept;
+    inline BaseWell(const double seed_) noexcept;
 
     /** @brief Valued constructor (full state). */
     inline BaseWell(const state_type& internal_state) noexcept;
 
-    BaseWell(const BaseWell&) noexcept = default;   //!< default copy constructor.
-    BaseWell(BaseWell&&) noexcept = default;        //!< default move constructor.
-    virtual ~BaseWell() noexcept = default;         //!< default destructor.
+    /** @brief Default destructor. */
+    virtual ~BaseWell() noexcept = default;
 
-
-protected:
     /** @brief Sets the internal state of this PRNG with an integer seed. */
     virtual inline void _setstate(const std::uint64_t seed) noexcept override;
 
+
+protected:
     // declaration of transformation matrices
     static inline value_type _M0(const value_type x = 0) noexcept;
     static inline value_type _M1(const value_type x) noexcept;
@@ -181,11 +185,58 @@ inline BaseWell<SIZE>::BaseWell() noexcept
     MyBaseClass::seed();
 }
 
-//---------------------------------------------------------------------------
-/** Valued construtor. */
+//-------------------------------------------
+/** Valued constructor. */
 template<const std::uint32_t SIZE>
-template<typename T>
-inline BaseWell<SIZE>::BaseWell(const T seed_) noexcept
+inline BaseWell<SIZE>::BaseWell(const int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseWell<SIZE>::BaseWell(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseWell<SIZE>::BaseWell(const long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseWell<SIZE>::BaseWell(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseWell<SIZE>::BaseWell(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseWell<SIZE>::BaseWell(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseWell<SIZE>::BaseWell(const double seed_) noexcept
     : MyBaseClass()
 {
     MyBaseClass::seed(seed_);
@@ -330,8 +381,8 @@ inline typename BaseWell<SIZE>::value_type BaseWell<SIZE>::_tempering(
     const value_type c
 ) noexcept
 {
-    // notice: the generic algorithm truncs x on w - bits. All of the implemented
-    //  ones in CppRandLib are set on 32-bits. So, no truncation takes place here
+    // notice:  the generic algorithm truncs x on w-bits. All of the implemented
+    // ones in CppRandLib are set on 32-bits. So, no truncation takes place here
     value_type x_{ x ^ (((x << 7) & 0xffff'fffful) & b) };
     return x_ ^ (((x_ << 15) & 0xffff'fffful) & c);
 }
