@@ -55,7 +55,7 @@ namespace tests_bases
 
 
         // notice: all hard coded belowing value have been evaluated with PyRandLib
-        // 
+
         //-- tests Valued construtor (seed).
         {
             BaseMRG31<5> mrg(1);
