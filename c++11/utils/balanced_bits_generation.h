@@ -64,18 +64,18 @@ namespace utils
         static_assert(std::is_integral<IntT>::value, "balanced bits are only generated for integers.");
 
         constexpr std::uint32_t HEX_DIGITS_COUNT{ 2 * sizeof(IntT) };
-        constexpr double NORMALIZE{ 0.5 / double(0x8000'0000'0000'0000ull) };  // i.e. 1.0 / (1 << 64)
+        constexpr double NORMALIZE{ 1.0 / (1ull << 32) };  //0.5 / double(0x8000'0000'0000'0000ull)};  // i.e. 1.0 / (1 << 64)
 
         std::uint64_t hex_digits[]{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf };
-        utils::SplitMix64 splitmix_64(seed);
+        utils::SplitMix32 splitmix_32(seed);
 
         IntT balanced_value{ 0 };
 
         // let's initialize the up to 8 low hexa digits of the returned value - all different (i.e. returned value on 32-bits or less)
         for (std::uint32_t n = 0; n < (HEX_DIGITS_COUNT < 8 ? HEX_DIGITS_COUNT : 8); ++n) {
-            const std::uint32_t i{ std::uint32_t(double(15-n) * double(splitmix_64()) * NORMALIZE) };
+            const std::uint32_t i{ std::uint32_t(double(15-n) * double(splitmix_32()) * NORMALIZE) };
 
-            balanced_value |= hex_digits[i] << (4 * n);
+            balanced_value = (balanced_value << 4) + hex_digits[i];
             std::swap(hex_digits[i], hex_digits[14-n]);
         }
 
@@ -83,16 +83,16 @@ namespace utils
         if (HEX_DIGITS_COUNT > 8) {
             // let's choose the 9th one as different from the 8th one
             std::swap(hex_digits[7], hex_digits[14]);
-            const std::uint32_t i{ std::uint32_t(double(14) * double(splitmix_64()) * NORMALIZE) };
+            const std::uint32_t i{ std::uint32_t(14.0 * double(splitmix_32()) * NORMALIZE) };
 
-            balanced_value |= hex_digits[i] << (4 * 8);
+            balanced_value = (balanced_value << 4) + hex_digits[i];
             std::swap(hex_digits[i], hex_digits[14]);
 
             // finaly, let's initialize the 7 high hexa digits of the returned value - all different
             for (std::uint32_t n = 0; n < 7; ++n) {
-                const std::uint32_t i{ std::uint32_t(double(14-n) * double(splitmix_64()) * NORMALIZE) };
+                const std::uint32_t i{ std::uint32_t(double(14-n) * double(splitmix_32()) * NORMALIZE) };
 
-                balanced_value |= hex_digits[i] << (4 * (n+9));
+                balanced_value = (balanced_value << 4) + hex_digits[i];
                 std::swap(hex_digits[i], hex_digits[13 - n]);
             }
         }

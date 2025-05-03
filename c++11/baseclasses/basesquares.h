@@ -106,17 +106,20 @@ public:
     inline BaseSquares() noexcept;
 
     /** @brief Valued construtor. */
-    inline BaseSquares(const std::uint64_t seed_) noexcept;
+    inline BaseSquares(const int seed_) noexcept;
+    inline BaseSquares(const unsigned int seed_) noexcept;
+    inline BaseSquares(const long seed_) noexcept;
+    inline BaseSquares(const unsigned long seed_) noexcept;
+    inline BaseSquares(const long long seed_) noexcept;
+    inline BaseSquares(const unsigned long long seed_) noexcept;
+    inline BaseSquares(const double seed_) noexcept;
 
     /** @brief Valued constructor (full state). */
     inline BaseSquares(const state_type& internal_state) noexcept;
 
-    BaseSquares(const BaseSquares&) noexcept = default;   //!< default copy constructor.
-    BaseSquares(BaseSquares&&) noexcept = default;        //!< default move constructor.
-    virtual ~BaseSquares() noexcept = default;            //!< default destructor.
+    /** @brief Default destructor. */
+    virtual ~BaseSquares() noexcept = default;
 
-
-protected:
     /** @brief Sets the internal state of this PRNG with an integer seed. */
     virtual inline void _setstate(const std::uint64_t seed) noexcept override;
 
@@ -134,10 +137,58 @@ inline BaseSquares<OutputT>::BaseSquares() noexcept
     MyBaseClass::seed();
 }
 
-//---------------------------------------------------------------------------
-/** Valued construtor. */
+//-------------------------------------------
+/** Valued constructor. */
 template<typename OutputT>
-inline BaseSquares<OutputT>::BaseSquares(const std::uint64_t seed_) noexcept
+inline BaseSquares<OutputT>::BaseSquares(const int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor. */
+template<typename OutputT>
+inline BaseSquares<OutputT>::BaseSquares(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor. */
+template<typename OutputT>
+inline BaseSquares<OutputT>::BaseSquares(const long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor. */
+template<typename OutputT>
+inline BaseSquares<OutputT>::BaseSquares(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor. */
+template<typename OutputT>
+inline BaseSquares<OutputT>::BaseSquares(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor. */
+template<typename OutputT>
+inline BaseSquares<OutputT>::BaseSquares(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued constructor. */
+template<typename OutputT>
+inline BaseSquares<OutputT>::BaseSquares(const double seed_) noexcept
     : MyBaseClass()
 {
     MyBaseClass::seed(seed_);

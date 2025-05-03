@@ -111,7 +111,7 @@ public:
 
     Squares64(const Squares64&) noexcept = default;   //!< default copy constructor.
     Squares64(Squares64&&) noexcept = default;        //!< default move constructor.
-    virtual ~Squares64() noexcept = default;         //!< default destructor.
+    virtual ~Squares64() noexcept = default;          //!< default destructor.
 
 
     //---   Internal PRNG   -------------------------------------------------

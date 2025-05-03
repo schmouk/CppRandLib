@@ -109,7 +109,7 @@ public:
 
     Squares32(const Squares32&) noexcept = default;   //!< default copy constructor.
     Squares32(Squares32&&) noexcept = default;        //!< default move constructor.
-    virtual ~Squares32() noexcept = default;         //!< default destructor.
+    virtual ~Squares32() noexcept = default;          //!< default destructor.
 
 
     //---   Internal PRNG   -------------------------------------------------
