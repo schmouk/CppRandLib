@@ -43,7 +43,7 @@ namespace utils
         std::uint64_t z{ _state };
         z = (z ^ (z >> 30)) * 0xbf58'476d'1ce4'e5b9ull;
         z = (z ^ (z >> 27)) * 0x94d0'49bb'1331'11ebull;
-        return z = z ^ (z >> 31);
+        return z ^ (z >> 31);
     }
 
 }

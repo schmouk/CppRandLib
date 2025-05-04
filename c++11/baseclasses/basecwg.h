@@ -116,7 +116,7 @@ public:
     /** @brief Empty constructor. */
     inline BaseCWG() noexcept;
 
-    /** @brief Valued construtor (seed). */
+    /** @brief Valued constructor (seed). */
     inline BaseCWG(const int seed_) noexcept;
     inline BaseCWG(const unsigned int seed_) noexcept;
     inline BaseCWG(const long seed_) noexcept;

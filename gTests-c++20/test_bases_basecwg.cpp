@@ -26,7 +26,6 @@ SOFTWARE.
 
 
 //===========================================================================
-
 #include "gtest/gtest.h"
 
 #include "baseclasses/basecwg.h"

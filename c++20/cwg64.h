@@ -62,14 +62,14 @@ SOFTWARE.
 *
 *   Furthermore this class is callable:
 * @code
-*     Cwg64 rand();
+*     Cwg128_64 rand();
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
 * @code
-*     Cwg64 diceRoll();
+*     Cwg128_64 diceRoll();
 *     std::cout << int(diceRoll(1, 7)) << std::endl;    // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
@@ -103,26 +103,64 @@ public:
     using MyBaseClass = BaseCWG<std::uint64_t, std::uint64_t, std::uint64_t, 64>;
 
     using output_type = typename MyBaseClass::output_type;
-    using state_type  = typename MyBaseClass::state_type;
-    using value_type  = typename state_type::value_type;
+    using state_type = typename MyBaseClass::state_type;
+    using value_type = typename state_type::value_type;
 
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
     inline Cwg64() noexcept
         : MyBaseClass()
-    {}
+    {
+    }
 
-    /** @brief Valued construtor (1/2). */
-    template<typename T>
-    inline Cwg64(const T seed_) noexcept
-        : MyBaseClass(seed_)
-    {}
+    /** @brief Valued constructor (int). */
+    inline Cwg64(const int seed) noexcept
+        : MyBaseClass(std::uint64_t(seed))
+    {
+    }
+
+    /** @brief Valued constructor (unsigned int). */
+    inline Cwg64(const unsigned int seed) noexcept
+        : MyBaseClass(std::uint64_t(seed))
+    {
+    }
+
+    /** @brief Valued constructor (long). */
+    inline Cwg64(const long seed) noexcept
+        : MyBaseClass(std::uint64_t(seed))
+    {
+    }
+
+    /** @brief Valued constructor (unsigned long). */
+    inline Cwg64(const unsigned long seed) noexcept
+        : MyBaseClass(std::uint64_t(seed))
+    {
+    }
+
+    /** @brief Valued constructor (long long). */
+    inline Cwg64(const long long seed) noexcept
+        : MyBaseClass(std::uint64_t(seed))
+    {
+    }
+
+    /** @brief Valued constructor (unsigned long long). */
+    inline Cwg64(const unsigned long long seed) noexcept
+        : MyBaseClass(std::uint64_t(seed))
+    {
+    }
+
+    /** @brief Valued constructor (double). */
+    inline Cwg64(const double seed) noexcept
+        : MyBaseClass(seed)
+    {
+    }
 
     /** @brief Valued constructor (full state). */
     inline Cwg64(const state_type& internal_state) noexcept
         : MyBaseClass(internal_state)
-    {}
+    {
+    }
 
     /** @brief Default Destructor. */
     virtual ~Cwg64() noexcept = default;

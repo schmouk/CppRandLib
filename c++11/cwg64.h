@@ -113,10 +113,39 @@ public:
         : MyBaseClass()
     {}
 
-    /** @brief Valued construtor (1/2). */
-    template<typename T>
-    inline Cwg64(const T seed_) noexcept
-        : MyBaseClass(seed_)
+    /** @brief Valued constructor (int). */
+    inline Cwg64(const int seed) noexcept
+        : MyBaseClass(std::uint64_t(seed))
+    {}
+
+    /** @brief Valued constructor (unsigned int). */
+    inline Cwg64(const unsigned int seed) noexcept
+        : MyBaseClass(std::uint64_t(seed))
+    {}
+
+    /** @brief Valued constructor (long). */
+    inline Cwg64(const long seed) noexcept
+        : MyBaseClass(std::uint64_t(seed))
+    {}
+
+    /** @brief Valued constructor (unsigned long). */
+    inline Cwg64(const unsigned long seed) noexcept
+        : MyBaseClass(std::uint64_t(seed))
+    {}
+
+    /** @brief Valued constructor (long long). */
+    inline Cwg64(const long long seed) noexcept
+        : MyBaseClass(std::uint64_t(seed))
+    {}
+
+    /** @brief Valued constructor (unsigned long long). */
+    inline Cwg64(const unsigned long long seed) noexcept
+        : MyBaseClass(std::uint64_t(seed))
+    {}
+
+    /** @brief Valued constructor (double). */
+    inline Cwg64(const double seed) noexcept
+        : MyBaseClass(seed)
     {}
 
     /** @brief Valued constructor (full state). */

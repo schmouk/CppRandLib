@@ -26,7 +26,6 @@ SOFTWARE.
 
 
 //===========================================================================
-
 #include "gtest/gtest.h"
 
 #include "baseclasses/basecwg.h"
@@ -88,7 +87,7 @@ namespace tests_bases
             EXPECT_EQ(0ULL, cwg128_64._internal_state.state.weyl);
         }
 
-        
+
         //-- tests Valued constructor (full state).
         CollatzWeylState<std::uint64_t, std::uint64_t>   internal_state_64_0;
         CollatzWeylState<std::uint64_t, utils::UInt128>  internal_state_128_64_0;
@@ -253,7 +252,7 @@ namespace tests_bases
 
         //-- tests _setstate(seed_)
         // Notice: hard coded value below have been evaluated with PyRandLib
-        cwg64._setstate(-1LL);
+        cwg64._setstate(-1);
         EXPECT_EQ(0, cwg64._internal_state.state.a);
         EXPECT_EQ(0xe4d9'7177'1b65'2c20 | 1, cwg64._internal_state.state.s);
         EXPECT_EQ(0xe99f'f867'dbf6'82c9, cwg64._internal_state.state.state);
