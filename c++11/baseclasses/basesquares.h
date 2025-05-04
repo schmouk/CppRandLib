@@ -129,7 +129,7 @@ public:
 //===========================================================================
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
 //---------------------------------------------------------------------------
-/** Default Empty constructor. */
+/** Empty constructor. */
 template<typename OutputT>
 inline BaseSquares<OutputT>::BaseSquares() noexcept
     : MyBaseClass()
