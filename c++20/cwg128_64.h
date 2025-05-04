@@ -45,7 +45,7 @@ SOFTWARE.
 *   This CWG model evaluates pseudo-random numbers suites  x(i)  as  a  simple
 *   mathematical function of
 *
-*       x(i+1) = (x(i) | 1) * ((a += x(i)) >> 1) ^ (weyl += s) 
+*       x(i+1) = (x(i) | 1) * ((a += x(i)) >> 1) ^ (weyl += s)
 *
 *   and returns as the output value the xored shifted: a >> 48 ^ x(i+1)
 *
@@ -104,8 +104,8 @@ public:
     using MyBaseClass = BaseCWG<std::uint64_t, utils::UInt128, std::uint64_t, 64>;
 
     using output_type = typename MyBaseClass::output_type;
-    using state_type  = typename MyBaseClass::state_type;
-    using value_type  = typename state_type::value_type;
+    using state_type = typename MyBaseClass::state_type;
+    using value_type = typename state_type::value_type;
 
 
     //---   Constructors / Destructor   -------------------------------------
@@ -114,10 +114,39 @@ public:
         : MyBaseClass()
     {}
 
-    /** @brief Valued construtor (1/2). */
-    template<typename T>
-    inline Cwg128_64(const T seed_) noexcept
-        : MyBaseClass(seed_)
+    /** @brief Valued constructor (int). */
+    inline Cwg128_64(const int seed) noexcept
+        : MyBaseClass(std::uint64_t(seed))
+    {}
+
+    /** @brief Valued constructor (unsigned int). */
+    inline Cwg128_64(const unsigned int seed) noexcept
+        : MyBaseClass(std::uint64_t(seed))
+    {}
+
+    /** @brief Valued constructor (long). */
+    inline Cwg128_64(const long seed) noexcept
+        : MyBaseClass(std::uint64_t(seed))
+    {}
+
+    /** @brief Valued constructor (unsigned long). */
+    inline Cwg128_64(const unsigned long seed) noexcept
+        : MyBaseClass(std::uint64_t(seed))
+    {}
+
+    /** @brief Valued constructor (long long). */
+    inline Cwg128_64(const long long seed) noexcept
+        : MyBaseClass(std::uint64_t(seed))
+    {}
+
+    /** @brief Valued constructor (unsigned long long). */
+    inline Cwg128_64(const unsigned long long seed) noexcept
+        : MyBaseClass(std::uint64_t(seed))
+    {}
+
+    /** @brief Valued constructor (double). */
+    inline Cwg128_64(const double seed) noexcept
+        : MyBaseClass(seed)
     {}
 
     /** @brief Valued constructor (full state). */
