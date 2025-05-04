@@ -62,48 +62,74 @@ namespace tests_bases
         //-- tests Valued construtor (seed).
         // notice: hard coded values below have been evaluated with PyRandLib.
         {
-            BaseLFib64< 5, 2> lfib_5_2(-1LL);
-            std::uint64_t state[]{
-                0xe4d9'7177'1b65'2c20, 0xe99f'f867'dbf6'82c9, 0x382f'f84c'b272'81e9,
-                0x6d1d'b36c'cba9'82d2, 0xb4a0'472e'5780'69ae
-            };
+            BaseLFib64< 5, 2> lfib_5_2(1);
             EXPECT_EQ(0, lfib_5_2._internal_state.state.index);
+            const std::uint64_t expected[]{ 0x910a2dec89025cc1, 0xbeeb8da1658eec67, 0xf893a2eefb32555e, 0x71c18690ee42c90b, 0x71bb54d8d101b5b9 };
             for (int i = 0; i < 5; ++i)
-                EXPECT_EQ(state[i], lfib_5_2._internal_state.state.list[i]);
-
+                EXPECT_EQ(expected[i], lfib_5_2._internal_state.state.list[i]);
         }
         {
-            BaseLFib64< 5, 2> lfib_5_2(0.567);
-            std::uint64_t state[]{
-                0x52a6'7c61'd001'8a64, 0xb4c1'873c'ac52'b799, 0x3474'6662'937d'0bdf,
-                0x7b9a'8e87'b032'3f99, 0x4975'3abf'fb1a'c848
-            };
+            BaseLFib64< 5, 2> lfib_5_2(-2);
             EXPECT_EQ(0, lfib_5_2._internal_state.state.index);
+            const std::uint64_t expected[]{ 0xf3203e9039f4a821, 0xba56949915dcf9e9, 0xd0d5127a96e8d90d, 0x1ef156bb76650c37, 0x7842841591543f1d };
             for (int i = 0; i < 5; ++i)
-                EXPECT_EQ(state[i], lfib_5_2._internal_state.state.list[i]);
-
+                EXPECT_EQ(expected[i], lfib_5_2._internal_state.state.list[i]);
         }
         {
-            BaseLFib64< 5, 2> lfib_5_2(0xfedc'ba98'0123'4567ULL);
-            std::uint64_t state[]{
-                0xc2824'378f'ddaf'44f, 0x592a'1bf0'aec8'f77e, 0x3801'7b95'2339'85d7,
-                0x168b'7a29'4242'63a9, 0x9f55'af71'a8a4'dbe
-            };
+            BaseLFib64< 5, 2> lfib_5_2(9L);
             EXPECT_EQ(0, lfib_5_2._internal_state.state.index);
+            const std::uint64_t expected[]{ 0xaeaf52febe706064, 0xc02d8a5e87afea62, 0x43ec2be544b589b6, 0xc8e98cd697316060, 0x4336b3782f5887a1 };
             for (int i = 0; i < 5; ++i)
-                EXPECT_EQ(state[i], lfib_5_2._internal_state.state.list[i]);
-
+                EXPECT_EQ(expected[i], lfib_5_2._internal_state.state.list[i]);
         }
         {
-            BaseLFib64< 5, 2> lfib_5_2(131L);
-            std::uint64_t state[]{
-                0x8e48'a85c'3260'd9d0, 0xe9eb'8d3f'012c'c6c4, 0xa1cc'9ccd'c36b'ceca,
-                0x768d'85f9'0bfc'75ec, 0x62b4'5dc8'9086'f26c
-            };
+            BaseLFib64< 5, 2> lfib_5_2(-11L);
             EXPECT_EQ(0, lfib_5_2._internal_state.state.index);
+            const std::uint64_t expected[]{ 0x6fc5530939fb94c3, 0x96caee613260cfca, 0x46d40b90622a734b, 0x6ecc725d7bedada9, 0x69e6fff0691d876d };
             for (int i = 0; i < 5; ++i)
-                EXPECT_EQ(state[i], lfib_5_2._internal_state.state.list[i]);
-
+                EXPECT_EQ(expected[i], lfib_5_2._internal_state.state.list[i]);
+        }
+        {
+            BaseLFib64< 5, 2> lfib_5_2(17UL);
+            EXPECT_EQ(0, lfib_5_2._internal_state.state.index);
+            const std::uint64_t expected[]{ 0x808475f02ee37363, 0x6434ff62b4e8edd1, 0x540d6c3702d41b8c, 0x395142ca8efaf003, 0x46b1664f61a205e };
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], lfib_5_2._internal_state.state.list[i]);
+        }
+        {
+            BaseLFib64< 5, 2> lfib_5_2(0x0123'4567'89ab'cdefLL);
+            EXPECT_EQ(0, lfib_5_2._internal_state.state.index);
+            const std::uint64_t expected[]{ 0x157a3807a48faa9d, 0xd573529b34a1d093, 0x2f90b72e996dccbe, 0xa2d419334c4667ec, 0x1404ce914938008 };
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], lfib_5_2._internal_state.state.list[i]);
+        }
+        {
+            BaseLFib64< 5, 2> lfib_5_2(-8'870'000'000'000'000'000LL);
+            EXPECT_EQ(0, lfib_5_2._internal_state.state.index);
+            const std::uint64_t expected[]{ 0x48bbc5b84275f3ca, 0xe2fbc345a799b5aa, 0x86ce19a135fba0de, 0x637c87187035ea06, 0x2a03b9aff2bfd421 };
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], lfib_5_2._internal_state.state.list[i]);
+        }
+        {
+            BaseLFib64< 5, 2> lfib_5_2(8'870'000'000'000'000'000ULL);
+            EXPECT_EQ(0, lfib_5_2._internal_state.state.index);
+            const std::uint64_t expected[]{ 0xeede014d9a5a6108, 0xa6eb6466bac9f251, 0x4246cbb1a64bf70c, 0xaf6aa8f43ebb8659, 0xe1b0fb2c7e764cdb };
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], lfib_5_2._internal_state.state.list[i]);
+        }
+        {
+            BaseLFib64< 5, 2> lfib_5_2(-0.357);
+            EXPECT_EQ(0, lfib_5_2._internal_state.state.index);
+            const std::uint64_t expected[]{ 0x5fee464f36fc42c3, 0x954faf5a9ad49cf8, 0xa985465a4a5fc644, 0x77714db9e870d702, 0xa3aac457d81d552c };
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], lfib_5_2._internal_state.state.list[i]);
+        }
+        {
+            BaseLFib64< 5, 2> lfib_5_2(8.87e+18);
+            EXPECT_EQ(0, lfib_5_2._internal_state.state.index);
+            const std::uint64_t expected[]{ 0xeede014d9a5a6108, 0xa6eb6466bac9f251, 0x4246cbb1a64bf70c, 0xaf6aa8f43ebb8659, 0xe1b0fb2c7e764cdb };
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], lfib_5_2._internal_state.state.list[i]);
         }
 
 
@@ -146,6 +172,7 @@ namespace tests_bases
 
 
         //-- tests move assignement
+
         lfib_55_24.seed(28031);
         lfib_55_24._internal_state.state.index = 5;
         lfib_tmp = lfib_55_24;
