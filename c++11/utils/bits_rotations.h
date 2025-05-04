@@ -30,6 +30,8 @@ SOFTWARE.
 #include <cassert>
 #include <type_traits>
 
+#include "exceptions.h"
+
 
 //===========================================================================
 namespace utils
@@ -41,8 +43,13 @@ namespace utils
     {
         static_assert(std::is_unsigned<IntT>::value, "left bits rotation are only applied on unsigned integer values.");
 
-        assert(rot_count >= 1);
-        assert(rot_count <= BITS_COUNT);
+        if (rot_count < 0)
+            throw NegativeRotationException();
+        if (rot_count > BITS_COUNT)
+            throw TooBigRotationException();
+
+        if (rot_count == 0 || rot_count == BITS_COUNT)
+            return value;
 
         const IntT lo_mask{ IntT((IntT(1) << IntT(BITS_COUNT - rot_count)) - IntT(1)) };
         const IntT hi_mask{ IntT(IntT(-1) ^ lo_mask) };

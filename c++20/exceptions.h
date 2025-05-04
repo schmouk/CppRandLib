@@ -71,6 +71,12 @@ struct NegativeKappaException : public std::exception
     const char* what() noexcept { return "'kappa' parameter cannot be negative."; }
 };
 
+/** @brief Negative value for rotation bits count exception. */
+struct NegativeRotationException : public std::exception
+{
+    const char* what() noexcept { return "rotation bits count cannot be negative."; }
+};
+
 /** @brief Negative value for sigma paramater of Gauss law exception. */
 struct NormalSigmaException : public GaussSigmaException
 {};
@@ -134,6 +140,12 @@ public:
 struct StepValueTypeException : public std::exception
 {
     const char* what() noexcept { return "Type of 'step' values must be arithmetic."; }
+};
+
+/** @brief Too big value for rotation bits count exception. */
+struct TooBigRotationException : public std::exception
+{
+    const char* what() noexcept { return "rotation bits count is too big (must not exceed the rotated integer size)."; }
 };
 
 /** @brief Weibull law arguments exception. */

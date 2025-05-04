@@ -27,8 +27,9 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <cassert>
 #include <type_traits>
+
+#include "exceptions.h"
 
 
 //===========================================================================
@@ -39,8 +40,13 @@ namespace utils
         requires std::is_unsigned_v<IntT>
     inline const IntT rot_left(const IntT value, const int rot_count, const int BITS_COUNT = 8 * sizeof(IntT))
     {
-        assert(rot_count >= 1);
-        assert(rot_count <= BITS_COUNT);
+        if (rot_count < 0)
+            throw NegativeRotationException();
+        if (rot_count > BITS_COUNT)
+            throw TooBigRotationException();
+
+        if (rot_count == 0 || rot_count == BITS_COUNT)
+            return value;
 
         const IntT lo_mask{ IntT((IntT(1) << IntT(BITS_COUNT - rot_count)) - IntT(1)) };
         const IntT hi_mask{ IntT(IntT(-1) ^ lo_mask) };
