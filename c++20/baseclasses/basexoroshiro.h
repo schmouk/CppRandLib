@@ -114,22 +114,24 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Default Empty constructor. */
+    /** @brief Empty constructor. */
     inline BaseXoroshiro() noexcept;
 
     /** @brief Valued construtor. */
-    template<typename T>
-    inline BaseXoroshiro(const T seed_) noexcept;
+    inline BaseXoroshiro(const int seed_) noexcept;
+    inline BaseXoroshiro(const unsigned int seed_) noexcept;
+    inline BaseXoroshiro(const long seed_) noexcept;
+    inline BaseXoroshiro(const unsigned long seed_) noexcept;
+    inline BaseXoroshiro(const long long seed_) noexcept;
+    inline BaseXoroshiro(const unsigned long long seed_) noexcept;
+    inline BaseXoroshiro(const double seed_) noexcept;
 
     /** @brief Valued constructor (full state). */
     inline BaseXoroshiro(const state_type& internal_state) noexcept;
 
-    BaseXoroshiro(const BaseXoroshiro&) noexcept = default;   //!< default copy constructor.
-    BaseXoroshiro(BaseXoroshiro&&) noexcept = default;        //!< default move constructor.
-    virtual ~BaseXoroshiro() noexcept = default;           //!< default destructor.
+    /** @brief Default destructor. */
+    virtual ~BaseXoroshiro() noexcept = default;
 
-
-protected:
     /** @brief Sets the internal state of this PRNG with an integer seed. */
     virtual inline void _setstate(const std::uint64_t seed) noexcept override;
 
@@ -139,7 +141,7 @@ protected:
 //===========================================================================
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
 //---------------------------------------------------------------------------
-/** Default Empty constructor. */
+/** Empty constructor. */
 template<const std::uint32_t SIZE>
 inline BaseXoroshiro<SIZE>::BaseXoroshiro() noexcept
     : MyBaseClass()
@@ -147,11 +149,58 @@ inline BaseXoroshiro<SIZE>::BaseXoroshiro() noexcept
     MyBaseClass::seed();
 }
 
-//---------------------------------------------------------------------------
-/** Valued construtor. */
+//-------------------------------------------
+/** Valued constructor. */
 template<const std::uint32_t SIZE>
-template<typename T>
-inline BaseXoroshiro<SIZE>::BaseXoroshiro(const T seed_) noexcept
+inline BaseXoroshiro<SIZE>::BaseXoroshiro(const int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseXoroshiro<SIZE>::BaseXoroshiro(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseXoroshiro<SIZE>::BaseXoroshiro(const long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseXoroshiro<SIZE>::BaseXoroshiro(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseXoroshiro<SIZE>::BaseXoroshiro(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseXoroshiro<SIZE>::BaseXoroshiro(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseXoroshiro<SIZE>::BaseXoroshiro(const double seed_) noexcept
     : MyBaseClass()
 {
     MyBaseClass::seed(seed_);
