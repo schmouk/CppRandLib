@@ -105,17 +105,18 @@ namespace tests_utils
 
 
         //-- tests move constructor and equality/inequality operator
-        utils::UInt128 vc{ std::move(v) };
-        EXPECT_EQ(vc.hi, v128.hi);
-        EXPECT_EQ(vc.lo, v128.lo);
-        EXPECT_EQ(vc, v128);
-        EXPECT_EQ(v128, vc);
+        utils::UInt128 vtmp(v);
+        utils::UInt128 vc{ std::move(vtmp) };
+        EXPECT_EQ(vc.hi, v.hi);
+        EXPECT_EQ(vc.lo, v.lo);
+        EXPECT_EQ(vc, v);
+        EXPECT_EQ(v, vc);
         EXPECT_NE(vc, v128_);
         EXPECT_NE(v128_, vc);
-        EXPECT_TRUE(vc == v128);
-        EXPECT_TRUE(v128 == vc);
-        EXPECT_FALSE(vc != v128);
-        EXPECT_FALSE(v128 != vc);
+        EXPECT_TRUE(vc == v);
+        EXPECT_TRUE(v == vc);
+        EXPECT_FALSE(vc != v);
+        EXPECT_FALSE(v != vc);
         EXPECT_NE(vc, v128_);
         EXPECT_NE(v128_, vc);
 
@@ -137,17 +138,18 @@ namespace tests_utils
 
 
         //-- tests move assignment and equality/inequality operator
-        vc = std::move(v);
-        EXPECT_EQ(vc.hi, v128.hi);
-        EXPECT_EQ(vc.lo, v128.lo);
-        EXPECT_EQ(vc, v128);
-        EXPECT_EQ(v128, vc);
+        vtmp = v;
+        vc = std::move(vtmp);
+        EXPECT_EQ(vc.hi, v.hi);
+        EXPECT_EQ(vc.lo, v.lo);
+        EXPECT_EQ(vc, v);
+        EXPECT_EQ(v, vc);
         EXPECT_NE(vc, v128_);
         EXPECT_NE(v128_, vc);
-        EXPECT_TRUE(vc == v128);
-        EXPECT_TRUE(v128 == vc);
-        EXPECT_FALSE(vc != v128);
-        EXPECT_FALSE(v128 != vc);
+        EXPECT_TRUE(vc == v);
+        EXPECT_TRUE(v == vc);
+        EXPECT_FALSE(vc != v);
+        EXPECT_FALSE(v != vc);
         EXPECT_NE(vc, v128_);
         EXPECT_NE(v128_, vc);
 
