@@ -124,7 +124,7 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Default Empty constructor. */
+    /** @brief Empty constructor. */
     inline BaseWell() noexcept;
 
     /** @brief Valued construtor. */
@@ -177,7 +177,7 @@ protected:
 //===========================================================================
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
 //---------------------------------------------------------------------------
-/** Default Empty constructor. */
+/** Empty constructor. */
 template<const std::uint32_t SIZE>
 inline BaseWell<SIZE>::BaseWell() noexcept
     : MyBaseClass()
