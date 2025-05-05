@@ -329,17 +329,6 @@ namespace tests_prng
 
         //-- tests seed(value)
         cwg64.seed(-1);
-
-        EXPECT_EQ(0ULL, cwg64._internal_state.state.a);
-        EXPECT_EQ(1ULL, cwg64._internal_state.state.s & 1ULL);
-        EXPECT_NE(0ULL, cwg64._internal_state.state.state);  // should mostly be non-zero, while it could (but 1 over 2^64)
-        EXPECT_NE(cwg64_1._internal_state.state.s, cwg64._internal_state.state.s);  // (1 over 2^64 risk)
-        EXPECT_NE(cwg64_1._internal_state.state.state, cwg64._internal_state.state.state);  // (1 over 2^64 risk)
-        EXPECT_EQ(0ULL, cwg64._internal_state.state.weyl);
-
-
-        //-- tests seed(value)
-        cwg64.seed(-1);
         EXPECT_EQ(0x0, cwg64._internal_state.state.a);
         EXPECT_EQ(0xe4d971771b652c21, cwg64._internal_state.state.s);
         EXPECT_EQ(0xe99ff867dbf682c9, cwg64._internal_state.state.state);
