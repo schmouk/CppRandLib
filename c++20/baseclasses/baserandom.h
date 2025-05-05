@@ -371,7 +371,7 @@ public:
     {
         std::array<T, n> out;
         auto max_it{ max.cbegin() };
-        std::ranges::generate(out, [this, &max_it]() { return this->uniform(*max_it++); });
+        std::ranges::generate(out, [&]() { return uniform<T>(*max_it++); });
         return out;
     }
 
@@ -467,7 +467,7 @@ public:
     std::array<T, n> n_evaluate(const U max) noexcept
     {
         std::array<T, n> out;
-        std::ranges::generate(out, [this, max]() { return uniform<T>(max); });
+        std::ranges::generate(out, [&]() { return uniform<T>(max); });
         return out;
     }
 
@@ -477,7 +477,7 @@ public:
     std::array<T, n> n_evaluate(const U min, const V max) noexcept
     {
         std::array<T, n> out;
-        std::ranges::generate(out, [this, min, max]() { return uniform<T>(min, max); });
+        std::ranges::generate(out, [&]() { return uniform<T>(min, max); });
         return out;
     }
 
@@ -1069,7 +1069,7 @@ std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::operator() (const T max
         throw ZeroLengthException();
 
     std::vector<T> out(n);
-    std::ranges::generate(out, [this, max]() { return this->uniform(max); });
+    std::ranges::generate(out, [&]() { return uniform<T>(max); });
     return out;
 }
 
@@ -1099,7 +1099,7 @@ std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::operator() (const std::
 {
     std::vector<T> out(max.size());
     auto max_it{ max.cbegin() };
-    std::ranges::generate(out, [this, &max_it]() { return this->uniform(*max_it++); });
+    std::ranges::generate(out, [&]() { return uniform<T>(*max_it++); });
     return out;
 }
 
@@ -1228,9 +1228,7 @@ inline std::vector<std::uint8_t> BaseRandom<StateT, OutputT, OUTPUT_BITS>::randb
         throw ZeroLengthException();
 
     std::vector<std::uint8_t> out(n);
-    std::ranges::generate(out, [this]() { return std::uint8_t(uniform(256ul)); });
-    //for (std::uint8_t& b : out)
-    //    b = std::uint8_t(uniform(256ul));
+    std::ranges::generate(out, [&]() { return uniform<std::uint8_t>(256ul); });
     return out;
 }
 

@@ -147,16 +147,16 @@ namespace tests_bases
         friend inline const bool operator<= (const T lhs, const Object& rhs) { return false; };
 
         template<typename T>
-        friend inline const int operator+ (const T lhs, const Object& rhs) { return lhs; };
+        friend inline const int operator+ (const T lhs, const Object& rhs) { return 0; };
 
         template<typename T>
-        friend inline const int operator- (const T lhs, const Object& rhs) { return lhs; };
+        friend inline const int operator- (const T lhs, const Object& rhs) { return 0; };
 
         template<typename T>
-        friend inline const int operator* (const T lhs, const Object& rhs) { return lhs; };
+        friend inline const int operator* (const T lhs, const Object& rhs) { return 0; };
 
         template<typename T>
-        friend inline const int operator/ (const T lhs, const Object& rhs) { return lhs; };
+        friend inline const int operator/ (const T lhs, const Object& rhs) { return 0; };
 
 
         inline operator int() const { return 0; }
@@ -381,15 +381,15 @@ namespace tests_bases
             EXPECT_DOUBLE_EQ(0., v);
 
         vect = br1.operator()<std::uint32_t>(max_vect);
-        for (int i = 0; i < mn; ++i)
+        for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(max_vect[i] - 1, vect[i]);
 
         vect_d = br1.operator()<double>(max_vect_d);
-        for (int i = 0; i < mn; ++i)
+        for (std::size_t i = 0; i < mn; ++i)
             EXPECT_NEAR(max_vect_d[i], vect_d[i], 1.0e-6);
 
         vect = br33.operator()<std::uint32_t>(max_vect);
-        for (int i = 0; i < mn; ++i)
+        for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(std::uint32_t(max_vect[i] * _NORM33), vect[i]);
 
 
@@ -402,11 +402,11 @@ namespace tests_bases
             EXPECT_EQ(0UL, v);
 
         arr = br1.operator()<std::uint32_t, 5>(max_arr);
-        for (int i = 0; i < mn; ++i)
+        for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(std::uint32_t(max_arr[i] * 0.999999), arr[i]);
 
         arr = br33.operator()<std::uint32_t, 5>(max_arr);
-        for (int i = 0; i < mn; ++i)
+        for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(::uint32_t(max_arr[i] * _NORM33), arr[i]);
 
 
@@ -415,15 +415,15 @@ namespace tests_bases
         mn = max_vect.size();
 
         vect = br0.operator()<std::uint32_t>(min_vect, max_vect);
-        for (int i = 0; i < mn; ++i)
+        for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(min_vect[i], vect[i]);
 
         vect = br1.operator()<std::uint32_t>(min_vect, max_vect);
-        for (int i = 0; i < mn; ++i)
+        for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(std::uint32_t(max_vect[i] * 0.999999), vect[i]);
 
         vect = br33.operator()<std::uint32_t>(min_vect, max_vect);
-        for (int i = 0; i < mn; ++i)
+        for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(min_vect[i] + std::uint32_t((max_vect[i] - min_vect[i]) * _NORM33), vect[i]);
 
 
@@ -431,15 +431,15 @@ namespace tests_bases
         std::array<std::uint32_t, n> min_arr{ 111, 222, 333, 444, 555 };
 
         arr = br0.operator()<std::uint32_t>(min_arr, max_arr);
-        for (int i = 0; i < mn; ++i)
+        for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(min_arr[i], arr[i]);
 
         arr = br1.operator()<std::uint32_t>(min_arr, max_arr);
-        for (int i = 0; i < mn; ++i)
+        for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(std::uint32_t(max_arr[i] * 0.999999), arr[i]);
 
         arr = br33.operator()<std::uint32_t>(min_arr, max_arr);
-        for (int i = 0; i < mn; ++i)
+        for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(min_arr[i] + std::uint32_t((max_arr[i] - min_arr[i]) * _NORM33), arr[i]);
 
 
@@ -534,11 +534,11 @@ namespace tests_bases
             EXPECT_EQ(0UL, v);
 
         std::vector<std::uint32_t> vu1{ br1.n_evaluate<std::uint32_t, double>(max_vect_d) };
-        for (int i = 0; i < max_vect_d.size(); ++i)
+        for (std::size_t i = 0; i < max_vect_d.size(); ++i)
             EXPECT_EQ(vu1[i], std::uint32_t(max_vect_d[i] * 0.99999999));
 
         std::vector<std::uint32_t> vu33{ br33.n_evaluate<std::uint32_t>(max_vect) };
-        for (int i = 0; i < max_vect.size(); ++i)
+        for (std::size_t i = 0; i < max_vect.size(); ++i)
             EXPECT_EQ(vu33[i], std::uint32_t(max_vect[i] * _NORM33));
 
         std::vector<Object> obj_vect(2);
@@ -553,15 +553,15 @@ namespace tests_bases
         std::vector<float> min_vect_f{ 1.0f, 2.0f, 3.0f };
 
         vu0 = br0.n_evaluate<std::uint32_t>(min_vect, max_vect);
-        for (int i=0; i < std::min(min_vect.size(), max_vect.size()); ++i)
+        for (std::size_t i=0; i < std::min(min_vect.size(), max_vect.size()); ++i)
             EXPECT_EQ(vu0[i], std::min(min_vect[i], max_vect[i]));
 
         vu1 = br1.n_evaluate<std::uint32_t>(min_vect_f, max_vect);
-        for (int i = 0; i < std::min(min_vect_f.size(), max_vect.size()); ++i)
+        for (std::size_t i = 0; i < std::min(min_vect_f.size(), max_vect.size()); ++i)
             EXPECT_EQ(vu1[i], std::uint32_t(std::max(min_vect_f[i], float(max_vect[i])) * 0.999999));
 
         vu33 = br33.n_evaluate<std::uint32_t>(min_vect_f, max_vect_d);
-        for (int i = 0; i < std::min(min_vect_f.size(), max_vect_d.size()); ++i) {
+        for (std::size_t i = 0; i < std::min(min_vect_f.size(), max_vect_d.size()); ++i) {
             double a{ std::min(double(min_vect_f[i]), max_vect_d[i]) };
             double b{ std::max(double(min_vect_f[i]), max_vect_d[i]) };
             EXPECT_EQ(vu33[i], std::uint32_t(a + (b - a) * _NORM33));
@@ -926,7 +926,7 @@ namespace tests_bases
         vect_counts = { 0, 2, 1, 3, 1, 2, 0, 2, 1, 3, 2, 2, 0 };
         EXPECT_THROW(br0.sample(vect_c, vect_population, vect_counts, N_COUNTS + 1), SampleCountException);
         EXPECT_THROW(br1.sample(vect_c, vect_population, vect_counts, N_COUNTS + 5), SampleCountException);
-        EXPECT_THROW(br33.sample(vect_c, vect_population, vect_counts, 0xffff'ffff'ffff'ffffULL), SampleCountException);
+        EXPECT_THROW(br33.sample(vect_c, vect_population, vect_counts, std::uint32_t(0xffff'ffff'ffff'ffffULL)), SampleCountException);
 
 
         //-- tests samples(array, array, k)
@@ -938,26 +938,26 @@ namespace tests_bases
         std::array<char, 20> arr_c20;
 
         br0.sample(arr_c5, arr_population, arr_counts);
-        for (int i = 0; i < arr_c5.size(); ++i)
+        for (std::size_t i = 0; i < arr_c5.size(); ++i)
             EXPECT_EQ(arr_population[i], arr_c5[i]);
         br0.sample(arr_c13, arr_population, arr_counts);
-        for (int i = 0; i < arr_c13.size(); ++i)
+        for (std::size_t i = 0; i < arr_c13.size(); ++i)
             EXPECT_EQ(arr_population[i], arr_c13[i]);
         EXPECT_THROW(br0.sample(arr_c19, arr_population, arr_counts), SampleCountException);
 
         br1.sample(arr_c5, arr_population, arr_counts);
-        for (int i = 0; i < arr_c5.size(); ++i)
+        for (std::size_t i = 0; i < arr_c5.size(); ++i)
             EXPECT_EQ("MABCD"[i], arr_c5[i]);
         br1.sample(arr_c13, arr_population, arr_counts);
-        for (int i = 0; i < arr_c13.size(); ++i)
+        for (std::size_t i = 0; i < arr_c13.size(); ++i)
             EXPECT_EQ("MABCDEFGHIJKL"[i], arr_c13[i]);
         EXPECT_THROW(br1.sample(arr_c19, arr_population, arr_counts), SampleCountException);
 
         br33.sample(arr_c5, arr_population, arr_counts);
-        for (int i = 0; i < arr_c5.size(); ++i)
+        for (std::size_t i = 0; i < arr_c5.size(); ++i)
             EXPECT_EQ("EAFGDHIBJKCLM"[i], arr_c5[i]);
         br33.sample(arr_c13, arr_population, arr_counts);
-        for (int i = 0; i < arr_c13.size(); ++i)
+        for (std::size_t i = 0; i < arr_c13.size(); ++i)
             EXPECT_EQ("EAFGDHIBJKCLM"[i], arr_c13[i]);
         EXPECT_THROW(br33.sample(arr_c19, arr_population, arr_counts), SampleCountException);
 
@@ -967,26 +967,26 @@ namespace tests_bases
         // reminder: SAMPLES[] = "BBCDDDEFFHHIJJJKKLL";  N_COUNTS = 19;
 
         br0.sample(arr_c5, arr_population, arr_counts);
-        for (int i = 0; i < arr_c5.size(); ++i)
+        for (std::size_t i = 0; i < arr_c5.size(); ++i)
             EXPECT_EQ(SAMPLES[i], arr_c5[i]);
         br0.sample(arr_c13, arr_population, arr_counts);
-        for (int i = 0; i < arr_c13.size(); ++i)
+        for (std::size_t i = 0; i < arr_c13.size(); ++i)
             EXPECT_EQ(SAMPLES[i], arr_c13[i]);
         EXPECT_THROW(br0.sample(arr_c20, arr_population, arr_counts), SampleCountException);
 
         br1.sample(arr_c5, arr_population, arr_counts);
-        for (int i = 0; i < arr_c5.size(); ++i)
+        for (std::size_t i = 0; i < arr_c5.size(); ++i)
             EXPECT_EQ("LBBCDDDEFFHHIJJJKKL"[i], arr_c5[i]);
         br1.sample(arr_c13, arr_population, arr_counts);
-        for (int i = 0; i < arr_c13.size(); ++i)
+        for (std::size_t i = 0; i < arr_c13.size(); ++i)
             EXPECT_EQ("LBBCDDDEFFHHIJJJKKL"[i], arr_c13[i]);
         EXPECT_THROW(br1.sample(arr_c20, arr_population, arr_counts), SampleCountException);
 
         br33.sample(arr_c5, arr_population, arr_counts);
-        for (int i = 0; i < arr_c5.size(); ++i)
+        for (std::size_t i = 0; i < arr_c5.size(); ++i)
             EXPECT_EQ("EBFFDHHBIJDJJCKKDLL"[i], arr_c5[i]);
         br33.sample(arr_c13, arr_population, arr_counts);
-        for (int i = 0; i < arr_c13.size(); ++i)
+        for (std::size_t i = 0; i < arr_c13.size(); ++i)
             EXPECT_EQ("EBFFDHHBIJDJJCKKDLL"[i], arr_c13[i]);
         EXPECT_THROW(br33.sample(arr_c20, arr_population, arr_counts), SampleCountException);
 
@@ -1059,7 +1059,7 @@ namespace tests_bases
         EXPECT_FALSE(br1.gauss_valid());
         EXPECT_DOUBLE_EQ(0.0, br1.gauss_next());
 
-        br33.setstate(0x1'0123'4567ULL);
+        br33.setstate(std::uint32_t(0x1'0123'4567ULL));
         EXPECT_EQ(br33.state(), 0x123'4567ULL);
         EXPECT_FALSE(br33.gauss_valid());
         EXPECT_DOUBLE_EQ(0.0, br33.gauss_next());
@@ -1075,7 +1075,7 @@ namespace tests_bases
         EXPECT_TRUE(br1.gauss_valid());
         EXPECT_DOUBLE_EQ(double(0.654f), br1.gauss_next());
 
-        br33.setstate(0x1'0123'4567ULL, 0.321);
+        br33.setstate(std::uint32_t(0x1'0123'4567ULL), 0.321);
         EXPECT_EQ(br33.state(), 0x123'4567ULL);
         EXPECT_TRUE(br33.gauss_valid());
         EXPECT_DOUBLE_EQ(0.321, br33.gauss_next());
@@ -1441,6 +1441,7 @@ namespace tests_bases
 
         //-- tests triangular(low, high)
         double d_values[]{ -31.0, -1.0, 0.0, 1.2, 23.1 };
+        float f_values[]{ -31.0f, -1.0f, 0.0f, 1.2f, 23.1f };
         int i_values[]{ -31, -1, 0, 1, 23 };
 
         for (double low : d_values)
@@ -1464,11 +1465,18 @@ namespace tests_bases
                 EXPECT_DOUBLE_EQ(br33.triangular(low, high, (low + high) / 2.0), br33.triangular(low, high));
             }
 
-        for (float low : d_values)
+        for (float low : f_values)
             for (long high : i_values) {
                 EXPECT_DOUBLE_EQ(br0.triangular(low, high, (double(low) + double(high)) / 2.0), br0.triangular(low, high));
                 EXPECT_DOUBLE_EQ(br1.triangular(low, high, (double(low) + double(high)) / 2.0), br1.triangular(low, high));
                 EXPECT_DOUBLE_EQ(br33.triangular(low, high, (double(low) + double(high)) / 2.0), br33.triangular(low, high));
+            }
+
+        for (double low : d_values)
+            for (long high : i_values) {
+                EXPECT_DOUBLE_EQ(br0.triangular(low, high, (low + double(high)) / 2.0), br0.triangular(low, high));
+                EXPECT_DOUBLE_EQ(br1.triangular(low, high, (low + double(high)) / 2.0), br1.triangular(low, high));
+                EXPECT_DOUBLE_EQ(br33.triangular(low, high, (low + double(high)) / 2.0), br33.triangular(low, high));
             }
 
 

@@ -70,7 +70,7 @@ namespace tests_internal_states
         lss_64.seed(0xa758'f61e'0c53'2b49ULL);
         EXPECT_EQ(15ULL, lss_64.list.size());
         EXPECT_EQ(0UL, lss_64.index);
-        for (int i = 0; i < lss_64.list.size() - 1; ++i) {
+        for (std::size_t i = 0; i < lss_64.list.size() - 1; ++i) {
             EXPECT_NE(lss_64.list[i], 0ULL);                // well, expected to be not zero
             EXPECT_NE(lss_64.list[i], lss_64.list[i + 1]);  // well, two succeeding items expected to be different
         }
@@ -79,7 +79,7 @@ namespace tests_internal_states
         lss_31.seed(0xa758'f61e'0c53'2b49ULL);
         EXPECT_EQ(123ULL, lss_31.list.size());
         EXPECT_EQ(0UL, lss_31.index);
-        for (int i = 0; i < lss_31.list.size() - 1; ++i) {
+        for (std::size_t i = 0; i < lss_31.list.size() - 1; ++i) {
             EXPECT_NE(lss_31.list[i], 0ULL);                // well, expected to be not zero
             EXPECT_LE(lss_31.list[i], 0x7fff'ffffUL);
             EXPECT_NE(lss_31.list[i], lss_31.list[i + 1]);  // well, two succeeding items expected to be different
@@ -92,13 +92,13 @@ namespace tests_internal_states
         LSS64 lss0(lss_64);
         EXPECT_EQ(lss0.list.size(), lss_64.list.size());
         EXPECT_EQ(lss0.index, lss_64.index);
-        for (int i = 0; i < lss0.list.size(); ++i)
+        for (std::size_t i = 0; i < lss0.list.size(); ++i)
             EXPECT_EQ(lss0.list[i], lss_64.list[i]);
 
         LSS31 lss1(lss_31);
         EXPECT_EQ(lss1.list.size(), lss_31.list.size());
         EXPECT_EQ(lss1.index, lss_31.index);
-        for (int i = 0; i < lss1.list.size(); ++i)
+        for (std::size_t i = 0; i < lss1.list.size(); ++i)
             EXPECT_EQ(lss1.list[i], lss_31.list[i]);
 
 
@@ -106,13 +106,13 @@ namespace tests_internal_states
         LSS64 lss2(std::move(lss0));
         EXPECT_EQ(lss2.list.size(), lss_64.list.size());
         EXPECT_EQ(lss2.index, lss_64.index);
-        for (int i = 0; i < lss2.list.size(); ++i)
+        for (std::size_t i = 0; i < lss2.list.size(); ++i)
             EXPECT_EQ(lss2.list[i], lss_64.list[i]);
 
         LSS31 lss3(std::move(lss1));
         EXPECT_EQ(lss3.list.size(), lss_31.list.size());
         EXPECT_EQ(lss3.index, lss_31.index);
-        for (int i = 0; i < lss3.list.size(); ++i)
+        for (std::size_t i = 0; i < lss3.list.size(); ++i)
             EXPECT_EQ(lss3.list[i], lss_31.list[i]);
 
 
@@ -121,14 +121,14 @@ namespace tests_internal_states
         lss0 = lss_64;
         EXPECT_EQ(lss0.list.size(), lss_64.list.size());
         EXPECT_EQ(lss0.index, lss_64.index);
-        for (int i = 0; i < lss0.list.size(); ++i)
+        for (std::size_t i = 0; i < lss0.list.size(); ++i)
             EXPECT_EQ(lss0.list[i], lss_64.list[i]);
 
         lss_31.seed(0x0c53'a758'f61e'2b49ULL);
         lss1 = lss_31;
         EXPECT_EQ(lss1.list.size(), lss_31.list.size());
         EXPECT_EQ(lss1.index, lss_31.index);
-        for (int i = 0; i < lss1.list.size(); ++i)
+        for (std::size_t i = 0; i < lss1.list.size(); ++i)
             EXPECT_EQ(lss1.list[i], lss_31.list[i]);
 
 
@@ -136,13 +136,13 @@ namespace tests_internal_states
         lss2 = std::move(lss0);
         EXPECT_EQ(lss2.list.size(), lss_64.list.size());
         EXPECT_EQ(lss2.index, lss_64.index);
-        for (int i = 0; i < lss2.list.size(); ++i)
+        for (std::size_t i = 0; i < lss2.list.size(); ++i)
             EXPECT_EQ(lss2.list[i], lss_64.list[i]);
 
         lss3 = std::move(lss1);
         EXPECT_EQ(lss3.list.size(), lss_31.list.size());
         EXPECT_EQ(lss3.index, lss_31.index);
-        for (int i = 0; i < lss3.list.size(); ++i)
+        for (std::size_t i = 0; i < lss3.list.size(); ++i)
             EXPECT_EQ(lss3.list[i], lss_31.list[i]);
     }
 

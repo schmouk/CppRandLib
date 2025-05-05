@@ -1302,7 +1302,7 @@ inline std::vector<std::uint8_t> BaseRandom<StateT, OutputT, OUTPUT_BITS>::randb
 
     std::vector<std::uint8_t> out(n);
     for (std::uint8_t& b : out)
-        b = uniform< std::uint8_t>(256ul);
+        b = uniform<std::uint8_t>(256ul);
     return out;
 }
 
@@ -1411,8 +1411,6 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(
     const std::size_t k
 )
 {
-    //if (!std::is_integral<T>::value)
-    //    throw IntegralValueTypeException();
     if (!std::is_integral<C>::value)
         throw SampleCountsTypeException();
     if (counts.size() != population.size())

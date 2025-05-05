@@ -75,7 +75,7 @@ namespace utils
         for (std::uint32_t n = 0; n < (HEX_DIGITS_COUNT < 8 ? HEX_DIGITS_COUNT : 8); ++n) {
             const std::uint32_t i{ std::uint32_t(double(15-n) * double(splitmix_32()) * NORMALIZE) };
 
-            balanced_value = (balanced_value << 4) + hex_digits[i];
+            balanced_value = IntT((std::uint64_t(balanced_value) << 4) + hex_digits[i]);
             std::swap(hex_digits[i], hex_digits[14-n]);
         }
 
@@ -85,14 +85,14 @@ namespace utils
             std::swap(hex_digits[7], hex_digits[14]);
             const std::uint32_t i{ std::uint32_t(14.0 * double(splitmix_32()) * NORMALIZE) };
 
-            balanced_value = (balanced_value << 4) + hex_digits[i];
+            balanced_value = IntT((std::uint64_t(balanced_value) << 4) + hex_digits[i]);
             std::swap(hex_digits[i], hex_digits[14]);
 
             // finaly, let's initialize the 7 high hexa digits of the returned value - all different
             for (std::uint32_t n = 0; n < 7; ++n) {
                 const std::uint32_t i{ std::uint32_t(double(14-n) * double(splitmix_32()) * NORMALIZE) };
 
-                balanced_value = (balanced_value << 4) + hex_digits[i];
+                balanced_value = IntT((std::uint64_t(balanced_value) << 4) + hex_digits[i]);
                 std::swap(hex_digits[i], hex_digits[13 - n]);
             }
         }
