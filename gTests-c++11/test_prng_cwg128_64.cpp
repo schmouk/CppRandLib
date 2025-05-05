@@ -44,7 +44,7 @@ namespace tests_prng
 
         EXPECT_EQ(0ULL, cwg128_64_1._internal_state.state.a);
         EXPECT_EQ(1ULL, cwg128_64_1._internal_state.state.s & 1ULL);
-        EXPECT_NE(0ULL, cwg128_64_1._internal_state.state.state);  // should mostly be non-zero, while it could (but 1 over 2^64)
+        EXPECT_NE(0ULL, cwg128_64_1._internal_state.state.state);  // should mostly be non-zero, while it could (but 1 over 2^128)
         EXPECT_EQ(0ULL, cwg128_64_1._internal_state.state.weyl);
         EXPECT_FALSE(cwg128_64_1._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, cwg128_64_1._internal_state.gauss_next);
@@ -344,9 +344,9 @@ namespace tests_prng
 
         EXPECT_EQ(0ULL, cwg128_64._internal_state.state.a);
         EXPECT_EQ(1ULL, cwg128_64._internal_state.state.s & 1ULL);
-        EXPECT_NE(0ULL, cwg128_64._internal_state.state.state);  // should mostly be non-zero, while it could (but 1 over 2^64)
+        EXPECT_NE(0ULL, cwg128_64._internal_state.state.state);  // should mostly be non-zero, while it could (but 1 over 2^128)
         EXPECT_NE(cwg128_64_1._internal_state.state.s, cwg128_64._internal_state.state.s);  // (1 over 2^64 risk)
-        EXPECT_NE(cwg128_64_1._internal_state.state.state, cwg128_64._internal_state.state.state);  // (1 over 2^64 risk)
+        EXPECT_NE(cwg128_64_1._internal_state.state.state, cwg128_64._internal_state.state.state);  // (1 over 2^128 risk)
         EXPECT_EQ(0ULL, cwg128_64._internal_state.state.weyl);
 
 
@@ -355,9 +355,9 @@ namespace tests_prng
 
         EXPECT_EQ(0ULL, cwg128_64._internal_state.state.a);
         EXPECT_EQ(1ULL, cwg128_64._internal_state.state.s & 1ULL);
-        EXPECT_NE(0ULL, cwg128_64._internal_state.state.state);  // should mostly be non-zero, while it could (but 1 over 2^64)
+        EXPECT_NE(0ULL, cwg128_64._internal_state.state.state);  // should mostly be non-zero, while it could (but 1 over 2^128)
         EXPECT_NE(cwg128_64_1._internal_state.state.s, cwg128_64._internal_state.state.s);  // (1 over 2^64 risk)
-        EXPECT_NE(cwg128_64_1._internal_state.state.state, cwg128_64._internal_state.state.state);  // (1 over 2^64 risk)
+        EXPECT_NE(cwg128_64_1._internal_state.state.state, cwg128_64._internal_state.state.state);  // (1 over 2^128 risk)
         EXPECT_EQ(0ULL, cwg128_64._internal_state.state.weyl);
 
 
