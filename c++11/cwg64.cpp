@@ -45,3 +45,50 @@ const Cwg64::output_type Cwg64::next() noexcept
     return _internal_state.state.state ^ (_internal_state.state.a >> 48);
 }
 
+/** Initializes internal state (empty signature). */
+void Cwg64::seed() noexcept
+{
+    MyBaseClass::seed();
+}
+
+/** Initializes internal state (int). */
+void Cwg64::seed(const int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Initializes internal state (unsigned int). */
+void Cwg64::seed(const unsigned int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Initializes internal state (long). */
+void Cwg64::seed(const long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Initializes internal state (unsigned long). */
+void Cwg64::seed(const unsigned long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Initializes internal state (long long). */
+void Cwg64::seed(const long long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Initializes internal state (unsigned long long). */
+void Cwg64::seed(const unsigned long long seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Initializes internal state (double). */
+void Cwg64::seed(const double seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}

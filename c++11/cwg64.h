@@ -161,4 +161,15 @@ public:
     /** @brief The internal PRNG algorithm. */
     virtual const output_type next() noexcept override;
 
+
+    //---   Seed   ----------------------------------------------------------
+    void seed() noexcept;                                //!< Initializes internal state (empty signature).
+    void seed(const int                seed_) noexcept;  //!< Initializes internal state (int).
+    void seed(const unsigned int       seed_) noexcept;  //!< Initializes internal state (unsigned int).
+    void seed(const long               seed_) noexcept;  //!< Initializes internal state (long)
+    void seed(const unsigned long      seed_) noexcept;  //!< Initializes internal state (unsigned long).
+    void seed(const long long          seed_) noexcept;  //!< Initializes internal state (long long).
+    void seed(const unsigned long long seed_) noexcept;  //!< Initializes internal state (unsigned long long).
+    void seed(const double             seed_) noexcept;  //!< Initializes internal state (double).
+
 };
