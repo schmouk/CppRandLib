@@ -44,3 +44,51 @@ const Cwg128_64::output_type Cwg128_64::next() noexcept
     // returns the xored - shifted output value
     return (_internal_state.state.state ^ (_internal_state.state.a >> 48)).lo;
 }
+
+/** Initializes internal state (empty signature). */
+void Cwg128_64::seed() noexcept
+{
+    MyBaseClass::seed();
+}
+
+/** Initializes internal state (int). */
+void Cwg128_64::seed(const int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Initializes internal state (unsigned int). */
+void Cwg128_64::seed(const unsigned int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Initializes internal state (long). */
+void Cwg128_64::seed(const long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Initializes internal state (unsigned long). */
+void Cwg128_64::seed(const unsigned long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Initializes internal state (long long). */
+void Cwg128_64::seed(const long long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Initializes internal state (unsigned long long). */
+void Cwg128_64::seed(const unsigned long long seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Initializes internal state (double). */
+void Cwg128_64::seed(const double seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}

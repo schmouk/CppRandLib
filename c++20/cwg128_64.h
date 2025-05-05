@@ -112,47 +112,56 @@ public:
     /** @brief Empty constructor. */
     inline Cwg128_64() noexcept
         : MyBaseClass()
-    {}
+    {
+    }
 
     /** @brief Valued constructor (int). */
     inline Cwg128_64(const int seed) noexcept
         : MyBaseClass(std::uint64_t(seed))
-    {}
+    {
+    }
 
     /** @brief Valued constructor (unsigned int). */
     inline Cwg128_64(const unsigned int seed) noexcept
         : MyBaseClass(std::uint64_t(seed))
-    {}
+    {
+    }
 
     /** @brief Valued constructor (long). */
     inline Cwg128_64(const long seed) noexcept
         : MyBaseClass(std::uint64_t(seed))
-    {}
+    {
+    }
 
     /** @brief Valued constructor (unsigned long). */
     inline Cwg128_64(const unsigned long seed) noexcept
         : MyBaseClass(std::uint64_t(seed))
-    {}
+    {
+    }
 
     /** @brief Valued constructor (long long). */
     inline Cwg128_64(const long long seed) noexcept
         : MyBaseClass(std::uint64_t(seed))
-    {}
+    {
+    }
 
     /** @brief Valued constructor (unsigned long long). */
     inline Cwg128_64(const unsigned long long seed) noexcept
         : MyBaseClass(std::uint64_t(seed))
-    {}
+    {
+    }
 
     /** @brief Valued constructor (double). */
     inline Cwg128_64(const double seed) noexcept
         : MyBaseClass(seed)
-    {}
+    {
+    }
 
     /** @brief Valued constructor (full state). */
     inline Cwg128_64(const state_type& internal_state) noexcept
         : MyBaseClass(internal_state)
-    {}
+    {
+    }
 
     /** @brief Default Destructor. */
     virtual ~Cwg128_64() noexcept = default;
@@ -161,5 +170,16 @@ public:
     //---   Internal PRNG   -------------------------------------------------
     /** @brief The internal PRNG algorithm. */
     virtual const output_type next() noexcept override;
+
+
+    //---   Seed   ----------------------------------------------------------
+    void seed() noexcept;                                //!< Initializes internal state (empty signature).
+    void seed(const int                seed_) noexcept;  //!< Initializes internal state (int).
+    void seed(const unsigned int       seed_) noexcept;  //!< Initializes internal state (unsigned int).
+    void seed(const long               seed_) noexcept;  //!< Initializes internal state (long)
+    void seed(const unsigned long      seed_) noexcept;  //!< Initializes internal state (unsigned long).
+    void seed(const long long          seed_) noexcept;  //!< Initializes internal state (long long).
+    void seed(const unsigned long long seed_) noexcept;  //!< Initializes internal state (unsigned long long).
+    void seed(const double             seed_) noexcept;  //!< Initializes internal state (double).
 
 };
