@@ -444,7 +444,7 @@ namespace tests_prng
                 hist[cwg64(ENTRIES_COUNT)]++;
             ++n;
             if (utils::get_time_ms() - start_ms >= 1000)
-                break;  // no evaluation on more than 1 second
+                break;  // no evaluation during more than 1 second duration
         }
 
         const std::uint64_t nloops{ n * INTERNAL_LOOPS_COUNT };
