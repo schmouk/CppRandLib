@@ -31,6 +31,8 @@ SOFTWARE.
 #include "gtest/gtest.h"
 
 #include "cwg64.h"
+#include "g_utils/histogram.h"
+#include "utils/time.h"
 
 
 //===========================================================================
@@ -427,6 +429,29 @@ namespace tests_prng
         EXPECT_EQ(0.0, cwg64._internal_state.gauss_next);
         EXPECT_FALSE(cwg64._internal_state.gauss_valid);
 
+
+        //-- tests equidistribution - notice: not more than 1 second of test, self-adaptation to platform and configuration
+        cwg64.seed();  // notice: tests will be done on very different seed values each time they are run
+        constexpr std::uint32_t ENTRIES_COUNT{ 6571 };  // notice: 6571 is a prime number
+        Histogram hist(ENTRIES_COUNT);
+        
+        std::uint64_t n{ 0 };
+        constexpr int INTERNAL_LOOPS_COUNT{ 1'000'000 };
+
+        std::uint64_t start_ms{ utils::get_time_ms() };
+        while (n < 50) {
+            for (int i=0; i < INTERNAL_LOOPS_COUNT; ++i)
+                hist[cwg64(ENTRIES_COUNT)]++;
+            ++n;
+            if (utils::get_time_ms() - start_ms >= 1000)
+                break;  // no evaluation on more than 1 second
+        }
+
+        const std::uint64_t nloops{ n * INTERNAL_LOOPS_COUNT };
+        EXPECT_TRUE(hist.is_mean_median_difference_ok(nloops));
+        EXPECT_TRUE(hist.is_stdev_ok(nloops));
+        EXPECT_TRUE(hist.is_variance_ok());
+        
     }
 
 }
