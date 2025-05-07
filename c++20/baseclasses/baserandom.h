@@ -1017,7 +1017,9 @@ protected:
 
     /** @brief Sets the internal state with a 128-bits integer seed. */
     virtual inline void _setstate(const utils::UInt128 seed_) noexcept
-    {}
+    {
+        _setstate(seed_.lo);  // notice: minimalist default behavior. Must be overridden in 128-bits inheriting classes.
+    }
 
 };
 

@@ -37,6 +37,7 @@ SOFTWARE.
 
 #include "baseclasses/baserandom.h"
 #include "exceptions.h"
+#include "utils/uint128.h"
 
 
 #pragma warning(push)
