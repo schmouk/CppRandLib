@@ -69,6 +69,13 @@ Cwg128::Cwg128(const unsigned long long seed) noexcept
 {
 }
 
+/** Valued constructor (unsigned 128-bits). */
+Cwg128::Cwg128(const utils::UInt128& seed_) noexcept
+    : MyBaseClass(0)
+{
+    seed(seed_);
+}
+
 /** Valued constructor (double). */
 Cwg128::Cwg128(const double seed) noexcept
     : MyBaseClass(seed)
@@ -135,8 +142,26 @@ void Cwg128::seed(const unsigned long long seed_) noexcept
     MyBaseClass::seed(seed_);
 }
 
+/** Initializes internal state (unsigned 128-bits). */
+void Cwg128::seed(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
 /** Initializes internal state (double). */
 void Cwg128::seed(const double seed_) noexcept
 {
     MyBaseClass::seed(seed_);
+}
+
+/** Sets the internal state with a 64-bits integer seed. */
+void Cwg128::_setstate(const std::uint64_t seed_) noexcept
+{
+    MyBaseClass::_setstate(seed_);
+}
+
+/** Sets the internal state with a 128-bits integer seed. */
+void Cwg128::_setstate(const utils::UInt128 seed_) noexcept
+{
+    _internal_state.state.seed(seed_);
 }

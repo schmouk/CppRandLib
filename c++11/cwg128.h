@@ -117,6 +117,7 @@ public:
     Cwg128(const unsigned long      seed) noexcept;             //!< Valued constructor (unsigned long).
     Cwg128(const long long          seed) noexcept;             //!< Valued constructor (long long).
     Cwg128(const unsigned long long seed) noexcept;             //!< Valued constructor (unsigned long long).
+    Cwg128(const utils::UInt128&    seed) noexcept;             //!< Valued constructor (unsigned 128-bits).
     Cwg128(const double             seed) noexcept;             //!< Valued constructor (double).
 
     Cwg128(const state_type& internal_state) noexcept;          //!< Valued constructor (full state).
@@ -165,6 +166,12 @@ public:
     void seed(const unsigned long      seed_) noexcept;  //!< Initializes internal state (unsigned long).
     void seed(const long long          seed_) noexcept;  //!< Initializes internal state (long long).
     void seed(const unsigned long long seed_) noexcept;  //!< Initializes internal state (unsigned long long).
+    void seed(const utils::UInt128&    seed_) noexcept;  //!< Initializes internal state (unsigned 128-bits).
     void seed(const double             seed_) noexcept;  //!< Initializes internal state (double).
+
+
+    //---   Setstate   ------------------------------------------------------
+    virtual void _setstate(const std::uint64_t seed_) noexcept override;    //!< Sets the internal state with a 64-bits integer seed.
+    virtual void _setstate(const utils::UInt128 seed_) noexcept override;   //!< Sets the internal state with a 128-bits integer seed.
 
 };
