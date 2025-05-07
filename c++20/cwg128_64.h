@@ -57,7 +57,7 @@ SOFTWARE.
 *   with very low computation time, medium period,  64- bits output values and
 *   very good randomness characteristics.
 *
-*   See Cwg128 for a minimum 2^135 (i.e. about 4.36e+40)  period  CW-generator
+*   See Cwg128_64 for a minimum 2^135 (i.e. about 4.36e+40)  period  CW-generator
 *   with very low computation time, medium period,  128-bits output values and
 *   very good randomness characteristics.
 *
@@ -85,7 +85,7 @@ SOFTWARE.
 * | --------------- | ------------------ | ------------ | -------- | ----------- | ------------ | ---------------- | ----------- | -------------- |
 * | Cwg64           | CWG64              |  8 x 4-bytes | >= 2^70  |    n.a.     |     n.a.     |         0        |      0      |       0        |
 * | Cwg128_64       | CWG128_64          | 10 x 4-bytes | >= 2^71  |    n.a.     |     n.a.     |         0        |      0      |       0        |
-* | Cwg128          | CWG128             | 16 x 4-bytes | >= 2^135 |    n.a.     |     n.a.     |         0        |      0      |       0        |
+* | Cwg128_64          | CWG128             | 16 x 4-bytes | >= 2^135 |    n.a.     |     n.a.     |         0        |      0      |       0        |
 * +-----------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
@@ -109,62 +109,28 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline Cwg128_64() noexcept
-        : MyBaseClass()
-    {
-    }
+    inline Cwg128_64() noexcept = default;                              //!< Default empty constructor.
 
-    /** @brief Valued constructor (int). */
-    inline Cwg128_64(const int seed) noexcept
-        : MyBaseClass(std::uint64_t(seed))
-    {
-    }
+    Cwg128_64(const int                seed) noexcept;                  //!< Valued constructor (int).
+    Cwg128_64(const unsigned int       seed) noexcept;                  //!< Valued constructor (unsigned int).
+    Cwg128_64(const long               seed) noexcept;                  //!< Valued constructor (long)
+    Cwg128_64(const unsigned long      seed) noexcept;                  //!< Valued constructor (unsigned long).
+    Cwg128_64(const long long          seed) noexcept;                  //!< Valued constructor (long long).
+    Cwg128_64(const unsigned long long seed) noexcept;                  //!< Valued constructor (unsigned long long).
+    Cwg128_64(const utils::UInt128& seed) noexcept;                  //!< Valued constructor (unsigned 128-bits).
+    Cwg128_64(const double             seed) noexcept;                  //!< Valued constructor (double).
 
-    /** @brief Valued constructor (unsigned int). */
-    inline Cwg128_64(const unsigned int seed) noexcept
-        : MyBaseClass(std::uint64_t(seed))
-    {
-    }
+    Cwg128_64(const state_type& internal_state) noexcept;               //!< Valued constructor (full state).
 
-    /** @brief Valued constructor (long). */
-    inline Cwg128_64(const long seed) noexcept
-        : MyBaseClass(std::uint64_t(seed))
-    {
-    }
+    inline Cwg128_64(const Cwg128_64&) noexcept = default;              //!< Default copy constructor.
+    inline Cwg128_64(Cwg128_64&&) noexcept = default;                   //!< Default move constructor.
 
-    /** @brief Valued constructor (unsigned long). */
-    inline Cwg128_64(const unsigned long seed) noexcept
-        : MyBaseClass(std::uint64_t(seed))
-    {
-    }
+    virtual ~Cwg128_64() noexcept = default;                            //!< Default Destructor.
 
-    /** @brief Valued constructor (long long). */
-    inline Cwg128_64(const long long seed) noexcept
-        : MyBaseClass(std::uint64_t(seed))
-    {
-    }
 
-    /** @brief Valued constructor (unsigned long long). */
-    inline Cwg128_64(const unsigned long long seed) noexcept
-        : MyBaseClass(std::uint64_t(seed))
-    {
-    }
-
-    /** @brief Valued constructor (double). */
-    inline Cwg128_64(const double seed) noexcept
-        : MyBaseClass(seed)
-    {
-    }
-
-    /** @brief Valued constructor (full state). */
-    inline Cwg128_64(const state_type& internal_state) noexcept
-        : MyBaseClass(internal_state)
-    {
-    }
-
-    /** @brief Default Destructor. */
-    virtual ~Cwg128_64() noexcept = default;
+    //---   Operators   -----------------------------------------------------
+    inline Cwg128_64& operator=(const Cwg128_64&) noexcept = default;   //!< Default copy assignment
+    inline Cwg128_64& operator=(Cwg128_64&&) noexcept = default;        //!< Default move assignmentnoe
 
 
     //---   Internal PRNG   -------------------------------------------------
@@ -180,6 +146,11 @@ public:
     void seed(const unsigned long      seed_) noexcept;  //!< Initializes internal state (unsigned long).
     void seed(const long long          seed_) noexcept;  //!< Initializes internal state (long long).
     void seed(const unsigned long long seed_) noexcept;  //!< Initializes internal state (unsigned long long).
+    void seed(const utils::UInt128& seed_) noexcept;  //!< Initializes internal state (unsigned 128-bits).
     void seed(const double             seed_) noexcept;  //!< Initializes internal state (double).
+
+    /** @brief  */
+    virtual void _setstate(const std::uint64_t seed_) noexcept override;    //!< Sets the internal state with a 64-bits integer seed.
+    virtual void _setstate(const utils::UInt128 seed_) noexcept override;   //!< Sets the internal state with a 128-bits integer seed.
 
 };

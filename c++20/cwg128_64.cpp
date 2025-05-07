@@ -33,6 +33,61 @@ SOFTWARE.
 
 
 //===========================================================================
+/** Valued constructor (int). */
+Cwg128_64::Cwg128_64(const int seed) noexcept
+    : MyBaseClass(std::uint64_t(seed))
+{
+}
+
+/** Valued constructor (unsigned int). */
+Cwg128_64::Cwg128_64(const unsigned int seed) noexcept
+    : MyBaseClass(std::uint64_t(seed))
+{
+}
+
+/** Valued constructor (long). */
+Cwg128_64::Cwg128_64(const long seed) noexcept
+    : MyBaseClass(std::uint64_t(seed))
+{
+}
+
+/** Valued constructor (unsigned long). */
+Cwg128_64::Cwg128_64(const unsigned long seed) noexcept
+    : MyBaseClass(std::uint64_t(seed))
+{
+}
+
+/** Valued constructor (long long). */
+Cwg128_64::Cwg128_64(const long long seed) noexcept
+    : MyBaseClass(std::uint64_t(seed))
+{
+}
+
+/** Valued constructor (unsigned long long). */
+Cwg128_64::Cwg128_64(const unsigned long long seed) noexcept
+    : MyBaseClass(std::uint64_t(seed))
+{
+}
+
+/** Valued constructor (unsigned 128-bits). */
+Cwg128_64::Cwg128_64(const utils::UInt128& seed_) noexcept
+    : MyBaseClass(0)
+{
+    seed(seed_);
+}
+
+/** Valued constructor (double). */
+Cwg128_64::Cwg128_64(const double seed) noexcept
+    : MyBaseClass(seed)
+{
+}
+
+/** Valued constructor (full state). */
+Cwg128_64::Cwg128_64(const state_type& internal_state) noexcept
+    : MyBaseClass(internal_state)
+{
+}
+
 /** The internal PRNG algorithm. */
 const Cwg128_64::output_type Cwg128_64::next() noexcept
 {
@@ -87,8 +142,26 @@ void Cwg128_64::seed(const unsigned long long seed_) noexcept
     MyBaseClass::seed(seed_);
 }
 
+/** Initializes internal state (unsigned 128-bits). */
+void Cwg128_64::seed(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
 /** Initializes internal state (double). */
 void Cwg128_64::seed(const double seed_) noexcept
 {
     MyBaseClass::seed(seed_);
+}
+
+/** Sets the internal state with a 64-bits integer seed. */
+void Cwg128_64::_setstate(const std::uint64_t seed_) noexcept
+{
+    MyBaseClass::_setstate(seed_);
+}
+
+/** Sets the internal state with a 128-bits integer seed. */
+void Cwg128_64::_setstate(const utils::UInt128 seed_) noexcept
+{
+    _internal_state.state.seed(seed_);
 }

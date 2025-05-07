@@ -33,6 +33,7 @@ SOFTWARE.
 #include "cwg128_64.h"
 #include "g_utils/histogram.h"
 #include "utils/time.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================
@@ -283,6 +284,29 @@ namespace tests_prng
             EXPECT_EQ(0xaa56068403c3e52d, cwg128_64._internal_state.state.weyl);
             EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
+        }
+        {
+            Cwg128_64 cwg128_64(utils::UInt128(0xffff'ffff'ffff'fffeULL, 0xffff'ffff'ffff'fffdULL));
+
+            EXPECT_EQ(0ULL, cwg128_64._internal_state.state.a);
+            EXPECT_EQ(0xf75f04cbb5a1a1dd, cwg128_64._internal_state.state.s);
+            EXPECT_EQ(0xf3203e9039f4a821, cwg128_64._internal_state.state.state.hi);
+            EXPECT_EQ(0xec779c3693f88501, cwg128_64._internal_state.state.state.lo);
+            EXPECT_EQ(0ULL, cwg128_64._internal_state.state.weyl);
+            EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
+
+            const std::uint64_t expected[]{ 0xec288dd0f1298f2a, 0x4e26f7747cde7909, 0x3137387601cab2ab, 0xa1faef3817023fcf, 0xbfa5bbb9b880621a };
+            for (std::uint64_t v : expected)
+                EXPECT_EQ(v, cwg128_64.next());
+
+            EXPECT_EQ(0xf9f9492a1acd86a4, cwg128_64._internal_state.state.a);
+            EXPECT_EQ(0xf75f04cbb5a1a1dd, cwg128_64._internal_state.state.s);
+            EXPECT_EQ(0xaa642445fb13ed6e, cwg128_64._internal_state.state.state.hi);
+            EXPECT_EQ(0xbfa5bbb9b8809be3, cwg128_64._internal_state.state.state.lo);
+            EXPECT_EQ(0xd4db17fa8c282951, cwg128_64._internal_state.state.weyl);
+            EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next); 
         }
 
 

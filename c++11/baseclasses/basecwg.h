@@ -123,6 +123,7 @@ public:
     inline BaseCWG(const unsigned long seed_) noexcept;
     inline BaseCWG(const long long seed_) noexcept;
     inline BaseCWG(const unsigned long long seed_) noexcept;
+    inline BaseCWG(const utils::UInt128& seed_) noexcept;
     inline BaseCWG(const double seed_) noexcept;
 
     /** @brief Valued constructor (full state). */
@@ -137,7 +138,7 @@ public:
     virtual inline void _setstate(const std::uint64_t seed_) noexcept override;
 
     /** @brief Sets the internal state of this PRNG with a 128-bits integer seed. */
-    inline void _setstate(const utils::UInt128& seed_) noexcept;
+    virtual inline void _setstate(const utils::UInt128& seed_) noexcept;
 
 };
 
@@ -157,7 +158,7 @@ inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG() no
 /** Valued construtor. */
 template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
 inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const int seed_) noexcept
-: MyBaseClass()
+    : MyBaseClass()
 {
     MyBaseClass::seed(seed_);
 }
@@ -199,6 +200,14 @@ inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(cons
 /** Valued construtor. */
 template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
 inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Valued construtor. */
+template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
+inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const utils::UInt128& seed_) noexcept
     : MyBaseClass()
 {
     MyBaseClass::seed(seed_);
