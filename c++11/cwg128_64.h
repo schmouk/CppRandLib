@@ -149,7 +149,8 @@ public:
     void seed(const utils::UInt128&    seed_) noexcept;  //!< Initializes internal state (unsigned 128-bits).
     void seed(const double             seed_) noexcept;  //!< Initializes internal state (double).
 
-    /** @brief  */
+
+    //---   Setstate   ------------------------------------------------------
     virtual void _setstate(const std::uint64_t seed_) noexcept override;    //!< Sets the internal state with a 64-bits integer seed.
     virtual void _setstate(const utils::UInt128 seed_) noexcept override;   //!< Sets the internal state with a 128-bits integer seed.
 
