@@ -53,6 +53,8 @@ namespace tests_prng
         EXPECT_DOUBLE_EQ(0.0, cwg128_1._internal_state.gauss_next);
 
 
+        // Notice: all belowing hard coded values have been evaluated with PyRandLib
+
         //-- tests Valued construtor (seed) AND next()
         {
             Cwg128 cwg128(1);
@@ -494,6 +496,27 @@ namespace tests_prng
             EXPECT_EQ(cwg128_0._internal_state.gauss_next, cwg128._internal_state.gauss_next);
             EXPECT_EQ(cwg128_0._internal_state.gauss_valid, cwg128._internal_state.gauss_valid);
         }
+
+
+        //-- tests random()
+        for (int i = 0; i < 1'000'000; ++i) {
+            float randf{ cwg128.random<float>() };
+            EXPECT_GE(randf, 0.0f);
+            EXPECT_LT(randf, 1.0f);
+
+            double rand{ cwg128.random() };
+            EXPECT_GE(rand, 0.0);
+            EXPECT_LT(rand, 1.0);
+
+            long double randl{ cwg128.random<long double>() };
+            EXPECT_GE(randl, 0.0L);
+            EXPECT_LT(randl, 1.0L);
+        }
+
+        EXPECT_THROW(cwg128.random<int>(), FloatingPointTypeException);
+        EXPECT_THROW(cwg128.random<bool>(), FloatingPointTypeException);
+        EXPECT_THROW(cwg128.random<char>(), FloatingPointTypeException);
+        EXPECT_THROW(cwg128.random<Cwg128>(), FloatingPointTypeException);
 
 
         //-- tests seed()
