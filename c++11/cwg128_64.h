@@ -85,7 +85,7 @@ SOFTWARE.
 * | --------------- | ------------------ | ------------ | -------- | ----------- | ------------ | ---------------- | ----------- | -------------- |
 * | Cwg64           | CWG64              |  8 x 4-bytes | >= 2^70  |    n.a.     |     n.a.     |         0        |      0      |       0        |
 * | Cwg128_64       | CWG128_64          | 10 x 4-bytes | >= 2^71  |    n.a.     |     n.a.     |         0        |      0      |       0        |
-* | Cwg128_64          | CWG128             | 16 x 4-bytes | >= 2^135 |    n.a.     |     n.a.     |         0        |      0      |       0        |
+* | Cwg128          | CWG128             | 16 x 4-bytes | >= 2^135 |    n.a.     |     n.a.     |         0        |      0      |       0        |
 * +-----------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
@@ -122,33 +122,21 @@ public:
 
     Cwg128_64(const state_type& internal_state) noexcept;               //!< Valued constructor (full state).
 
-    inline Cwg128_64(const Cwg128_64&) noexcept = default;              //!< Default copy constructor.
-    inline Cwg128_64(Cwg128_64&&) noexcept = default;                   //!< Default move constructor.
-
     virtual ~Cwg128_64() noexcept = default;                            //!< Default Destructor.
 
-
-    //---   Operators   -----------------------------------------------------
-    inline Cwg128_64& operator=(const Cwg128_64&) noexcept = default;   //!< Default copy assignment
-    inline Cwg128_64& operator=(Cwg128_64&&) noexcept = default;        //!< Default move assignmentnoe
-
-
     //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm. */
-    virtual const output_type next() noexcept override;
-
+    virtual const output_type next() noexcept override;                 // The internal PRNG algorithm.
 
     //---   Seed   ----------------------------------------------------------
-    void seed() noexcept;                                //!< Initializes internal state (empty signature).
-    void seed(const int                seed_) noexcept;  //!< Initializes internal state (int).
-    void seed(const unsigned int       seed_) noexcept;  //!< Initializes internal state (unsigned int).
-    void seed(const long               seed_) noexcept;  //!< Initializes internal state (long)
-    void seed(const unsigned long      seed_) noexcept;  //!< Initializes internal state (unsigned long).
-    void seed(const long long          seed_) noexcept;  //!< Initializes internal state (long long).
-    void seed(const unsigned long long seed_) noexcept;  //!< Initializes internal state (unsigned long long).
-    void seed(const utils::UInt128&    seed_) noexcept;  //!< Initializes internal state (unsigned 128-bits).
-    void seed(const double             seed_) noexcept;  //!< Initializes internal state (double).
-
+    void seed() noexcept;                                               //!< Initializes internal state (empty signature).
+    void seed(const int                seed_) noexcept;                 //!< Initializes internal state (int).
+    void seed(const unsigned int       seed_) noexcept;                 //!< Initializes internal state (unsigned int).
+    void seed(const long               seed_) noexcept;                 //!< Initializes internal state (long)
+    void seed(const unsigned long      seed_) noexcept;                 //!< Initializes internal state (unsigned long).
+    void seed(const long long          seed_) noexcept;                 //!< Initializes internal state (long long).
+    void seed(const unsigned long long seed_) noexcept;                 //!< Initializes internal state (unsigned long long).
+    void seed(const utils::UInt128&    seed_) noexcept;                 //!< Initializes internal state (unsigned 128-bits).
+    void seed(const double             seed_) noexcept;                 //!< Initializes internal state (double).
 
     //---   Setstate   ------------------------------------------------------
     virtual void _setstate(const std::uint64_t seed_) noexcept override;    //!< Sets the internal state with a 64-bits integer seed.

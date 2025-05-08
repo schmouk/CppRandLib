@@ -53,6 +53,8 @@ namespace tests_prng
         EXPECT_DOUBLE_EQ(0.0, cwg128_64_1._internal_state.gauss_next);
 
 
+        // Notice: all belowing hard coded values have been evaluated with PyRandLib
+
         //-- tests Valued construtor (seed) AND next()
         {
             Cwg128_64 cwg128_64(1);
