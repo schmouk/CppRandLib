@@ -35,10 +35,10 @@ SOFTWARE.
 #include <type_traits>
 #include <vector>
 
-#include "exceptions.h"
-#include "utils/seed_generation.h"
-#include "utils/type_traits.h"
-#include "utils/uint128.h"
+#include "../exceptions.h"
+#include "../utils/seed_generation.h"
+#include "../utils/type_traits.h"
+#include "../utils/uint128.h"
 
 
 //===========================================================================

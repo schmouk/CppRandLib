@@ -31,7 +31,7 @@ SOFTWARE.
 
 #include "baserandom.h"
 #include "../internalstates/listseedstate.h"
-#include "utils/splitmix.h"
+#include "../utils/splitmix.h"
 
 
 //===========================================================================
