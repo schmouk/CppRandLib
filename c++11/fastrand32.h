@@ -113,13 +113,7 @@ public:
     inline FastRand32(const utils::UInt128&    seed_) noexcept;         //!< Valued constructor (unsigned 128-bits).
     inline FastRand32(const double             seed_) noexcept;         //!< Valued constructor (double).
 
-    inline FastRand32(const FastRand32&) noexcept = default;            //!< default copy constructor.
-    inline FastRand32(FastRand32&&) noexcept = default;                 //!< default move constructor.
     virtual inline ~FastRand32() noexcept = default;                    //!< default destructor.
-
-    //---   Operators   -----------------------------------------------------
-    inline FastRand32& operator=(const FastRand32&) noexcept = default; //!< Default copy assignment
-    inline FastRand32& operator=(FastRand32&&) noexcept = default;      //!< Default move assignmentnoe
 
     //---   Internal PRNG   -------------------------------------------------
     virtual inline const output_type next() noexcept override;          //!< The internal PRNG algorithm.
