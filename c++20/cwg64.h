@@ -116,7 +116,7 @@ public:
     Cwg64(const unsigned long      seed) noexcept;                  //!< Valued constructor (unsigned long).
     Cwg64(const long long          seed) noexcept;                  //!< Valued constructor (long long).
     Cwg64(const unsigned long long seed) noexcept;                  //!< Valued constructor (unsigned long long).
-    Cwg64(const utils::UInt128& seed) noexcept;                  //!< Valued constructor (unsigned 128-bits).
+    Cwg64(const utils::UInt128&    seed) noexcept;                  //!< Valued constructor (unsigned 128-bits).
     Cwg64(const double             seed) noexcept;                  //!< Valued constructor (double).
 
     Cwg64(const state_type& internal_state) noexcept;               //!< Valued constructor (full state).
@@ -124,7 +124,7 @@ public:
     virtual ~Cwg64() noexcept = default;                            //!< Default Destructor.
 
     //---   Internal PRNG   -------------------------------------------------
-    virtual const output_type next() noexcept override;             // The internal PRNG algorithm.
+    virtual const output_type next() noexcept override;             //!< The internal PRNG algorithm.
 
     //---   Seed   ----------------------------------------------------------
     void seed() noexcept;                                           //!< Initializes internal state (empty signature).
@@ -134,7 +134,7 @@ public:
     void seed(const unsigned long      seed_) noexcept;             //!< Initializes internal state (unsigned long).
     void seed(const long long          seed_) noexcept;             //!< Initializes internal state (long long).
     void seed(const unsigned long long seed_) noexcept;             //!< Initializes internal state (unsigned long long).
-    void seed(const utils::UInt128& seed_) noexcept;             //!< Initializes internal state (unsigned 128-bits).
+    void seed(const utils::UInt128&    seed_) noexcept;             //!< Initializes internal state (unsigned 128-bits).
     void seed(const double             seed_) noexcept;             //!< Initializes internal state (double).
 
 };

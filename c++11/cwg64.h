@@ -124,7 +124,7 @@ public:
     virtual ~Cwg64() noexcept = default;                            //!< Default Destructor.
 
     //---   Internal PRNG   -------------------------------------------------
-    virtual const output_type next() noexcept override;             // The internal PRNG algorithm.
+    virtual const output_type next() noexcept override;             //!< The internal PRNG algorithm.
 
     //---   Seed   ----------------------------------------------------------
     void seed() noexcept;                                           //!< Initializes internal state (empty signature).
