@@ -116,35 +116,38 @@ public:
 
     //---   Constructors / Destructor   -------------------------------------
     /** @brief Empty constructor. */
-    inline BaseLFib64() noexcept;
+    inline BaseLFib64() noexcept;                                   //!< Default empty constructor.
 
-    /** @brief Valued constructor. */
-    inline BaseLFib64(const int seed_) noexcept;
-    inline BaseLFib64(const unsigned int seed_) noexcept;
-    inline BaseLFib64(const long seed_) noexcept;
-    inline BaseLFib64(const unsigned long seed_) noexcept;
-    inline BaseLFib64(const long long seed_) noexcept;
-    inline BaseLFib64(const unsigned long long seed_) noexcept;
-    inline BaseLFib64(const double seed_) noexcept;
+    inline BaseLFib64(const int                seed) noexcept;      //!< Valued constructor (int).
+    inline BaseLFib64(const unsigned int       seed) noexcept;      //!< Valued constructor (unsigned int).
+    inline BaseLFib64(const long               seed) noexcept;      //!< Valued constructor (long)
+    inline BaseLFib64(const unsigned long      seed) noexcept;      //!< Valued constructor (unsigned long).
+    inline BaseLFib64(const long long          seed) noexcept;      //!< Valued constructor (long long).
+    inline BaseLFib64(const unsigned long long seed) noexcept;      //!< Valued constructor (unsigned long long).
+    inline BaseLFib64(const utils::UInt128&    seed) noexcept;      //!< Valued constructor (unsigned 128-bits).
+    inline BaseLFib64(const double             seed) noexcept;      //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline BaseLFib64(const state_type& internal_state) noexcept;
+    inline BaseLFib64(const state_type& internal_state) noexcept;   //!< Valued constructor (full state).
 
-    virtual ~BaseLFib64() noexcept = default;           //!< default destructor.
-
+    virtual inline ~BaseLFib64() noexcept = default;                //!< default destructor.
 
     //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm. Outputs a 64-bits integer value.
-    */
-    virtual const output_type next() noexcept override;
+    virtual const output_type next() noexcept override;                         //!< The internal PRNG algorithm.
 
-    /** @brief Inits the internal index pointing to the internal list. */
-    inline void _initIndex(const size_t _index) noexcept;
+    inline void _initIndex(const size_t _index) noexcept;                       //!< Inits the internal index pointing to the internal list.
 
+    virtual inline void _setstate(const std::uint64_t seed) noexcept override;  //!< Sets the internal state of this PRNG with an integer seed.
 
-protected:
-    /** @brief Sets the internal state of this PRNG with an integer seed. */
-    virtual inline void _setstate(const std::uint64_t seed) noexcept override;
+    //---   Seed   ----------------------------------------------------------
+    void inline seed() noexcept;                                           //!< Initializes internal state (empty signature).
+    void inline seed(const int                seed_) noexcept;             //!< Initializes internal state (int).
+    void inline seed(const unsigned int       seed_) noexcept;             //!< Initializes internal state (unsigned int).
+    void inline seed(const long               seed_) noexcept;             //!< Initializes internal state (long)
+    void inline seed(const unsigned long      seed_) noexcept;             //!< Initializes internal state (unsigned long).
+    void inline seed(const long long          seed_) noexcept;             //!< Initializes internal state (long long).
+    void inline seed(const unsigned long long seed_) noexcept;             //!< Initializes internal state (unsigned long long).
+    void inline seed(const utils::UInt128&    seed_) noexcept;             //!< Initializes internal state (unsigned 128-bits).
+    void inline seed(const double             seed_) noexcept;             //!< Initializes internal state (double).
 
 };
 
@@ -161,7 +164,7 @@ inline BaseLFib64<SIZE, K>::BaseLFib64() noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued constructor. */
+/** Valued constructor (int). */
 template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const int seed_) noexcept
     : MyBaseClass()
@@ -170,7 +173,7 @@ inline BaseLFib64<SIZE, K>::BaseLFib64(const int seed_) noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued constructor. */
+/** Valued constructor (unsigned int). */
 template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned int seed_) noexcept
     : MyBaseClass()
@@ -179,7 +182,7 @@ inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned int seed_) noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued constructor. */
+/** Valued constructor (long). */
 template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const long seed_) noexcept
     : MyBaseClass()
@@ -187,7 +190,8 @@ inline BaseLFib64<SIZE, K>::BaseLFib64(const long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-/** Valued constructor. */
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long). */
 template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned long seed_) noexcept
     : MyBaseClass()
@@ -195,7 +199,8 @@ inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-/** Valued constructor. */
+//---------------------------------------------------------------------------
+/** Valued constructor (long long). */
 template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const long long seed_) noexcept
     : MyBaseClass()
@@ -203,7 +208,8 @@ inline BaseLFib64<SIZE, K>::BaseLFib64(const long long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-/** Valued constructor. */
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long long). */
 template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned long long seed_) noexcept
     : MyBaseClass()
@@ -211,7 +217,17 @@ inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned long long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-/** Valued constructor. */
+//---------------------------------------------------------------------------
+/** Valued constructor (utils::UInt128). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline BaseLFib64<SIZE, K>::BaseLFib64(const utils::UInt128& seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (double). */
 template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const double seed_) noexcept
     : MyBaseClass()
@@ -265,4 +281,76 @@ template<const std::uint32_t SIZE, std::uint32_t K >
 inline void BaseLFib64<SIZE, K>::_setstate(const std::uint64_t seed_) noexcept
 {
     MyBaseClass::_internal_state.state.seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (empty signature). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+void BaseLFib64<SIZE, K>::seed() noexcept
+{
+    MyBaseClass::seed();
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (int). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+void BaseLFib64<SIZE, K>::seed(const int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned int). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+void BaseLFib64<SIZE, K>::seed(const unsigned int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+void BaseLFib64<SIZE, K>::seed(const long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+void BaseLFib64<SIZE, K>::seed(const unsigned long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long long). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+void BaseLFib64<SIZE, K>::seed(const long long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long long). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+void BaseLFib64<SIZE, K>::seed(const unsigned long long seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned 128-bits). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+void BaseLFib64<SIZE, K>::seed(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (double). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+void BaseLFib64<SIZE, K>::seed(const double seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
 }

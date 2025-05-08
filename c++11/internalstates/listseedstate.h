@@ -75,4 +75,18 @@ struct ListSeedState
             item = ItemT(init_rand());
     }
 
+
+    /** @brief Returns true if both states are the same. */
+    inline const bool operator== (const ListSeedState& other) const noexcept
+    {
+        return index == other.index && list == other.list;
+    }
+
+
+    /** @brief Returns true if states differ. */
+    inline const bool operator!= (const ListSeedState& other) const noexcept
+    {
+        return !(*this == other);
+    }
+
 };

@@ -143,6 +143,14 @@ namespace tests_internal_states
         EXPECT_EQ(lss3.index, lss_31.index);
         for (std::size_t i = 0; i < lss3.list.size(); ++i)
             EXPECT_EQ(lss3.list[i], lss_31.list[i]);
+
+
+        // tests operator== and operator!=
+        EXPECT_NE(lss2, lss0);
+        EXPECT_NE(lss0, lss2);
+        lss0 = lss2;
+        EXPECT_EQ(lss2, lss0);
+        EXPECT_EQ(lss0, lss2);
     }
 
 }
