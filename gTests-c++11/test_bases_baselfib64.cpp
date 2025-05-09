@@ -131,7 +131,14 @@ namespace tests_bases
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], lfib_5_2._internal_state.state.list[i]);
         }
-
+        {
+            BaseLFib64< 5, 2> lfib_5_2(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
+            EXPECT_EQ(0, lfib_5_2._internal_state.state.index);
+            const std::uint64_t expected[]{ 0xf75f04cbb5a1a1dd, 0xec779c3693f88501, 0xfed9eeb4936de39d, 0x6f9fb04b092bd30a, 0x260ffb0260bbbe5f };
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], lfib_5_2._internal_state.state.list[i]);
+        }
+        
 
         //-- tests Valued constructor (full state).
         BaseLFib64<55, 24>::state_type st_55_24;
@@ -172,7 +179,6 @@ namespace tests_bases
 
 
         //-- tests move assignement
-        
         lfib_55_24.seed(28031);
         lfib_55_24._internal_state.state.index = 5;
         lfib_tmp = lfib_55_24;
@@ -325,6 +331,19 @@ namespace tests_bases
             std::uint64_t expected[5]{
                 0xeede014d9a5a6108, 0xa6eb6466bac9f251, 0x4246cbb1a64bf70c,
                 0xaf6aa8f43ebb8659, 0xe1b0fb2c7e764cdb
+            };
+
+            EXPECT_FALSE(lfib_5_2._internal_state.gauss_valid);
+            EXPECT_EQ(0, lfib_5_2._internal_state.state.index);
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], lfib_5_2._internal_state.state.list[i]);
+        }
+        {
+            lfib_5_2.seed(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
+
+            std::uint64_t expected[5]{
+                0xf75f04cbb5a1a1dd, 0xec779c3693f88501, 0xfed9eeb4936de39d,
+                0x6f9fb04b092bd30a, 0x260ffb0260bbbe5f
             };
 
             EXPECT_FALSE(lfib_5_2._internal_state.gauss_valid);

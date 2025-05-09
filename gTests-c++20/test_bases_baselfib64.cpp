@@ -332,6 +332,19 @@ namespace tests_bases
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], lfib_5_2._internal_state.state.list[i]);
         }
+        {
+            lfib_5_2.seed(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
+
+            std::uint64_t expected[5]{
+                0xf75f04cbb5a1a1dd, 0xec779c3693f88501, 0xfed9eeb4936de39d,
+                0x6f9fb04b092bd30a, 0x260ffb0260bbbe5f
+            };
+
+            EXPECT_FALSE(lfib_5_2._internal_state.gauss_valid);
+            EXPECT_EQ(0, lfib_5_2._internal_state.state.index);
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], lfib_5_2._internal_state.state.list[i]);
+        }
 
 
         //-- tests _init_index()
