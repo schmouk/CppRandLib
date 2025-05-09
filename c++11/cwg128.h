@@ -124,11 +124,14 @@ public:
 
     virtual ~Cwg128() noexcept = default;                                   //!< Default Destructor.
 
+
     //---   Internal PRNG   -------------------------------------------------
     virtual const output_type next() noexcept override;                     //!< The internal PRNG algorithm.
 
-    //---   Seed   ----------------------------------------------------------
+
+    //---   Operations   ----------------------------------------------------
     void seed() noexcept;                                                   //!< Initializes internal state (empty signature).
+
     void seed(const int                seed_) noexcept;                     //!< Initializes internal state (int).
     void seed(const unsigned int       seed_) noexcept;                     //!< Initializes internal state (unsigned int).
     void seed(const long               seed_) noexcept;                     //!< Initializes internal state (long)
@@ -138,9 +141,9 @@ public:
     void seed(const utils::UInt128&    seed_) noexcept;                     //!< Initializes internal state (unsigned 128-bits).
     void seed(const double             seed_) noexcept;                     //!< Initializes internal state (double).
 
-    //---   Setstate   ------------------------------------------------------
-    virtual void _setstate(const std::uint64_t seed_) noexcept override;    //!< Sets the internal state with a 64-bits integer seed.
-    virtual void _setstate(const utils::UInt128 seed_) noexcept override;   //!< Sets the internal state with a 128-bits integer seed.
+    virtual void _setstate(const std::uint64_t   seed_) noexcept override;  //!< Sets the internal state with a 64-bits integer seed.
+    virtual void _setstate(const utils::UInt128& seed_) noexcept override;  //!< Sets the internal state with a 128-bits integer seed.
+
 
     //---   Uniform [0, 1.0) random   ---------------------------------------
     /** @brief The uniform distribution on [0.0, 1.0).

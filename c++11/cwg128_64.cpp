@@ -153,7 +153,7 @@ void Cwg128_64::_setstate(const std::uint64_t seed_) noexcept
 }
 
 /** Sets the internal state with a 128-bits integer seed. */
-void Cwg128_64::_setstate(const utils::UInt128 seed_) noexcept
+void Cwg128_64::_setstate(const utils::UInt128& seed_) noexcept
 {
     _internal_state.state.seed(seed_);
 }

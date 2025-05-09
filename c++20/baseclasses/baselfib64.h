@@ -32,6 +32,7 @@ SOFTWARE.
 #include "baserandom.h"
 #include "../internalstates/listseedstate.h"
 #include "../utils/splitmix.h"
+#include "../utils/uint128.h"
 
 
 //===========================================================================
@@ -132,13 +133,11 @@ public:
 
 
     //---   Internal PRNG   -------------------------------------------------
-    virtual const output_type next() noexcept override;                         //!< The internal PRNG algorithm.
+    virtual const output_type next() noexcept override;             //!< The internal PRNG algorithm.
 
-    inline void _initIndex(const size_t _index) noexcept;                       //!< Inits the internal index pointing to the internal list.
+    inline void _initIndex(const size_t _index) noexcept;           //!< Inits the internal index pointing to the internal list.
 
-    virtual inline void _setstate(const std::uint64_t seed) noexcept override;  //!< Sets the internal state of this PRNG with an integer seed.
-
-    //---   Seed   ----------------------------------------------------------
+    //---   Operations   ----------------------------------------------------
     void inline seed() noexcept;                                    //!< Initializes internal state (empty signature).
     void inline seed(const int                seed_) noexcept;      //!< Initializes internal state (int).
     void inline seed(const unsigned int       seed_) noexcept;      //!< Initializes internal state (unsigned int).
@@ -148,6 +147,9 @@ public:
     void inline seed(const unsigned long long seed_) noexcept;      //!< Initializes internal state (unsigned long long).
     void inline seed(const utils::UInt128&    seed_) noexcept;      //!< Initializes internal state (unsigned 128-bits).
     void inline seed(const double             seed_) noexcept;      //!< Initializes internal state (double).
+
+    virtual inline void _setstate(const std::uint64_t   seed) noexcept override;    //!< Sets the internal state of this PRNG with an integer seed.
+    virtual inline void _setstate(const utils::UInt128& seed) noexcept override;    //!< Sets the internal state of this PRNG with an integer seed.
 
 };
 
@@ -164,7 +166,7 @@ inline BaseLFib64<SIZE, K>::BaseLFib64() noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued constructor. */
+/** Valued constructor (int). */
 template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const int seed_) noexcept
     : MyBaseClass()
@@ -173,7 +175,7 @@ inline BaseLFib64<SIZE, K>::BaseLFib64(const int seed_) noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued constructor. */
+/** Valued constructor (unsigned int). */
 template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned int seed_) noexcept
     : MyBaseClass()
@@ -182,7 +184,7 @@ inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned int seed_) noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued constructor. */
+/** Valued constructor (long). */
 template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const long seed_) noexcept
     : MyBaseClass()
@@ -190,7 +192,7 @@ inline BaseLFib64<SIZE, K>::BaseLFib64(const long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-/** Valued constructor. */
+/** Valued constructor (unsigned long). */
 template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned long seed_) noexcept
     : MyBaseClass()
@@ -198,7 +200,7 @@ inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-/** Valued constructor. */
+/** Valued constructor (long long). */
 template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const long long seed_) noexcept
     : MyBaseClass()
@@ -206,7 +208,7 @@ inline BaseLFib64<SIZE, K>::BaseLFib64(const long long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-/** Valued constructor. */
+/** Valued constructor (unsigned long long). */
 template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned long long seed_) noexcept
     : MyBaseClass()
@@ -214,7 +216,6 @@ inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned long long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-//---------------------------------------------------------------------------
 /** Valued constructor (utils::UInt128). */
 template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const utils::UInt128& seed_) noexcept
@@ -223,7 +224,7 @@ inline BaseLFib64<SIZE, K>::BaseLFib64(const utils::UInt128& seed_) noexcept
     MyBaseClass::seed(seed_);
 }
 
-/** Valued constructor. */
+/** Valued constructor (double). */
 template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const double seed_) noexcept
     : MyBaseClass()
@@ -269,14 +270,6 @@ template<const std::uint32_t SIZE, std::uint32_t K >
 inline void BaseLFib64<SIZE, K>::_initIndex(const size_t _index) noexcept
 {
     MyBaseClass::_internal_state.state.index = _index % SIZE;
-}
-
-//---------------------------------------------------------------------------
-/** Sets the internal state of this PRNG with an integer seed. */
-template<const std::uint32_t SIZE, std::uint32_t K >
-inline void BaseLFib64<SIZE, K>::_setstate(const std::uint64_t seed_) noexcept
-{
-    MyBaseClass::_internal_state.state.seed(seed_);
 }
 
 //---------------------------------------------------------------------------
@@ -349,4 +342,20 @@ template<const std::uint32_t SIZE, std::uint32_t K >
 void BaseLFib64<SIZE, K>::seed(const double seed_) noexcept
 {
     MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG with an integer seed. */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline void BaseLFib64<SIZE, K>::_setstate(const std::uint64_t seed) noexcept
+{
+    MyBaseClass::_internal_state.state.seed(seed);
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG with a 128-bits integer seed. */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline void BaseLFib64<SIZE, K>::_setstate(const utils::UInt128& seed) noexcept
+{
+    MyBaseClass::_setstate(seed);
 }
