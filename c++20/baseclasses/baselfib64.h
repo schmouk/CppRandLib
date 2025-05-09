@@ -213,7 +213,7 @@ template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned long long seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(std::uint64_t(seed_));
+    MyBaseClass::seed(seed_);
 }
 
 /** Valued constructor (utils::UInt128). */
