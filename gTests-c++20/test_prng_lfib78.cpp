@@ -405,7 +405,7 @@ namespace tests_prng
         //-- tests seed()
         lfib.seed();
         EXPECT_EQ(0, lfib._internal_state.state.index);
-        EXPECT_TRUE(std::ranges::any_of(lfib_1._internal_state.state.list, [](auto s) { return s != 0; }));
+        EXPECT_TRUE(std::ranges::any_of(lfib._internal_state.state.list, [](auto s) { return s != 0; }));
         EXPECT_FALSE(lfib._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
 

@@ -48,13 +48,7 @@ namespace tests_prng
 
         EXPECT_EQ(55ULL, lfib_1._internal_state.state.list.size());
         EXPECT_EQ(0, lfib_1._internal_state.state.index);
-        EXPECT_TRUE(
-            std::any_of(
-                lfib_1._internal_state.state.list.cbegin(),
-                lfib_1._internal_state.state.list.cend(),
-                [](auto s) { return s != 0; }
-            )
-        );
+        EXPECT_TRUE(std::ranges::any_of(lfib_1._internal_state.state.list, [](auto s) { return s != 0; }));
         EXPECT_FALSE(lfib_1._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, lfib_1._internal_state.gauss_next);
 
@@ -411,13 +405,7 @@ namespace tests_prng
         //-- tests seed()
         lfib.seed();
         EXPECT_EQ(0, lfib._internal_state.state.index);
-        EXPECT_TRUE(
-            std::any_of(
-                lfib._internal_state.state.list.cbegin(),
-                lfib._internal_state.state.list.cend(),
-                [](auto s) { return s != 0; }
-            )
-        );
+        EXPECT_TRUE(std::ranges::any_of(lfib._internal_state.state.list, [](auto s) { return s != 0; }));
         EXPECT_FALSE(lfib._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
 
