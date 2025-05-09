@@ -32,6 +32,7 @@ SOFTWARE.
 #include "gtest/gtest.h"
 
 #include "baseclasses/basemelg.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================
@@ -55,7 +56,7 @@ namespace tests_bases
 
 
         // notice: all hard coded belowing value have been evaluated with PyRandLib
-        // 
+
         //-- tests Valued construtor (seed).
         {
             BaseMELG<5> melg(1);
@@ -67,7 +68,7 @@ namespace tests_bases
         {
             BaseMELG<5> melg(-2);
             EXPECT_EQ(0, melg._internal_state.state.index);
-            const std::uint64_t expected[]{ 0xf90d8facbffba22, 0x2982f9793c67a0f2, 0xfd60ee20dc0c17a0, 0x547cc8ce5c5204f2, 0x4e0e96150294a429 };
+            const std::uint64_t expected[]{ 0xf3203e9039f4a821, 0xba56949915dcf9e9, 0xd0d5127a96e8d90d, 0x1ef156bb76650c37, 0x7842841591543f1d };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
         }
@@ -81,7 +82,7 @@ namespace tests_bases
         {
             BaseMELG<5> melg(-11L);
             EXPECT_EQ(0, melg._internal_state.state.index);
-            const std::uint64_t expected[]{ 0x6d335a02195d3df8, 0xbdd0bf72447f75c2, 0x90b2f3432c4fb4c0, 0xb09caedb8bd5732f, 0x476ab4b4aceeaff3 };
+            const std::uint64_t expected[]{ 0x6fc5530939fb94c3, 0x96caee613260cfca, 0x46d40b90622a734b, 0x6ecc725d7bedada9, 0x69e6fff0691d876d };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
         }
@@ -124,6 +125,13 @@ namespace tests_bases
             BaseMELG<5> melg(8.87e+18);
             EXPECT_EQ(0, melg._internal_state.state.index);
             const std::uint64_t expected[]{ 0xeede014d9a5a6108, 0xa6eb6466bac9f251, 0x4246cbb1a64bf70c, 0xaf6aa8f43ebb8659, 0xe1b0fb2c7e764cdb };
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
+        }
+        {
+            BaseMELG<5> melg(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
+            EXPECT_EQ(0, melg._internal_state.state.index);
+            const std::uint64_t expected[]{ 0xf75f04cbb5a1a1dd, 0xec779c3693f88501, 0xfed9eeb4936de39d, 0x6f9fb04b092bd30a, 0x260ffb0260bbbe5f };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
         }
@@ -215,6 +223,127 @@ namespace tests_bases
                     break;
                 }
             EXPECT_TRUE(diff);
+        }
+
+
+        //-- tests seed(value)
+        BaseMELG<5> melg;
+        {
+            melg.seed(28031L);
+
+            std::uint64_t expected[5]{
+                0x2705'aecd'4f8c'9690, 0x72100965d36abc80, 0x663e'44c5'f050'c8fb,
+                0x9756'21c9'1513'33a5, 0xc269b7b2092500b7
+            };
+
+            EXPECT_FALSE(melg._internal_state.gauss_valid);
+            EXPECT_EQ(0, melg._internal_state.state.index);
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
+        }
+        {
+            melg.seed(28032UL);
+
+            std::uint64_t expected[5]{
+                0xbf0a5635a9341d88, 0x9d72bf564a7f9995, 0x61a8c168da5def3a,
+                0x1033569f139833aa, 0xa6d7a3f6d50224c0
+            };
+
+            EXPECT_FALSE(melg._internal_state.gauss_valid);
+            EXPECT_EQ(0, melg._internal_state.state.index);
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
+        }
+        {
+            melg.seed(-1LL);
+
+            std::uint64_t expected[5]{
+                0xe4d971771b652c20, 0xe99ff867dbf682c9, 0x382ff84cb27281e9,
+                0x6d1db36ccba982d2, 0xb4a0472e578069ae
+            };
+
+            EXPECT_FALSE(melg._internal_state.gauss_valid);
+            EXPECT_EQ(0, melg._internal_state.state.index);
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
+        }
+        {
+            melg.seed(0xffff'ffff'ffff'ffffULL);
+
+            std::uint64_t expected[5]{
+                0xe4d971771b652c20, 0xe99ff867dbf682c9, 0x382ff84cb27281e9,
+                0x6d1db36ccba982d2, 0xb4a0472e578069ae
+            };
+
+            EXPECT_FALSE(melg._internal_state.gauss_valid);
+            EXPECT_EQ(0, melg._internal_state.state.index);
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
+        }
+        {
+            melg.seed(0.187);
+
+            std::uint64_t expected[5]{
+                0x2b18160c0a9f05b4, 0xc8197d13a4d6d45f, 0xaca007e67e920ed1,
+                0xf0e779fe3279121f, 0xcd551efd3099f223
+            };
+
+            EXPECT_FALSE(melg._internal_state.gauss_valid);
+            EXPECT_EQ(0, melg._internal_state.state.index);
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
+        }
+        {
+            melg.seed(-0.987);
+
+            std::uint64_t expected[5]{
+                0x943b187a0bd8a2b1, 0x408b140678c02785, 0x50a07e0f464ee700,
+                0xcc646d0c4da77303, 0x694f7527a44c6c96
+            };
+
+            EXPECT_FALSE(melg._internal_state.gauss_valid);
+            EXPECT_EQ(0, melg._internal_state.state.index);
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
+        }
+        {
+            melg.seed(8.87e+18);
+
+            std::uint64_t expected[5]{
+                0xeede014d9a5a6108, 0xa6eb6466bac9f251, 0x4246cbb1a64bf70c,
+                0xaf6aa8f43ebb8659, 0xe1b0fb2c7e764cdb
+            };
+
+            EXPECT_FALSE(melg._internal_state.gauss_valid);
+            EXPECT_EQ(0, melg._internal_state.state.index);
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
+        }
+        {
+            melg.seed(-8.87e+18);
+
+            std::uint64_t expected[5]{
+                0xeede014d9a5a6108, 0xa6eb6466bac9f251, 0x4246cbb1a64bf70c,
+                0xaf6aa8f43ebb8659, 0xe1b0fb2c7e764cdb
+            };
+
+            EXPECT_FALSE(melg._internal_state.gauss_valid);
+            EXPECT_EQ(0, melg._internal_state.state.index);
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
+        }
+        {
+            melg.seed(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
+
+            std::uint64_t expected[5]{
+                0xf75f04cbb5a1a1dd, 0xec779c3693f88501, 0xfed9eeb4936de39d,
+                0x6f9fb04b092bd30a, 0x260ffb0260bbbe5f
+            };
+
+            EXPECT_FALSE(melg._internal_state.gauss_valid);
+            EXPECT_EQ(0, melg._internal_state.state.index);
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
         }
 
 

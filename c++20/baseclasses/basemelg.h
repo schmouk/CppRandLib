@@ -32,6 +32,7 @@ SOFTWARE.
 #include "baserandom.h"
 #include "../internalstates/listseedstate.h"
 #include "../utils/splitmix.h"
+#include "../utils/uint128.h"
 
 
 //===========================================================================
@@ -108,31 +109,34 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline BaseMELG() noexcept;
+    inline BaseMELG() noexcept;                                     //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    inline BaseMELG(const int seed_) noexcept;
-    inline BaseMELG(const unsigned int seed_) noexcept;
-    inline BaseMELG(const long seed_) noexcept;
-    inline BaseMELG(const unsigned long seed_) noexcept;
-    inline BaseMELG(const long long seed_) noexcept;
-    inline BaseMELG(const unsigned long long seed_) noexcept;
-    inline BaseMELG(const double seed_) noexcept;
+    inline BaseMELG(const int                seed) noexcept;        //!< Valued constructor (int).
+    inline BaseMELG(const unsigned int       seed) noexcept;        //!< Valued constructor (unsigned int).
+    inline BaseMELG(const long               seed) noexcept;        //!< Valued constructor (long)
+    inline BaseMELG(const unsigned long      seed) noexcept;        //!< Valued constructor (unsigned long).
+    inline BaseMELG(const long long          seed) noexcept;        //!< Valued constructor (long long).
+    inline BaseMELG(const unsigned long long seed) noexcept;        //!< Valued constructor (unsigned long long).
+    inline BaseMELG(const utils::UInt128&    seed) noexcept;        //!< Valued constructor (unsigned 128-bits).
+    inline BaseMELG(const double             seed) noexcept;        //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline BaseMELG(const state_type& internal_state) noexcept;
+    inline BaseMELG(const state_type& internal_state) noexcept;     //!< Valued constructor (full state).
 
-    /** @brief Default Destructor. */
-    virtual ~BaseMELG() noexcept = default;
+    virtual inline ~BaseMELG() noexcept = default;                  //!< default destructor.
 
 
     //---   Operations   ----------------------------------------------------
-    /** @brief Sets the internal state of this PRNG from current time (empty signature). */
-    virtual inline void seed() noexcept override;
+    void inline seed() noexcept;                                    //!< Initializes internal state (empty signature).
+    void inline seed(const int                seed_) noexcept;      //!< Initializes internal state (int).
+    void inline seed(const unsigned int       seed_) noexcept;      //!< Initializes internal state (unsigned int).
+    void inline seed(const long               seed_) noexcept;      //!< Initializes internal state (long)
+    void inline seed(const unsigned long      seed_) noexcept;      //!< Initializes internal state (unsigned long).
+    void inline seed(const long long          seed_) noexcept;      //!< Initializes internal state (long long).
+    void inline seed(const unsigned long long seed_) noexcept;      //!< Initializes internal state (unsigned long long).
+    void inline seed(const utils::UInt128&    seed_) noexcept;      //!< Initializes internal state (unsigned 128-bits).
+    void inline seed(const double             seed_) noexcept;      //!< Initializes internal state (double).
 
-    /** @brief Sets the internal state of this PRNG with an integer seed. */
-    virtual inline void _setstate(const std::uint64_t seed) noexcept override;
+    virtual inline void _setstate(const std::uint64_t seed) noexcept override;  //!< Sets the internal state of this PRNG with an integer seed.
 
 };
 
@@ -149,47 +153,52 @@ inline BaseMELG<SIZE>::BaseMELG() noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued constructor. */
+/** Valued constructor (int). */
 template<const std::uint32_t SIZE>
 inline BaseMELG<SIZE>::BaseMELG(const int seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(seed_);
+    MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-/** Valued constructor. */
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned int). */
 template<const std::uint32_t SIZE>
 inline BaseMELG<SIZE>::BaseMELG(const unsigned int seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(seed_);
+    MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-/** Valued constructor. */
+//---------------------------------------------------------------------------
+/** Valued constructor (long). */
 template<const std::uint32_t SIZE>
 inline BaseMELG<SIZE>::BaseMELG(const long seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(seed_);
+    MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-/** Valued constructor. */
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long). */
 template<const std::uint32_t SIZE>
 inline BaseMELG<SIZE>::BaseMELG(const unsigned long seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(seed_);
+    MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-/** Valued constructor. */
+//---------------------------------------------------------------------------
+/** Valued constructor (long long). */
 template<const std::uint32_t SIZE>
 inline BaseMELG<SIZE>::BaseMELG(const long long seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(seed_);
+    MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-/** Valued constructor. */
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long long). */
 template<const std::uint32_t SIZE>
 inline BaseMELG<SIZE>::BaseMELG(const unsigned long long seed_) noexcept
     : MyBaseClass()
@@ -197,7 +206,17 @@ inline BaseMELG<SIZE>::BaseMELG(const unsigned long long seed_) noexcept
     MyBaseClass::seed(seed_);
 }
 
-/** Valued constructor. */
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned 128 bits). */
+template<const std::uint32_t SIZE>
+inline BaseMELG<SIZE>::BaseMELG(const utils::UInt128& seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (double). */
 template<const std::uint32_t SIZE>
 inline BaseMELG<SIZE>::BaseMELG(const double seed_) noexcept
     : MyBaseClass()
@@ -215,11 +234,75 @@ inline BaseMELG<SIZE>::BaseMELG(const state_type& internal_state) noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Sets the internal state of this PRNG from current time (empty signature). */
+/** Initializes internal state (empty signature). */
 template<const std::uint32_t SIZE>
-inline void BaseMELG<SIZE>::seed() noexcept
+void BaseMELG<SIZE>::seed() noexcept
 {
-    _setstate(utils::set_random_seed64());
+    MyBaseClass::seed();
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (int). */
+template<const std::uint32_t SIZE>
+void BaseMELG<SIZE>::seed(const int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned int). */
+template<const std::uint32_t SIZE>
+void BaseMELG<SIZE>::seed(const unsigned int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long). */
+template<const std::uint32_t SIZE>
+void BaseMELG<SIZE>::seed(const long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long). */
+template<const std::uint32_t SIZE>
+void BaseMELG<SIZE>::seed(const unsigned long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long long). */
+template<const std::uint32_t SIZE>
+void BaseMELG<SIZE>::seed(const long long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long long). */
+template<const std::uint32_t SIZE>
+void BaseMELG<SIZE>::seed(const unsigned long long seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned 128-bits). */
+template<const std::uint32_t SIZE>
+void BaseMELG<SIZE>::seed(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (double). */
+template<const std::uint32_t SIZE>
+void BaseMELG<SIZE>::seed(const double seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
 }
 
 //---------------------------------------------------------------------------
