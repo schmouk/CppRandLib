@@ -435,6 +435,7 @@ namespace tests_prng
         EXPECT_DOUBLE_EQ(0.0, melg._internal_state.gauss_next);
 
         melg.seed(1);
+        EXPECT_EQ(0, melg._internal_state.state.index);
         EXPECT_EQ(0x910a2dec89025cc1, melg._internal_state.state.list[0]);
         EXPECT_EQ(0xf893a2eefb32555e, melg._internal_state.state.list[2]);
         EXPECT_EQ(0x71bb54d8d101b5b9, melg._internal_state.state.list[4]);
