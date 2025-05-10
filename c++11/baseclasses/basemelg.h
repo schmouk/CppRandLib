@@ -126,6 +126,7 @@ public:
 
     //---   Operations   ----------------------------------------------------
     void inline seed() noexcept;                                    //!< Initializes internal state (empty signature).
+
     void inline seed(const int                seed_) noexcept;      //!< Initializes internal state (int).
     void inline seed(const unsigned int       seed_) noexcept;      //!< Initializes internal state (unsigned int).
     void inline seed(const long               seed_) noexcept;      //!< Initializes internal state (long)
@@ -244,7 +245,7 @@ inline void BaseMELG<SIZE>::seed() noexcept
 //---------------------------------------------------------------------------
 /** Initializes internal state (int). */
 template<const std::uint32_t SIZE>
-void BaseMELG<SIZE>::seed(const int seed_) noexcept
+inline void BaseMELG<SIZE>::seed(const int seed_) noexcept
 {
     seed(std::uint64_t(seed_));
 }
@@ -252,7 +253,7 @@ void BaseMELG<SIZE>::seed(const int seed_) noexcept
 //---------------------------------------------------------------------------
 /** Initializes internal state (unsigned int). */
 template<const std::uint32_t SIZE>
-void BaseMELG<SIZE>::seed(const unsigned int seed_) noexcept
+inline void BaseMELG<SIZE>::seed(const unsigned int seed_) noexcept
 {
     seed(std::uint64_t(seed_));
 }
@@ -260,7 +261,7 @@ void BaseMELG<SIZE>::seed(const unsigned int seed_) noexcept
 //---------------------------------------------------------------------------
 /** Initializes internal state (long). */
 template<const std::uint32_t SIZE>
-void BaseMELG<SIZE>::seed(const long seed_) noexcept
+inline void BaseMELG<SIZE>::seed(const long seed_) noexcept
 {
     seed(std::uint64_t(seed_));
 }
@@ -268,7 +269,7 @@ void BaseMELG<SIZE>::seed(const long seed_) noexcept
 //---------------------------------------------------------------------------
 /** Initializes internal state (unsigned long). */
 template<const std::uint32_t SIZE>
-void BaseMELG<SIZE>::seed(const unsigned long seed_) noexcept
+inline void BaseMELG<SIZE>::seed(const unsigned long seed_) noexcept
 {
     seed(std::uint64_t(seed_));
 }
@@ -276,7 +277,7 @@ void BaseMELG<SIZE>::seed(const unsigned long seed_) noexcept
 //---------------------------------------------------------------------------
 /** Initializes internal state (long long). */
 template<const std::uint32_t SIZE>
-void BaseMELG<SIZE>::seed(const long long seed_) noexcept
+inline void BaseMELG<SIZE>::seed(const long long seed_) noexcept
 {
     seed(std::uint64_t(seed_));
 }
@@ -284,7 +285,7 @@ void BaseMELG<SIZE>::seed(const long long seed_) noexcept
 //---------------------------------------------------------------------------
 /** Initializes internal state (unsigned long long). */
 template<const std::uint32_t SIZE>
-void BaseMELG<SIZE>::seed(const unsigned long long seed_) noexcept
+inline void BaseMELG<SIZE>::seed(const unsigned long long seed_) noexcept
 {
     MyBaseClass::seed(seed_);
 }
@@ -292,7 +293,7 @@ void BaseMELG<SIZE>::seed(const unsigned long long seed_) noexcept
 //---------------------------------------------------------------------------
 /** Initializes internal state (unsigned 128-bits). */
 template<const std::uint32_t SIZE>
-void BaseMELG<SIZE>::seed(const utils::UInt128& seed_) noexcept
+inline void BaseMELG<SIZE>::seed(const utils::UInt128& seed_) noexcept
 {
     MyBaseClass::seed(seed_);
 }
@@ -300,7 +301,7 @@ void BaseMELG<SIZE>::seed(const utils::UInt128& seed_) noexcept
 //---------------------------------------------------------------------------
 /** Initializes internal state (double). */
 template<const std::uint32_t SIZE>
-void BaseMELG<SIZE>::seed(const double seed_) noexcept
+inline void BaseMELG<SIZE>::seed(const double seed_) noexcept
 {
     MyBaseClass::seed(seed_);
 }
