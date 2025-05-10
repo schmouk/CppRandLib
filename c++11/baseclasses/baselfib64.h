@@ -109,8 +109,8 @@ public:
     //---   Wrappers   ------------------------------------------------------
     using MyBaseClass = BaseRandom<ListSeedState<utils::SplitMix64, std::uint64_t, SIZE>, std::uint64_t, 64>;
     using output_type = MyBaseClass::output_type;
-    using state_type = MyBaseClass::state_type;
-    using value_type = typename state_type::value_type;
+    using state_type  = MyBaseClass::state_type;
+    using value_type  = typename state_type::value_type;
 
     static const std::uint32_t SEED_SIZE{ SIZE };
 
@@ -279,7 +279,7 @@ inline void BaseLFib64<SIZE, K>::_initIndex(const size_t _index) noexcept
 //---------------------------------------------------------------------------
 /** Initializes internal state (empty signature). */
 template<const std::uint32_t SIZE, std::uint32_t K >
-void BaseLFib64<SIZE, K>::seed() noexcept
+inline void BaseLFib64<SIZE, K>::seed() noexcept
 {
     MyBaseClass::seed();
 }
@@ -287,7 +287,7 @@ void BaseLFib64<SIZE, K>::seed() noexcept
 //---------------------------------------------------------------------------
 /** Initializes internal state (int). */
 template<const std::uint32_t SIZE, std::uint32_t K >
-void BaseLFib64<SIZE, K>::seed(const int seed_) noexcept
+inline void BaseLFib64<SIZE, K>::seed(const int seed_) noexcept
 {
     seed(std::uint64_t(seed_));
 }
@@ -295,7 +295,7 @@ void BaseLFib64<SIZE, K>::seed(const int seed_) noexcept
 //---------------------------------------------------------------------------
 /** Initializes internal state (unsigned int). */
 template<const std::uint32_t SIZE, std::uint32_t K >
-void BaseLFib64<SIZE, K>::seed(const unsigned int seed_) noexcept
+inline void BaseLFib64<SIZE, K>::seed(const unsigned int seed_) noexcept
 {
     seed(std::uint64_t(seed_));
 }
@@ -303,7 +303,7 @@ void BaseLFib64<SIZE, K>::seed(const unsigned int seed_) noexcept
 //---------------------------------------------------------------------------
 /** Initializes internal state (long). */
 template<const std::uint32_t SIZE, std::uint32_t K >
-void BaseLFib64<SIZE, K>::seed(const long seed_) noexcept
+inline void BaseLFib64<SIZE, K>::seed(const long seed_) noexcept
 {
     seed(std::uint64_t(seed_));
 }
@@ -319,7 +319,7 @@ void BaseLFib64<SIZE, K>::seed(const unsigned long seed_) noexcept
 //---------------------------------------------------------------------------
 /** Initializes internal state (long long). */
 template<const std::uint32_t SIZE, std::uint32_t K >
-void BaseLFib64<SIZE, K>::seed(const long long seed_) noexcept
+inline void BaseLFib64<SIZE, K>::seed(const long long seed_) noexcept
 {
     seed(std::uint64_t(seed_));
 }
@@ -327,7 +327,7 @@ void BaseLFib64<SIZE, K>::seed(const long long seed_) noexcept
 //---------------------------------------------------------------------------
 /** Initializes internal state (unsigned long long). */
 template<const std::uint32_t SIZE, std::uint32_t K >
-void BaseLFib64<SIZE, K>::seed(const unsigned long long seed_) noexcept
+inline void BaseLFib64<SIZE, K>::seed(const unsigned long long seed_) noexcept
 {
     MyBaseClass::seed(seed_);
 }
@@ -343,7 +343,7 @@ void BaseLFib64<SIZE, K>::seed(const utils::UInt128& seed_) noexcept
 //---------------------------------------------------------------------------
 /** Initializes internal state (double). */
 template<const std::uint32_t SIZE, std::uint32_t K >
-void BaseLFib64<SIZE, K>::seed(const double seed_) noexcept
+inline void BaseLFib64<SIZE, K>::seed(const double seed_) noexcept
 {
     MyBaseClass::seed(seed_);
 }
