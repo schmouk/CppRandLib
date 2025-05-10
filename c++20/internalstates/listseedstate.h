@@ -49,6 +49,13 @@ struct ListSeedState
     }
 
 
+    /** @brief Increments the internal index pointing to the internal list. */
+    inline void inc_index() noexcept
+    {
+        index = (index + 1) % SIZE;
+    }
+
+
     /** @brief Initializes the internal index pointing to the internal list. */
     inline void init_index(const std::uint32_t new_index) noexcept
     {

@@ -66,6 +66,20 @@ namespace tests_internal_states
         }
 
 
+        // tests inc_index
+        lss_64.init_index(0);
+        for (int i = 0; i < 2 * 15 + 1; ++i) {
+            lss_64.inc_index();
+            EXPECT_EQ((i + 1) % 15, lss_64.index);
+        }
+
+        lss_31.init_index(0);
+        for (int i = 0; i < 2 * 123 + 1; ++i) {
+            lss_31.inc_index();
+            EXPECT_EQ((i + 1) % 123, lss_31.index);
+        }
+
+
         // tests seed
         lss_64.seed(0xa758'f61e'0c53'2b49ULL);
         EXPECT_EQ(15ULL, lss_64.list.size());
