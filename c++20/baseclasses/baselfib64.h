@@ -139,6 +139,7 @@ public:
 
     //---   Operations   ----------------------------------------------------
     void inline seed() noexcept;                                    //!< Initializes internal state (empty signature).
+
     void inline seed(const int                seed_) noexcept;      //!< Initializes internal state (int).
     void inline seed(const unsigned int       seed_) noexcept;      //!< Initializes internal state (unsigned int).
     void inline seed(const long               seed_) noexcept;      //!< Initializes internal state (long)
@@ -162,7 +163,7 @@ template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64() noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed();
+    seed();
 }
 
 //---------------------------------------------------------------------------
@@ -171,7 +172,7 @@ template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const int seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(std::uint64_t(seed_));
+    seed(std::uint64_t(seed_));
 }
 
 //---------------------------------------------------------------------------
@@ -180,7 +181,7 @@ template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned int seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(std::uint64_t(seed_));
+    seed(std::uint64_t(seed_));
 }
 
 //---------------------------------------------------------------------------
@@ -189,7 +190,7 @@ template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const long seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(std::uint64_t(seed_));
+    seed(std::uint64_t(seed_));
 }
 
 /** Valued constructor (unsigned long). */
@@ -197,7 +198,7 @@ template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned long seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(std::uint64_t(seed_));
+    seed(std::uint64_t(seed_));
 }
 
 /** Valued constructor (long long). */
@@ -205,7 +206,7 @@ template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const long long seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(std::uint64_t(seed_));
+    seed(std::uint64_t(seed_));
 }
 
 /** Valued constructor (unsigned long long). */
@@ -213,7 +214,7 @@ template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned long long seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(seed_);
+    seed(seed_);
 }
 
 /** Valued constructor (utils::UInt128). */
@@ -221,7 +222,7 @@ template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const utils::UInt128& seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(seed_);
+    seed(seed_);
 }
 
 /** Valued constructor (double). */
@@ -229,7 +230,7 @@ template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64(const double seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(seed_);
+    seed(seed_);
 }
 
 //---------------------------------------------------------------------------
