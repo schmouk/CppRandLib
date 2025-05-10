@@ -28,7 +28,6 @@ SOFTWARE.
 
 //===========================================================================
 #include <cstdint>
-#include <type_traits>
 
 #include "baseclasses/basemrg32.h"
 #include "internalstates/listseedstate.h"
@@ -61,7 +60,7 @@ SOFTWARE.
 *       + (addition),
 *       - (substraction),
 *       * (multiplication),
-*       ^ (bitwise exclusive-or).
+*       ^(bitwise exclusive-or).
 *
 *   With the + or - operation, such generators are in fact MRGs. They offer very large
 *   periods  with  the  best  known  results in the evaluation of their randomness, as
@@ -109,12 +108,12 @@ SOFTWARE.
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
-*   the expected characteristics for a pretty good PRG;
+*   the expected characteristics for a pretty good PRNG;
 *
 *   * _crush_ is a bigger set of tests that test more deeply  expected  random
 *   characteristics;
 *
-*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
+*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
 class Mrg287 : public BaseMRG32<256>
@@ -124,44 +123,30 @@ public:
     using MyBaseClass = BaseMRG32<256>;
 
     using output_type = MyBaseClass::output_type;
-    using state_type = MyBaseClass::state_type;
-    using value_type = typename state_type::value_type;
+    using state_type  = MyBaseClass::state_type;
+    using value_type  = typename state_type::value_type;
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline Mrg287() noexcept
-        : MyBaseClass()
-    {}
+    Mrg287() noexcept;                                   //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    template<typename T>
-        requires std::is_arithmetic_v<T>
-    inline Mrg287(const T seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::MyBaseClass::seed(seed_);
-    }
+    Mrg287(const int                seed) noexcept;      //!< Valued constructor (int).
+    Mrg287(const unsigned int       seed) noexcept;      //!< Valued constructor (unsigned int).
+    Mrg287(const long               seed) noexcept;      //!< Valued constructor (long)
+    Mrg287(const unsigned long      seed) noexcept;      //!< Valued constructor (unsigned long).
+    Mrg287(const long long          seed) noexcept;      //!< Valued constructor (long long).
+    Mrg287(const unsigned long long seed) noexcept;      //!< Valued constructor (unsigned long long).
+    Mrg287(const utils::UInt128&    seed) noexcept;      //!< Valued constructor (unsigned 128-bits).
+    Mrg287(const double             seed) noexcept;      //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline Mrg287(const state_type& seed_internal_state) noexcept
-        : MyBaseClass(seed_internal_state)
-    {}
-
-    Mrg287(const Mrg287&) noexcept = default;   //!< default copy constructor.
-    Mrg287(Mrg287&&) noexcept = default;        //!< default move constructor.
-    virtual ~Mrg287() noexcept = default;       //!< default destructor.
+    Mrg287(const state_type& internal_state) noexcept;   //!< Valued constructor (full state).
 
 
-    //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return an integer value coded on OUTPUT_BITS bits.
-    */
-    virtual const output_type next() noexcept override;
+    //---   Operations   ----------------------------------------------------
+    virtual const output_type next() noexcept override;         //!< The internal PRNG algorithm.
 
 
 private:
-    static constexpr std::uint32_t _INDEX_MODULO{ 0xff };  // related to SEED_SIZE = 256
+    static constexpr std::uint32_t _INDEX_MODULO{ 0xff };       // related to SEED_SIZE = 256
 
 };
