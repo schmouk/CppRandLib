@@ -91,42 +91,40 @@ public:
     using MyBaseClass = BaseMELG<696>;
 
     using output_type = MyBaseClass::output_type;
-    using state_type = MyBaseClass::state_type;
-    using value_type = typename state_type::value_type;
+    using state_type  = MyBaseClass::state_type;
+    using value_type  = typename state_type::value_type;
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline Melg44497() noexcept
-        : MyBaseClass()
-    {
-    }
+    Melg44497() noexcept;                                   //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    template<typename T>
-    inline Melg44497(const T seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::MyBaseClass::seed(seed_);
-    }
+    Melg44497(const int                seed) noexcept;      //!< Valued constructor (int).
+    Melg44497(const unsigned int       seed) noexcept;      //!< Valued constructor (unsigned int).
+    Melg44497(const long               seed) noexcept;      //!< Valued constructor (long)
+    Melg44497(const unsigned long      seed) noexcept;      //!< Valued constructor (unsigned long).
+    Melg44497(const long long          seed) noexcept;      //!< Valued constructor (long long).
+    Melg44497(const unsigned long long seed) noexcept;      //!< Valued constructor (unsigned long long).
+    Melg44497(const utils::UInt128&    seed) noexcept;      //!< Valued constructor (unsigned 128-bits).
+    Melg44497(const double             seed) noexcept;      //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline Melg44497(const state_type& seed_internal_state) noexcept
-        : MyBaseClass(seed_internal_state)
-    {
-    }
+    Melg44497(const state_type& internal_state) noexcept;   //!< Valued constructor (full state).
 
-    Melg44497(const Melg44497&) noexcept = default;   //!< default copy constructor.
-    Melg44497(Melg44497&&) noexcept = default;        //!< default move constructor.
-    virtual ~Melg44497() noexcept = default;        //!< default destructor.
+    virtual inline ~Melg44497() noexcept = default;         //!< default destructor.
 
 
-    //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return an integer value coded on OUTPUT_BITS (i.e. 64) bits.
-    */
-    virtual const output_type next() noexcept override;
+    //---   Operations   ----------------------------------------------------
+    virtual const output_type next() noexcept override;     //!< The internal PRNG algorithm.
+
+    void seed() noexcept;                                   //!< Initializes internal state (empty signature).
+
+    void seed(const int                seed_) noexcept;     //!< Initializes internal state (int).
+    void seed(const unsigned int       seed_) noexcept;     //!< Initializes internal state (unsigned int).
+    void seed(const long               seed_) noexcept;     //!< Initializes internal state (long)
+    void seed(const unsigned long      seed_) noexcept;     //!< Initializes internal state (unsigned long).
+    void seed(const long long          seed_) noexcept;     //!< Initializes internal state (long long).
+    void seed(const unsigned long long seed_) noexcept;     //!< Initializes internal state (unsigned long long).
+    void seed(const utils::UInt128&    seed_) noexcept;     //!< Initializes internal state (unsigned 128-bits).
+    void seed(const double             seed_) noexcept;     //!< Initializes internal state (double).
 
 
 private:

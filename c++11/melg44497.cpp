@@ -30,6 +30,87 @@ SOFTWARE.
 
 
 //===========================================================================
+//---------------------------------------------------------------------------
+/** Empty constructor. */
+Melg44497::Melg44497() noexcept
+    : MyBaseClass()
+{
+    seed();
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (int). */
+Melg44497::Melg44497(const int seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned int). */
+Melg44497::Melg44497(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long). */
+Melg44497::Melg44497(const long seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long). */
+Melg44497::Melg44497(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long long). */
+Melg44497::Melg44497(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long long). */
+Melg44497::Melg44497(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (utils::UInt128). */
+Melg44497::Melg44497(const utils::UInt128& seed_) noexcept
+    : MyBaseClass()
+{
+    seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (double). */
+Melg44497::Melg44497(const double seed_) noexcept
+    : MyBaseClass()
+{
+    seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (full state). */
+Melg44497::Melg44497(const state_type& internal_state) noexcept
+    : MyBaseClass()
+{
+    setstate(internal_state);
+}
+
+//---------------------------------------------------------------------------
 /** The internal PRNG algorithm. */
 const Melg44497::output_type Melg44497::next() noexcept
 {
@@ -54,4 +135,67 @@ const Melg44497::output_type Melg44497::next() noexcept
 
     // finally, returns pseudo random value as a 64-bits integer
     return si ^ (si << 6) ^ (_internal_state.state.list[(i + 95) % 695] & 0x06fb'bee2'9aae'fd91);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (empty signature). */
+void Melg44497::seed() noexcept
+{
+    MyBaseClass::seed();
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (int). */
+void Melg44497::seed(const int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned int). */
+void Melg44497::seed(const unsigned int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long). */
+void Melg44497::seed(const long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long). */
+void Melg44497::seed(const unsigned long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long long). */
+void Melg44497::seed(const long long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long long). */
+void Melg44497::seed(const unsigned long long seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned 128-bits). */
+void Melg44497::seed(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (double). */
+void Melg44497::seed(const double seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
 }
