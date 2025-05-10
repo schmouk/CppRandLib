@@ -104,8 +104,8 @@ public:
     using MyBaseClass = BaseCWG<std::uint64_t, utils::UInt128, std::uint64_t, 64>;
 
     using output_type = typename MyBaseClass::output_type;
-    using state_type = typename MyBaseClass::state_type;
-    using value_type = typename state_type::value_type;
+    using state_type  = typename MyBaseClass::state_type;
+    using value_type  = typename state_type::value_type;
 
 
     //---   Constructors / Destructor   -------------------------------------

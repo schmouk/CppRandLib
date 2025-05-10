@@ -104,8 +104,8 @@ public:
     using MyBaseClass = BaseCWG<utils::UInt128, utils::UInt128, utils::UInt128, 128>;
 
     using output_type = typename MyBaseClass::output_type;
-    using state_type = typename MyBaseClass::state_type;
-    using value_type = typename state_type::value_type;
+    using state_type  = typename MyBaseClass::state_type;
+    using value_type  = typename state_type::value_type;
 
 
     //---   Constructors / Destructor   -------------------------------------
