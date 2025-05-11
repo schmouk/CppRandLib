@@ -32,6 +32,7 @@ SOFTWARE.
 #include "gtest/gtest.h"
 
 #include "baseclasses/basemrg31.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================
@@ -67,7 +68,7 @@ namespace tests_bases
         {
             BaseMRG31<5> mrg(-2);
             EXPECT_EQ(0, mrg._internal_state.state.index);
-            const std::uint64_t expected[]{ 0xf90d8facbffba22 >> 33, 0x2982f9793c67a0f2 >> 33, 0xfd60ee20dc0c17a0 >> 33, 0x547cc8ce5c5204f2 >> 33, 0x4e0e96150294a429 >> 33 };
+            const std::uint64_t expected[]{ 0xf3203e9039f4a821 >> 33, 0xba56949915dcf9e9 >> 33, 0xd0d5127a96e8d90d >> 33, 0x1ef156bb76650c37 >> 33, 0x7842841591543f1d >> 33 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
         }
@@ -81,7 +82,7 @@ namespace tests_bases
         {
             BaseMRG31<5> mrg(-11L);
             EXPECT_EQ(0, mrg._internal_state.state.index);
-            const std::uint64_t expected[]{ 0x6d335a02195d3df8 >> 33, 0xbdd0bf72447f75c2 >> 33, 0x90b2f3432c4fb4c0 >> 33, 0xb09caedb8bd5732f >> 33, 0x476ab4b4aceeaff3 >> 33 };
+            const std::uint64_t expected[]{ 0x6fc5530939fb94c3 >> 33, 0x96caee613260cfca >> 33, 0x46d40b90622a734b >> 33, 0x6ecc725d7bedada9 >> 33, 0x69e6fff0691d876d >> 33 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
         }
@@ -116,7 +117,7 @@ namespace tests_bases
         {
             BaseMRG31<5> mrg(-0.357);
             EXPECT_EQ(0, mrg._internal_state.state.index);
-            const std::uint64_t expected[]{ 0x2ff72327, 0x4aa7d7ad, 0x54c2a32d, 0x3bb8a6dc, 0x51d5622b };
+            const std::uint64_t expected[]{ 0x5fee464f >> 1, 0x954faf5a >> 1, 0xa985465a >> 1, 0x77714db9 >> 1, 0xa3aac457 >> 1 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
         }
@@ -124,6 +125,13 @@ namespace tests_bases
             BaseMRG31<5> mrg(8.87e+18);
             EXPECT_EQ(0, mrg._internal_state.state.index);
             const std::uint64_t expected[]{ 0xeede014d9a5a6108 >> 33, 0xa6eb6466bac9f251 >> 33, 0x4246cbb1a64bf70c >> 33, 0xaf6aa8f43ebb8659 >> 33, 0xe1b0fb2c7e764cdb >> 33 };
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
+        }
+        {
+            BaseMRG31<5> mrg(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
+            EXPECT_EQ(0, mrg._internal_state.state.index);
+            const std::uint64_t expected[]{ 0xf75f04cbb5a1a1dd >> 33, 0xec779c3693f88501 >> 33, 0xfed9eeb4936de39d >> 33, 0x6f9fb04b092bd30a >> 33, 0x260ffb0260bbbe5f >> 33 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
         }
@@ -222,7 +230,18 @@ namespace tests_bases
         {
             BaseMRG31<5> mrg;
             mrg._setstate(0xa876'cb13'e2f0'594d);
-            std::uint64_t expected[]{ 0xe7186b7b3854a9bc >> 33, 0x4689d02b25c81d1 >> 33, 0x9daeb55b5a2ef996 >> 33, 0xa28288978dd3cea5 >> 33, 0xa9fa0fe2f8412ebe >> 33 };
+            const std::uint64_t expected[]{ 0xe7186b7b3854a9bc >> 33, 0x4689d02b25c81d1 >> 33, 0x9daeb55b5a2ef996 >> 33, 0xa28288978dd3cea5 >> 33, 0xa9fa0fe2f8412ebe >> 33 };
+
+            EXPECT_EQ(0, mrg._internal_state.state.index);
+            EXPECT_FALSE(mrg._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
+        }
+        {
+            BaseMRG31<5> mrg;
+            mrg._setstate(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
+            const std::uint64_t expected[]{ 0xf75f04cbb5a1a1dd >> 33, 0xec779c3693f88501 >> 33, 0xfed9eeb4936de39d >> 33, 0x6f9fb04b092bd30a >> 33, 0x260ffb0260bbbe5f >> 33 };
 
             EXPECT_EQ(0, mrg._internal_state.state.index);
             EXPECT_FALSE(mrg._internal_state.gauss_valid);
