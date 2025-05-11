@@ -1,3 +1,4 @@
+#pragma once
 /*
 MIT License
 
@@ -27,7 +28,6 @@ SOFTWARE.
 
 //===========================================================================
 #include <cstdint>
-#include <type_traits>
 
 #include "baseclasses/basemrg31.h"
 #include "internalstates/listseedstate.h"
@@ -58,10 +58,10 @@ SOFTWARE.
 *   and offers a period of about 2^1457  - i.e. nearly 4.0e+438 - with low computation
 *   time.
 *
-*   See Mrg287 for a short period  MR-Generator (2^287,  i.e. 2.49e+86)  with  low
-*   computation time but 256 integers memory consumption.
-*   See Mrg49507 for a far longer period  (2^49_507,  i.e. 1.2e+14_903)  with  low
-*   computation  time  too  (31-bits  modulus)  but  use  of  more memory space (1_597
+*   See Mrg287 for  a  short  period  MR-Generator  (2^287,  i.e. 2.49e+86)  with  low
+*   computation time but 256 integers memory consumption (2^32 modulus calculations).
+*   See Mrg49507 for  a  far  longer  period  (2^49,507,  i.e. 1.2e+14_903)  with  low
+*   computation  time  too  (31-bits  modulus)  but  use  of  more memory space (1,597
 *   integers).
 *
 *   Furthermore this class is callable:
@@ -91,12 +91,12 @@ SOFTWARE.
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
-*   the expected characteristics for a pretty good PRG;
+*   the expected characteristics for a pretty good PRNG;
 *
 *   * _crush_ is a bigger set of tests that test more deeply  expected  random
 *   characteristics;
 *
-*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
+*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
 class Mrg1457 : public BaseMRG31<47>
@@ -107,28 +107,19 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline Mrg1457() noexcept
-        : MyBaseClass()
-    {}
+    Mrg1457() noexcept;                                 //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    template<typename T>
-        requires std::is_arithmetic_v<T>
-    inline Mrg1457(const T seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::MyBaseClass::seed(seed_);
-    }
+    Mrg1457(const int                seed) noexcept;    //!< Valued constructor (int).
+    Mrg1457(const unsigned int       seed) noexcept;    //!< Valued constructor (unsigned int).
+    Mrg1457(const long               seed) noexcept;    //!< Valued constructor (long)
+    Mrg1457(const unsigned long      seed) noexcept;    //!< Valued constructor (unsigned long).
+    Mrg1457(const long long          seed) noexcept;    //!< Valued constructor (long long).
+    Mrg1457(const unsigned long long seed) noexcept;    //!< Valued constructor (unsigned long long).
+    Mrg1457(const utils::UInt128&    seed) noexcept;    //!< Valued constructor (unsigned 128-bits).
+    Mrg1457(const double             seed) noexcept;    //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline Mrg1457(const state_type& seed) noexcept
-        : MyBaseClass(seed)
-    {}
+    Mrg1457(const state_type& internal_state) noexcept; //!< Valued constructor (full state).
 
-    Mrg1457(const Mrg1457&) noexcept = default;     //!< default copy constructor.
-    Mrg1457(Mrg1457&&) noexcept = default;          //!< default move constructor.
-    virtual ~Mrg1457() noexcept = default;          //!< default destructor.
 
 
     //---   Internal PRNG   -------------------------------------------------
@@ -137,5 +128,4 @@ public:
     * @return an integer value coded on OUTPUT_BITS bits.
     */
     virtual const output_type next() noexcept override;
-
 };

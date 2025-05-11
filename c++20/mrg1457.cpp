@@ -26,17 +26,83 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <cstdint>
+
 #include "mrg1457.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================
+//---------------------------------------------------------------------------
+/** Empty constructor. */
+Mrg1457::Mrg1457() noexcept
+    : MyBaseClass()
+{
+    seed();
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (int). */
+Mrg1457::Mrg1457(const int seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned int). */
+Mrg1457::Mrg1457(const unsigned int seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long). */
+Mrg1457::Mrg1457(const long seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long). */
+Mrg1457::Mrg1457(const unsigned long seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long long). */
+Mrg1457::Mrg1457(const long long seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long long). */
+Mrg1457::Mrg1457(const unsigned long long seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (utils::UInt128). */
+Mrg1457::Mrg1457(const utils::UInt128& seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (double). */
+Mrg1457::Mrg1457(const double seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (full state). */
+Mrg1457::Mrg1457(const state_type& internal_state) noexcept
+    : MyBaseClass(internal_state)
+{}
+
+//---------------------------------------------------------------------------
 /** The internal PRNG algorithm. */
 const Mrg1457::output_type Mrg1457::next() noexcept
 {
     // evaluates indexes in suite for the i-1, i-24 (and i-47) -th values
-    const std::uint32_t index = _internal_state.state.index;
-    const std::uint32_t k1    = (index <  1) ? (index + SEED_SIZE) -  1 : index -  1;
-    const std::uint32_t k24   = (index < 24) ? (index + SEED_SIZE) - 24 : index - 24;
+    const std::uint32_t index{ MyBaseClass::_internal_state.state.index };
+    const std::uint32_t k1{ (index < 1) ? (index + SEED_SIZE) - 1 : index - 1 };
+    const std::uint32_t k24{ (index < 24) ? (index + SEED_SIZE) - 24 : index - 24 };
 
     // evaluates current value and modifies internal state
     uint64_t value{
