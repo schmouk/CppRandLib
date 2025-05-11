@@ -26,6 +26,8 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <cstdint>
+
 #include "mrg287.h"
 #include "utils/uint128.h"
 
