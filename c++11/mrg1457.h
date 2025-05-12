@@ -60,7 +60,7 @@ SOFTWARE.
 *
 *   See Mrg287 for  a  short  period  MR-Generator  (2^287,  i.e. 2.49e+86)  with  low
 *   computation time but 256 integers memory consumption (2^32 modulus calculations).
-*   See Mrg49507 for a  far  longer  period  (2^49,507,  i.e.  1.2e+14_903)  with  low
+*   See Mrg49507 for a  far  longer  period  (2^49,507,  i.e.  1.2e+14,903)  with  low
 *   computation  time  too  (31-bits  modulus)  but  use  of  more memory space (1,597
 *   integers).
 *
@@ -107,25 +107,21 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    Mrg1457() noexcept;                                 //!< Default empty constructor.
+    Mrg1457() noexcept;                                     //!< Default empty constructor.
 
-    Mrg1457(const int                seed) noexcept;    //!< Valued constructor (int).
-    Mrg1457(const unsigned int       seed) noexcept;    //!< Valued constructor (unsigned int).
-    Mrg1457(const long               seed) noexcept;    //!< Valued constructor (long)
-    Mrg1457(const unsigned long      seed) noexcept;    //!< Valued constructor (unsigned long).
-    Mrg1457(const long long          seed) noexcept;    //!< Valued constructor (long long).
-    Mrg1457(const unsigned long long seed) noexcept;    //!< Valued constructor (unsigned long long).
-    Mrg1457(const utils::UInt128&    seed) noexcept;    //!< Valued constructor (unsigned 128-bits).
-    Mrg1457(const double             seed) noexcept;    //!< Valued constructor (double).
+    Mrg1457(const int                seed) noexcept;        //!< Valued constructor (int).
+    Mrg1457(const unsigned int       seed) noexcept;        //!< Valued constructor (unsigned int).
+    Mrg1457(const long               seed) noexcept;        //!< Valued constructor (long)
+    Mrg1457(const unsigned long      seed) noexcept;        //!< Valued constructor (unsigned long).
+    Mrg1457(const long long          seed) noexcept;        //!< Valued constructor (long long).
+    Mrg1457(const unsigned long long seed) noexcept;        //!< Valued constructor (unsigned long long).
+    Mrg1457(const utils::UInt128&    seed) noexcept;        //!< Valued constructor (unsigned 128-bits).
+    Mrg1457(const double             seed) noexcept;        //!< Valued constructor (double).
 
-    Mrg1457(const state_type& internal_state) noexcept; //!< Valued constructor (full state).
+    Mrg1457(const state_type& internal_state) noexcept;     //!< Valued constructor (full state).
 
 
+    //---   Operations   ----------------------------------------------------
+    virtual const output_type next() noexcept override;     //!< The internal PRNG algorithm.
 
-    //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return an integer value coded on OUTPUT_BITS bits.
-    */
-    virtual const output_type next() noexcept override;
 };
