@@ -120,6 +120,8 @@ public:
 
     Mrg1457(const state_type& internal_state) noexcept;     //!< Valued constructor (full state).
 
+    virtual inline ~Mrg1457() noexcept = default;           //!< default destructor.
+
 
     //---   Operations   ----------------------------------------------------
     virtual const output_type next() noexcept override;     //!< The internal PRNG algorithm.

@@ -115,10 +115,12 @@ public:
     Mrg49507(const unsigned long      seed) noexcept;       //!< Valued constructor (unsigned long).
     Mrg49507(const long long          seed) noexcept;       //!< Valued constructor (long long).
     Mrg49507(const unsigned long long seed) noexcept;       //!< Valued constructor (unsigned long long).
-    Mrg49507(const utils::UInt128& seed) noexcept;       //!< Valued constructor (unsigned 128-bits).
+    Mrg49507(const utils::UInt128&    seed) noexcept;       //!< Valued constructor (unsigned 128-bits).
     Mrg49507(const double             seed) noexcept;       //!< Valued constructor (double).
 
     Mrg49507(const state_type& internal_state) noexcept;    //!< Valued constructor (full state).
+
+    virtual inline ~Mrg49507() noexcept = default;         //!< default destructor.
 
 
     //---   Operations   ----------------------------------------------------
