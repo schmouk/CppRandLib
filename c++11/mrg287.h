@@ -128,25 +128,25 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    Mrg287() noexcept;                                   //!< Default empty constructor.
+    Mrg287() noexcept;                                      //!< Default empty constructor.
 
-    Mrg287(const int                seed) noexcept;      //!< Valued constructor (int).
-    Mrg287(const unsigned int       seed) noexcept;      //!< Valued constructor (unsigned int).
-    Mrg287(const long               seed) noexcept;      //!< Valued constructor (long)
-    Mrg287(const unsigned long      seed) noexcept;      //!< Valued constructor (unsigned long).
-    Mrg287(const long long          seed) noexcept;      //!< Valued constructor (long long).
-    Mrg287(const unsigned long long seed) noexcept;      //!< Valued constructor (unsigned long long).
-    Mrg287(const utils::UInt128&    seed) noexcept;      //!< Valued constructor (unsigned 128-bits).
-    Mrg287(const double             seed) noexcept;      //!< Valued constructor (double).
+    Mrg287(const int                seed) noexcept;         //!< Valued constructor (int).
+    Mrg287(const unsigned int       seed) noexcept;         //!< Valued constructor (unsigned int).
+    Mrg287(const long               seed) noexcept;         //!< Valued constructor (long)
+    Mrg287(const unsigned long      seed) noexcept;         //!< Valued constructor (unsigned long).
+    Mrg287(const long long          seed) noexcept;         //!< Valued constructor (long long).
+    Mrg287(const unsigned long long seed) noexcept;         //!< Valued constructor (unsigned long long).
+    Mrg287(const utils::UInt128&    seed) noexcept;         //!< Valued constructor (unsigned 128-bits).
+    Mrg287(const double             seed) noexcept;         //!< Valued constructor (double).
 
-    Mrg287(const state_type& internal_state) noexcept;   //!< Valued constructor (full state).
+    Mrg287(const state_type& internal_state) noexcept;      //!< Valued constructor (full state).
 
 
     //---   Operations   ----------------------------------------------------
-    virtual const output_type next() noexcept override;         //!< The internal PRNG algorithm.
-
+    virtual const output_type next() noexcept override;     //!< The internal PRNG algorithm.
+        
 
 private:
-    static constexpr std::uint32_t _INDEX_MODULO{ 0xff };       // related to SEED_SIZE = 256
+    static constexpr std::uint32_t _INDEX_MODULO{ 0xff };   // related to SEED_SIZE = 256
 
 };
