@@ -347,6 +347,9 @@ namespace tests_prng
         frand63._setstate(-1LL);
         EXPECT_EQ(0x726cb8bb8db29610, frand63._internal_state.state);
 
+        frand63._setstate(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
+        EXPECT_EQ(0x7baf8265dad0d0ee, frand63._internal_state.state);
+
 
         //-- tests equidistribution - notice: not more than 1 second of test, self-adaptation to platform and configuration
         frand63.seed();  // notice: tests will be done on very different seed values each time they are run

@@ -113,32 +113,25 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline BaseCWG() noexcept;
+    inline BaseCWG() noexcept;                          //!< Default empty constructor.
 
-    /** @brief Valued constructor (seed). */
-    inline BaseCWG(const int seed_) noexcept;
-    inline BaseCWG(const unsigned int seed_) noexcept;
-    inline BaseCWG(const long seed_) noexcept;
-    inline BaseCWG(const unsigned long seed_) noexcept;
-    inline BaseCWG(const long long seed_) noexcept;
-    inline BaseCWG(const unsigned long long seed_) noexcept;
-    inline BaseCWG(const utils::UInt128& seed_) noexcept;
-    inline BaseCWG(const double seed_) noexcept;
+    BaseCWG(const int                seed) noexcept;    //!< Valued constructor (int).
+    BaseCWG(const unsigned int       seed) noexcept;    //!< Valued constructor (unsigned int).
+    BaseCWG(const long               seed) noexcept;    //!< Valued constructor (long)
+    BaseCWG(const unsigned long      seed) noexcept;    //!< Valued constructor (unsigned long).
+    BaseCWG(const long long          seed) noexcept;    //!< Valued constructor (long long).
+    BaseCWG(const unsigned long long seed) noexcept;    //!< Valued constructor (unsigned long long).
+    BaseCWG(const utils::UInt128&    seed) noexcept;    //!< Valued constructor (unsigned 128-bits).
+    BaseCWG(const double             seed) noexcept;    //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline BaseCWG(const state_type& internal_state) noexcept;
+    BaseCWG(const state_type& internal_state) noexcept; //!< Valued constructor (full state).
 
-    /** @brief Default Destructor. */
-    virtual ~BaseCWG() noexcept = default;
+    virtual ~BaseCWG() noexcept = default;              //!< Default Destructor.
 
 
     //---   Operations   ----------------------------------------------------
-    /** @brief Sets the internal state of this PRNG with a 64-bits integer seed. */
-    virtual inline void _setstate(const std::uint64_t seed_) noexcept override;
-
-    /** @brief Sets the internal state of this PRNG with a 128-bits integer seed. */
-    virtual inline void _setstate(const utils::UInt128& seed_) noexcept;
+    virtual void _setstate(const std::uint64_t   seed_) noexcept override;  //!< Sets the internal state with a 64-bits integer seed.
+    virtual void _setstate(const utils::UInt128& seed_) noexcept override;  //!< Sets the internal state with a 128-bits integer seed.
 
 };
 

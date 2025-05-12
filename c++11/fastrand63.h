@@ -32,6 +32,7 @@ SOFTWARE.
 #include "baseclasses/baserandom.h"
 #include "utils/seed_generation.h"
 #include "utils/splitmix.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================
@@ -107,36 +108,37 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    inline FastRand63() noexcept;                                       //!< Empty constructor.
+    inline FastRand63() noexcept;                                   //!< Empty constructor.
 
-    inline FastRand63(const int                seed_) noexcept;         //!< Valued constructor (int).
-    inline FastRand63(const unsigned int       seed_) noexcept;         //!< Valued constructor (unsigned int).
-    inline FastRand63(const long               seed_) noexcept;         //!< Valued constructor (long)
-    inline FastRand63(const unsigned long      seed_) noexcept;         //!< Valued constructor (unsigned long).
-    inline FastRand63(const long long          seed_) noexcept;         //!< Valued constructor (long long).
-    inline FastRand63(const unsigned long long seed_) noexcept;         //!< Valued constructor (unsigned long long).
-    inline FastRand63(const utils::UInt128&    seed_) noexcept;         //!< Valued constructor (unsigned 128-bits).
-    inline FastRand63(const double             seed_) noexcept;         //!< Valued constructor (double).
+    inline FastRand63(const int                seed_) noexcept;     //!< Valued constructor (int).
+    inline FastRand63(const unsigned int       seed_) noexcept;     //!< Valued constructor (unsigned int).
+    inline FastRand63(const long               seed_) noexcept;     //!< Valued constructor (long)
+    inline FastRand63(const unsigned long      seed_) noexcept;     //!< Valued constructor (unsigned long).
+    inline FastRand63(const long long          seed_) noexcept;     //!< Valued constructor (long long).
+    inline FastRand63(const unsigned long long seed_) noexcept;     //!< Valued constructor (unsigned long long).
+    inline FastRand63(const utils::UInt128&    seed_) noexcept;     //!< Valued constructor (unsigned 128-bits).
+    inline FastRand63(const double             seed_) noexcept;     //!< Valued constructor (double).
 
-    virtual inline ~FastRand63() noexcept = default;                    //!< default destructor.
+    virtual inline ~FastRand63() noexcept = default;                //!< default destructor.
 
     //---   Internal PRNG   -------------------------------------------------
-    virtual inline const output_type next() noexcept override;          //!< The internal PRNG algorithm.
+    virtual inline const output_type next() noexcept override;      //!< The internal PRNG algorithm.
 
     //---   Seed   ----------------------------------------------------------
-    virtual inline void seed() noexcept override;                       //!< Initializes internal state (empty signature).
+    virtual inline void seed() noexcept override;                   //!< Initializes internal state (empty signature).
 
-    inline void seed(const int                seed_) noexcept;          //!< Initializes internal state (int).
-    inline void seed(const unsigned int       seed_) noexcept;          //!< Initializes internal state (unsigned int).
-    inline void seed(const long               seed_) noexcept;          //!< Initializes internal state (long)
-    inline void seed(const unsigned long      seed_) noexcept;          //!< Initializes internal state (unsigned long).
-    inline void seed(const long long          seed_) noexcept;          //!< Initializes internal state (long long).
-    inline void seed(const unsigned long long seed_) noexcept;          //!< Initializes internal state (unsigned long long).
-    inline void seed(const utils::UInt128&    seed_) noexcept;          //!< Initializes internal state (unsigned 128-bits).
-    inline void seed(const double             seed_) noexcept;          //!< Initializes internal state (double).
+    inline void seed(const int                seed_) noexcept;      //!< Initializes internal state (int).
+    inline void seed(const unsigned int       seed_) noexcept;      //!< Initializes internal state (unsigned int).
+    inline void seed(const long               seed_) noexcept;      //!< Initializes internal state (long)
+    inline void seed(const unsigned long      seed_) noexcept;      //!< Initializes internal state (unsigned long).
+    inline void seed(const long long          seed_) noexcept;      //!< Initializes internal state (long long).
+    inline void seed(const unsigned long long seed_) noexcept;      //!< Initializes internal state (unsigned long long).
+    inline void seed(const utils::UInt128&    seed_) noexcept;      //!< Initializes internal state (unsigned 128-bits).
+    inline void seed(const double             seed_) noexcept;      //!< Initializes internal state (double).
 
     //---   Operations   ----------------------------------------------------
-    virtual inline void _setstate(const std::uint64_t seed_) noexcept override; //!< Sets the internal state with an integer seed.
+    virtual inline void _setstate(const std::uint64_t   seed_) noexcept override;   //!< Sets the internal state with a 64-bits integer seed.
+    virtual inline void _setstate(const utils::UInt128& seed_) noexcept override;   //!< Sets the internal state with a 128-bits integer seed.
 
 };
 
@@ -272,4 +274,10 @@ inline void FastRand63::_setstate(const std::uint64_t seed_) noexcept
 {
     utils::SplitMix63 init_rand(seed_);
     _internal_state.state = init_rand();
+}
+
+/** Sets the internal state with a 128-bits integer seed. */
+inline void FastRand63::_setstate(const utils::UInt128& seed_) noexcept
+{
+    _setstate(seed_.lo);
 }

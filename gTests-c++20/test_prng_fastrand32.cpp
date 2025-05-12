@@ -347,7 +347,8 @@ namespace tests_prng
         frand32._setstate(-1LL);
         EXPECT_EQ(0xe4d97177, frand32._internal_state.state);
 
-        /**/
+        frand32._setstate(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
+        EXPECT_EQ(0xf75f04cb, frand32._internal_state.state);
 
 
         //-- tests equidistribution - notice: not more than 1 second of test, self-adaptation to platform and configuration
