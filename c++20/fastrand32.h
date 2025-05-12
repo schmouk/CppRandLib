@@ -116,11 +116,12 @@ public:
                                                                     
     virtual inline ~FastRand32() noexcept = default;                //!< default destructor.
 
-    //---   Internal PRNG   -------------------------------------------------
+
+    //---   Operations   ----------------------------------------------------
     virtual inline const output_type next() noexcept override;      //!< The internal PRNG algorithm.
 
-    //---   Seed   ----------------------------------------------------------
-    inline void seed() noexcept;                                    //!< Initializes internal state (empty signature).
+    virtual inline void seed() noexcept override;                   //!< Initializes internal state (empty signature).
+
     inline void seed(const int                seed_) noexcept;      //!< Initializes internal state (int).
     inline void seed(const unsigned int       seed_) noexcept;      //!< Initializes internal state (unsigned int).
     inline void seed(const long               seed_) noexcept;      //!< Initializes internal state (long)
@@ -130,7 +131,6 @@ public:
     inline void seed(const utils::UInt128&    seed_) noexcept;      //!< Initializes internal state (unsigned 128-bits).
     inline void seed(const double             seed_) noexcept;      //!< Initializes internal state (double).
 
-    //---   Operations   ----------------------------------------------------
     virtual inline void _setstate(const std::uint64_t   seed_) noexcept override;   //!< Sets the internal state with a 64-bits integer seed.
     virtual inline void _setstate(const utils::UInt128& seed_) noexcept override;   //!< Sets the internal state with a 128-bits integer seed.
 
