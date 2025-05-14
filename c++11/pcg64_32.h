@@ -111,7 +111,7 @@ public:
     Pcg64_32(const long long          seed) noexcept;       //!< Valued constructor (long long).
     Pcg64_32(const unsigned long long seed) noexcept;       //!< Valued constructor (unsigned long long).
     Pcg64_32(const utils::UInt128&    seed) noexcept;       //!< Valued constructor (unsigned 128-bits).
-    Pcg64_32(const double             seed) noexcept;       //!< Valued constructor (double).
+    Pcg64_32(const double             seed);                //!< Valued constructor (double).
 
 
     //---   Operations   ----------------------------------------------------
@@ -126,7 +126,7 @@ public:
     void seed(const long long          seed_) noexcept;     //!< Initializes internal state (long long).
     void seed(const unsigned long long seed_) noexcept;     //!< Initializes internal state (unsigned long long).
     void seed(const utils::UInt128&    seed_) noexcept;     //!< Initializes internal state (unsigned 128-bits).
-    void seed(const double             seed_) noexcept;     //!< Initializes internal state (double).
+    void seed(const double             seed_);              //!< Initializes internal state (double).
 
     virtual void _setstate(const std::uint64_t   seed_) noexcept override;   //!< Sets the internal state with a 64-bits integer seed.
     virtual void _setstate(const utils::UInt128& seed_) noexcept override;   //!< Sets the internal state with a 128-bits integer seed.

@@ -61,6 +61,12 @@ struct FloatingPointTypeException : public std::exception
     const char* what() noexcept { return "Argument(s) must be a floating pointg type."; }
 };
 
+/** @brief Float value is out of range [0.0, 1.0). */
+struct FloatValueRange01Exception : public std::exception
+{
+    const char* what() noexcept { return "Float value is out of range [0.0, 1.0)."; }
+};
+
 /** @brief Negative value for sigma paramater of Gauss law exception. */
 struct GaussSigmaException : public std::exception
 {

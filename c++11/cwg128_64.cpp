@@ -79,7 +79,7 @@ Cwg128_64::Cwg128_64(const utils::UInt128& seed_) noexcept
 
 //---------------------------------------------------------------------------
 /** Valued constructor (double). */
-Cwg128_64::Cwg128_64(const double seed) noexcept
+Cwg128_64::Cwg128_64(const double seed)
     : MyBaseClass(seed)
 {}
 
@@ -160,7 +160,7 @@ void Cwg128_64::seed(const utils::UInt128& seed_) noexcept
 
 //---------------------------------------------------------------------------
 /** Initializes internal state (double). */
-void Cwg128_64::seed(const double seed_) noexcept
+void Cwg128_64::seed(const double seed_)
 {
     MyBaseClass::seed(seed_);
 }

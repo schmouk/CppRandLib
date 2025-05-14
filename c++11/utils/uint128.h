@@ -87,7 +87,7 @@ namespace utils
 
         inline explicit operator const long double() const noexcept     //!< 128-bits float const casting operator
         {
-            return hi * 18.446'744'073'709'551'616e+18l + (long double)lo;
+            return hi * 18.446'744'073'709'551'616e+18L + (long double)lo;
         }
 
 

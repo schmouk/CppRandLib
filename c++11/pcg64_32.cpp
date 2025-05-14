@@ -98,7 +98,7 @@ Pcg64_32::Pcg64_32(const utils::UInt128& seed_) noexcept
 
 //---------------------------------------------------------------------------
 /** Valued constructor (double). */
-Pcg64_32::Pcg64_32(const double seed_) noexcept
+Pcg64_32::Pcg64_32(const double seed_)
     : MyBaseClass()
 {
     seed(seed_);
@@ -176,7 +176,7 @@ void Pcg64_32::seed(const utils::UInt128& seed_) noexcept
 
 //---------------------------------------------------------------------------
 /** Initializes internal state (double). */
-void Pcg64_32::seed(const double seed_) noexcept
+void Pcg64_32::seed(const double seed_)
 {
     MyBaseClass::seed(seed_);
 }

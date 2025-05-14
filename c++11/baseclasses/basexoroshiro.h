@@ -124,7 +124,7 @@ public:
     inline BaseXoroshiro(const unsigned long seed_) noexcept;
     inline BaseXoroshiro(const long long seed_) noexcept;
     inline BaseXoroshiro(const unsigned long long seed_) noexcept;
-    inline BaseXoroshiro(const double seed_) noexcept;
+    inline BaseXoroshiro(const double seed_);
 
     /** @brief Valued constructor (full state). */
     inline BaseXoroshiro(const state_type& internal_state) noexcept;
@@ -200,7 +200,7 @@ inline BaseXoroshiro<SIZE>::BaseXoroshiro(const unsigned long long seed_) noexce
 
 /** Valued constructor. */
 template<const std::uint32_t SIZE>
-inline BaseXoroshiro<SIZE>::BaseXoroshiro(const double seed_) noexcept
+inline BaseXoroshiro<SIZE>::BaseXoroshiro(const double seed_)
     : MyBaseClass()
 {
     MyBaseClass::seed(seed_);

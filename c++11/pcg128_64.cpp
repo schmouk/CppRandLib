@@ -99,7 +99,7 @@ Pcg128_64::Pcg128_64(const utils::UInt128& seed_) noexcept
 
 //---------------------------------------------------------------------------
 /** Valued constructor (double). */
-Pcg128_64::Pcg128_64(const double seed_) noexcept
+Pcg128_64::Pcg128_64(const double seed_)
     : MyBaseClass()
 {
     seed(seed_);
@@ -178,7 +178,7 @@ void Pcg128_64::seed(const utils::UInt128& seed_) noexcept
 
 //---------------------------------------------------------------------------
 /** Initializes internal state (double). */
-void Pcg128_64::seed(const double seed_) noexcept
+void Pcg128_64::seed(const double seed_)
 {
     constexpr long double MODULO_128{ 1.8446744073709551616e+19L };
 
@@ -200,20 +200,6 @@ void Pcg128_64::seed(const double seed_) noexcept
             )
         );
     }
-
-    /** /
-    //---------------------------------------------------------------------------
-    UInt128& UInt128::operator*= (const double coeff) noexcept
-    {
-        const long double low{ coeff * lo };
-        const long double high{ (coeff * hi) * 1.8446744073709551616e+19l };
-
-        this->hi = std::uint64_t((high + low) / 1.8446744073709551616e+19l);
-        this->lo = std::uint64_t(low);
-
-        return *this;
-    }
-    /**/
 }
 
 //---------------------------------------------------------------------------

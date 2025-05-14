@@ -93,11 +93,12 @@ namespace utils
         {}
 
         /** @brief Valued constructor - double in range [0.0, 1.0). */
-        inline SplitMix64(double seed) noexcept
+        inline SplitMix64(double seed)
         {
-            if (seed < 0.0)
-                seed = -seed;
-            _state = (seed <= 1.0) ? std::uint64_t(0xffff'ffff'ffff'ffffull * seed) : std::uint64_t(seed);
+            if (seed < 0.0 || 1.0 <= seed)
+                throw FloatValueRange01Exception();
+
+            _state = std::uint64_t(seed * double(0xffff'ffff'ffff'ffffULL));
         }
 
         /** @brief Evaluates next pseudorandom value. */

@@ -43,6 +43,7 @@ struct CounterKeyState
     value_type counter{ 0 };
     value_type key{ 1 };  // Notice: key must be odd
 
+    /** @brief Initalizes the attribute key according to the original recommendations in document [9] - see file README.md. */
     inline void seed() noexcept
     {
         counter = 0;

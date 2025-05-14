@@ -112,7 +112,7 @@ public:
     inline BaseSquares(const unsigned long seed_) noexcept;
     inline BaseSquares(const long long seed_) noexcept;
     inline BaseSquares(const unsigned long long seed_) noexcept;
-    inline BaseSquares(const double seed_) noexcept;
+    inline BaseSquares(const double seed_);
 
     /** @brief Valued constructor (full state). */
     inline BaseSquares(const state_type& internal_state) noexcept;
@@ -188,7 +188,7 @@ inline BaseSquares<OutputT>::BaseSquares(const unsigned long long seed_) noexcep
 
 /** Valued constructor. */
 template<typename OutputT>
-inline BaseSquares<OutputT>::BaseSquares(const double seed_) noexcept
+inline BaseSquares<OutputT>::BaseSquares(const double seed_)
     : MyBaseClass()
 {
     MyBaseClass::seed(seed_);

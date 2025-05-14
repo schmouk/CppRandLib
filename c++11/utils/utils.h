@@ -27,8 +27,10 @@ SOFTWARE.
 
 
 //===========================================================================
+#include "balanced_bits_generation.h"
 #include "bits_rotations.h"
 #include "seed_generation.h"
 #include "splitmix.h"
 #include "time.h"
+#include "type_traits.h"
 #include "uint128.h"

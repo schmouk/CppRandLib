@@ -134,7 +134,7 @@ public:
     inline BaseWell(const unsigned long seed_) noexcept;
     inline BaseWell(const long long seed_) noexcept;
     inline BaseWell(const unsigned long long seed_) noexcept;
-    inline BaseWell(const double seed_) noexcept;
+    inline BaseWell(const double seed_);
 
     /** @brief Valued constructor (full state). */
     inline BaseWell(const state_type& internal_state) noexcept;
@@ -236,7 +236,7 @@ inline BaseWell<SIZE>::BaseWell(const unsigned long long seed_) noexcept
 
 /** Valued constructor. */
 template<const std::uint32_t SIZE>
-inline BaseWell<SIZE>::BaseWell(const double seed_) noexcept
+inline BaseWell<SIZE>::BaseWell(const double seed_)
     : MyBaseClass()
 {
     MyBaseClass::seed(seed_);

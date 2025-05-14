@@ -117,7 +117,7 @@ public:
     inline FastRand63(const long long          seed_) noexcept;     //!< Valued constructor (long long).
     inline FastRand63(const unsigned long long seed_) noexcept;     //!< Valued constructor (unsigned long long).
     inline FastRand63(const utils::UInt128&    seed_) noexcept;     //!< Valued constructor (unsigned 128-bits).
-    inline FastRand63(const double             seed_) noexcept;     //!< Valued constructor (double).
+    inline FastRand63(const double             seed_);              //!< Valued constructor (double).
 
     virtual inline ~FastRand63() noexcept = default;                //!< default destructor.
 
@@ -134,7 +134,7 @@ public:
     inline void seed(const long long          seed_) noexcept;      //!< Initializes internal state (long long).
     inline void seed(const unsigned long long seed_) noexcept;      //!< Initializes internal state (unsigned long long).
     inline void seed(const utils::UInt128&    seed_) noexcept;      //!< Initializes internal state (unsigned 128-bits).
-    inline void seed(const double             seed_) noexcept;      //!< Initializes internal state (double).
+    inline void seed(const double             seed_);               //!< Initializes internal state (double).
 
     virtual inline void _setstate(const std::uint64_t   seed_) noexcept override;   //!< Sets the internal state with a 64-bits integer seed.
     virtual inline void _setstate(const utils::UInt128& seed_) noexcept override;   //!< Sets the internal state with a 128-bits integer seed.
@@ -202,7 +202,7 @@ inline FastRand63::FastRand63(const utils::UInt128& seed_) noexcept
 }
 
 /** Valued constructor (double). */
-inline FastRand63::FastRand63(const double seed_) noexcept
+inline FastRand63::FastRand63(const double seed_)
     : MyBaseClass()
 {
     seed(seed_);
@@ -263,7 +263,7 @@ void FastRand63::seed(const utils::UInt128& seed_) noexcept
 }
 
 /** Initializes internal state (double). */
-void FastRand63::seed(const double seed_) noexcept
+void FastRand63::seed(const double seed_)
 {
     MyBaseClass::seed(seed_);
 }

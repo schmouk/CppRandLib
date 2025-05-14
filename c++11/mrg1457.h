@@ -116,7 +116,7 @@ public:
     Mrg1457(const long long          seed) noexcept;        //!< Valued constructor (long long).
     Mrg1457(const unsigned long long seed) noexcept;        //!< Valued constructor (unsigned long long).
     Mrg1457(const utils::UInt128&    seed) noexcept;        //!< Valued constructor (unsigned 128-bits).
-    Mrg1457(const double             seed) noexcept;        //!< Valued constructor (double).
+    Mrg1457(const double             seed);                 //!< Valued constructor (double).
 
     Mrg1457(const state_type& internal_state) noexcept;     //!< Valued constructor (full state).
 
