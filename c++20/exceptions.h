@@ -52,6 +52,12 @@ public:
     const char* what() noexcept { return "lambda value cannot be 0.0 (currently is)."; }
 };
 
+/** @brief Float value is out of range [0.0, 1.0). */
+struct FloatValueRange01Exception : public std::exception
+{
+    const char* what() noexcept { return "Float value is out of range [0.0, 1.0)."; }
+};
+
 /** @brief Exponential law null lambda exception. */
 class GaussSigmaException : public std::exception
 {

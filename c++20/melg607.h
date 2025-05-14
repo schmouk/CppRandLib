@@ -106,7 +106,7 @@ public:
     Melg607(const long long          seed) noexcept;        //!< Valued constructor (long long).
     Melg607(const unsigned long long seed) noexcept;        //!< Valued constructor (unsigned long long).
     Melg607(const utils::UInt128&    seed) noexcept;        //!< Valued constructor (unsigned 128-bits).
-    Melg607(const double             seed) noexcept;        //!< Valued constructor (double).
+    Melg607(const double             seed);                 //!< Valued constructor (double).
 
     Melg607(const state_type& internal_state) noexcept;     //!< Valued constructor (full state).
 
@@ -125,7 +125,7 @@ public:
     void seed(const long long          seed_) noexcept;     //!< Initializes internal state (long long).
     void seed(const unsigned long long seed_) noexcept;     //!< Initializes internal state (unsigned long long).
     void seed(const utils::UInt128&    seed_) noexcept;     //!< Initializes internal state (unsigned 128-bits).
-    void seed(const double             seed_) noexcept;     //!< Initializes internal state (double).
+    void seed(const double             seed_);              //!< Initializes internal state (double).
 
 private:
     // this definition will avoid an 'if' in method 'next()'

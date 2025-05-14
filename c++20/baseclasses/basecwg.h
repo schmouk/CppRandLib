@@ -122,7 +122,7 @@ public:
     BaseCWG(const long long          seed) noexcept;    //!< Valued constructor (long long).
     BaseCWG(const unsigned long long seed) noexcept;    //!< Valued constructor (unsigned long long).
     BaseCWG(const utils::UInt128&    seed) noexcept;    //!< Valued constructor (unsigned 128-bits).
-    BaseCWG(const double             seed) noexcept;    //!< Valued constructor (double).
+    BaseCWG(const double             seed);             //!< Valued constructor (double).
 
     BaseCWG(const state_type& internal_state) noexcept; //!< Valued constructor (full state).
 
@@ -208,7 +208,7 @@ inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(cons
 
 /** Valued construtor. */
 template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
-inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const double seed_) noexcept
+inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const double seed_)
     : MyBaseClass()
 {
     MyBaseClass::seed(seed_);

@@ -96,7 +96,7 @@ Melg19937::Melg19937(const utils::UInt128& seed_) noexcept
 
 //---------------------------------------------------------------------------
 /** Valued constructor (double). */
-Melg19937::Melg19937(const double seed_) noexcept
+Melg19937::Melg19937(const double seed_)
     : MyBaseClass()
 {
     seed(seed_);
@@ -195,7 +195,7 @@ void Melg19937::seed(const utils::UInt128& seed_) noexcept
 
 //---------------------------------------------------------------------------
 /** Initializes internal state (double). */
-void Melg19937::seed(const double seed_) noexcept
+void Melg19937::seed(const double seed_)
 {
     MyBaseClass::seed(seed_);
 }

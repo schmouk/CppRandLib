@@ -732,7 +732,7 @@ public:
     virtual inline void seed(const utils::UInt128 seed_) noexcept;
 
     /** @brief Initalizes internal state from a double seed. */
-    inline void seed(const double seed_) noexcept;
+    inline void seed(const double seed_);
 
 
     /** @brief Restores the internal state of this PRNG from seed. */
@@ -1422,10 +1422,12 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed(const utils::UInt128 
 /** ief Initalizes internal state from a double seed. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
     requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
-inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed(const double seed_) noexcept
+inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed(const double seed_)
 {
-    const double s{ (seed_ < 0.0) ? -seed_ : seed_ };
-    seed(s > 1.0 ? std::uint64_t(s) : std::uint64_t(s * double(0xffff'ffff'ffff'ffffULL)));
+    if (seed_ < 0.0 || 1.0 <= seed_)
+        throw FloatValueRange01Exception();
+
+    seed(std::uint64_t(seed_ * double(0xffff'ffff'ffff'ffffULL)));
 }
 
 //---------------------------------------------------------------------------

@@ -83,7 +83,7 @@ Mrg287::Mrg287(const utils::UInt128& seed_) noexcept
 
 //---------------------------------------------------------------------------
 /** Valued constructor (double). */
-Mrg287::Mrg287(const double seed_) noexcept
+Mrg287::Mrg287(const double seed_)
     : MyBaseClass(seed_)
 {}
 

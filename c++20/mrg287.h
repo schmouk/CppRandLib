@@ -137,7 +137,7 @@ public:
     Mrg287(const long long          seed) noexcept;         //!< Valued constructor (long long).
     Mrg287(const unsigned long long seed) noexcept;         //!< Valued constructor (unsigned long long).
     Mrg287(const utils::UInt128&    seed) noexcept;         //!< Valued constructor (unsigned 128-bits).
-    Mrg287(const double             seed) noexcept;         //!< Valued constructor (double).
+    Mrg287(const double             seed);                  //!< Valued constructor (double).
 
     Mrg287(const state_type& internal_state) noexcept;      //!< Valued constructor (full state).
 
