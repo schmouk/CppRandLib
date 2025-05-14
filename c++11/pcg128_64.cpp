@@ -180,15 +180,25 @@ void Pcg128_64::seed(const utils::UInt128& seed_) noexcept
 /** Initializes internal state (double). */
 void Pcg128_64::seed(const double seed_) noexcept
 {
-    const double s{ seed_ < 0.0 ? -seed_ : seed_ };
-    if (s >= 1.8446744073709552e+19) {
+    constexpr long double MODULO_128{ 1.8446744073709551616e+19L };
+
+    const long double s{ seed_ < 0.0 ? (long double)(-seed_) : (long double)seed_};
+    if (s >= MODULO_128) {
+        const long double hi{ s / MODULO_128 };
         _setstate(utils::UInt128(0, 1) * s);
     }
     else if (s >= 1.0) {
         seed(std::uint64_t(s));
     }
     else {
-        _setstate(utils::UInt128(0xffff'ffff'ffff'ffff, 0xffff'ffff'ffff'ffff) * s);
+        const long double lo{ 0xffff'ffff'ffff'ffff * s };
+        const long double v{ lo * MODULO_128 + lo };
+        _setstate(
+            utils::UInt128(
+                std::uint64_t(v / MODULO_128),
+                std::uint64_t(lo)
+            )
+        );
     }
 
     /** /
