@@ -279,7 +279,7 @@ namespace tests_prng
             EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
         }
         {
-            LFib116 lfib(-0.357);
+            LFib116 lfib(0.357);
 
             EXPECT_EQ(0, lfib._internal_state.state.index);
             EXPECT_EQ(0x77714db9e870d702, lfib._internal_state.state.list[3]);
@@ -302,33 +302,6 @@ namespace tests_prng
             EXPECT_EQ(0xf6baaf52c3bae3fd, lfib._internal_state.state.list[34]);
             EXPECT_EQ(0x450c87aa0290d0f0, lfib._internal_state.state.list[44]);
             EXPECT_EQ(0x4e20b3e2838fd640, lfib._internal_state.state.list[54]);
-            EXPECT_FALSE(lfib._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
-        }
-        {
-            LFib116 lfib(8.87e+18);
-
-            EXPECT_EQ(0, lfib._internal_state.state.index);
-            EXPECT_EQ(0xaf6aa8f43ebb8659, lfib._internal_state.state.list[3]);
-            EXPECT_EQ(0x39390f80db89e31d, lfib._internal_state.state.list[13]);
-            EXPECT_EQ(0x3e2bc8837ce7ec22, lfib._internal_state.state.list[23]);
-            EXPECT_EQ(0xd2c9c36a8585312d, lfib._internal_state.state.list[33]);
-            EXPECT_EQ(0x4ab4eb00216eb318, lfib._internal_state.state.list[43]);
-            EXPECT_EQ(0x4048712b5ed9d636, lfib._internal_state.state.list[53]);
-            EXPECT_FALSE(lfib._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
-
-            const std::uint64_t expected[]{ 0x65a06707e9b956a9, 0x71eddd40f9b76300, 0x15108f1c2bd12839, 0xf2f11a8dbc2a26fc, 0x8680178e5b0c203a };
-            for (std::uint64_t e : expected)
-                EXPECT_EQ(e, lfib.next());
-
-            EXPECT_EQ(5, lfib._internal_state.state.index);
-            EXPECT_EQ(0x8680178e5b0c203a, lfib._internal_state.state.list[4]);
-            EXPECT_EQ(0x74d601c8c6c14f90, lfib._internal_state.state.list[14]);
-            EXPECT_EQ(0x7c374de5f5ad099a, lfib._internal_state.state.list[24]);
-            EXPECT_EQ(0x438671997d6ea0a3, lfib._internal_state.state.list[34]);
-            EXPECT_EQ(0xef667528f697eea3, lfib._internal_state.state.list[44]);
-            EXPECT_EQ(0xfb0ee064fa29b632, lfib._internal_state.state.list[54]);
             EXPECT_FALSE(lfib._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
         }
@@ -359,6 +332,9 @@ namespace tests_prng
             EXPECT_FALSE(lfib._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
         }
+
+        EXPECT_THROW(LFib116(-8.87e+18), FloatValueRange01Exception);
+        EXPECT_THROW(LFib116(1.0), FloatValueRange01Exception);
 
 
         //-- tests copy constructor
@@ -522,7 +498,7 @@ namespace tests_prng
         EXPECT_FALSE(lfib._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
 
-        lfib.seed(-0.357);
+        lfib.seed(0.357);
         EXPECT_EQ(0, lfib._internal_state.state.index);
         EXPECT_EQ(0x77714db9e870d702, lfib._internal_state.state.list[3]);
         EXPECT_EQ(0xee8fd4bfccca5ee3, lfib._internal_state.state.list[13]);
@@ -530,17 +506,6 @@ namespace tests_prng
         EXPECT_EQ(0xd394e8454bdb01ba, lfib._internal_state.state.list[33]);
         EXPECT_EQ(0x6d59ad10fc02d912, lfib._internal_state.state.list[43]);
         EXPECT_EQ(0x2a2852b20445bdd9, lfib._internal_state.state.list[53]);
-        EXPECT_FALSE(lfib._internal_state.gauss_valid);
-        EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
-
-        lfib.seed(8.87e+18);
-        EXPECT_EQ(0, lfib._internal_state.state.index);
-        EXPECT_EQ(0xaf6aa8f43ebb8659, lfib._internal_state.state.list[3]);
-        EXPECT_EQ(0x39390f80db89e31d, lfib._internal_state.state.list[13]);
-        EXPECT_EQ(0x3e2bc8837ce7ec22, lfib._internal_state.state.list[23]);
-        EXPECT_EQ(0xd2c9c36a8585312d, lfib._internal_state.state.list[33]);
-        EXPECT_EQ(0x4ab4eb00216eb318, lfib._internal_state.state.list[43]);
-        EXPECT_EQ(0x4048712b5ed9d636, lfib._internal_state.state.list[53]);
         EXPECT_FALSE(lfib._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
 
@@ -554,6 +519,9 @@ namespace tests_prng
         EXPECT_EQ(0x5ba1c1d335e210df, lfib._internal_state.state.list[50]);
         EXPECT_FALSE(lfib._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
+
+        EXPECT_THROW(lfib.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(lfib.seed(-0.001), FloatValueRange01Exception);
 
 
         //-- tests _setstate(seed_)

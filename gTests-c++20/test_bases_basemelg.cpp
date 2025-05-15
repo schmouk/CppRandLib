@@ -115,26 +115,15 @@ namespace tests_bases
                 EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
         }
         {
-            BaseMELG<5> melg(-0.357);
-            EXPECT_EQ(0, melg._internal_state.state.index);
-            const std::uint64_t expected[]{ 0x5fee464f36fc42c3, 0x954faf5a9ad49cf8, 0xa985465a4a5fc644, 0x77714db9e870d702, 0xa3aac457d81d552c };
-            for (int i = 0; i < 5; ++i)
-                EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
-        }
-        {
-            BaseMELG<5> melg(8.87e+18);
-            EXPECT_EQ(0, melg._internal_state.state.index);
-            const std::uint64_t expected[]{ 0xeede014d9a5a6108, 0xa6eb6466bac9f251, 0x4246cbb1a64bf70c, 0xaf6aa8f43ebb8659, 0xe1b0fb2c7e764cdb };
-            for (int i = 0; i < 5; ++i)
-                EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
-        }
-        {
             BaseMELG<5> melg(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
             EXPECT_EQ(0, melg._internal_state.state.index);
             const std::uint64_t expected[]{ 0xf75f04cbb5a1a1dd, 0xec779c3693f88501, 0xfed9eeb4936de39d, 0x6f9fb04b092bd30a, 0x260ffb0260bbbe5f };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
         }
+
+        EXPECT_THROW(BaseMELG<5>(-0.357), FloatValueRange01Exception);
+        EXPECT_THROW(BaseMELG<5>(8.87e+18), FloatValueRange01Exception);
 
 
         //-- tests Valued constructor (full state).
@@ -294,45 +283,6 @@ namespace tests_bases
                 EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
         }
         {
-            melg.seed(-0.987);
-
-            std::uint64_t expected[5]{
-                0x943b187a0bd8a2b1, 0x408b140678c02785, 0x50a07e0f464ee700,
-                0xcc646d0c4da77303, 0x694f7527a44c6c96
-            };
-
-            EXPECT_FALSE(melg._internal_state.gauss_valid);
-            EXPECT_EQ(0, melg._internal_state.state.index);
-            for (int i = 0; i < 5; ++i)
-                EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
-        }
-        {
-            melg.seed(8.87e+18);
-
-            std::uint64_t expected[5]{
-                0xeede014d9a5a6108, 0xa6eb6466bac9f251, 0x4246cbb1a64bf70c,
-                0xaf6aa8f43ebb8659, 0xe1b0fb2c7e764cdb
-            };
-
-            EXPECT_FALSE(melg._internal_state.gauss_valid);
-            EXPECT_EQ(0, melg._internal_state.state.index);
-            for (int i = 0; i < 5; ++i)
-                EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
-        }
-        {
-            melg.seed(-8.87e+18);
-
-            std::uint64_t expected[5]{
-                0xeede014d9a5a6108, 0xa6eb6466bac9f251, 0x4246cbb1a64bf70c,
-                0xaf6aa8f43ebb8659, 0xe1b0fb2c7e764cdb
-            };
-
-            EXPECT_FALSE(melg._internal_state.gauss_valid);
-            EXPECT_EQ(0, melg._internal_state.state.index);
-            for (int i = 0; i < 5; ++i)
-                EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
-        }
-        {
             melg.seed(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
 
             std::uint64_t expected[5]{
@@ -345,6 +295,9 @@ namespace tests_bases
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], melg._internal_state.state.list[i]);
         }
+
+        EXPECT_THROW(melg.seed(-0.001), FloatValueRange01Exception);
+        EXPECT_THROW(melg.seed(1.0), FloatValueRange01Exception);
 
 
         //-- tests _setstate()

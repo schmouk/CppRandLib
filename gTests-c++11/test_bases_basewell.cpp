@@ -114,19 +114,15 @@ namespace tests_bases
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
         }
         {
-            BaseWell<5> wll(-0.357);
+            BaseWell<5> wll(0.357);
             EXPECT_EQ(0, wll._internal_state.state.index);
             const std::uint64_t expected[]{ 0x5fee464f, 0x954faf5a, 0xa985465a, 0x77714db9, 0xa3aac457 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
         }
-        {
-            BaseWell<5> wll(8.87e+18);
-            EXPECT_EQ(0, wll._internal_state.state.index);
-            const std::uint64_t expected[]{ 0xeede014d, 0xa6eb6466, 0x4246cbb1, 0xaf6aa8f4, 0xe1b0fb2c };
-            for (int i = 0; i < 5; ++i)
-                EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
-        }
+
+        EXPECT_THROW(BaseWell<5>(-0.357), FloatValueRange01Exception);
+        EXPECT_THROW(BaseWell<5>(8.87e+18), FloatValueRange01Exception);
 
 
         //-- tests Valued constructor (full state).

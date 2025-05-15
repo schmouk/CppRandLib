@@ -49,7 +49,7 @@ namespace tests_bases
 
 
         // notice: all hard coded belowing values have been evaluated with PyRandLib
-        
+
         //-- tests Valued construtor (seed).
         {
             BaseSquares<unsigned long> sqr(1);
@@ -93,15 +93,13 @@ namespace tests_bases
             EXPECT_EQ(0xea49fd182c19435d, sqr._internal_state.state.key);
         }
         {
-            BaseSquares<unsigned long> sqr(-0.357);
+            BaseSquares<unsigned long> sqr(0.357);
             EXPECT_EQ(0, sqr._internal_state.state.counter);
             EXPECT_EQ(0x69ef8b1a6eda9b27, sqr._internal_state.state.key);
         }
-        {
-            BaseSquares<unsigned long> sqr(8.87e+18);
-            EXPECT_EQ(0, sqr._internal_state.state.counter);
-            EXPECT_EQ(0xea49fd182c19435d, sqr._internal_state.state.key);
-        }
+
+        EXPECT_THROW(BaseSquares<unsigned long>(-0.357), FloatValueRange01Exception);
+        EXPECT_THROW(BaseSquares<unsigned long>(8.87e+18), FloatValueRange01Exception);
 
 
         //-- tests Valued constructor (full state).

@@ -172,7 +172,7 @@ namespace tests_prng
             EXPECT_DOUBLE_EQ(0.0, frand63._internal_state.gauss_next);
         }
         {
-            FastRand63 frand63(-0.357);
+            FastRand63 frand63(0.357);
 
             EXPECT_EQ(0x2ff723279b7e2161, frand63._internal_state.state);
             EXPECT_FALSE(frand63._internal_state.gauss_valid);
@@ -183,21 +183,6 @@ namespace tests_prng
                 EXPECT_EQ(e, frand63.next());
 
             EXPECT_EQ(0x15fc89176e9980b2, frand63._internal_state.state);
-            EXPECT_FALSE(frand63._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, frand63._internal_state.gauss_next);
-        }
-        {
-            FastRand63 frand63(8.87e+18);
-
-            EXPECT_EQ(0x776f00a6cd2d3084, frand63._internal_state.state);
-            EXPECT_FALSE(frand63._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, frand63._internal_state.gauss_next);
-
-            const std::uint64_t expected[]{ 0xe7a713e523b5055, 0x24116e3c9d1013da, 0x4c732d382a287ca3, 0x6db715fa55425180, 0x3dcc3409fbfcbf81 };
-            for (std::uint64_t e : expected)
-                EXPECT_EQ(e, frand63.next());
-
-            EXPECT_EQ(0x3dcc3409fbfcbf81, frand63._internal_state.state);
             EXPECT_FALSE(frand63._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, frand63._internal_state.gauss_next);
         }
@@ -216,6 +201,10 @@ namespace tests_prng
             EXPECT_FALSE(frand63._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, frand63._internal_state.gauss_next);
         }
+
+        EXPECT_THROW(FastRand63(-8.87e+18), FloatValueRange01Exception);
+        EXPECT_THROW(FastRand63(1.0), FloatValueRange01Exception);
+
 
         //-- tests copy constructor
         {
@@ -310,13 +299,8 @@ namespace tests_prng
         EXPECT_FALSE(frand63._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, frand63._internal_state.gauss_next);
 
-        frand63.seed(-0.357);
+        frand63.seed(0.357);
         EXPECT_EQ(0x2ff723279b7e2161, frand63._internal_state.state);
-        EXPECT_FALSE(frand63._internal_state.gauss_valid);
-        EXPECT_DOUBLE_EQ(0.0, frand63._internal_state.gauss_next);
-
-        frand63.seed(8.87e+18);
-        EXPECT_EQ(0x776f00a6cd2d3084, frand63._internal_state.state);
         EXPECT_FALSE(frand63._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, frand63._internal_state.gauss_next);
 
@@ -324,6 +308,9 @@ namespace tests_prng
         EXPECT_EQ(0x7baf8265dad0d0ee, frand63._internal_state.state);
         EXPECT_FALSE(frand63._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, frand63._internal_state.gauss_next);
+
+        EXPECT_THROW(frand63.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(frand63.seed(-0.001), FloatValueRange01Exception);
 
 
         //-- tests _setstate(seed_)

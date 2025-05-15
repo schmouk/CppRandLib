@@ -175,7 +175,7 @@ namespace tests_prng
             EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
         }
         {
-            Pcg64_32 pcg(-0.357);
+            Pcg64_32 pcg(0.357);
 
             EXPECT_EQ(0x5b645a1cac083000ULL, pcg._internal_state.state);
             EXPECT_FALSE(pcg._internal_state.gauss_valid);
@@ -186,21 +186,6 @@ namespace tests_prng
                 EXPECT_EQ(e, pcg.next());
 
             EXPECT_EQ(0x8a988aac268e41f3ULL, pcg._internal_state.state);
-            EXPECT_FALSE(pcg._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
-        }
-        {
-            Pcg64_32 pcg(8.87e+18);
-
-            EXPECT_EQ(0x7b18920135b70000ULL, pcg._internal_state.state);
-            EXPECT_FALSE(pcg._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
-
-            const std::uint64_t expected[]{ 0x8c49f6abUL, 0x5d5ac1b3UL, 0x9e0acbf0UL, 0x9824604eUL, 0x097f8a5dUL };
-            for (std::uint64_t e : expected)
-                EXPECT_EQ(e, pcg.next());
-
-            EXPECT_EQ(0x756af87f2901d1f3ULL, pcg._internal_state.state);
             EXPECT_FALSE(pcg._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
         }
@@ -219,6 +204,9 @@ namespace tests_prng
             EXPECT_FALSE(pcg._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
         }
+
+        EXPECT_THROW(Pcg64_32(-8.87e+18), FloatValueRange01Exception);
+        EXPECT_THROW(Pcg64_32(1.0), FloatValueRange01Exception);
 
 
         //-- tests copy constructor
@@ -326,13 +314,8 @@ namespace tests_prng
         EXPECT_FALSE(pcg._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
 
-        pcg.seed(-0.357);
+        pcg.seed(0.357);
         EXPECT_EQ(0x5b645a1cac083000ULL, pcg._internal_state.state);
-        EXPECT_FALSE(pcg._internal_state.gauss_valid);
-        EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
-
-        pcg.seed(8.87e+18);
-        EXPECT_EQ(0x7b18920135b70000ULL, pcg._internal_state.state);
         EXPECT_FALSE(pcg._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
 
@@ -340,6 +323,9 @@ namespace tests_prng
         EXPECT_EQ(0xfffffffffffffffdULL, pcg._internal_state.state);
         EXPECT_FALSE(pcg._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
+
+        EXPECT_THROW(pcg.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(pcg.seed(-0.001), FloatValueRange01Exception);
 
 
         //-- tests _setstate(seed_)
@@ -363,7 +349,7 @@ namespace tests_prng
         constexpr int INTERNAL_LOOPS_COUNT{ 1'000'000 };
 
         std::uint64_t start_ms{ utils::get_time_ms() };
-        while (n < 60) {
+        while (n < 100) {
             for (int i = 0; i < INTERNAL_LOOPS_COUNT; ++i)
                 hist[(Histogram::index_type)pcg(ENTRIES_COUNT)]++;
             ++n;

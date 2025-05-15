@@ -172,7 +172,7 @@ namespace tests_prng
             EXPECT_DOUBLE_EQ(0.0, frand32._internal_state.gauss_next);
         }
         {
-            FastRand32 frand32(-0.357);
+            FastRand32 frand32(0.357);
 
             EXPECT_EQ(0x5fee464f, frand32._internal_state.state);
             EXPECT_FALSE(frand32._internal_state.gauss_valid);
@@ -183,21 +183,6 @@ namespace tests_prng
                 EXPECT_EQ(e, frand32.next());
 
             EXPECT_EQ(0xe0a17650, frand32._internal_state.state);
-            EXPECT_FALSE(frand32._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, frand32._internal_state.gauss_next);
-        }
-        {
-            FastRand32 frand32(8.87e+18);
-
-            EXPECT_EQ(0xeede014d, frand32._internal_state.state);
-            EXPECT_FALSE(frand32._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, frand32._internal_state.gauss_next);
-
-            const std::uint32_t expected[]{ 0x8f24f3aa, 0x74a0c123, 0x4fac7008, 0xfece1e69, 0xa102af16 };
-            for (std::uint32_t e : expected)
-                EXPECT_EQ(e, frand32.next());
-
-            EXPECT_EQ(0xa102af16, frand32._internal_state.state);
             EXPECT_FALSE(frand32._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, frand32._internal_state.gauss_next);
         }
@@ -216,6 +201,10 @@ namespace tests_prng
             EXPECT_FALSE(frand32._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, frand32._internal_state.gauss_next);
         }
+
+        EXPECT_THROW(FastRand32(-8.87e+18), FloatValueRange01Exception);
+        EXPECT_THROW(FastRand32(1.0), FloatValueRange01Exception);
+
 
         //-- tests copy constructor
         {
@@ -310,13 +299,8 @@ namespace tests_prng
         EXPECT_FALSE(frand32._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, frand32._internal_state.gauss_next);
 
-        frand32.seed(-0.357);
+        frand32.seed(0.357);
         EXPECT_EQ(0x5fee464f, frand32._internal_state.state);
-        EXPECT_FALSE(frand32._internal_state.gauss_valid);
-        EXPECT_DOUBLE_EQ(0.0, frand32._internal_state.gauss_next);
-
-        frand32.seed(8.87e+18);
-        EXPECT_EQ(0xeede014d, frand32._internal_state.state);
         EXPECT_FALSE(frand32._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, frand32._internal_state.gauss_next);
 
@@ -324,6 +308,9 @@ namespace tests_prng
         EXPECT_EQ(0xf75f04cb, frand32._internal_state.state);
         EXPECT_FALSE(frand32._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, frand32._internal_state.gauss_next);
+
+        EXPECT_THROW(frand32.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(frand32.seed(-0.001), FloatValueRange01Exception);
 
 
         //-- tests _setstate(seed_)

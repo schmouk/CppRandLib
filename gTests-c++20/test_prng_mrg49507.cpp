@@ -279,7 +279,7 @@ namespace tests_prng
             EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
         }
         {
-            Mrg49507 mrg(-0.357);
+            Mrg49507 mrg(0.357);
 
             EXPECT_EQ(0, mrg._internal_state.state.index);
             EXPECT_EQ(0x2ff72327, mrg._internal_state.state.list[0]);
@@ -302,33 +302,6 @@ namespace tests_prng
             EXPECT_EQ(0x6b0f9802, mrg._internal_state.state.list[931]);
             EXPECT_EQ(0x648ee44c, mrg._internal_state.state.list[1197]);
             EXPECT_EQ(0x5ebdfc83, mrg._internal_state.state.list[1463]);
-            EXPECT_FALSE(mrg._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
-        }
-        {
-            Mrg49507 mrg(8.87e+18);
-
-            EXPECT_EQ(0, mrg._internal_state.state.index);
-            EXPECT_EQ(0x52c8b378, mrg._internal_state.state.list[90]);
-            EXPECT_EQ(0x03cb6c1e, mrg._internal_state.state.list[356]);
-            EXPECT_EQ(0x5bb1be93, mrg._internal_state.state.list[622]);
-            EXPECT_EQ(0x22e6f2ce, mrg._internal_state.state.list[888]);
-            EXPECT_EQ(0x7a3e53b6, mrg._internal_state.state.list[1154]);
-            EXPECT_EQ(0x42faeace, mrg._internal_state.state.list[1420]);
-            EXPECT_FALSE(mrg._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
-
-            const std::uint64_t expected[]{ 0x66168d31, 0x6c259913, 0x544a8995, 0x08a4bf3f, 0x300943a0 };
-            for (std::uint64_t e : expected)
-                EXPECT_EQ(e, mrg.next());
-
-            EXPECT_EQ(5, mrg._internal_state.state.index);
-            EXPECT_EQ(0x175ea947, mrg._internal_state.state.list[223]);
-            EXPECT_EQ(0x513c8052, mrg._internal_state.state.list[489]);
-            EXPECT_EQ(0x74e98b5c, mrg._internal_state.state.list[755]);
-            EXPECT_EQ(0x40db937d, mrg._internal_state.state.list[1021]);
-            EXPECT_EQ(0x7f6cb0bc, mrg._internal_state.state.list[1287]);
-            EXPECT_EQ(0x172f6cf6, mrg._internal_state.state.list[1553]);
             EXPECT_FALSE(mrg._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
         }
@@ -359,6 +332,9 @@ namespace tests_prng
             EXPECT_FALSE(mrg._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
         }
+
+        EXPECT_THROW(Mrg49507(-8.87e+18), FloatValueRange01Exception);
+        EXPECT_THROW(Mrg49507(1.0), FloatValueRange01Exception);
 
 
         //-- tests copy constructor
@@ -522,7 +498,7 @@ namespace tests_prng
         EXPECT_FALSE(mrg._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
 
-        mrg.seed(-0.357);
+        mrg.seed(0.357);
         EXPECT_EQ(0, mrg._internal_state.state.index);
         EXPECT_EQ(0x2ff72327, mrg._internal_state.state.list[0]);
         EXPECT_EQ(0x0d50b0c0, mrg._internal_state.state.list[266]);
@@ -530,17 +506,6 @@ namespace tests_prng
         EXPECT_EQ(0x24a731ed, mrg._internal_state.state.list[798]);
         EXPECT_EQ(0x505a1c7e, mrg._internal_state.state.list[1064]);
         EXPECT_EQ(0x18dca9e2, mrg._internal_state.state.list[1330]);
-        EXPECT_FALSE(mrg._internal_state.gauss_valid);
-        EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
-
-        mrg.seed(8.87e+18);
-        EXPECT_EQ(0, mrg._internal_state.state.index);
-        EXPECT_EQ(0x52c8b378, mrg._internal_state.state.list[90]);
-        EXPECT_EQ(0x03cb6c1e, mrg._internal_state.state.list[356]);
-        EXPECT_EQ(0x5bb1be93, mrg._internal_state.state.list[622]);
-        EXPECT_EQ(0x22e6f2ce, mrg._internal_state.state.list[888]);
-        EXPECT_EQ(0x7a3e53b6, mrg._internal_state.state.list[1154]);
-        EXPECT_EQ(0x42faeace, mrg._internal_state.state.list[1420]);
         EXPECT_FALSE(mrg._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
 
@@ -554,6 +519,9 @@ namespace tests_prng
         EXPECT_EQ(0x0a371094, mrg._internal_state.state.list[1371]);
         EXPECT_FALSE(mrg._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
+
+        EXPECT_THROW(mrg.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(mrg.seed(-0.001), FloatValueRange01Exception);
 
 
         //-- tests _setstate(seed_)

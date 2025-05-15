@@ -115,26 +115,15 @@ namespace tests_bases
                 EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
         }
         {
-            BaseMRG32<5> mrg(-0.357);
-            EXPECT_EQ(0, mrg._internal_state.state.index);
-            const std::uint64_t expected[]{ 0x5fee464f, 0x954faf5a, 0xa985465a, 0x77714db9, 0xa3aac457 };
-            for (int i = 0; i < 5; ++i)
-                EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
-        }
-        {
-            BaseMRG32<5> mrg(8.87e+18);
-            EXPECT_EQ(0, mrg._internal_state.state.index);
-            const std::uint64_t expected[]{ 0xeede014d9a5a6108 >> 32, 0xa6eb6466bac9f251 >> 32, 0x4246cbb1a64bf70c >> 32, 0xaf6aa8f43ebb8659 >> 32, 0xe1b0fb2c7e764cdb >> 32 };
-            for (int i = 0; i < 5; ++i)
-                EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
-        }
-        {
             BaseMRG32<5> mrg(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
             EXPECT_EQ(0, mrg._internal_state.state.index);
             const std::uint64_t expected[]{ 0xf75f04cbb5a1a1dd >> 32, 0xec779c3693f88501 >> 32, 0xfed9eeb4936de39d >> 32, 0x6f9fb04b092bd30a >> 32, 0x260ffb0260bbbe5f >> 32 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
         }
+
+        EXPECT_THROW(BaseMRG32<5>(-0.357), FloatValueRange01Exception);
+        EXPECT_THROW(BaseMRG32<5>(8.87e+18), FloatValueRange01Exception);
 
 
         //-- tests Valued constructor (full state).
@@ -223,6 +212,12 @@ namespace tests_bases
                     break;
                 }
             EXPECT_TRUE(diff);
+        }
+
+        {
+            BaseMRG32<5> mrg;
+            EXPECT_THROW(mrg.seed(-0.001), FloatValueRange01Exception);
+            EXPECT_THROW(mrg.seed(1.0), FloatValueRange01Exception);
         }
 
 

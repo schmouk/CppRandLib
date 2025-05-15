@@ -48,13 +48,19 @@ namespace tests_prng
 
         EXPECT_EQ(17ULL, lfib_1._internal_state.state.list.size());
         EXPECT_EQ(0, lfib_1._internal_state.state.index);
-        EXPECT_TRUE(std::ranges::any_of(lfib_1._internal_state.state.list, [](auto s) { return s != 0; }));
+        EXPECT_TRUE(
+            std::any_of(
+                lfib_1._internal_state.state.list.cbegin(),
+                lfib_1._internal_state.state.list.cend(),
+                [](auto s) { return s != 0; }
+            )
+        );
         EXPECT_FALSE(lfib_1._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, lfib_1._internal_state.gauss_next);
 
 
         // Notice: hard coded values below have been evaluated with PyRandLib")
-        
+
         //-- tests Valued construtor (seed) AND next()
         {
             LFib78 lfib(1);
@@ -273,7 +279,7 @@ namespace tests_prng
             EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
         }
         {
-            LFib78 lfib(-0.357);
+            LFib78 lfib(0.357);
 
             EXPECT_EQ(0, lfib._internal_state.state.index);
             EXPECT_EQ(0x954faf5a9ad49cf8, lfib._internal_state.state.list[1]);
@@ -296,33 +302,6 @@ namespace tests_prng
             EXPECT_EQ(0xdf3d30dc1390db9, lfib._internal_state.state.list[10]);
             EXPECT_EQ(0xee8fd4bfccca5ee3, lfib._internal_state.state.list[13]);
             EXPECT_EQ(0x63be72f7c7521c27, lfib._internal_state.state.list[16]);
-            EXPECT_FALSE(lfib._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
-        }
-        {
-            LFib78 lfib(8.87e+18);
-
-            EXPECT_EQ(0, lfib._internal_state.state.index);
-            EXPECT_EQ(0xa6eb6466bac9f251, lfib._internal_state.state.list[1]);
-            EXPECT_EQ(0xe1b0fb2c7e764cdb, lfib._internal_state.state.list[4]);
-            EXPECT_EQ(0xe0c07d9420f2f41e, lfib._internal_state.state.list[7]);
-            EXPECT_EQ(0xa92d263b8e9fbd45, lfib._internal_state.state.list[10]);
-            EXPECT_EQ(0x39390f80db89e31d, lfib._internal_state.state.list[13]);
-            EXPECT_EQ(0xcbe9dce4849cf8e6, lfib._internal_state.state.list[16]);
-            EXPECT_FALSE(lfib._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
-
-            const std::uint64_t expected[]{ 0xb58daca64a135c56, 0xe02473e79653d56e, 0xb71ccd7a6d0d469c, 0xf9eb52dbd0651bcb, 0xad9ad811031345c1 };
-            for (std::uint64_t e : expected)
-                EXPECT_EQ(e, lfib.next());
-
-            EXPECT_EQ(5, lfib._internal_state.state.index);
-            EXPECT_EQ(0xe02473e79653d56e, lfib._internal_state.state.list[1]);
-            EXPECT_EQ(0xad9ad811031345c1, lfib._internal_state.state.list[4]);
-            EXPECT_EQ(0xe0c07d9420f2f41e, lfib._internal_state.state.list[7]);
-            EXPECT_EQ(0xa92d263b8e9fbd45, lfib._internal_state.state.list[10]);
-            EXPECT_EQ(0x39390f80db89e31d, lfib._internal_state.state.list[13]);
-            EXPECT_EQ(0xcbe9dce4849cf8e6, lfib._internal_state.state.list[16]);
             EXPECT_FALSE(lfib._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
         }
@@ -353,6 +332,9 @@ namespace tests_prng
             EXPECT_FALSE(lfib._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
         }
+
+        EXPECT_THROW(LFib78(-8.87e+18), FloatValueRange01Exception);
+        EXPECT_THROW(LFib78(1.0), FloatValueRange01Exception);
 
 
         //-- tests copy constructor
@@ -405,7 +387,13 @@ namespace tests_prng
         //-- tests seed()
         lfib.seed();
         EXPECT_EQ(0, lfib._internal_state.state.index);
-        EXPECT_TRUE(std::ranges::any_of(lfib._internal_state.state.list, [](auto s) { return s != 0; }));
+        EXPECT_TRUE(
+            std::any_of(
+                lfib._internal_state.state.list.cbegin(),
+                lfib._internal_state.state.list.cend(),
+                [](auto s) { return s != 0; }
+            )
+        );
         EXPECT_FALSE(lfib._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
 
@@ -510,7 +498,7 @@ namespace tests_prng
         EXPECT_FALSE(lfib._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
 
-        lfib.seed(-0.357);
+        lfib.seed(0.357);
         EXPECT_EQ(0, lfib._internal_state.state.index);
         EXPECT_EQ(0x954faf5a9ad49cf8, lfib._internal_state.state.list[1]);
         EXPECT_EQ(0xa3aac457d81d552c, lfib._internal_state.state.list[4]);
@@ -518,17 +506,6 @@ namespace tests_prng
         EXPECT_EQ(0xdf3d30dc1390db9, lfib._internal_state.state.list[10]);
         EXPECT_EQ(0xee8fd4bfccca5ee3, lfib._internal_state.state.list[13]);
         EXPECT_EQ(0x63be72f7c7521c27, lfib._internal_state.state.list[16]);
-        EXPECT_FALSE(lfib._internal_state.gauss_valid);
-        EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
-
-        lfib.seed(8.87e+18);
-        EXPECT_EQ(0, lfib._internal_state.state.index);
-        EXPECT_EQ(0xa6eb6466bac9f251, lfib._internal_state.state.list[1]);
-        EXPECT_EQ(0xe1b0fb2c7e764cdb, lfib._internal_state.state.list[4]);
-        EXPECT_EQ(0xe0c07d9420f2f41e, lfib._internal_state.state.list[7]);
-        EXPECT_EQ(0xa92d263b8e9fbd45, lfib._internal_state.state.list[10]);
-        EXPECT_EQ(0x39390f80db89e31d, lfib._internal_state.state.list[13]);
-        EXPECT_EQ(0xcbe9dce4849cf8e6, lfib._internal_state.state.list[16]);
         EXPECT_FALSE(lfib._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
 
@@ -542,6 +519,9 @@ namespace tests_prng
         EXPECT_EQ(0x66fb5ba3ae1546e0, lfib._internal_state.state.list[16]);
         EXPECT_FALSE(lfib._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
+
+        EXPECT_THROW(lfib.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(lfib.seed(-0.001), FloatValueRange01Exception);
 
 
         //-- tests _setstate(seed_)

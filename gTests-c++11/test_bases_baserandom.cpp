@@ -79,10 +79,13 @@ namespace tests_bases
         inline const bool operator== (const std::uint16_t rhs) const { return true; }
         inline const bool operator== (const std::uint32_t rhs) const { return true; }
         inline const bool operator== (const int rhs) const { return true; }
+        inline const bool operator== (const long rhs) const { return true; }
+        inline const bool operator== (const long long rhs) const { return true; }
         inline const bool operator== (const std::uint64_t rhs) const { return true; }
         inline const bool operator== (const float rhs) const { return true; }
         inline const bool operator== (const double rhs) const { return true; }
         inline const bool operator== (const long double rhs) const { return true; }
+        inline const bool operator== (const Object& rhs) { return true; }
 
         inline const bool operator<= (const Object& rhs) { return true; }
         inline const bool operator<= (const std::uint8_t rhs) const { return true; }
@@ -1228,10 +1231,8 @@ namespace tests_bases
 
         br0.seed(0.0f);
         EXPECT_EQ(br0.state(), 0ULL);
-        br1.seed(123.0);
-        EXPECT_EQ(br1.state(), 0ULL);
-        br33.seed(-1.0);
-        EXPECT_EQ(br33.state(), 0UL);
+        EXPECT_THROW(br1.seed(123.0), FloatValueRange01Exception);
+        EXPECT_THROW(br33.seed(-1.0), FloatValueRange01Exception);
 
         br0.seed(utils::UInt128());
         EXPECT_EQ(br0.state(), 0ULL);
@@ -1979,9 +1980,9 @@ namespace tests_bases
         EXPECT_EQ(0.0L, br0.uniform<long double>(-157L));
 
         u = double(0xffff'ffff) / double(1ULL << 32);
-        EXPECT_EQ(u * 101, br1.uniform(101));
+        EXPECT_EQ(int(u * 101), int(br1.uniform<double>(101)));
         EXPECT_EQ(100, br1.uniform<int>(101));
-        EXPECT_EQ(u * 101.0f, br1.uniform(101.0f));
+        EXPECT_NEAR(u * 101.0f, br1.uniform<double>(101.0f), 1e-6);
         EXPECT_EQ(u * -1, br1.uniform(-1LL));
         EXPECT_EQ((long double)u * -157L, br1.uniform<long double>(-157L));
 
@@ -1989,7 +1990,7 @@ namespace tests_bases
         EXPECT_EQ(u * 101, br33.uniform(101));
         EXPECT_EQ(int(u * 101), br33.uniform<int>(101));
         EXPECT_EQ(u * 101.0f, br33.uniform(101.0f));
-        EXPECT_EQ(u * -1, br33.uniform(-1LL));
+        EXPECT_EQ(u * -1, br33.uniform<double>(-1LL));
         EXPECT_EQ((long double)u * -157L, br33.uniform<long double>(-157L));
 
 

@@ -337,7 +337,7 @@ namespace tests_prng
             EXPECT_DOUBLE_EQ(0.0, cwg128._internal_state.gauss_next);
         }
         {
-            Cwg128 cwg128(-0.357);
+            Cwg128 cwg128(0.357);
 
             EXPECT_EQ(0x0, cwg128._internal_state.state.a.hi);
             EXPECT_EQ(0x0, cwg128._internal_state.state.a.lo);
@@ -368,41 +368,6 @@ namespace tests_prng
             EXPECT_EQ(0x2eedbca2fa983db7, cwg128._internal_state.state.state.lo);
             EXPECT_EQ(0xdfa75f8c12ed4dd1, cwg128._internal_state.state.weyl.hi);
             EXPECT_EQ(0xea8e6cc5062710dd, cwg128._internal_state.state.weyl.lo);
-            EXPECT_FALSE(cwg128._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, cwg128._internal_state.gauss_next);
-        }
-        {
-            Cwg128 cwg128(8.87e+18);
-
-            EXPECT_EQ(0x0, cwg128._internal_state.state.a.hi);
-            EXPECT_EQ(0x0, cwg128._internal_state.state.a.lo);
-            EXPECT_EQ(0xeede014d9a5a6108, cwg128._internal_state.state.s.hi);
-            EXPECT_EQ(0xa6eb6466bac9f251, cwg128._internal_state.state.s.lo);
-            EXPECT_EQ(0x4246cbb1a64bf70c, cwg128._internal_state.state.state.hi);
-            EXPECT_EQ(0xaf6aa8f43ebb8659, cwg128._internal_state.state.state.lo);
-            EXPECT_EQ(0x0, cwg128._internal_state.state.weyl.hi);
-            EXPECT_EQ(0x0, cwg128._internal_state.state.weyl.lo);
-            EXPECT_FALSE(cwg128._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, cwg128._internal_state.gauss_next);
-
-            const utils::UInt128 expected[]{
-                utils::UInt128(0x30621f22d84676d9, 0xa451abf4cc6adbac),
-                utils::UInt128(0x87a1e7d72b96e789, 0x736d7c3767acfcf4),
-                utils::UInt128(0xc8fb8b8cabad5377, 0xc422566383c44228),
-                utils::UInt128(0x94d1f21119eb7320, 0xb8a32e5b5dc61c25),
-                utils::UInt128(0x1c9e3456b00cc022, 0x4919bf92c130e7de)
-            };
-            for (utils::UInt128 v : expected)
-                EXPECT_EQ(v, cwg128.next());
-
-            EXPECT_EQ(0x581850496fc21c08, cwg128._internal_state.state.a.hi);
-            EXPECT_EQ(0x43ef55def9fa7f36, cwg128._internal_state.state.a.lo);
-            EXPECT_EQ(0xeede014d9a5a6108, cwg128._internal_state.state.s.hi);
-            EXPECT_EQ(0xa6eb6466bac9f251, cwg128._internal_state.state.s.lo);
-            EXPECT_EQ(0x1c9e3456b00cc022, cwg128._internal_state.state.state.hi);
-            EXPECT_EQ(0x4919bf929928b797, cwg128._internal_state.state.state.lo);
-            EXPECT_EQ(0xaa56068403c3e52b, cwg128._internal_state.state.weyl.hi);
-            EXPECT_EQ(0x4298f601a5f1bb95, cwg128._internal_state.state.weyl.lo);
             EXPECT_FALSE(cwg128._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, cwg128._internal_state.gauss_next);
         }
@@ -441,6 +406,9 @@ namespace tests_prng
             EXPECT_FALSE(cwg128._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, cwg128._internal_state.gauss_next);
         }
+
+        EXPECT_THROW(Cwg128(-8.87e+18), FloatValueRange01Exception);
+        EXPECT_THROW(Cwg128(1.0), FloatValueRange01Exception);
 
 
         //-- tests Valued constructor (full state).
@@ -639,7 +607,7 @@ namespace tests_prng
         EXPECT_FALSE(cwg128._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, cwg128._internal_state.gauss_next);
 
-        cwg128.seed(-0.357);
+        cwg128.seed(0.357);
         EXPECT_EQ(0x0, cwg128._internal_state.state.a.hi);
         EXPECT_EQ(0x0, cwg128._internal_state.state.a.lo);
         EXPECT_EQ(0x5fee464f36fc42c3, cwg128._internal_state.state.s.hi);
@@ -651,17 +619,8 @@ namespace tests_prng
         EXPECT_FALSE(cwg128._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, cwg128._internal_state.gauss_next);
 
-        cwg128.seed(8.87e+18);
-        EXPECT_EQ(0x0, cwg128._internal_state.state.a.hi);
-        EXPECT_EQ(0x0, cwg128._internal_state.state.a.lo);
-        EXPECT_EQ(0xeede014d9a5a6108, cwg128._internal_state.state.s.hi);
-        EXPECT_EQ(0xa6eb6466bac9f251, cwg128._internal_state.state.s.lo);
-        EXPECT_EQ(0x4246cbb1a64bf70c, cwg128._internal_state.state.state.hi);
-        EXPECT_EQ(0xaf6aa8f43ebb8659, cwg128._internal_state.state.state.lo);
-        EXPECT_EQ(0x0, cwg128._internal_state.state.weyl.hi);
-        EXPECT_EQ(0x0, cwg128._internal_state.state.weyl.lo);
-        EXPECT_FALSE(cwg128._internal_state.gauss_valid);
-        EXPECT_DOUBLE_EQ(0.0, cwg128._internal_state.gauss_next);
+        EXPECT_THROW(cwg128.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(cwg128.seed(-0.001), FloatValueRange01Exception);
 
 
         //-- tests random()

@@ -93,6 +93,18 @@ namespace tests_utils
 
         // tests SplitMix64(int seed) and operator()
         {
+            utils::SplitMix64 s64(1);
+            std::uint64_t expected[]{ 0x910a2dec89025cc1, 0xbeeb8da1658eec67, 0xf893a2eefb32555e, 0x71c18690ee42c90b, 0x71bb54d8d101b5b9 };
+            for (auto e : expected)
+                EXPECT_EQ(e, s64());
+        }
+        {
+            utils::SplitMix64 s64(-1);
+            std::uint64_t expected[]{ 0xe4d971771b652c20, 0xe99ff867dbf682c9, 0x382ff84cb27281e9, 0x6d1db36ccba982d2, 0xb4a0472e578069ae };
+            for (auto e : expected)
+                EXPECT_EQ(e, s64());
+        }
+        {
             utils::SplitMix64 s64(1L);
             std::uint64_t expected[]{ 0x910a2dec89025cc1, 0xbeeb8da1658eec67, 0xf893a2eefb32555e, 0x71c18690ee42c90b, 0x71bb54d8d101b5b9 };
             for (auto e : expected)
@@ -134,14 +146,24 @@ namespace tests_utils
             for (auto e : expected)
                 EXPECT_EQ(e, s64());
         }
-        {
-            utils::SplitMix64 s64(8.87e+18);
-            std::uint64_t expected[]{ 0xeede014d9a5a6108, 0xa6eb6466bac9f251, 0x4246cbb1a64bf70c, 0xaf6aa8f43ebb8659, 0xe1b0fb2c7e764cdb };
-            for (auto e : expected)
-                EXPECT_EQ(e, s64());
-        }
+
+        EXPECT_THROW(utils::SplitMix64(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(utils::SplitMix64(-0.001), FloatValueRange01Exception);
+
 
         // tests SplitMix63(int seed) and operator()
+        {
+            utils::SplitMix63 s63(1);
+            std::uint64_t expected[]{ 0x910a2dec89025cc1 >> 1, 0xbeeb8da1658eec67 >> 1, 0xf893a2eefb32555e >> 1, 0x71c18690ee42c90b >> 1, 0x71bb54d8d101b5b9 >> 1 };
+            for (auto e : expected)
+                EXPECT_EQ(e, s63());
+        }
+        {
+            utils::SplitMix63 s63(-1);
+            std::uint64_t expected[]{ 0xe4d971771b652c20 >> 1, 0xe99ff867dbf682c9 >> 1, 0x382ff84cb27281e9 >> 1, 0x6d1db36ccba982d2 >> 1, 0xb4a0472e578069ae >> 1 };
+            for (auto e : expected)
+                EXPECT_EQ(e, s63());
+        }
         {
             utils::SplitMix63 s63(1L);
             std::uint64_t expected[]{ 0x910a2dec89025cc1 >> 1, 0xbeeb8da1658eec67 >> 1, 0xf893a2eefb32555e >> 1, 0x71c18690ee42c90b >> 1, 0x71bb54d8d101b5b9 >> 1 };
@@ -184,14 +206,24 @@ namespace tests_utils
             for (auto e : expected)
                 EXPECT_EQ(e, s63());
         }
-        {
-            utils::SplitMix63 s63(8.87e+18);
-            std::uint64_t expected[]{ 0xeede014d9a5a6108 >> 1, 0xa6eb6466bac9f251 >> 1, 0x4246cbb1a64bf70c >> 1, 0xaf6aa8f43ebb8659 >> 1, 0xe1b0fb2c7e764cdb >> 1 };
-            for (auto e : expected)
-                EXPECT_EQ(e, s63());
-        }
+
+        EXPECT_THROW(utils::SplitMix63(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(utils::SplitMix63(-0.001), FloatValueRange01Exception);
+
 
         // tests SplitMix32(int seed) and operator()
+        {
+            utils::SplitMix32 s32(1);
+            std::uint64_t expected[]{ 0x910a2dec89025cc1 >> 32, 0xbeeb8da1658eec67 >> 32, 0xf893a2eefb32555e >> 32, 0x71c18690ee42c90b >> 32, 0x71bb54d8d101b5b9 >> 32 };
+            for (auto e : expected)
+                EXPECT_EQ(e, s32());
+        }
+        {
+            utils::SplitMix32 s32(-1);
+            std::uint64_t expected[]{ 0xe4d971771b652c20 >> 32, 0xe99ff867dbf682c9 >> 32, 0x382ff84cb27281e9 >> 32, 0x6d1db36ccba982d2 >> 32, 0xb4a0472e578069ae >> 32 };
+            for (auto e : expected)
+                EXPECT_EQ(e, s32());
+        }
         {
             utils::SplitMix32 s32(1L);
             std::uint64_t expected[]{ 0x910a2dec89025cc1 >> 32, 0xbeeb8da1658eec67 >> 32, 0xf893a2eefb32555e >> 32, 0x71c18690ee42c90b >> 32, 0x71bb54d8d101b5b9 >> 32 };
@@ -234,14 +266,24 @@ namespace tests_utils
             for (auto e : expected)
                 EXPECT_EQ(e, s32());
         }
-        {
-            utils::SplitMix32 s32(8.87e+18);
-            std::uint64_t expected[]{ 0xeede014d9a5a6108 >> 32, 0xa6eb6466bac9f251 >> 32, 0x4246cbb1a64bf70c >> 32, 0xaf6aa8f43ebb8659 >> 32, 0xe1b0fb2c7e764cdb >> 32 };
-            for (auto e : expected)
-                EXPECT_EQ(e, s32());
-        }
+
+        EXPECT_THROW(utils::SplitMix32(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(utils::SplitMix32(-0.001), FloatValueRange01Exception);
+
 
         // tests SplitMix31(int seed) and operator()
+        {
+            utils::SplitMix31 s31(1);
+            std::uint64_t expected[]{ 0x910a2dec89025cc1 >> 33, 0xbeeb8da1658eec67 >> 33, 0xf893a2eefb32555e >> 33, 0x71c18690ee42c90b >> 33, 0x71bb54d8d101b5b9 >> 33 };
+            for (auto e : expected)
+                EXPECT_EQ(e, s31());
+        }
+        {
+            utils::SplitMix31 s31(-1);
+            std::uint64_t expected[]{ 0xe4d971771b652c20 >> 33, 0xe99ff867dbf682c9 >> 33, 0x382ff84cb27281e9 >> 33, 0x6d1db36ccba982d2 >> 33, 0xb4a0472e578069ae >> 33 };
+            for (auto e : expected)
+                EXPECT_EQ(e, s31());
+        }
         {
             utils::SplitMix31 s31(1L);
             std::uint64_t expected[]{ 0x910a2dec89025cc1 >> 33, 0xbeeb8da1658eec67 >> 33, 0xf893a2eefb32555e >> 33, 0x71c18690ee42c90b >> 33, 0x71bb54d8d101b5b9 >> 33 };
@@ -284,12 +326,10 @@ namespace tests_utils
             for (auto e : expected)
                 EXPECT_EQ(e, s31());
         }
-        {
-            utils::SplitMix31 s31(8.87e+18);
-            std::uint64_t expected[]{ 0xeede014d9a5a6108 >> 33, 0xa6eb6466bac9f251 >> 33, 0x4246cbb1a64bf70c >> 33, 0xaf6aa8f43ebb8659 >> 33, 0xe1b0fb2c7e764cdb >> 33 };
-            for (auto e : expected)
-                EXPECT_EQ(e, s31());
-        }
+
+        EXPECT_THROW(utils::SplitMix31(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(utils::SplitMix31(-0.001), FloatValueRange01Exception);
+
 
     }
 }

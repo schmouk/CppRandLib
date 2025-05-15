@@ -47,7 +47,8 @@ namespace tests_bases
     struct Object
     {
         inline Object(const int x)
-        {}
+        {
+        }
 
         Object() = default;
         Object(const Object&) = default;
@@ -57,6 +58,8 @@ namespace tests_bases
         inline const bool operator== (const std::uint16_t rhs) const { return true; }
         inline const bool operator== (const std::uint32_t rhs) const { return true; }
         inline const bool operator== (const int rhs) const { return true; }
+        inline const bool operator== (const long rhs) const { return true; }
+        inline const bool operator== (const long long rhs) const { return true; }
         inline const bool operator== (const std::uint64_t rhs) const { return true; }
         inline const bool operator== (const float rhs) const { return true; }
         inline const bool operator== (const double rhs) const { return true; }
@@ -233,7 +236,7 @@ namespace tests_bases
         EXPECT_EQ(0ULL, br0.state());
         EXPECT_FALSE(br0.gauss_valid());
         EXPECT_DOUBLE_EQ(0.0, br0.gauss_next());
-        
+
         BaseRandom1 br1;
         EXPECT_EQ(0ULL, br1.state());
         EXPECT_FALSE(br1.gauss_valid());
@@ -306,19 +309,19 @@ namespace tests_bases
 
 
         //-- tests operator()
-        EXPECT_FLOAT_EQ(0.0f, br0.operator()<float>());
-        EXPECT_DOUBLE_EQ(0.0, br0.operator()<double>());
-        EXPECT_NEAR(0.0L, br0.operator()<long double>(), 1.0e-20L);
+        EXPECT_FLOAT_EQ(0.0f, br0.operator() < float > ());
+        EXPECT_DOUBLE_EQ(0.0, br0.operator() < double > ());
+        EXPECT_NEAR(0.0L, br0.operator() < long double > (), 1.0e-20L);
         EXPECT_NEAR(0.0L, br0(), 1.0e-20L);
 
-        EXPECT_FLOAT_EQ(1.0f, br1.operator()<float>());
-        EXPECT_NEAR(1.0, br1.operator()<double>(), 1.0e-9);
-        EXPECT_NEAR(1.0L, br1.operator()<long double>(), 1.0e-9L);
+        EXPECT_FLOAT_EQ(1.0f, br1.operator() < float > ());
+        EXPECT_NEAR(1.0, br1.operator() < double > (), 1.0e-9);
+        EXPECT_NEAR(1.0L, br1.operator() < long double > (), 1.0e-9L);
         EXPECT_NEAR(1.0L, br1(), 1.0e-9L);
 
-        EXPECT_FLOAT_EQ(0.333333333f, br33.operator()<float>());
-        EXPECT_NEAR(1.0 / 3.0, br33.operator()<double>(), 1.0e-9);
-        EXPECT_NEAR(1.0L / 3.0L, br33.operator()<long double>(), 1.0e-9L);
+        EXPECT_FLOAT_EQ(0.333333333f, br33.operator() < float > ());
+        EXPECT_NEAR(1.0 / 3.0, br33.operator() < double > (), 1.0e-9);
+        EXPECT_NEAR(1.0L / 3.0L, br33.operator() < long double > (), 1.0e-9L);
         EXPECT_NEAR(1.0L / 3.0L, br33(), 1.0e-9L);
 
 
@@ -339,29 +342,29 @@ namespace tests_bases
         //-- tests operator(max, n)
         constexpr int n{ 5 };
 
-        std::vector<std::uint32_t> vect = br0.operator()<std::uint32_t>(150UL, n);
+        std::vector<std::uint32_t> vect = br0.operator() < std::uint32_t > (150UL, n);
         for (int i = 0; i < n; ++i)
             EXPECT_EQ(0UL, vect[i]);
 
-        vect = br1.operator()<std::uint32_t>(1500UL, n);
+        vect = br1.operator() < std::uint32_t > (1500UL, n);
         for (int i = 0; i < n; ++i)
             EXPECT_EQ(1499UL, vect[i]);
 
-        vect = br33.operator()<std::uint32_t>(1500UL, n);
+        vect = br33.operator() < std::uint32_t > (1500UL, n);
         for (int i = 0; i < n; ++i)
             EXPECT_EQ(499UL, vect[i]);
 
 
         //-- tests operator(min, max, n)
-        vect = br0.operator()<std::uint32_t>(15UL, 150UL, n);
+        vect = br0.operator() < std::uint32_t > (15UL, 150UL, n);
         for (int i = 0; i < n; ++i)
             EXPECT_EQ(15UL, vect[i]);
 
-        vect = br1.operator()<std::uint32_t>(15UL, 1500UL, n);
+        vect = br1.operator() < std::uint32_t > (15UL, 1500UL, n);
         for (int i = 0; i < n; ++i)
             EXPECT_EQ(1499UL, vect[i]);
 
-        vect = br33.operator()<std::uint32_t>(300UL, 1500UL, n);
+        vect = br33.operator() < std::uint32_t > (300UL, 1500UL, n);
         for (int i = 0; i < n; ++i)
             EXPECT_EQ(699UL, vect[i]);
 
@@ -373,23 +376,23 @@ namespace tests_bases
 
         std::size_t mn{ max_vect.size() };
 
-        vect = br0.operator()<std::uint32_t>(max_vect);
+        vect = br0.operator() < std::uint32_t > (max_vect);
         for (std::uint32_t v : vect)
             EXPECT_EQ(0UL, v);
 
-        vect_d = br0.operator()<double>(max_vect_d);
+        vect_d = br0.operator() < double > (max_vect_d);
         for (double v : vect_d)
             EXPECT_DOUBLE_EQ(0., v);
 
-        vect = br1.operator()<std::uint32_t>(max_vect);
+        vect = br1.operator() < std::uint32_t > (max_vect);
         for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(max_vect[i] - 1, vect[i]);
 
-        vect_d = br1.operator()<double>(max_vect_d);
+        vect_d = br1.operator() < double > (max_vect_d);
         for (std::size_t i = 0; i < mn; ++i)
             EXPECT_NEAR(max_vect_d[i], vect_d[i], 1.0e-6);
 
-        vect = br33.operator()<std::uint32_t>(max_vect);
+        vect = br33.operator() < std::uint32_t > (max_vect);
         for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(std::uint32_t(max_vect[i] * _NORM33), vect[i]);
 
@@ -398,15 +401,15 @@ namespace tests_bases
         std::array<std::uint32_t, 5> max_arr{ 444, 666, 888, 1110, 1332 };
         std::array<std::uint32_t, 5> arr;
 
-        arr = br0.operator()<std::uint32_t, 5>(max_arr);
+        arr = br0.operator() < std::uint32_t, 5 > (max_arr);
         for (std::uint32_t v : arr)
             EXPECT_EQ(0UL, v);
 
-        arr = br1.operator()<std::uint32_t, 5>(max_arr);
+        arr = br1.operator() < std::uint32_t, 5 > (max_arr);
         for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(std::uint32_t(max_arr[i] * 0.999999), arr[i]);
 
-        arr = br33.operator()<std::uint32_t, 5>(max_arr);
+        arr = br33.operator() < std::uint32_t, 5 > (max_arr);
         for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(::uint32_t(max_arr[i] * _NORM33), arr[i]);
 
@@ -415,15 +418,15 @@ namespace tests_bases
         std::vector<std::uint32_t> min_vect{ 111, 222, 333, 444 };
         mn = max_vect.size();
 
-        vect = br0.operator()<std::uint32_t>(min_vect, max_vect);
+        vect = br0.operator() < std::uint32_t > (min_vect, max_vect);
         for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(min_vect[i], vect[i]);
 
-        vect = br1.operator()<std::uint32_t>(min_vect, max_vect);
+        vect = br1.operator() < std::uint32_t > (min_vect, max_vect);
         for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(std::uint32_t(max_vect[i] * 0.999999), vect[i]);
 
-        vect = br33.operator()<std::uint32_t>(min_vect, max_vect);
+        vect = br33.operator() < std::uint32_t > (min_vect, max_vect);
         for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(min_vect[i] + std::uint32_t((max_vect[i] - min_vect[i]) * _NORM33), vect[i]);
 
@@ -431,15 +434,15 @@ namespace tests_bases
         //-- tests operator(array min, array max)
         std::array<std::uint32_t, n> min_arr{ 111, 222, 333, 444, 555 };
 
-        arr = br0.operator()<std::uint32_t>(min_arr, max_arr);
+        arr = br0.operator() < std::uint32_t > (min_arr, max_arr);
         for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(min_arr[i], arr[i]);
 
-        arr = br1.operator()<std::uint32_t>(min_arr, max_arr);
+        arr = br1.operator() < std::uint32_t > (min_arr, max_arr);
         for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(std::uint32_t(max_arr[i] * 0.999999), arr[i]);
 
-        arr = br33.operator()<std::uint32_t>(min_arr, max_arr);
+        arr = br33.operator() < std::uint32_t > (min_arr, max_arr);
         for (std::size_t i = 0; i < mn; ++i)
             EXPECT_EQ(min_arr[i] + std::uint32_t((max_arr[i] - min_arr[i]) * _NORM33), arr[i]);
 
@@ -487,7 +490,7 @@ namespace tests_bases
 
 
         //-- tests getstate()
-        struct BaseRandom<std::uint64_t, std::uint32_t, 32>::_InternalState internal_state{ brbase.getstate() };
+        struct BaseRandom<std::uint64_t, std::uint32_t, 32>::_InternalState internal_state { brbase.getstate() };
 
         EXPECT_EQ(0xf00f'0ff0'f00f'0ff0ULL, internal_state.state);
         EXPECT_DOUBLE_EQ(0.0, internal_state.gauss_next);
@@ -554,7 +557,7 @@ namespace tests_bases
         std::vector<float> min_vect_f{ 1.0f, 2.0f, 3.0f };
 
         vu0 = br0.n_evaluate<std::uint32_t>(min_vect, max_vect);
-        for (std::size_t i=0; i < std::min(min_vect.size(), max_vect.size()); ++i)
+        for (std::size_t i = 0; i < std::min(min_vect.size(), max_vect.size()); ++i)
             EXPECT_EQ(vu0[i], std::min(min_vect[i], max_vect[i]));
 
         vu1 = br1.n_evaluate<std::uint32_t>(min_vect_f, max_vect);
@@ -646,9 +649,9 @@ namespace tests_bases
 
         std::array<float, 6> arr6{ br0.n_evaluate<float, 6>(min_arr_4, max_arr_5) };
         for (int i = 0; i < 4; ++i) {
-            EXPECT_FLOAT_EQ(std::min(float(min_arr_4[i]),float(max_arr_5[i])), arr6[i]);
+            EXPECT_FLOAT_EQ(std::min(float(min_arr_4[i]), float(max_arr_5[i])), arr6[i]);
         }
-        for (int i=4; i < 6; ++i)
+        for (int i = 4; i < 6; ++i)
             EXPECT_EQ(0.0f, arr6[i]);
 
         std::array<std::uint32_t, 5> arr5{ br1.n_evaluate<std::uint32_t, 5>(min_arr_5, max_arr_4) };
@@ -723,7 +726,7 @@ namespace tests_bases
 
         //-- tests samples(vector, vector, k)
         std::vector<char> vect_population{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M' };
-        const size_t N_vect_population{ vect_population.size()};
+        const size_t N_vect_population{ vect_population.size() };
         std::vector<char> vect_c;
 
         int k{ 0 };
@@ -804,7 +807,7 @@ namespace tests_bases
         // first, with all counts set to 1
         std::vector<int> vect_counts(vect_population.size(), 1);
 
-        k = 0 ;
+        k = 0;
         br0.sample(vect_c, vect_population, vect_counts, k);
         for (int i = 0; i < k; ++i)
             EXPECT_EQ(vect_population[i], vect_c[i]);
@@ -1036,10 +1039,8 @@ namespace tests_bases
 
         br0.seed(0.0f);
         EXPECT_EQ(br0.state(), 0ULL);
-        br1.seed(123.0);
-        EXPECT_EQ(br1.state(), 0ULL);
-        br33.seed(-1.0);
-        EXPECT_EQ(br33.state(), 0UL);
+        EXPECT_THROW(br1.seed(123.0), FloatValueRange01Exception);
+        EXPECT_THROW(br33.seed(-1.0), FloatValueRange01Exception);
 
         br0.seed(utils::UInt128());
         EXPECT_EQ(br0.state(), 0ULL);
@@ -1160,13 +1161,13 @@ namespace tests_bases
         BaseRandom1_0 br1_0;
         constexpr double LAMBDAS[] = { 0.10, 0.50, 1.00, 3.33, 20.0 };
 
-        for (int i=0; i < 5; ++i)
+        for (int i = 0; i < 5; ++i)
             EXPECT_DOUBLE_EQ(0.0, br0.expovariate(LAMBDAS[i]));
 
         for (int i = 0; i < 5; ++i)
             EXPECT_DOUBLE_EQ(-std::log(1.0 - double(0xffff'ffffUL) / double(1ULL << 32)) / LAMBDAS[i], br1.expovariate(LAMBDAS[i]));
-        
-        for (int i=0; i<5; ++i)
+
+        for (int i = 0; i < 5; ++i)
             EXPECT_DOUBLE_EQ(0.0, br1_0.expovariate(LAMBDAS[i]));
 
         for (int i = 0; i < 5; ++i)
@@ -1781,9 +1782,9 @@ namespace tests_bases
         EXPECT_EQ(0.0L, br0.uniform<long double>(-157L));
 
         u = double(0xffff'ffff) / double(1ULL << 32);
-        EXPECT_EQ(u * 101, br1.uniform(101));
+        EXPECT_EQ(int(u * 101), int(br1.uniform<double>(101)));
         EXPECT_EQ(100, br1.uniform<int>(101));
-        EXPECT_EQ(u * 101.0f, br1.uniform(101.0f));
+        EXPECT_NEAR(u * 101.0f, br1.uniform<double>(101.0f), 1e-6);
         EXPECT_EQ(u * -1, (br1.uniform<double, std::int64_t>(0xffff'ffff'ffff'ffffLL)));
         EXPECT_EQ((long double)u * -157L, br1.uniform<long double>(-157L));
 
@@ -1791,7 +1792,7 @@ namespace tests_bases
         EXPECT_EQ(u * 101, br33.uniform(101));
         EXPECT_EQ(int(u * 101), br33.uniform<int>(101));
         EXPECT_EQ(u * 101.0f, br33.uniform(101.0f));
-        EXPECT_EQ(u * -1, br33.uniform(-1LL));
+        EXPECT_EQ(u * -1, br33.uniform<double>(-1LL));
         EXPECT_EQ((long double)u * -157L, br33.uniform<long double>(-157L));
 
 
@@ -1836,26 +1837,26 @@ namespace tests_bases
 
         // Notice: hard coded expected values here below have been evaluated with PyRandLib
         u = double(0x5555'5555ULL) / double(1ULL << 32);
-        EXPECT_NEAR(2.0943951019055, br33.vonmisesvariate(0.0            , 0.0), 1.0e-7);
-        EXPECT_NEAR(5.5716486148173, br33.vonmisesvariate(0.0            , 0.5), 1.0e-7);
-        EXPECT_NEAR(5.7362107270429, br33.vonmisesvariate(0.0            , 1.0), 1.0e-7);
-        EXPECT_NEAR(5.8261542345922, br33.vonmisesvariate(0.0            , 1.5), 1.0e-7);
-        EXPECT_NEAR(5.8834514689426, br33.vonmisesvariate(0.0            , 2.0), 1.0e-7);
-        EXPECT_NEAR(5.9540007159598, br33.vonmisesvariate(0.0            , 3.0), 1.0e-7);
-        EXPECT_NEAR(5.9970387621021, br33.vonmisesvariate(0.0            , 4.0), 1.0e-7);
-        EXPECT_NEAR(6.0267227633299, br33.vonmisesvariate(0.0            , 5.0), 1.0e-7);
-        EXPECT_NEAR(6.0487664484707, br33.vonmisesvariate(0.0            , 6.0), 1.0e-7);
-        EXPECT_NEAR(6.0798640040855, br33.vonmisesvariate(0.0            , 8.0), 1.0e-7);
-        EXPECT_NEAR(2.0943951019055, br33.vonmisesvariate(0.8            , 0.0), 1.0e-7);
-        EXPECT_NEAR(0.0884633076377, br33.vonmisesvariate(0.8            , 0.5), 1.0e-7);
-        EXPECT_NEAR(0.2530254198633, br33.vonmisesvariate(0.8            , 1.0), 1.0e-7);
-        EXPECT_NEAR(0.3429689274126, br33.vonmisesvariate(0.8            , 1.5), 1.0e-7);
-        EXPECT_NEAR(0.4002661617630, br33.vonmisesvariate(0.8            , 2.0), 1.0e-7);
-        EXPECT_NEAR(0.4708154087802, br33.vonmisesvariate(0.8            , 3.0), 1.0e-7);
-        EXPECT_NEAR(0.5138534549225, br33.vonmisesvariate(0.8            , 4.0), 1.0e-7);
-        EXPECT_NEAR(0.5435374561503, br33.vonmisesvariate(0.8            , 5.0), 1.0e-7);
-        EXPECT_NEAR(0.5655811412911, br33.vonmisesvariate(0.8            , 6.0), 1.0e-7);
-        EXPECT_NEAR(0.5966786969059, br33.vonmisesvariate(0.8            , 8.0), 1.0e-7);
+        EXPECT_NEAR(2.0943951019055, br33.vonmisesvariate(0.0, 0.0), 1.0e-7);
+        EXPECT_NEAR(5.5716486148173, br33.vonmisesvariate(0.0, 0.5), 1.0e-7);
+        EXPECT_NEAR(5.7362107270429, br33.vonmisesvariate(0.0, 1.0), 1.0e-7);
+        EXPECT_NEAR(5.8261542345922, br33.vonmisesvariate(0.0, 1.5), 1.0e-7);
+        EXPECT_NEAR(5.8834514689426, br33.vonmisesvariate(0.0, 2.0), 1.0e-7);
+        EXPECT_NEAR(5.9540007159598, br33.vonmisesvariate(0.0, 3.0), 1.0e-7);
+        EXPECT_NEAR(5.9970387621021, br33.vonmisesvariate(0.0, 4.0), 1.0e-7);
+        EXPECT_NEAR(6.0267227633299, br33.vonmisesvariate(0.0, 5.0), 1.0e-7);
+        EXPECT_NEAR(6.0487664484707, br33.vonmisesvariate(0.0, 6.0), 1.0e-7);
+        EXPECT_NEAR(6.0798640040855, br33.vonmisesvariate(0.0, 8.0), 1.0e-7);
+        EXPECT_NEAR(2.0943951019055, br33.vonmisesvariate(0.8, 0.0), 1.0e-7);
+        EXPECT_NEAR(0.0884633076377, br33.vonmisesvariate(0.8, 0.5), 1.0e-7);
+        EXPECT_NEAR(0.2530254198633, br33.vonmisesvariate(0.8, 1.0), 1.0e-7);
+        EXPECT_NEAR(0.3429689274126, br33.vonmisesvariate(0.8, 1.5), 1.0e-7);
+        EXPECT_NEAR(0.4002661617630, br33.vonmisesvariate(0.8, 2.0), 1.0e-7);
+        EXPECT_NEAR(0.4708154087802, br33.vonmisesvariate(0.8, 3.0), 1.0e-7);
+        EXPECT_NEAR(0.5138534549225, br33.vonmisesvariate(0.8, 4.0), 1.0e-7);
+        EXPECT_NEAR(0.5435374561503, br33.vonmisesvariate(0.8, 5.0), 1.0e-7);
+        EXPECT_NEAR(0.5655811412911, br33.vonmisesvariate(0.8, 6.0), 1.0e-7);
+        EXPECT_NEAR(0.5966786969059, br33.vonmisesvariate(0.8, 8.0), 1.0e-7);
         EXPECT_NEAR(2.0943951019055, br33.vonmisesvariate(3.141592653 / 2, 0.0), 1.0e-7);
         EXPECT_NEAR(0.8592596341377, br33.vonmisesvariate(3.141592653 / 2, 0.5), 1.0e-7);
         EXPECT_NEAR(1.0238217463633, br33.vonmisesvariate(3.141592653 / 2, 1.0), 1.0e-7);
@@ -1866,26 +1867,26 @@ namespace tests_bases
         EXPECT_NEAR(1.3143337826503, br33.vonmisesvariate(3.141592653 / 2, 5.0), 1.0e-7);
         EXPECT_NEAR(1.3363774677911, br33.vonmisesvariate(3.141592653 / 2, 6.0), 1.0e-7);
         EXPECT_NEAR(1.3674750234059, br33.vonmisesvariate(3.141592653 / 2, 8.0), 1.0e-7);
-        EXPECT_NEAR(2.0943951019055, br33.vonmisesvariate(2.6            , 0.0), 1.0e-7);
-        EXPECT_NEAR(1.8884633076377, br33.vonmisesvariate(2.6            , 0.5), 1.0e-7);
-        EXPECT_NEAR(2.0530254198633, br33.vonmisesvariate(2.6            , 1.0), 1.0e-7);
-        EXPECT_NEAR(2.1429689274126, br33.vonmisesvariate(2.6            , 1.5), 1.0e-7);
-        EXPECT_NEAR(2.2002661617630, br33.vonmisesvariate(2.6            , 2.0), 1.0e-7);
-        EXPECT_NEAR(2.2708154087802, br33.vonmisesvariate(2.6            , 3.0), 1.0e-7);
-        EXPECT_NEAR(2.3138534549225, br33.vonmisesvariate(2.6            , 4.0), 1.0e-7);
-        EXPECT_NEAR(2.3435374561503, br33.vonmisesvariate(2.6            , 5.0), 1.0e-7);
-        EXPECT_NEAR(2.3655811412911, br33.vonmisesvariate(2.6            , 6.0), 1.0e-7);
-        EXPECT_NEAR(2.3966786969059, br33.vonmisesvariate(2.6            , 8.0), 1.0e-7);
-        EXPECT_NEAR(2.0943951019055, br33.vonmisesvariate(3.141592653    , 0.0), 1.0e-7);
-        EXPECT_NEAR(2.4300559606377, br33.vonmisesvariate(3.141592653    , 0.5), 1.0e-7);
-        EXPECT_NEAR(2.5946180728633, br33.vonmisesvariate(3.141592653    , 1.0), 1.0e-7);
-        EXPECT_NEAR(2.6845615804126, br33.vonmisesvariate(3.141592653    , 1.5), 1.0e-7);
-        EXPECT_NEAR(2.7418588147630, br33.vonmisesvariate(3.141592653    , 2.0), 1.0e-7);
-        EXPECT_NEAR(2.8124080617802, br33.vonmisesvariate(3.141592653    , 3.0), 1.0e-7);
-        EXPECT_NEAR(2.8554461079225, br33.vonmisesvariate(3.141592653    , 4.0), 1.0e-7);
-        EXPECT_NEAR(2.8851301091503, br33.vonmisesvariate(3.141592653    , 5.0), 1.0e-7);
-        EXPECT_NEAR(2.9071737942911, br33.vonmisesvariate(3.141592653    , 6.0), 1.0e-7);
-        EXPECT_NEAR(2.9382713499059, br33.vonmisesvariate(3.141592653    , 8.0), 1.0e-7);
+        EXPECT_NEAR(2.0943951019055, br33.vonmisesvariate(2.6, 0.0), 1.0e-7);
+        EXPECT_NEAR(1.8884633076377, br33.vonmisesvariate(2.6, 0.5), 1.0e-7);
+        EXPECT_NEAR(2.0530254198633, br33.vonmisesvariate(2.6, 1.0), 1.0e-7);
+        EXPECT_NEAR(2.1429689274126, br33.vonmisesvariate(2.6, 1.5), 1.0e-7);
+        EXPECT_NEAR(2.2002661617630, br33.vonmisesvariate(2.6, 2.0), 1.0e-7);
+        EXPECT_NEAR(2.2708154087802, br33.vonmisesvariate(2.6, 3.0), 1.0e-7);
+        EXPECT_NEAR(2.3138534549225, br33.vonmisesvariate(2.6, 4.0), 1.0e-7);
+        EXPECT_NEAR(2.3435374561503, br33.vonmisesvariate(2.6, 5.0), 1.0e-7);
+        EXPECT_NEAR(2.3655811412911, br33.vonmisesvariate(2.6, 6.0), 1.0e-7);
+        EXPECT_NEAR(2.3966786969059, br33.vonmisesvariate(2.6, 8.0), 1.0e-7);
+        EXPECT_NEAR(2.0943951019055, br33.vonmisesvariate(3.141592653, 0.0), 1.0e-7);
+        EXPECT_NEAR(2.4300559606377, br33.vonmisesvariate(3.141592653, 0.5), 1.0e-7);
+        EXPECT_NEAR(2.5946180728633, br33.vonmisesvariate(3.141592653, 1.0), 1.0e-7);
+        EXPECT_NEAR(2.6845615804126, br33.vonmisesvariate(3.141592653, 1.5), 1.0e-7);
+        EXPECT_NEAR(2.7418588147630, br33.vonmisesvariate(3.141592653, 2.0), 1.0e-7);
+        EXPECT_NEAR(2.8124080617802, br33.vonmisesvariate(3.141592653, 3.0), 1.0e-7);
+        EXPECT_NEAR(2.8554461079225, br33.vonmisesvariate(3.141592653, 4.0), 1.0e-7);
+        EXPECT_NEAR(2.8851301091503, br33.vonmisesvariate(3.141592653, 5.0), 1.0e-7);
+        EXPECT_NEAR(2.9071737942911, br33.vonmisesvariate(3.141592653, 6.0), 1.0e-7);
+        EXPECT_NEAR(2.9382713499059, br33.vonmisesvariate(3.141592653, 8.0), 1.0e-7);
 
 
         EXPECT_THROW(br33.vonmisesvariate(1.7, -1), NegativeKappaException);
@@ -1893,7 +1894,7 @@ namespace tests_bases
 
         //-- tests weibull
         alphas = { 0.0, 0.5, 1.0, 1.3, 1.6 };
-        double betas[]{0.1, 0.5, 1.0, 1.5, 2.0, 3.0, 5.0};
+        double betas[]{ 0.1, 0.5, 1.0, 1.5, 2.0, 3.0, 5.0 };
 
         for (double alpha : alphas)
             for (double beta : betas)

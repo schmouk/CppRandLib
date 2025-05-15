@@ -33,6 +33,7 @@ SOFTWARE.
 #include "cwg64.h"
 #include "g_utils/histogram.h"
 #include "utils/time.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================
@@ -50,7 +51,6 @@ namespace tests_prng
         EXPECT_EQ(0ULL, cwg64_1._internal_state.state.weyl);
         EXPECT_FALSE(cwg64_1._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, cwg64_1._internal_state.gauss_next);
-
 
         // Notice: all belowing hard coded values have been evaluated with PyRandLib
 
@@ -225,7 +225,7 @@ namespace tests_prng
             EXPECT_DOUBLE_EQ(0.0, cwg64._internal_state.gauss_next);
         }
         {
-            Cwg64 cwg64(-0.357);
+            Cwg64 cwg64(0.357);
 
             EXPECT_EQ(0ULL, cwg64._internal_state.state.a);
             EXPECT_EQ(0x5fee464f36fc42c3ULL, cwg64._internal_state.state.s);
@@ -242,27 +242,6 @@ namespace tests_prng
             EXPECT_EQ(0x5fee464f36fc42c3ULL, cwg64._internal_state.state.s);
             EXPECT_EQ(0x9afdebcd5f099a95ULL, cwg64._internal_state.state.state);
             EXPECT_EQ(0xdfa75f8c12ed4dcfULL, cwg64._internal_state.state.weyl);
-            EXPECT_FALSE(cwg64._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, cwg64._internal_state.gauss_next);
-        }
-        {
-            Cwg64 cwg64(8.87e+18);
-
-            EXPECT_EQ(0ULL, cwg64._internal_state.state.a);
-            EXPECT_EQ(0xeede014d9a5a6109ULL, cwg64._internal_state.state.s);
-            EXPECT_EQ(0xa6eb6466bac9f251ULL, cwg64._internal_state.state.state);
-            EXPECT_EQ(0ULL, cwg64._internal_state.state.weyl);
-            EXPECT_FALSE(cwg64._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, cwg64._internal_state.gauss_next);
-
-            const std::uint64_t expected[]{ 0xd8f686852ab8624a, 0x25850835c5828c03, 0xd2dfe9d74da6f9f8, 0xb590e785355c0a1f, 0x3d52bb48b14ee91e };
-            for (std::uint64_t v : expected)
-                EXPECT_EQ(v, cwg64.next());
-
-            EXPECT_EQ(0x2dd7c47e2e0879cb, cwg64._internal_state.state.a);
-            EXPECT_EQ(0xeede014d9a5a6109, cwg64._internal_state.state.s);
-            EXPECT_EQ(0x3d52bb48b14ec4c9, cwg64._internal_state.state.state);
-            EXPECT_EQ(0xaa56068403c3e52d, cwg64._internal_state.state.weyl);
             EXPECT_FALSE(cwg64._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, cwg64._internal_state.gauss_next);
         }
@@ -288,6 +267,8 @@ namespace tests_prng
             EXPECT_DOUBLE_EQ(0.0, cwg64._internal_state.gauss_next);
         }
 
+        EXPECT_THROW(Cwg64(-8.87e+18), FloatValueRange01Exception);
+        EXPECT_THROW(Cwg64(1.0), FloatValueRange01Exception);
 
 
         //-- tests Valued constructor (full state).
@@ -344,17 +325,6 @@ namespace tests_prng
 
         //-- tests seed()
         cwg64.seed();
-
-        EXPECT_EQ(0ULL, cwg64._internal_state.state.a);
-        EXPECT_EQ(1ULL, cwg64._internal_state.state.s & 1ULL);
-        EXPECT_NE(0ULL, cwg64._internal_state.state.state);  // should mostly be non-zero, while it could (but 1 over 2^64)
-        EXPECT_NE(cwg64_1._internal_state.state.s, cwg64._internal_state.state.s);  // (1 over 2^64 risk)
-        EXPECT_NE(cwg64_1._internal_state.state.state, cwg64._internal_state.state.state);  // (1 over 2^64 risk)
-        EXPECT_EQ(0ULL, cwg64._internal_state.state.weyl);
-
-
-        //-- tests seed(value)
-        cwg64.seed(-1);
 
         EXPECT_EQ(0ULL, cwg64._internal_state.state.a);
         EXPECT_EQ(1ULL, cwg64._internal_state.state.s & 1ULL);
@@ -437,18 +407,10 @@ namespace tests_prng
         EXPECT_FALSE(cwg64._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, cwg64._internal_state.gauss_next);
 
-        cwg64.seed(-0.357);
+        cwg64.seed(0.357);
         EXPECT_EQ(0x0, cwg64._internal_state.state.a);
         EXPECT_EQ(0x5fee464f36fc42c3, cwg64._internal_state.state.s);
         EXPECT_EQ(0x954faf5a9ad49cf8, cwg64._internal_state.state.state);
-        EXPECT_EQ(0x0, cwg64._internal_state.state.weyl);
-        EXPECT_FALSE(cwg64._internal_state.gauss_valid);
-        EXPECT_DOUBLE_EQ(0.0, cwg64._internal_state.gauss_next);
-
-        cwg64.seed(8.87e+18);
-        EXPECT_EQ(0x0, cwg64._internal_state.state.a);
-        EXPECT_EQ(0xeede014d9a5a6109, cwg64._internal_state.state.s);
-        EXPECT_EQ(0xa6eb6466bac9f251, cwg64._internal_state.state.state);
         EXPECT_EQ(0x0, cwg64._internal_state.state.weyl);
         EXPECT_FALSE(cwg64._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, cwg64._internal_state.gauss_next);
@@ -460,6 +422,9 @@ namespace tests_prng
         EXPECT_EQ(0x0, cwg64._internal_state.state.weyl);
         EXPECT_FALSE(cwg64._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, cwg64._internal_state.gauss_next);
+
+        EXPECT_THROW(cwg64.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(cwg64.seed(-0.001), FloatValueRange01Exception);
 
 
         //-- tests _setstate(seed_)

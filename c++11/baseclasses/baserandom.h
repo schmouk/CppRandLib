@@ -1842,8 +1842,12 @@ inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::uniform(const U max)
     if (!std::is_arithmetic<U>::value)
         throw MaxValueTypeException();
 
-    return T((long double)max * random<long double>());
+    if (max >= U(0))
+        return T(std::min<long double>((long double)max * random<long double>(), (long double)(max - 1e-7L)));
+    else
+        return T(std::max<long double>((long double)max * random<long double>(), (long double)(max - 1e-7L)));
 }
+     
 
 //---------------------------------------------------------------------------
 /** Uniform distribution in [min, max).*/

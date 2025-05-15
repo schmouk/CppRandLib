@@ -242,7 +242,7 @@ namespace tests_prng
             EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
         }
         {
-            Cwg128_64 cwg128_64(-0.357);
+            Cwg128_64 cwg128_64(0.357);
 
             EXPECT_EQ(0ULL, cwg128_64._internal_state.state.a);
             EXPECT_EQ(0x5fee464f36fc42c3, cwg128_64._internal_state.state.s);
@@ -261,29 +261,6 @@ namespace tests_prng
             EXPECT_EQ(0xdd6604a0ba2e09b3, cwg128_64._internal_state.state.state.hi);
             EXPECT_EQ(0xebe74cd080e792f8, cwg128_64._internal_state.state.state.lo);
             EXPECT_EQ(0xdfa75f8c12ed4dcf, cwg128_64._internal_state.state.weyl);
-            EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
-        }
-        {
-            Cwg128_64 cwg128_64(8.87e+18);
-
-            EXPECT_EQ(0ULL, cwg128_64._internal_state.state.a);
-            EXPECT_EQ(0xeede014d9a5a6109, cwg128_64._internal_state.state.s);
-            EXPECT_EQ(0xa6eb6466bac9f251, cwg128_64._internal_state.state.state.hi);
-            EXPECT_EQ(0x4246cbb1a64bf70c, cwg128_64._internal_state.state.state.lo);
-            EXPECT_EQ(0ULL, cwg128_64._internal_state.state.weyl);
-            EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
-
-            const std::uint64_t expected[]{ 0x5d0507d668842c81, 0xd331042444b7ec46, 0xa0e197d6293600d7, 0x72ec7391e58463ed, 0x4b87429035bd3cca };
-            for (std::uint64_t v : expected)
-                EXPECT_EQ(v, cwg128_64.next());
-
-            EXPECT_EQ(0x864ae3146242bc3e, cwg128_64._internal_state.state.a);
-            EXPECT_EQ(0xeede014d9a5a6109, cwg128_64._internal_state.state.s);
-            EXPECT_EQ(0x60d4562e4fdab52a, cwg128_64._internal_state.state.state.hi);
-            EXPECT_EQ(0x4b87429035bdba80, cwg128_64._internal_state.state.state.lo);
-            EXPECT_EQ(0xaa56068403c3e52d, cwg128_64._internal_state.state.weyl);
             EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
         }
@@ -310,6 +287,9 @@ namespace tests_prng
             EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next); 
         }
+
+        EXPECT_THROW(Cwg128_64(-8.87e+18), FloatValueRange01Exception);
+        EXPECT_THROW(Cwg128_64(1.0), FloatValueRange01Exception);
 
 
         //-- tests Valued constructor (full state).
@@ -460,7 +440,7 @@ namespace tests_prng
         EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
 
-        cwg128_64.seed(-0.357);
+        cwg128_64.seed(0.357);
         EXPECT_EQ(0x0, cwg128_64._internal_state.state.a);
         EXPECT_EQ(0x5fee464f36fc42c3, cwg128_64._internal_state.state.s);
         EXPECT_EQ(0x954faf5a9ad49cf8, cwg128_64._internal_state.state.state.hi);
@@ -469,14 +449,8 @@ namespace tests_prng
         EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
 
-        cwg128_64.seed(8.87e+18);
-        EXPECT_EQ(0x0, cwg128_64._internal_state.state.a);
-        EXPECT_EQ(0xeede014d9a5a6109, cwg128_64._internal_state.state.s);
-        EXPECT_EQ(0xa6eb6466bac9f251, cwg128_64._internal_state.state.state.hi);
-        EXPECT_EQ(0x4246cbb1a64bf70c, cwg128_64._internal_state.state.state.lo);
-        EXPECT_EQ(0x0, cwg128_64._internal_state.state.weyl);
-        EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
-        EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
+        EXPECT_THROW(cwg128_64.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(cwg128_64.seed(-0.001), FloatValueRange01Exception);
 
 
         //-- tests _setstate(seed_)

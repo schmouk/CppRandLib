@@ -114,19 +114,15 @@ namespace tests_bases
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
         }
         {
-            BaseXoroshiro<5> xrsr(-0.357);
+            BaseXoroshiro<5> xrsr(0.357);
             EXPECT_EQ(0, xrsr._internal_state.state.index);
             const std::uint64_t expected[]{ 0x5fee464f36fc42c3, 0x954faf5a9ad49cf8, 0xa985465a4a5fc644, 0x77714db9e870d702, 0xa3aac457d81d552c };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
         }
-        {
-            BaseXoroshiro<5> xrsr(8.87e+18);
-            EXPECT_EQ(0, xrsr._internal_state.state.index);
-            const std::uint64_t expected[]{ 0xeede014d9a5a6108, 0xa6eb6466bac9f251, 0x4246cbb1a64bf70c, 0xaf6aa8f43ebb8659, 0xe1b0fb2c7e764cdb };
-            for (int i = 0; i < 5; ++i)
-                EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
-        }
+
+        EXPECT_THROW(BaseXoroshiro<5>(-0.357), FloatValueRange01Exception);
+        EXPECT_THROW(BaseXoroshiro<5>(8.87e+18), FloatValueRange01Exception);
 
 
         //-- tests Valued constructor (full state).
