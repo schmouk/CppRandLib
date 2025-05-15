@@ -31,6 +31,7 @@ SOFTWARE.
 #include <cmath>
 #include <cstdint>
 #include <functional>
+#include <numeric>
 #include <vector>
 
 

@@ -31,8 +31,8 @@ SOFTWARE.
 
 #include "gtest/gtest.h"
 
-#include "pcg128_64.h"
 #include "g_utils/histogram.h"
+#include "pcg128_64.h"
 #include "utils/time.h"
 #include "utils/uint128.h"
 
