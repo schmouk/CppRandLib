@@ -26,13 +26,85 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <algorithm>
 #include <cstdint>
 
 #include "pcg1024_32.h"
 
 
 //===========================================================================
+//---------------------------------------------------------------------------
+/** Empty constructor. */
+Pcg1024_32::Pcg1024_32() noexcept
+    : MyBaseClass()
+{
+    seed();
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (int). */
+Pcg1024_32::Pcg1024_32(const int seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned int). */
+Pcg1024_32::Pcg1024_32(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long). */
+Pcg1024_32::Pcg1024_32(const long seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long). */
+Pcg1024_32::Pcg1024_32(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long long). */
+Pcg1024_32::Pcg1024_32(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long long). */
+Pcg1024_32::Pcg1024_32(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned 128-bits). */
+Pcg1024_32::Pcg1024_32(const utils::UInt128& seed_) noexcept
+    : MyBaseClass()
+{
+    seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (double). */
+Pcg1024_32::Pcg1024_32(const double seed_)
+    : MyBaseClass()
+{
+    seed(seed_);
+}
+
+//---------------------------------------------------------------------------
 /** The internal PRNG algorithm. */
 const Pcg1024_32::output_type Pcg1024_32::next() noexcept
 {
@@ -45,6 +117,87 @@ const Pcg1024_32::output_type Pcg1024_32::next() noexcept
     // then xor's it with the next 32-bits value evaluated with the internal state
     return _internal_state.state.state.next() ^ extended_value;
 }
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (empty signature). */
+inline void Pcg1024_32::seed() noexcept
+{
+    MyBaseClass::seed();
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (int). */
+void Pcg1024_32::seed(const int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned int). */
+void Pcg1024_32::seed(const unsigned int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long). */
+void Pcg1024_32::seed(const long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long). */
+void Pcg1024_32::seed(const unsigned long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long long). */
+void Pcg1024_32::seed(const long long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long long). */
+void Pcg1024_32::seed(const unsigned long long seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned 128-bits). */
+void Pcg1024_32::seed(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::seed(seed_.lo);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (double). */
+void Pcg1024_32::seed(const double seed_)
+{
+    if (seed_ < 0.0 || 1.0 <= seed_)
+        throw FloatValueRange01Exception();
+
+    MyBaseClass::seed(std::uint64_t(0xffff'ffff'ffff'ffffULL * seed_ + seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state with an integer seed. */
+void Pcg1024_32::_setstate(const std::uint64_t seed_) noexcept
+{
+    _internal_state.state.seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state with an UInt128 seed. */
+void Pcg1024_32::_setstate(const utils::UInt128& seed_) noexcept
+{
+    _internal_state.state.seed(seed_.lo);
+}
+
 
 //---------------------------------------------------------------------------
 /** Advances the extended states. */
@@ -94,11 +247,4 @@ const Pcg1024_32::extended_value_type Pcg1024_32::_invxrs(
     const extended_value_type bot{ _invxrs((top | (value & bot_mask)) & ((1ull << new_bits_shift) - 1), new_bits_shift, shift) };
 
     return (top & top_mask) | (bot & bot_mask);
-}
-
-//---------------------------------------------------------------------------
-/** Sets the internal state with an integer seed. */
-void Pcg1024_32::_setstate(const std::uint64_t seed_) noexcept
-{
-    _internal_state.state.state.seed(seed_);
 }
