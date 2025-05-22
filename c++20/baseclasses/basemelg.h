@@ -137,7 +137,8 @@ public:
     void inline seed(const utils::UInt128&    seed_) noexcept;      //!< Initializes internal state (unsigned 128-bits).
     void inline seed(const double             seed_);               //!< Initializes internal state (double).
 
-    virtual inline void _setstate(const std::uint64_t seed) noexcept override;  //!< Sets the internal state of this PRNG with an integer seed.
+    virtual inline void _setstate(const std::uint64_t   seed) noexcept override;    //!< Sets the internal state of this PRNG with a 64-bits integer seed.
+    virtual inline void _setstate(const utils::UInt128& seed) noexcept override;    //!< Sets the internal state of this PRNG with a 128-bits integer seed.
 
 };
 
@@ -307,9 +308,17 @@ inline void BaseMELG<SIZE>::seed(const double seed_)
 }
 
 //---------------------------------------------------------------------------
-/** Sets the internal state of this PRNG with an integer seed. */
+/** Sets the internal state of this PRNG with a 64-*bits integer seed. */
 template<const std::uint32_t SIZE>
 inline void BaseMELG<SIZE>::_setstate(const std::uint64_t seed_) noexcept
 {
     MyBaseClass::_internal_state.state.seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG with a 128-bits integer seed. */
+template<const std::uint32_t SIZE>
+inline void BaseMELG<SIZE>::_setstate(const utils::UInt128& seed) noexcept
+{
+    MyBaseClass::_setstate(seed);
 }

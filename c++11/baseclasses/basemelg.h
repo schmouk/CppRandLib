@@ -307,7 +307,7 @@ inline void BaseMELG<SIZE>::seed(const double seed_)
 }
 
 //---------------------------------------------------------------------------
-/** Sets the internal state of this PRNG with an integer seed. */
+/** Sets the internal state of this PRNG with a 64-*bits integer seed. */
 template<const std::uint32_t SIZE>
 inline void BaseMELG<SIZE>::_setstate(const std::uint64_t seed_) noexcept
 {
