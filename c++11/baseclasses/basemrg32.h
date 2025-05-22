@@ -137,8 +137,8 @@ struct BaseMRG32 : public BaseRandom<ListSeedState<utils::SplitMix32, std::uint3
     void inline seed(const utils::UInt128&    seed_) noexcept;      //!< Initializes internal state (unsigned 128-bits).
     void inline seed(const double             seed_);               //!< Initializes internal state (double).
 
-    virtual inline void _setstate(const std::uint64_t   seed) noexcept override;    //!< Sets the internal state of this PRNG with an integer seed.
-    virtual inline void _setstate(const utils::UInt128& seed) noexcept override;    //!< Sets the internal state of this PRNG with an integer seed.
+    virtual inline void _setstate(const std::uint64_t   seed) noexcept override;    //!< Sets the internal state of this PRNG with a 64-bits integer seed.
+    virtual inline void _setstate(const utils::UInt128& seed) noexcept override;    //!< Sets the internal state of this PRNG with a 128-bits integer seed.
 
 };
 
@@ -154,7 +154,7 @@ inline BaseMRG32<SIZE>::BaseMRG32() noexcept
     seed();
 }
 
-//-------------------------------------------
+//---------------------------------------------------------------------------
 /** Valued constructor (int). */
 template<const std::uint32_t SIZE>
 inline BaseMRG32<SIZE>::BaseMRG32(const int seed_) noexcept
@@ -163,7 +163,7 @@ inline BaseMRG32<SIZE>::BaseMRG32(const int seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-//-------------------------------------------
+//---------------------------------------------------------------------------
 /** Valued constructor (unsigned int). */
 template<const std::uint32_t SIZE>
 inline BaseMRG32<SIZE>::BaseMRG32(const unsigned int seed_) noexcept
@@ -172,7 +172,7 @@ inline BaseMRG32<SIZE>::BaseMRG32(const unsigned int seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-//-------------------------------------------
+//---------------------------------------------------------------------------
 /** Valued constructor (long). */
 template<const std::uint32_t SIZE>
 inline BaseMRG32<SIZE>::BaseMRG32(const long seed_) noexcept
@@ -181,7 +181,7 @@ inline BaseMRG32<SIZE>::BaseMRG32(const long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-//-------------------------------------------
+//---------------------------------------------------------------------------
 /** Valued constructor (unsigned long). */
 template<const std::uint32_t SIZE>
 inline BaseMRG32<SIZE>::BaseMRG32(const unsigned long seed_) noexcept
@@ -190,7 +190,7 @@ inline BaseMRG32<SIZE>::BaseMRG32(const unsigned long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-//-------------------------------------------
+//---------------------------------------------------------------------------
 /** Valued constructor (long long). */
 template<const std::uint32_t SIZE>
 inline BaseMRG32<SIZE>::BaseMRG32(const long long seed_) noexcept
@@ -199,8 +199,8 @@ inline BaseMRG32<SIZE>::BaseMRG32(const long long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-//-------------------------------------------
-/** Valued constructo (unsigned long long)r. */
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long long). */
 template<const std::uint32_t SIZE>
 inline BaseMRG32<SIZE>::BaseMRG32(const unsigned long long seed_) noexcept
     : MyBaseClass()
@@ -208,7 +208,7 @@ inline BaseMRG32<SIZE>::BaseMRG32(const unsigned long long seed_) noexcept
     MyBaseClass::seed(seed_);
 }
 
-//-------------------------------------------
+//---------------------------------------------------------------------------
 /** Valued constructor (unsigned 128-bits). */
 template<const std::uint32_t SIZE>
 inline BaseMRG32<SIZE>::BaseMRG32(const utils::UInt128& seed_) noexcept
@@ -217,7 +217,7 @@ inline BaseMRG32<SIZE>::BaseMRG32(const utils::UInt128& seed_) noexcept
     MyBaseClass::seed(seed_);
 }
 
-//-------------------------------------------
+//---------------------------------------------------------------------------
 /** Valued constructor (double). */
 template<const std::uint32_t SIZE>
 inline BaseMRG32<SIZE>::BaseMRG32(const double seed_)

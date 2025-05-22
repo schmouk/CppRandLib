@@ -148,7 +148,7 @@ inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG() no
 }
 
 //---------------------------------------------------------------------------
-/** Valued construtor. */
+/** Valued construtor (int). */
 template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
 inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const int seed_) noexcept
     : MyBaseClass()
@@ -157,7 +157,7 @@ inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(cons
 }
 
 //---------------------------------------------------------------------------
-/** Valued construtor. */
+/** Valued construtor (unsigned int). */
 template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
 inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const unsigned int seed_) noexcept
     : MyBaseClass()
@@ -166,7 +166,7 @@ inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(cons
 }
 
 //---------------------------------------------------------------------------
-/** Valued construtor. */
+/** Valued construtor (long). */
 template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
 inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const long seed_) noexcept
     : MyBaseClass()
@@ -174,7 +174,7 @@ inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(cons
     MyBaseClass::seed(seed_);
 }
 
-/** Valued construtor. */
+/** Valued construtor (unsigned long). */
 template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
 inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const unsigned long seed_) noexcept
     : MyBaseClass()
@@ -182,7 +182,7 @@ inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(cons
     MyBaseClass::seed(seed_);
 }
 
-/** Valued construtor. */
+/** Valued construtor (long long). */
 template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
 inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const long long seed_) noexcept
     : MyBaseClass()
@@ -190,7 +190,7 @@ inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(cons
     MyBaseClass::seed(seed_);
 }
 
-/** Valued construtor. */
+/** Valued construtor (unsigned long long). */
 template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
 inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const unsigned long long seed_) noexcept
     : MyBaseClass()
@@ -198,7 +198,7 @@ inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(cons
     MyBaseClass::seed(seed_);
 }
 
-/** Valued construtor. */
+/** Valued construtor (128-bits integer). */
 template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
 inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const utils::UInt128& seed_) noexcept
     : MyBaseClass()
@@ -206,7 +206,7 @@ inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(cons
     MyBaseClass::seed(seed_);
 }
 
-/** Valued construtor. */
+/** Valued construtor (double). */
 template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
 inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const double seed_)
     : MyBaseClass()
