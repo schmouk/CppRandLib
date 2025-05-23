@@ -147,7 +147,7 @@ inline BaseSquares<OutputT>::BaseSquares() noexcept
     MyBaseClass::seed();
 }
 
-//-------------------------------------------
+//---------------------------------------------------------------------------
 /** Valued constructor. */
 template<typename OutputT>
 inline BaseSquares<OutputT>::BaseSquares(const int seed_) noexcept
@@ -156,6 +156,7 @@ inline BaseSquares<OutputT>::BaseSquares(const int seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
+//---------------------------------------------------------------------------
 /** Valued constructor. */
 template<typename OutputT>
 inline BaseSquares<OutputT>::BaseSquares(const unsigned int seed_) noexcept
@@ -164,6 +165,7 @@ inline BaseSquares<OutputT>::BaseSquares(const unsigned int seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
+//---------------------------------------------------------------------------
 /** Valued constructor. */
 template<typename OutputT>
 inline BaseSquares<OutputT>::BaseSquares(const long seed_) noexcept
@@ -172,6 +174,7 @@ inline BaseSquares<OutputT>::BaseSquares(const long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
+//---------------------------------------------------------------------------
 /** Valued constructor. */
 template<typename OutputT>
 inline BaseSquares<OutputT>::BaseSquares(const unsigned long seed_) noexcept
@@ -180,6 +183,7 @@ inline BaseSquares<OutputT>::BaseSquares(const unsigned long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
+//---------------------------------------------------------------------------
 /** Valued constructor. */
 template<typename OutputT>
 inline BaseSquares<OutputT>::BaseSquares(const long long seed_) noexcept
@@ -188,6 +192,7 @@ inline BaseSquares<OutputT>::BaseSquares(const long long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
+//---------------------------------------------------------------------------
 /** Valued constructor. */
 template<typename OutputT>
 inline BaseSquares<OutputT>::BaseSquares(const unsigned long long seed_) noexcept
@@ -196,7 +201,7 @@ inline BaseSquares<OutputT>::BaseSquares(const unsigned long long seed_) noexcep
     MyBaseClass::seed(seed_);
 }
 
-//-------------------------------------------
+//---------------------------------------------------------------------------
 /** Valued constructor (unsigned 128-bits). */
 template<typename OutputT>
 inline BaseSquares<OutputT>::BaseSquares(const utils::UInt128& seed_) noexcept
@@ -205,6 +210,7 @@ inline BaseSquares<OutputT>::BaseSquares(const utils::UInt128& seed_) noexcept
     MyBaseClass::seed(seed_);
 }
 
+//---------------------------------------------------------------------------
 /** Valued constructor. */
 template<typename OutputT>
 inline BaseSquares<OutputT>::BaseSquares(const double seed_)
