@@ -32,6 +32,87 @@ SOFTWARE.
 
 
 //===========================================================================
+//---------------------------------------------------------------------------
+/** Empty constructor. */
+Squares64::Squares64() noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed();
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor. */
+Squares64::Squares64(const int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor. */
+Squares64::Squares64(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor. */
+Squares64::Squares64(const long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor. */
+Squares64::Squares64(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor. */
+Squares64::Squares64(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor. */
+Squares64::Squares64(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned 128-bits). */
+Squares64::Squares64(const utils::UInt128& seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor. */
+Squares64::Squares64(const double seed_)
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (full state). */
+Squares64::Squares64(const state_type& internal_state) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::setstate(internal_state);
+}
+
+//---------------------------------------------------------------------------
 /** The internal PRNG algorithm. */
 const Squares64::output_type Squares64::next() noexcept
 {
