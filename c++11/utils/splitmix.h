@@ -31,6 +31,7 @@ SOFTWARE.
 
 #include "../exceptions.h"
 #include "time.h"
+#include "uint128.h"
 
 
 //===========================================================================
@@ -90,6 +91,11 @@ namespace utils
         /** @brief Valued constructor - 64-bits unsigned integer. */
         inline SplitMix64(const unsigned long long seed) noexcept
             : _state(seed)
+        {}
+
+        /** @brief Valued constructor - 128-bits unsigned integer. */
+        inline SplitMix64(const utils::UInt128& seed) noexcept
+            : _state(seed.lo)
         {}
 
         /** @brief Valued constructor - double in range [0.0, 1.0). */
@@ -165,6 +171,11 @@ namespace utils
             : SplitMix64(seed)
         {}
 
+        /** @brief Valued constructor - 128-bits unsigned integer. */
+        inline SplitMix63(const utils::UInt128& seed) noexcept
+            : SplitMix64(seed)
+        {}
+
         /** @brief Valued constructor - double. */
         inline SplitMix63(const double seed)
             : SplitMix64(seed)
@@ -234,6 +245,11 @@ namespace utils
             : SplitMix64(seed)
         {}
 
+        /** @brief Valued constructor - 128-bits unsigned integer. */
+        inline SplitMix32(const utils::UInt128& seed) noexcept
+            : SplitMix64(seed)
+        {}
+
         /** @brief Valued constructor - double. */
         inline SplitMix32(const double seed)
             : SplitMix64(seed)
@@ -300,6 +316,11 @@ namespace utils
 
         /** @brief Valued constructor - 64-bits unsigned integer. */
         inline SplitMix31(const unsigned long long seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 128-bits unsigned integer. */
+        inline SplitMix31(const utils::UInt128& seed) noexcept
             : SplitMix64(seed)
         {}
 

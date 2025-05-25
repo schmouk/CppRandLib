@@ -31,6 +31,7 @@ SOFTWARE.
 #include "gtest/gtest.h"
 
 #include "utils/splitmix.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================
@@ -39,7 +40,7 @@ namespace tests_utils
     //-----------------------------------------------------------------------
     TEST(TestSuiteUtils, TestsUtilsSplitmix)
     {
-        // checks correctness of utils::splitmix_64
+        // checks correctness of utils::SplitMix64
         {
             utils::SplitMix64 splitmix_64;
 
@@ -59,7 +60,7 @@ namespace tests_utils
         // to happen remains very low. So, we don't check in the belowing
         // tests the difference of two successive values.
 
-        // checks correctness of utils::splitmix_63
+        // checks correctness of utils::SplitMix63
         {
             utils::SplitMix63 splitmix_63;
 
@@ -69,7 +70,7 @@ namespace tests_utils
             }
         }
 
-        // checks correctness of utils::splitmix_32
+        // checks correctness of utils::SplitMix32
         {
             utils::SplitMix32 splitmix_32;
 
@@ -79,7 +80,7 @@ namespace tests_utils
             }
         }
 
-        // checks correctness of utils::set_random_seed31
+        // checks correctness of utils::SplmitMix31
         {
             utils::SplitMix31 splitmix_31;
 
@@ -137,6 +138,12 @@ namespace tests_utils
         {
             utils::SplitMix64 s64(8'870'000'000'000'000'000ULL);
             std::uint64_t expected[]{ 0xeede014d9a5a6108, 0xa6eb6466bac9f251, 0x4246cbb1a64bf70c, 0xaf6aa8f43ebb8659, 0xe1b0fb2c7e764cdb };
+            for (auto e : expected)
+                EXPECT_EQ(e, s64());
+        }
+        {
+            utils::SplitMix64 s64(utils::UInt128(0xfedc'ba98'7654'3210ULL, 0x0123'4567'89ab'cdefULL));
+            std::uint64_t expected[]{ 0x157a3807a48faa9d, 0xd573529b34a1d093, 0x2f90b72e996dccbe, 0xa2d419334c4667ec, 0x1404ce914938008 };
             for (auto e : expected)
                 EXPECT_EQ(e, s64());
         }
@@ -201,6 +208,12 @@ namespace tests_utils
                 EXPECT_EQ(e, s63());
         }
         {
+            utils::SplitMix63 s63(utils::UInt128(0xfedc'ba98'7654'3210ULL, 0x0123'4567'89ab'cdefULL));
+            std::uint64_t expected[]{ 0x157a3807a48faa9d >> 1, 0xd573529b34a1d093 >> 1, 0x2f90b72e996dccbe >> 1, 0xa2d419334c4667ec >> 1, 0x1404ce914938008 >> 1 };
+            for (auto e : expected)
+                EXPECT_EQ(e, s63());
+        }
+        {
             utils::SplitMix63 s63(0.357);
             std::uint64_t expected[]{ 0x5fee464f36fc42c3 >> 1, 0x954faf5a9ad49cf8 >> 1, 0xa985465a4a5fc644 >> 1, 0x77714db9e870d702 >> 1, 0xa3aac457d81d552c >> 1 };
             for (auto e : expected)
@@ -261,6 +274,12 @@ namespace tests_utils
                 EXPECT_EQ(e, s32());
         }
         {
+            utils::SplitMix32 s32(utils::UInt128(0xfedc'ba98'7654'3210ULL, 0x0123'4567'89ab'cdefULL));
+            std::uint64_t expected[]{ 0x157a3807a48faa9d >> 32, 0xd573529b34a1d093 >> 32, 0x2f90b72e996dccbe >> 32, 0xa2d419334c4667ec >> 32, 0x1404ce914938008 >> 32 };
+            for (auto e : expected)
+                EXPECT_EQ(e, s32());
+        }
+        {
             utils::SplitMix32 s32(0.357);
             std::uint64_t expected[]{ 0x5fee464f36fc42c3 >> 32, 0x954faf5a9ad49cf8 >> 32, 0xa985465a4a5fc644 >> 32, 0x77714db9e870d702 >> 32, 0xa3aac457d81d552c >> 32 };
             for (auto e : expected)
@@ -317,6 +336,12 @@ namespace tests_utils
         {
             utils::SplitMix31 s31(8'870'000'000'000'000'000ULL);
             std::uint64_t expected[]{ 0xeede014d9a5a6108 >> 33, 0xa6eb6466bac9f251 >> 33, 0x4246cbb1a64bf70c >> 33, 0xaf6aa8f43ebb8659 >> 33, 0xe1b0fb2c7e764cdb >> 33 };
+            for (auto e : expected)
+                EXPECT_EQ(e, s31());
+        }
+        {
+            utils::SplitMix31 s31(utils::UInt128(0xfedc'ba98'7654'3210ULL, 0x0123'4567'89ab'cdefULL));
+            std::uint64_t expected[]{ 0x157a3807a48faa9d >> 33, 0xd573529b34a1d093 >> 33, 0x2f90b72e996dccbe >> 33, 0xa2d419334c4667ec >> 33, 0x1404ce914938008 >> 33 };
             for (auto e : expected)
                 EXPECT_EQ(e, s31());
         }
