@@ -295,7 +295,6 @@ namespace tests_bases
         }
 
 
-
         //-- tests _setstate()
         {
             BaseWell<5> wll;
