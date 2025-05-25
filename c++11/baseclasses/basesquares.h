@@ -31,6 +31,7 @@ SOFTWARE.
 
 #include "baserandom.h"
 #include "../internalstates/counterkeystate.h"
+#include "../utils/uint128.h"
 
 
 //===========================================================================
