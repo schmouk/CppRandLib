@@ -57,7 +57,7 @@ SOFTWARE.
 *   As such,  only minimalist optimization has been coded,  with the aim at easing the
 *   verification of its proper implementation.
 *
-*   See Well512a for a large period WELL-Generator (2^512,  i.e. 1.34e+154)  with  low
+*   See Well19937c for a large period WELL-Generator (2^512,  i.e. 1.34e+154)  with  low
 *   computation time and 16 integers memory consumption.
 *   See Well1024a for a longer period WELL-Generator (2^1,024,  i.e. 1.80e+308),  same
 *   computation time and 32 integers memory consumption.
@@ -72,7 +72,7 @@ SOFTWARE.
 * +--------------------------------------------------------------------------------------------------------------------------------------------------+
 * | PyRandLib class | TU01 generator name | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
 * | --------------- | ------------------- | --------------- | ------- | ----------- | ------------ | ---------------- | ----------- | -------------- |
-* | Well512a        | not available       |    16 x 4-bytes | 2^512   |    n.a.     |     n.a.     |        n.a.      |     n.a.    |     n.a.       |
+* | Well19937c        | not available       |    16 x 4-bytes | 2^512   |    n.a.     |     n.a.     |        n.a.      |     n.a.    |     n.a.       |
 * | Well1024a       | WELL1024a           |    32 x 4-bytes | 2^1024  |    4.0      |     1.1      |          0       |       4     |       4        |
 * | Well19937c (1)  | WELL19937a          |   624 x 4-bytes | 2^19937 |    4.3      |     1.3      |          0       |       2     |       2        |
 * | Well44497b      | not available       | 1,391 x 4-bytes | 2^44497 |    n.a.     |     n.a.     |        n.a.      |     n.a.    |     n.a.       |
@@ -100,36 +100,23 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline Well19937c() noexcept
-        : MyBaseClass()
-    {
-    }
+    Well19937c() noexcept;                                  //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    template<typename T>
-    inline Well19937c(const T seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::seed(seed_);
-    }
+    Well19937c(const int                seed) noexcept;     //!< Valued constructor (int).
+    Well19937c(const unsigned int       seed) noexcept;     //!< Valued constructor (unsigned int).
+    Well19937c(const long               seed) noexcept;     //!< Valued constructor (long)
+    Well19937c(const unsigned long      seed) noexcept;     //!< Valued constructor (unsigned long).
+    Well19937c(const long long          seed) noexcept;     //!< Valued constructor (long long).
+    Well19937c(const unsigned long long seed) noexcept;     //!< Valued constructor (unsigned long long).
+    Well19937c(const utils::UInt128&    seed) noexcept;     //!< Valued constructor (unsigned 128-bits).
+    Well19937c(const double             seed);              //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline Well19937c(const state_type& seed) noexcept
-        : MyBaseClass(seed)
-    {
-    }
+    Well19937c(const state_type& internal_state) noexcept;  //!< Valued constructor (full state).
 
-    Well19937c(const Well19937c&) noexcept = default;   //!< default copy constructor.
-    Well19937c(Well19937c&&) noexcept = default;        //!< default move constructor.
-    virtual ~Well19937c() noexcept = default;         //!< default destructor.
+    virtual inline ~Well19937c() noexcept = default;        //!< default destructor.
 
 
-    //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return an integer value coded on OUTPUT_BITS bits.
-    */
-    virtual const output_type next() noexcept override;
+    //---   Operations   ----------------------------------------------------
+    virtual const output_type next() noexcept override;     //!< The internal PRNG algorithm. @return an integer value coded on 32 bits.
 
 };

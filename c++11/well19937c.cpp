@@ -32,6 +32,87 @@ SOFTWARE.
 
 
 //===========================================================================
+//---------------------------------------------------------------------------
+/** Empty constructor. */
+Well19937c::Well19937c() noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed();
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (int). */
+Well19937c::Well19937c(const int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned int). */
+Well19937c::Well19937c(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long). */
+Well19937c::Well19937c(const long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor(unsigned long). */
+Well19937c::Well19937c(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long long). */
+Well19937c::Well19937c(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long long). */
+Well19937c::Well19937c(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned 128-bits). */
+Well19937c::Well19937c(const utils::UInt128& seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (double). */
+Well19937c::Well19937c(const double seed_)
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (full state). */
+Well19937c::Well19937c(const state_type& internal_state) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::setstate(internal_state);
+}
+
+//---------------------------------------------------------------------------
 /** The internal PRNG algorithm. */
 const Well19937c::output_type Well19937c::next() noexcept
 {
