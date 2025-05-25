@@ -42,7 +42,7 @@ Squares32::Squares32() noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued constructor. */
+/** Valued constructor (int). */
 Squares32::Squares32(const int seed_) noexcept
     : MyBaseClass()
 {
@@ -50,7 +50,7 @@ Squares32::Squares32(const int seed_) noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued constructor. */
+/** Valued constructor (unsigned int). */
 Squares32::Squares32(const unsigned int seed_) noexcept
     : MyBaseClass()
 {
@@ -58,7 +58,7 @@ Squares32::Squares32(const unsigned int seed_) noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued constructor. */
+/** Valued constructor (long). */
 Squares32::Squares32(const long seed_) noexcept
     : MyBaseClass()
 {
@@ -66,7 +66,7 @@ Squares32::Squares32(const long seed_) noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued constructor. */
+/** Valued constructor(unsigned long). */
 Squares32::Squares32(const unsigned long seed_) noexcept
     : MyBaseClass()
 {
@@ -74,7 +74,7 @@ Squares32::Squares32(const unsigned long seed_) noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued constructor. */
+/** Valued constructor (long long). */
 Squares32::Squares32(const long long seed_) noexcept
     : MyBaseClass()
 {
@@ -82,7 +82,7 @@ Squares32::Squares32(const long long seed_) noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued constructor. */
+/** Valued constructor (unsigned long mlng). */
 Squares32::Squares32(const unsigned long long seed_) noexcept
     : MyBaseClass()
 {
@@ -98,7 +98,7 @@ Squares32::Squares32(const utils::UInt128& seed_) noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued constructor. */
+/** Valued constructor (double). */
 Squares32::Squares32(const double seed_)
     : MyBaseClass()
 {

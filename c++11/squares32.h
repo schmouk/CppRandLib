@@ -107,6 +107,6 @@ public:
 
 
     //---   Operations   ----------------------------------------------------
-    virtual const output_type next() noexcept override;      //!< The internal PRNG algorithm.
+    virtual const output_type next() noexcept override;      //!< The internal PRNG algorithm. @return an integer value coded on 32 bits.
 
 };

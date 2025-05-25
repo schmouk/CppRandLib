@@ -98,7 +98,7 @@ public:
     Squares32(const unsigned long      seed) noexcept;       //!< Valued constructor (unsigned long).
     Squares32(const long long          seed) noexcept;       //!< Valued constructor (long long).
     Squares32(const unsigned long long seed) noexcept;       //!< Valued constructor (unsigned long long).
-    Squares32(const utils::UInt128&    seed) noexcept;       //!< Valued constructor (unsigned 128-bits).
+    Squares32(const utils::UInt128& seed) noexcept;       //!< Valued constructor (unsigned 128-bits).
     Squares32(const double             seed);                //!< Valued constructor (double).
 
     Squares32(const state_type& internal_state) noexcept;    //!< Valued constructor (full state).
@@ -107,6 +107,6 @@ public:
 
 
     //---   Operations   ----------------------------------------------------
-    virtual const output_type next() noexcept override;      //!< The internal PRNG algorithm.
+    virtual const output_type next() noexcept override;      //!< The internal PRNG algorithm. @return an integer value coded on 32 bits.
 
 };
