@@ -124,26 +124,25 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline BaseWell() noexcept;
+    inline BaseWell() noexcept;                                     //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    inline BaseWell(const int seed_) noexcept;
-    inline BaseWell(const unsigned int seed_) noexcept;
-    inline BaseWell(const long seed_) noexcept;
-    inline BaseWell(const unsigned long seed_) noexcept;
-    inline BaseWell(const long long seed_) noexcept;
-    inline BaseWell(const unsigned long long seed_) noexcept;
-    inline BaseWell(const double seed_);
+    inline BaseWell(const int                seed) noexcept;        //!< Valued constructor (int).
+    inline BaseWell(const unsigned int       seed) noexcept;        //!< Valued constructor (unsigned int).
+    inline BaseWell(const long               seed) noexcept;        //!< Valued constructor (long)
+    inline BaseWell(const unsigned long      seed) noexcept;        //!< Valued constructor (unsigned long).
+    inline BaseWell(const long long          seed) noexcept;        //!< Valued constructor (long long).
+    inline BaseWell(const unsigned long long seed) noexcept;        //!< Valued constructor (unsigned long long).
+    inline BaseWell(const utils::UInt128&    seed) noexcept;        //!< Valued constructor (unsigned 128-bits).
+    inline BaseWell(const double             seed);                 //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline BaseWell(const state_type& internal_state) noexcept;
+    inline BaseWell(const state_type& internal_state) noexcept;     //!< Valued constructor (full state).
 
-    /** @brief Default destructor. */
-    virtual ~BaseWell() noexcept = default;
+    virtual inline ~BaseWell() noexcept = default;                  //!< default destructor.
 
-    /** @brief Sets the internal state of this PRNG with an integer seed. */
-    virtual inline void _setstate(const std::uint64_t seed) noexcept override;
+
+    //---   Operations   ----------------------------------------------------
+    virtual inline void _setstate(const std::uint64_t   seed) noexcept override;    //!< Sets the internal state of this PRNG with a 64-bits integer seed.
+    virtual inline void _setstate(const utils::UInt128& seed) noexcept override;    //!< Sets the internal state of this PRNG with a 128-bits integer seed.
 
 
 protected:
@@ -185,8 +184,8 @@ inline BaseWell<SIZE>::BaseWell() noexcept
     MyBaseClass::seed();
 }
 
-//-------------------------------------------
-/** Valued constructor. */
+//---------------------------------------------------------------------------
+/** Valued constructor (int). */
 template<const std::uint32_t SIZE>
 inline BaseWell<SIZE>::BaseWell(const int seed_) noexcept
     : MyBaseClass()
@@ -194,7 +193,8 @@ inline BaseWell<SIZE>::BaseWell(const int seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-/** Valued constructor. */
+//---------------------------------------------------------------------------
+/** Valued constructor unsigned int). */
 template<const std::uint32_t SIZE>
 inline BaseWell<SIZE>::BaseWell(const unsigned int seed_) noexcept
     : MyBaseClass()
@@ -202,7 +202,8 @@ inline BaseWell<SIZE>::BaseWell(const unsigned int seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-/** Valued constructor. */
+//---------------------------------------------------------------------------
+/** Valued constructor (long). */
 template<const std::uint32_t SIZE>
 inline BaseWell<SIZE>::BaseWell(const long seed_) noexcept
     : MyBaseClass()
@@ -210,7 +211,8 @@ inline BaseWell<SIZE>::BaseWell(const long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-/** Valued constructor. */
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long). */
 template<const std::uint32_t SIZE>
 inline BaseWell<SIZE>::BaseWell(const unsigned long seed_) noexcept
     : MyBaseClass()
@@ -218,7 +220,8 @@ inline BaseWell<SIZE>::BaseWell(const unsigned long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-/** Valued constructor. */
+//---------------------------------------------------------------------------
+/** Valued constructor (long long). */
 template<const std::uint32_t SIZE>
 inline BaseWell<SIZE>::BaseWell(const long long seed_) noexcept
     : MyBaseClass()
@@ -226,7 +229,8 @@ inline BaseWell<SIZE>::BaseWell(const long long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
-/** Valued constructor. */
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long long). */
 template<const std::uint32_t SIZE>
 inline BaseWell<SIZE>::BaseWell(const unsigned long long seed_) noexcept
     : MyBaseClass()
@@ -234,7 +238,17 @@ inline BaseWell<SIZE>::BaseWell(const unsigned long long seed_) noexcept
     MyBaseClass::seed(seed_);
 }
 
-/** Valued constructor. */
+//---------------------------------------------------------------------------
+/** Valued constructor (128-bits integer). */
+template<const std::uint32_t SIZE>
+inline BaseWell<SIZE>::BaseWell(const utils::UInt128& seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_.lo);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (double). */
 template<const std::uint32_t SIZE>
 inline BaseWell<SIZE>::BaseWell(const double seed_)
     : MyBaseClass()
@@ -252,13 +266,20 @@ inline BaseWell<SIZE>::BaseWell(const state_type& internal_state) noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Sets the internal state of this PRNG with an integer seed. */
+/** Sets the internal state of this PRNG with a 64-bits integer seed. */
 template<const std::uint32_t SIZE>
 inline void BaseWell<SIZE>::_setstate(const std::uint64_t seed_) noexcept
 {
     MyBaseClass::_internal_state.state.seed(seed_);
 }
 
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG with a 128-bits integer seed. */
+template<const std::uint32_t SIZE>
+inline void BaseWell<SIZE>::_setstate(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::_internal_state.state.seed(seed_.lo);
+}
 
 //---------------------------------------------------------------------------
 template<const std::uint32_t SIZE>

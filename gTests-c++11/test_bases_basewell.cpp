@@ -32,6 +32,7 @@ SOFTWARE.
 #include "gtest/gtest.h"
 
 #include "baseclasses/basewell.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================
@@ -110,6 +111,13 @@ namespace tests_bases
             BaseWell<5> wll(8'870'000'000'000'000'000ULL);
             EXPECT_EQ(0, wll._internal_state.state.index);
             const std::uint64_t expected[]{ 0xeede014d, 0xa6eb6466, 0x4246cbb1, 0xaf6aa8f4, 0xe1b0fb2c };
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+        }
+        {
+            BaseWell<5> wll(utils::UInt128(0xfedc'ba98'7654'3210ULL, 0x0123'4567'89ab'cdefULL));
+            EXPECT_EQ(0, wll._internal_state.state.index);
+            const std::uint64_t expected[]{ 0x157a3807, 0xd573529b, 0x2f90b72e, 0xa2d41933, 0x1404ce9 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
         }
