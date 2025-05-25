@@ -132,7 +132,7 @@ public:
     inline BaseWell(const unsigned long      seed) noexcept;        //!< Valued constructor (unsigned long).
     inline BaseWell(const long long          seed) noexcept;        //!< Valued constructor (long long).
     inline BaseWell(const unsigned long long seed) noexcept;        //!< Valued constructor (unsigned long long).
-    inline BaseWell(const utils::UInt128& seed) noexcept;        //!< Valued constructor (unsigned 128-bits).
+    inline BaseWell(const utils::UInt128&    seed) noexcept;        //!< Valued constructor (unsigned 128-bits).
     inline BaseWell(const double             seed);                 //!< Valued constructor (double).
 
     inline BaseWell(const state_type& internal_state) noexcept;     //!< Valued constructor (full state).
@@ -141,6 +141,17 @@ public:
 
 
     //---   Operations   ----------------------------------------------------
+    void inline seed() noexcept;                                    //!< Initializes internal state (empty signature).
+
+    void inline seed(const int                seed_) noexcept;      //!< Initializes internal state (int).
+    void inline seed(const unsigned int       seed_) noexcept;      //!< Initializes internal state (unsigned int).
+    void inline seed(const long               seed_) noexcept;      //!< Initializes internal state (long)
+    void inline seed(const unsigned long      seed_) noexcept;      //!< Initializes internal state (unsigned long).
+    void inline seed(const long long          seed_) noexcept;      //!< Initializes internal state (long long).
+    void inline seed(const unsigned long long seed_) noexcept;      //!< Initializes internal state (unsigned long long).
+    void inline seed(const utils::UInt128&    seed_) noexcept;      //!< Initializes internal state (unsigned 128-bits).
+    void inline seed(const double             seed_);               //!< Initializes internal state (double).
+
     virtual inline void _setstate(const std::uint64_t   seed) noexcept override;    //!< Sets the internal state of this PRNG with a 64-bits integer seed.
     virtual inline void _setstate(const utils::UInt128& seed) noexcept override;    //!< Sets the internal state of this PRNG with a 128-bits integer seed.
 
@@ -264,6 +275,79 @@ inline BaseWell<SIZE>::BaseWell(const state_type& internal_state) noexcept
 {
     MyBaseClass::setstate(internal_state);
 }
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG from current time (empty signature). */
+template<const std::uint32_t SIZE>
+inline void BaseWell<SIZE>::seed() noexcept
+{
+    MyBaseClass::seed();
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (int). */
+template<const std::uint32_t SIZE>
+inline void BaseWell<SIZE>::seed(const int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned int). */
+template<const std::uint32_t SIZE>
+inline void BaseWell<SIZE>::seed(const unsigned int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long). */
+template<const std::uint32_t SIZE>
+inline void BaseWell<SIZE>::seed(const long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long). */
+template<const std::uint32_t SIZE>
+inline void BaseWell<SIZE>::seed(const unsigned long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long long). */
+template<const std::uint32_t SIZE>
+inline void BaseWell<SIZE>::seed(const long long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long long). */
+template<const std::uint32_t SIZE>
+inline void BaseWell<SIZE>::seed(const unsigned long long seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned 128-bits). */
+template<const std::uint32_t SIZE>
+inline void BaseWell<SIZE>::seed(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (double). */
+template<const std::uint32_t SIZE>
+inline void BaseWell<SIZE>::seed(const double seed_)
+{
+    MyBaseClass::seed(seed_);
+}
+
 
 //---------------------------------------------------------------------------
 /** Sets the internal state of this PRNG with a 64-bits integer seed. */
@@ -402,8 +486,8 @@ inline typename BaseWell<SIZE>::value_type BaseWell<SIZE>::_tempering(
     const value_type c
 ) noexcept
 {
-    // notice:  the generic algorithm truncs x on w-bits. All of the implemented
-    // ones in CppRandLib are set on 32-bits. So, no truncation takes place here
+    // notice: the generic WELL algorithm truncs x on w-bits. All of its implemented
+    // forms in CppRandLib are set on 32-bits. So, no truncation takes place here.
     value_type x_{ x ^ (((x << 7) & 0xffff'fffful) & b) };
     return x_ ^ (((x_ << 15) & 0xffff'fffful) & c);
 }

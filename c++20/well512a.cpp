@@ -29,9 +29,91 @@ SOFTWARE.
 #include <cstdint>
 
 #include "well512a.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================
+//---------------------------------------------------------------------------
+/** Empty constructor. */
+Well512a::Well512a() noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed();
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (int). */
+Well512a::Well512a(const int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned int). */
+Well512a::Well512a(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long). */
+Well512a::Well512a(const long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor(unsigned long). */
+Well512a::Well512a(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long long). */
+Well512a::Well512a(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long mlng). */
+Well512a::Well512a(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned 128-bits). */
+Well512a::Well512a(const utils::UInt128& seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (double). */
+Well512a::Well512a(const double seed_)
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (full state). */
+Well512a::Well512a(const state_type& internal_state) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::setstate(internal_state);
+}
+
+//---------------------------------------------------------------------------
 /** The internal PRNG algorithm. */
 const Well512a::output_type Well512a::next() noexcept
 {
@@ -44,7 +126,7 @@ const Well512a::output_type Well512a::next() noexcept
     const value_type z1{ _M3_neg(_internal_state.state.list[i], 16) ^ _M3_neg(_internal_state.state.list[(i + 13) & 0x0f], 15) };
     const value_type z2{ _M3_pos(_internal_state.state.list[(i + 9) & 0xf], 11) };
     // notice: the last term of the above equation in the WELL generic algorithm is, for its Well512a
-    // version, the zero matrix _M0 which we suppress here for calculations optimization purpose
+    // version, the zero matrix _M0: we suppress it here for calculations optimization purpose
     const value_type z3{ z1 ^ z2 };
 
     _internal_state.state.list[i] = z3;
