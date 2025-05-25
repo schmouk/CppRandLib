@@ -82,7 +82,7 @@ Well512a::Well512a(const long long seed_) noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued constructor (unsigned long mlng). */
+/** Valued constructor (unsigned long long). */
 Well512a::Well512a(const unsigned long long seed_) noexcept
     : MyBaseClass()
 {
