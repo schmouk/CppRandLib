@@ -28,10 +28,92 @@ SOFTWARE.
 //===========================================================================
 #include <cstdint>
 
+#include "utils/uint128.h"
 #include "well1024a.h"
 
 
 //===========================================================================
+//---------------------------------------------------------------------------
+/** Empty constructor. */
+Well1024a::Well1024a() noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed();
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (int). */
+Well1024a::Well1024a(const int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned int). */
+Well1024a::Well1024a(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long). */
+Well1024a::Well1024a(const long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor(unsigned long). */
+Well1024a::Well1024a(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long long). */
+Well1024a::Well1024a(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long mlng). */
+Well1024a::Well1024a(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned 128-bits). */
+Well1024a::Well1024a(const utils::UInt128& seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (double). */
+Well1024a::Well1024a(const double seed_)
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (full state). */
+Well1024a::Well1024a(const state_type& internal_state) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::setstate(internal_state);
+}
+
+//---------------------------------------------------------------------------
 /** The internal PRNG algorithm. */
 const Well1024a::output_type Well1024a::next() noexcept
 {

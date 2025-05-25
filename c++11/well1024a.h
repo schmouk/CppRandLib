@@ -30,6 +30,7 @@ SOFTWARE.
 #include <cstdint>
 
 #include "baseclasses/basewell.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================
@@ -57,7 +58,7 @@ SOFTWARE.
 *   As such,  only minimalist optimization has been coded,  with the aim at easing the
 *   verification of its proper implementation.
 *
-*   See Well512a for a large period WELL-Generator (2^512,  i.e. 1.34e+154)  with  low
+*   See Well1024a for a large period WELL-Generator (2^512,  i.e. 1.34e+154)  with  low
 *   computation time and 16 integers memory consumption.
 *   See Well199937c for a far longer period  (2^19,937, i.e. 4.32e+6,001) with similar
 *   computation time but use of more memory space (624 integers).
@@ -72,7 +73,7 @@ SOFTWARE.
 * +--------------------------------------------------------------------------------------------------------------------------------------------------+
 * | PyRandLib class | TU01 generator name | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
 * | --------------- | ------------------- | --------------- | ------- | ----------- | ------------ | ---------------- | ----------- | -------------- |
-* | Well512a        | not available       |    16 x 4-bytes | 2^512   |    n.a.     |     n.a.     |        n.a.      |     n.a.    |     n.a.       |
+* | Well1024a        | not available       |    16 x 4-bytes | 2^512   |    n.a.     |     n.a.     |        n.a.      |     n.a.    |     n.a.       |
 * | Well1024a       | WELL1024a           |    32 x 4-bytes | 2^1024  |    4.0      |     1.1      |          0       |       4     |       4        |
 * | Well19937c (1)  | WELL19937a          |   624 x 4-bytes | 2^19937 |    4.3      |     1.3      |          0       |       2     |       2        |
 * | Well44497b      | not available       | 1,391 x 4-bytes | 2^44497 |    n.a.     |     n.a.     |        n.a.      |     n.a.    |     n.a.       |
@@ -100,36 +101,23 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline Well1024a() noexcept
-        : MyBaseClass()
-    {
-    }
+    Well1024a() noexcept;                                   //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    template<typename T>
-    inline Well1024a(const T seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::seed(seed_);
-    }
+    Well1024a(const int                seed) noexcept;      //!< Valued constructor (int).
+    Well1024a(const unsigned int       seed) noexcept;      //!< Valued constructor (unsigned int).
+    Well1024a(const long               seed) noexcept;      //!< Valued constructor (long)
+    Well1024a(const unsigned long      seed) noexcept;      //!< Valued constructor (unsigned long).
+    Well1024a(const long long          seed) noexcept;      //!< Valued constructor (long long).
+    Well1024a(const unsigned long long seed) noexcept;      //!< Valued constructor (unsigned long long).
+    Well1024a(const utils::UInt128&    seed) noexcept;      //!< Valued constructor (unsigned 128-bits).
+    Well1024a(const double             seed);               //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline Well1024a(const state_type& seed) noexcept
-        : MyBaseClass(seed)
-    {
-    }
+    Well1024a(const state_type& internal_state) noexcept;   //!< Valued constructor (full state).
 
-    Well1024a(const Well1024a&) noexcept = default;   //!< default copy constructor.
-    Well1024a(Well1024a&&) noexcept = default;        //!< default move constructor.
-    virtual ~Well1024a() noexcept = default;         //!< default destructor.
+    virtual inline ~Well1024a() noexcept = default;         //!< default destructor.
 
 
-    //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return an integer value coded on OUTPUT_BITS bits.
-    */
-    virtual const output_type next() noexcept override;
+    //---   Operations   ----------------------------------------------------
+    virtual const output_type next() noexcept override;     //!< The internal PRNG algorithm. @return an integer value coded on 32 bits.
 
 };
