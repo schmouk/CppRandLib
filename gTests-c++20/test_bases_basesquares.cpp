@@ -157,7 +157,7 @@ namespace tests_bases
         }
 
 
-        //-- tests copy assignment
+        //-- tests move assignment
         {
             BaseSquares<unsigned long> sqr_129(129);
             BaseSquares<unsigned long> sqr;
