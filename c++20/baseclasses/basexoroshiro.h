@@ -114,26 +114,36 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline BaseXoroshiro() noexcept;
+    inline BaseXoroshiro() noexcept;                                    //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    inline BaseXoroshiro(const int seed_) noexcept;
-    inline BaseXoroshiro(const unsigned int seed_) noexcept;
-    inline BaseXoroshiro(const long seed_) noexcept;
-    inline BaseXoroshiro(const unsigned long seed_) noexcept;
-    inline BaseXoroshiro(const long long seed_) noexcept;
-    inline BaseXoroshiro(const unsigned long long seed_) noexcept;
-    inline BaseXoroshiro(const double seed_);
+    inline BaseXoroshiro(const int                seed) noexcept;       //!< Valued constructor (int).
+    inline BaseXoroshiro(const unsigned int       seed) noexcept;       //!< Valued constructor (unsigned int).
+    inline BaseXoroshiro(const long               seed) noexcept;       //!< Valued constructor (long)
+    inline BaseXoroshiro(const unsigned long      seed) noexcept;       //!< Valued constructor (unsigned long).
+    inline BaseXoroshiro(const long long          seed) noexcept;       //!< Valued constructor (long long).
+    inline BaseXoroshiro(const unsigned long long seed) noexcept;       //!< Valued constructor (unsigned long long).
+    inline BaseXoroshiro(const utils::UInt128& seed) noexcept;       //!< Valued constructor (unsigned 128-bits).
+    inline BaseXoroshiro(const double             seed);                //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline BaseXoroshiro(const state_type& internal_state) noexcept;
+    inline BaseXoroshiro(const state_type& internal_state) noexcept;    //!< Valued constructor (full state).
 
-    /** @brief Default destructor. */
-    virtual ~BaseXoroshiro() noexcept = default;
+    virtual inline ~BaseXoroshiro() noexcept = default;                 //!< default destructor.
 
-    /** @brief Sets the internal state of this PRNG with an integer seed. */
-    virtual inline void _setstate(const std::uint64_t seed) noexcept override;
+
+    //---   Operations   ----------------------------------------------------
+    void inline seed() noexcept;                                        //!< Initializes internal state (empty signature).
+
+    void inline seed(const int                seed_) noexcept;          //!< Initializes internal state (int).
+    void inline seed(const unsigned int       seed_) noexcept;          //!< Initializes internal state (unsigned int).
+    void inline seed(const long               seed_) noexcept;          //!< Initializes internal state (long)
+    void inline seed(const unsigned long      seed_) noexcept;          //!< Initializes internal state (unsigned long).
+    void inline seed(const long long          seed_) noexcept;          //!< Initializes internal state (long long).
+    void inline seed(const unsigned long long seed_) noexcept;          //!< Initializes internal state (unsigned long long).
+    void inline seed(const utils::UInt128& seed_) noexcept;          //!< Initializes internal state (unsigned 128-bits).
+    void inline seed(const double             seed_);                   //!< Initializes internal state (double).
+
+    virtual inline void _setstate(const std::uint64_t   seed) noexcept override;    //!< Sets the internal state of this PRNG with a 64-bits integer seed.
+    virtual inline void _setstate(const utils::UInt128& seed) noexcept override;    //!< Sets the internal state of this PRNG with a 128-bits integer seed.
 
 };
 
@@ -149,7 +159,7 @@ inline BaseXoroshiro<SIZE>::BaseXoroshiro() noexcept
     MyBaseClass::seed();
 }
 
-//-------------------------------------------
+//---------------------------------------------------------------------------
 /** Valued constructor. */
 template<const std::uint32_t SIZE>
 inline BaseXoroshiro<SIZE>::BaseXoroshiro(const int seed_) noexcept
@@ -158,6 +168,7 @@ inline BaseXoroshiro<SIZE>::BaseXoroshiro(const int seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
+//---------------------------------------------------------------------------
 /** Valued constructor. */
 template<const std::uint32_t SIZE>
 inline BaseXoroshiro<SIZE>::BaseXoroshiro(const unsigned int seed_) noexcept
@@ -166,6 +177,7 @@ inline BaseXoroshiro<SIZE>::BaseXoroshiro(const unsigned int seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
+//---------------------------------------------------------------------------
 /** Valued constructor. */
 template<const std::uint32_t SIZE>
 inline BaseXoroshiro<SIZE>::BaseXoroshiro(const long seed_) noexcept
@@ -174,6 +186,7 @@ inline BaseXoroshiro<SIZE>::BaseXoroshiro(const long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
+//---------------------------------------------------------------------------
 /** Valued constructor. */
 template<const std::uint32_t SIZE>
 inline BaseXoroshiro<SIZE>::BaseXoroshiro(const unsigned long seed_) noexcept
@@ -182,6 +195,7 @@ inline BaseXoroshiro<SIZE>::BaseXoroshiro(const unsigned long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
+//---------------------------------------------------------------------------
 /** Valued constructor. */
 template<const std::uint32_t SIZE>
 inline BaseXoroshiro<SIZE>::BaseXoroshiro(const long long seed_) noexcept
@@ -190,6 +204,7 @@ inline BaseXoroshiro<SIZE>::BaseXoroshiro(const long long seed_) noexcept
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
+//---------------------------------------------------------------------------
 /** Valued constructor. */
 template<const std::uint32_t SIZE>
 inline BaseXoroshiro<SIZE>::BaseXoroshiro(const unsigned long long seed_) noexcept
@@ -198,6 +213,16 @@ inline BaseXoroshiro<SIZE>::BaseXoroshiro(const unsigned long long seed_) noexce
     MyBaseClass::seed(std::uint64_t(seed_));
 }
 
+//---------------------------------------------------------------------------
+/** Valued constructor. */
+template<const std::uint32_t SIZE>
+inline BaseXoroshiro<SIZE>::BaseXoroshiro(const utils::UInt128& seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_.lo));
+}
+
+//---------------------------------------------------------------------------
 /** Valued constructor. */
 template<const std::uint32_t SIZE>
 inline BaseXoroshiro<SIZE>::BaseXoroshiro(const double seed_)
@@ -216,9 +241,90 @@ inline BaseXoroshiro<SIZE>::BaseXoroshiro(const state_type& internal_state) noex
 }
 
 //---------------------------------------------------------------------------
-/** Sets the internal state of this PRNG with an integer seed. */
+/** Sets the internal state of this PRNG from current time (empty signature). */
+template<const std::uint32_t SIZE>
+inline void BaseXoroshiro<SIZE>::seed() noexcept
+{
+    MyBaseClass::seed();
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (int). */
+template<const std::uint32_t SIZE>
+inline void BaseXoroshiro<SIZE>::seed(const int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned int). */
+template<const std::uint32_t SIZE>
+inline void BaseXoroshiro<SIZE>::seed(const unsigned int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long). */
+template<const std::uint32_t SIZE>
+inline void BaseXoroshiro<SIZE>::seed(const long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long). */
+template<const std::uint32_t SIZE>
+inline void BaseXoroshiro<SIZE>::seed(const unsigned long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long long). */
+template<const std::uint32_t SIZE>
+inline void BaseXoroshiro<SIZE>::seed(const long long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long long). */
+template<const std::uint32_t SIZE>
+inline void BaseXoroshiro<SIZE>::seed(const unsigned long long seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned 128-bits). */
+template<const std::uint32_t SIZE>
+inline void BaseXoroshiro<SIZE>::seed(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (double). */
+template<const std::uint32_t SIZE>
+inline void BaseXoroshiro<SIZE>::seed(const double seed_)
+{
+    MyBaseClass::seed(seed_);
+}
+
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG with a 64-bits integer seed. */
 template<const std::uint32_t SIZE>
 inline void BaseXoroshiro<SIZE>::_setstate(const std::uint64_t seed_) noexcept
 {
     MyBaseClass::_internal_state.state.seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG with a 128-bits integer seed. */
+template<const std::uint32_t SIZE>
+inline void BaseXoroshiro<SIZE>::_setstate(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::_internal_state.state.seed(seed_.lo);
 }
