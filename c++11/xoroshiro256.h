@@ -29,6 +29,7 @@ SOFTWARE.
 //===========================================================================
 #include <cstdint>
 
+#include "utils/uint128.h"
 #include "baseclasses/basexoroshiro.h"
 
 
@@ -84,35 +85,23 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline Xoroshiro256() noexcept
-        : MyBaseClass()
-    {
-    }
+    Xoroshiro256() noexcept;                                    //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    template<typename T>
-    inline Xoroshiro256(const T seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::seed(seed_);
-    }
+    Xoroshiro256(const int                seed) noexcept;       //!< Valued constructor (int).
+    Xoroshiro256(const unsigned int       seed) noexcept;       //!< Valued constructor (unsigned int).
+    Xoroshiro256(const long               seed) noexcept;       //!< Valued constructor (long)
+    Xoroshiro256(const unsigned long      seed) noexcept;       //!< Valued constructor (unsigned long).
+    Xoroshiro256(const long long          seed) noexcept;       //!< Valued constructor (long long).
+    Xoroshiro256(const unsigned long long seed) noexcept;       //!< Valued constructor (unsigned long long).
+    Xoroshiro256(const utils::UInt128&    seed) noexcept;       //!< Valued constructor (unsigned 128-bits).
+    Xoroshiro256(const double             seed);                //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline Xoroshiro256(const state_type& seed) noexcept
-        : MyBaseClass(seed)
-    {}
+    Xoroshiro256(const state_type& internal_state) noexcept;    //!< Valued constructor (full state).
 
-    Xoroshiro256(const Xoroshiro256&) noexcept = default;   //!< default copy constructor.
-    Xoroshiro256(Xoroshiro256&&) noexcept = default;        //!< default move constructor.
-    virtual ~Xoroshiro256() noexcept = default;             //!< default destructor.
+    virtual inline ~Xoroshiro256() noexcept = default;          //!< default destructor.
 
 
-    //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return an integer value coded on OUTPUT_BITS bits.
-    */
-    virtual const output_type next() noexcept override;
+    //---   Operations   ----------------------------------------------------
+    virtual const output_type next() noexcept override;         //!< The internal PRNG algorithm. @return an integer value coded on 32 bits.
 
 };

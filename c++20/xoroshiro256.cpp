@@ -29,10 +29,92 @@ SOFTWARE.
 #include <cstdint>
 
 #include "utils/bits_rotations.h"
+#include "utils/uint128.h"
 #include "xoroshiro256.h"
 
 
 //===========================================================================
+//---------------------------------------------------------------------------
+/** Empty constructor. */
+Xoroshiro256::Xoroshiro256() noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed();
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (int). */
+Xoroshiro256::Xoroshiro256(const int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned int). */
+Xoroshiro256::Xoroshiro256(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long). */
+Xoroshiro256::Xoroshiro256(const long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor(unsigned long). */
+Xoroshiro256::Xoroshiro256(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long long). */
+Xoroshiro256::Xoroshiro256(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long long). */
+Xoroshiro256::Xoroshiro256(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned 128-bits). */
+Xoroshiro256::Xoroshiro256(const utils::UInt128& seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (double). */
+Xoroshiro256::Xoroshiro256(const double seed_)
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (full state). */
+Xoroshiro256::Xoroshiro256(const state_type& internal_state) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::setstate(internal_state);
+}
+
+//---------------------------------------------------------------------------
 /** The internal PRNG algorithm. */
 const Xoroshiro256::output_type Xoroshiro256::next() noexcept
 {
@@ -40,7 +122,7 @@ const Xoroshiro256::output_type Xoroshiro256::next() noexcept
 
     // advances the internal state of the PRNG
     _internal_state.state.list[2] ^= _internal_state.state.list[0];
-    _internal_state.state.list[3] ^= _internal_state.state.list[1];
+    _internal_state.state.list[3] ^= current_s1;  // _internal_state.state.list[1];
     _internal_state.state.list[1] ^= _internal_state.state.list[2];
     _internal_state.state.list[0] ^= _internal_state.state.list[3];
     _internal_state.state.list[2] ^= current_s1 << 17;
@@ -48,5 +130,4 @@ const Xoroshiro256::output_type Xoroshiro256::next() noexcept
 
     // finally, returns pseudo random value as a 64-bits integer
     return utils::rot_left(current_s1 * 5, 7) * 9;
-
 }
