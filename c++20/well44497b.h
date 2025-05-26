@@ -30,6 +30,7 @@ SOFTWARE.
 #include <cstdint>
 
 #include "baseclasses/basewell.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================

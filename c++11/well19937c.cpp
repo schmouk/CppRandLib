@@ -28,6 +28,7 @@ SOFTWARE.
 //===========================================================================
 #include <cstdint>
 
+#include "utils/uint128.h"
 #include "well19937c.h"
 
 
