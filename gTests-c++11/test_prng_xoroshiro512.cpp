@@ -357,6 +357,10 @@ namespace tests_prng
             EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
 
+        EXPECT_THROW(Xoroshiro512(-8.87e+18), FloatValueRange01Exception);
+        EXPECT_THROW(Xoroshiro512(1.0), FloatValueRange01Exception);
+
+
 
         //-- tests copy constructor
         {
