@@ -729,7 +729,7 @@ public:
     inline void seed(const unsigned long long seed_) noexcept;
 
     /** @brief Initializes the internal state of this PRNG with a 128-bits integer seed. */
-    virtual inline void seed(const utils::UInt128 seed_) noexcept;
+    virtual inline void seed(const utils::UInt128& seed_) noexcept;
 
     /** @brief Initalizes internal state from a double seed. */
     inline void seed(const double seed_);
@@ -1412,7 +1412,7 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed(const unsigned long l
 /** Initializes the internal state of this PRNG with a 128-bits integer seed. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
     requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
-inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed(const utils::UInt128 seed_) noexcept
+inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed(const utils::UInt128& seed_) noexcept
 {
     _setstate(seed_);
     _internal_state.gauss_valid = false;

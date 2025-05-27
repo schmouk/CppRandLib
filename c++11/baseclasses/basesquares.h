@@ -301,7 +301,6 @@ inline void BaseSquares<OutputT>::seed(const double seed_)
     MyBaseClass::seed(seed_);
 }
 
-
 //---------------------------------------------------------------------------
 /** Sets the internal state of this PRNG with a 64-bits integer seed. */
 template<typename OutputT>
