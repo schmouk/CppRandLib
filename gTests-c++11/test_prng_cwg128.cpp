@@ -55,7 +55,7 @@ namespace tests_prng
 
         // Notice: all belowing hard coded values have been evaluated with PyRandLib
 
-        //-- tests Valued construtor (seed) AND next()
+        //-- tests Valued constructor (seed) AND next()
         {
             Cwg128 cwg128(1);
 
@@ -614,6 +614,18 @@ namespace tests_prng
         EXPECT_EQ(0x954faf5a9ad49cf9, cwg128._internal_state.state.s.lo);
         EXPECT_EQ(0xa985465a4a5fc644, cwg128._internal_state.state.state.hi);
         EXPECT_EQ(0x77714db9e870d702, cwg128._internal_state.state.state.lo);
+        EXPECT_EQ(0x0, cwg128._internal_state.state.weyl.hi);
+        EXPECT_EQ(0x0, cwg128._internal_state.state.weyl.lo);
+        EXPECT_FALSE(cwg128._internal_state.gauss_valid);
+        EXPECT_DOUBLE_EQ(0.0, cwg128._internal_state.gauss_next);
+
+        cwg128.seed(utils::UInt128(0xfffffffffffffffe, 0xfffffffffffffffd));
+        EXPECT_EQ(0x0, cwg128._internal_state.state.a.hi);
+        EXPECT_EQ(0x0, cwg128._internal_state.state.a.lo);
+        EXPECT_EQ(0xf3203e9039f4a821, cwg128._internal_state.state.s.hi);
+        EXPECT_EQ(0xf75f04cbb5a1a1dd, cwg128._internal_state.state.s.lo);
+        EXPECT_EQ(0xba56949915dcf9e9, cwg128._internal_state.state.state.hi);
+        EXPECT_EQ(0xec779c3693f88501, cwg128._internal_state.state.state.lo);
         EXPECT_EQ(0x0, cwg128._internal_state.state.weyl.hi);
         EXPECT_EQ(0x0, cwg128._internal_state.state.weyl.lo);
         EXPECT_FALSE(cwg128._internal_state.gauss_valid);

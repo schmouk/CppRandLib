@@ -55,7 +55,7 @@ namespace tests_prng
 
         // Notice: all belowing hard coded values have been evaluated with PyRandLib
 
-        //-- tests Valued construtor (seed) AND next()
+        //-- tests Valued constructor (seed) AND next()
         {
             Cwg128 cwg128(1);
 

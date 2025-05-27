@@ -113,23 +113,34 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    inline BaseCWG() noexcept;                          //!< Default empty constructor.
+    inline BaseCWG() noexcept;                                  //!< Default empty constructor.
 
-    BaseCWG(const int                seed) noexcept;    //!< Valued constructor (int).
-    BaseCWG(const unsigned int       seed) noexcept;    //!< Valued constructor (unsigned int).
-    BaseCWG(const long               seed) noexcept;    //!< Valued constructor (long)
-    BaseCWG(const unsigned long      seed) noexcept;    //!< Valued constructor (unsigned long).
-    BaseCWG(const long long          seed) noexcept;    //!< Valued constructor (long long).
-    BaseCWG(const unsigned long long seed) noexcept;    //!< Valued constructor (unsigned long long).
-    BaseCWG(const utils::UInt128&    seed) noexcept;    //!< Valued constructor (unsigned 128-bits).
-    BaseCWG(const double             seed);             //!< Valued constructor (double).
+    BaseCWG(const int                seed) noexcept;            //!< Valued constructor (int).
+    BaseCWG(const unsigned int       seed) noexcept;            //!< Valued constructor (unsigned int).
+    BaseCWG(const long               seed) noexcept;            //!< Valued constructor (long)
+    BaseCWG(const unsigned long      seed) noexcept;            //!< Valued constructor (unsigned long).
+    BaseCWG(const long long          seed) noexcept;            //!< Valued constructor (long long).
+    BaseCWG(const unsigned long long seed) noexcept;            //!< Valued constructor (unsigned long long).
+    BaseCWG(const utils::UInt128&    seed) noexcept;            //!< Valued constructor (unsigned 128-bits).
+    BaseCWG(const double             seed);                     //!< Valued constructor (double).
 
-    BaseCWG(const state_type& internal_state) noexcept; //!< Valued constructor (full state).
+    BaseCWG(const state_type& internal_state) noexcept;         //!< Valued constructor (full state).
 
-    virtual ~BaseCWG() noexcept = default;              //!< Default Destructor.
+    virtual ~BaseCWG() noexcept = default;                      //!< Default Destructor.
 
 
     //---   Operations   ----------------------------------------------------
+    void inline seed() noexcept;                                //!< Initializes internal state (empty signature).
+
+    void inline seed(const int                seed_) noexcept;  //!< Initializes internal state (int).
+    void inline seed(const unsigned int       seed_) noexcept;  //!< Initializes internal state (unsigned int).
+    void inline seed(const long               seed_) noexcept;  //!< Initializes internal state (long)
+    void inline seed(const unsigned long      seed_) noexcept;  //!< Initializes internal state (unsigned long).
+    void inline seed(const long long          seed_) noexcept;  //!< Initializes internal state (long long).
+    void inline seed(const unsigned long long seed_) noexcept;  //!< Initializes internal state (unsigned long long).
+    void inline seed(const utils::UInt128&    seed_) noexcept;  //!< Initializes internal state (unsigned 128-bits).
+    void inline seed(const double             seed_);           //!< Initializes internal state (double).
+
     virtual void _setstate(const std::uint64_t   seed_) noexcept override;  //!< Sets the internal state with a 64-bits integer seed.
     virtual void _setstate(const utils::UInt128& seed_) noexcept override;  //!< Sets the internal state with a 128-bits integer seed.
 
@@ -153,7 +164,7 @@ template<typename ValueType, typename StateValueType, typename OutputType, const
 inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const int seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(seed_);
+    MyBaseClass::seed(std::uint64_t(seed_));
 }
 
 //---------------------------------------------------------------------------
@@ -162,7 +173,7 @@ template<typename ValueType, typename StateValueType, typename OutputType, const
 inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const unsigned int seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(seed_);
+    MyBaseClass::seed(std::uint64_t(seed_));
 }
 
 //---------------------------------------------------------------------------
@@ -171,7 +182,7 @@ template<typename ValueType, typename StateValueType, typename OutputType, const
 inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const long seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(seed_);
+    MyBaseClass::seed(std::uint64_t(seed_));
 }
 
 /** Valued construtor (unsigned long). */
@@ -179,7 +190,7 @@ template<typename ValueType, typename StateValueType, typename OutputType, const
 inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const unsigned long seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(seed_);
+    MyBaseClass::seed(std::uint64_t(seed_));
 }
 
 /** Valued construtor (long long). */
@@ -187,7 +198,7 @@ template<typename ValueType, typename StateValueType, typename OutputType, const
 inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(const long long seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(seed_);
+    MyBaseClass::seed(std::uint64_t(seed_));
 }
 
 /** Valued construtor (unsigned long long). */
@@ -221,6 +232,78 @@ inline BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::BaseCWG(cons
     : MyBaseClass()
 {
     MyBaseClass::setstate(internal_state);
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG from current time (empty signature). */
+template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
+inline void BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::seed() noexcept
+{
+    _setstate(utils::set_random_seed64());
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (int). */
+template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
+inline void BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::seed(const int seed_) noexcept
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned int). */
+template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
+inline void BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::seed(const unsigned int seed_) noexcept
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long). */
+template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
+inline void BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::seed(const long seed_) noexcept
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long). */
+template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
+inline void BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::seed(const unsigned long seed_) noexcept
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long long). */
+template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
+inline void BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::seed(const long long seed_) noexcept
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long long). */
+template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
+inline void BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::seed(const unsigned long long seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned 128-bits). */
+template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
+inline void BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::seed(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (double). */
+template<typename ValueType, typename StateValueType, typename OutputType, const std::uint32_t OUTPUT_BITS>
+inline void BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::seed(const double seed_)
+{
+    MyBaseClass::seed(seed_);
 }
 
 //---------------------------------------------------------------------------
