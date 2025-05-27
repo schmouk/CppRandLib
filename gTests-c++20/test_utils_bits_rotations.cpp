@@ -70,7 +70,7 @@ namespace tests_utils
         EXPECT_EQ(0b1100'0001'0010'0000, utils::rot_left(v16, 15));
         EXPECT_EQ(0b1000'0010'0100'0001, utils::rot_left(v16, 16));
         EXPECT_THROW(utils::rot_left(v16, -1), NegativeRotationException);
-        EXPECT_THROW(utils::rot_left(v16, 17), TooBigRotationException);
+        EXPECT_THROW(utils::rot_left(v16, 17), TooBigRotationException<std::uint16_t>);
 
 
         v32 = 0b1000'0010'0100'0001'1000'0010'0100'0001ul;
@@ -106,7 +106,7 @@ namespace tests_utils
         EXPECT_EQ(0b0110'0000'1001'0000'0110'0000'1001'0000ul, utils::rot_left(v32, 30));
         EXPECT_EQ(0b1100'0001'0010'0000'1100'0001'0010'0000ul, utils::rot_left(v32, 31));
         EXPECT_THROW(utils::rot_left(v32, -1), NegativeRotationException);
-        EXPECT_THROW(utils::rot_left(v32, 33), TooBigRotationException);
+        EXPECT_THROW(utils::rot_left(v32, 33), TooBigRotationException<std::uint32_t>);
 
         v64 = 0b1000'0010'0100'0001'1000'0010'0100'0001'1000'0010'0100'0001'1000'0010'0100'0001ull;
         EXPECT_EQ(0b0000'0100'1000'0011'0000'0100'1000'0011'0000'0100'1000'0011'0000'0100'1000'0011ull, utils::rot_left(v64, 1));
@@ -173,7 +173,7 @@ namespace tests_utils
         EXPECT_EQ(0b0110'0000'1001'0000'0110'0000'1001'0000'0110'0000'1001'0000'0110'0000'1001'0000ull, utils::rot_left(v64, 62));
         EXPECT_EQ(0b1100'0001'0010'0000'1100'0001'0010'0000'1100'0001'0010'0000'1100'0001'0010'0000ull, utils::rot_left(v64, 63));
         EXPECT_THROW(utils::rot_left(v64, -1), NegativeRotationException);
-        EXPECT_THROW(utils::rot_left(v64, 65), TooBigRotationException);
+        EXPECT_THROW(utils::rot_left(v64, 65), TooBigRotationException<std::uint64_t>);
 
     }
 }

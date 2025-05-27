@@ -719,9 +719,9 @@ namespace tests_bases
         EXPECT_NEAR(br1.randrange(5.5, 1.0, -0.35), 1.30, 1.0e-6);
 
         EXPECT_THROW(br1.randrange(15, 25, 0), RangeZeroStepException);
-        EXPECT_THROW(br33.randrange(25ULL, 25ULL, 2LL), RangeSameValuesException);
-        EXPECT_THROW(br0.randrange(15L, 25L, -1L), RangeIncoherentValuesException);
-        EXPECT_THROW(br1.randrange(25UL, 15UL, 3L), RangeIncoherentValuesException);
+        EXPECT_THROW(br33.randrange(25LL, 25LL, 2LL), RangeSameValuesException<long long>);
+        EXPECT_THROW(br0.randrange(15L, 25L, -1L), RangeIncoherentValuesException<long>);
+        EXPECT_THROW(br1.randrange(25.0, 15.0, 3.1), RangeIncoherentValuesException<double>);
 
 
         //-- tests samples(vector, vector, k)
