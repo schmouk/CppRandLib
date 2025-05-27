@@ -603,7 +603,7 @@ public:
     void sample(std::array<T, k>& out, const std::array<T, n>& population) noexcept(false)
     {
         if (k > n)
-            throw SampleCountException();
+            throw SampleCountException(k, n);
 
         std::array<T, n> samples{ population };
 
@@ -684,7 +684,7 @@ public:
     {
         const std::size_t samples_count = std::size_t(std::accumulate(counts.begin(), counts.end(), C(0)));
         if (k > samples_count)
-            throw SampleCountException();
+            throw SampleCountException(k, samples_count);
 
         std::vector<T> samples(samples_count);
         auto c_it = counts.begin();
@@ -1130,9 +1130,9 @@ template<typename CountT, typename ProbaT>
 const CountT BaseRandom<StateT, OutputT, OUTPUT_BITS>::binomialvariate(CountT n, const ProbaT p) noexcept(false)
 {
     if (n < 0)
-        throw PositiveValueException();
+        throw PositiveValueException(n);
     if (p < 0.0 || p > 1.0)
-        throw ProbaOutOfRangeException();
+        throw ProbaOutOfRangeException(p);
 
     CountT count{ 0 };
     while (n > 0) {
@@ -1260,15 +1260,15 @@ const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::randrange(const T start, const
     if (step == 0)
         throw RangeZeroStepException();
     if (start == stop)
-        throw RangeSameValuesException();
+        throw RangeSameValuesException<T>(start, stop);
     if ((stop > start && step < 0) || (stop < start && step > 0))
-        throw RangeIncoherentValuesException();
+        throw RangeIncoherentValuesException<T>(start, stop, step);
 
     if (step == 1)
         return start + uniform<T>(stop - start);
 
     const std::uint64_t n_steps{
-        std::uint64_t(step > 0
+        std::uint64_t(step >= 0
             ? (stop - start + (step / 2)) / step
             : (start - stop - (step / 2)) / -step
         )
@@ -1289,7 +1289,7 @@ void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(
 {
     const std::size_t n{ population.size() };
     if (k > n)
-        throw SampleCountException();
+        throw SampleCountException(k, n);
 
     out.clear();
     out.resize(k);
@@ -1317,12 +1317,12 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::sample(
     const std::size_t k
 ) noexcept(false)
 {
-    if (counts.size() != population.size())
-        throw SampleSizesException();
+    if (population.size() != counts.size())
+        throw SampleSizesException(population.size(), counts.size());
 
     const std::size_t samples_count = std::size_t(std::accumulate(counts.cbegin(), counts.cend(), C(0)));
     if (k > samples_count)
-        throw SampleCountException();
+        throw SampleCountException(k, samples_count);
 
     std::vector<T> samples(samples_count);
     auto c_it = counts.cbegin();
@@ -1486,7 +1486,7 @@ template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::betavariate(const double alpha, const double beta) noexcept(false)
 {
     if (alpha <= 0.0 || beta <= 0.0)
-        throw AlphaBetaArgsException();
+        throw AlphaBetaArgsException(alpha, beta);
 
     const double y = gammavariate(alpha, 1.0);
     return (y == 0.0) ? 0.0 : (y / (y + gammavariate(beta, 1.0)));
@@ -1518,7 +1518,7 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gammavariate(const double
     int n_loops{ 0 };
 
     if (alpha <= 0.0 || beta <= 0.0)
-        throw AlphaBetaArgsException();
+        throw AlphaBetaArgsException(alpha, beta);
 
     if (alpha > 1.0) {
         // Uses R.C.H.Cheng paper
@@ -1592,7 +1592,7 @@ template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::gauss(const double mu, const double sigma) noexcept(false)
 {
     if (sigma <= 0.0)
-        throw GaussSigmaException();
+        throw GaussSigmaException(sigma);
 
     double z;
     if (_internal_state.gauss_valid) {
@@ -1767,7 +1767,7 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::vonmisesvariate(const dou
     // (modified here with n_loops testing against max loops count and with default returned value)
 
     if (kappa < 0)
-        throw NegativeKappaException();
+        throw NegativeKappaException(kappa);
 
     if (kappa <= 1e-6)
         return uniform(TWO_PI);

@@ -109,7 +109,7 @@ namespace utils
         inline SplitMix64(double seed)
         {
             if (seed < 0.0 || 1.0 <= seed)
-                throw FloatValueRange01Exception();
+                throw FloatValueRange01Exception(seed);
 
             _state = std::uint64_t(seed * double(0xffff'ffff'ffff'ffffULL));
         }

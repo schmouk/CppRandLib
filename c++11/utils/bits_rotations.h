@@ -44,9 +44,9 @@ namespace utils
         static_assert(std::is_unsigned<IntT>::value, "left bits rotation are only applied on unsigned integer values.");
 
         if (rot_count < 0)
-            throw NegativeRotationException();
+            throw NegativeRotationException(rot_count);
         if (rot_count > BITS_COUNT)
-            throw TooBigRotationException();
+            throw TooBigRotationException<IntT>(rot_count);
 
         if (rot_count == 0 || rot_count == BITS_COUNT)
             return value;

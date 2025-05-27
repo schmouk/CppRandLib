@@ -28,16 +28,80 @@ SOFTWARE.
 
 //===========================================================================
 #include <stdexcept>
+#include <string>
 
 
 //===========================================================================
-/** @brief Exponential law null lambda exception. */
-class AlphaBetaArgsException : public std::exception
+/** @brief The base class for CppRandLib specific exceptions. */
+template<typename T = double, typename S = T>
+struct BaseException : public std::exception
 {
-public:
-    const char* what() noexcept { return "both arguments alpha and beta must be greater than 0.0."; }
+    inline BaseException() noexcept = default;
+    inline virtual ~BaseException() noexcept = default;
+
+    inline BaseException(const T value) noexcept
+        : std::exception()
+        , _inited(true)
+        , _value(value)
+    {
+    }
+
+    inline BaseException(const T value, const T value2) noexcept
+        : std::exception()
+        , _inited(true)
+        , _value(value)
+        , _value2(value2)
+    {
+    }
+
+    inline BaseException(const T value, const T value2, const S value3) noexcept
+        : std::exception()
+        , _inited(true)
+        , _value(value)
+        , _value2(value2)
+        , _value3(value3)
+    {
+    }
+
+
+    std::string _msg{};
+    T _value{};
+    T _value2{};
+    S _value3{};
+    bool _inited{ false };
 };
 
+
+//===========================================================================
+//---------------------------------------------------------------------------
+/** @brief Exponential law null lambda exception. */
+struct AlphaBetaArgsException : public BaseException<double>
+{
+    inline AlphaBetaArgsException() noexcept = default;
+    inline virtual ~AlphaBetaArgsException() noexcept = default;
+
+    inline AlphaBetaArgsException(const double alpha, const double beta)
+        : BaseException<double>(alpha, beta)
+    {}
+
+    const char* what() noexcept
+    {
+        if (_inited) {
+            _msg = "both arguments alpha (";
+            _msg += std::to_string(_value);
+            _msg += ") and beta (";
+            _msg += std::to_string(_value2);
+            _msg += ") must be greater than 0.0.";
+            return _msg.c_str();
+        }
+        else {
+            return "both arguments alpha and beta must be greater than 0.0.";
+        }
+    }
+};
+
+
+//---------------------------------------------------------------------------
 /** @brief Empty sequence exception. */
 class ChoiceEmptySequenceException : public std::exception
 {
@@ -45,6 +109,8 @@ public:
     const char* what() noexcept { return "cannot make a choice from an empty sequence."; }
 };
 
+
+//---------------------------------------------------------------------------
 /** @brief Exponential law null lambda exception. */
 class ExponentialZeroLambdaException : public std::exception
 {
@@ -52,124 +118,371 @@ public:
     const char* what() noexcept { return "lambda value cannot be 0.0 (currently is)."; }
 };
 
+
+//---------------------------------------------------------------------------
 /** @brief Float value is out of range [0.0, 1.0). */
-struct FloatValueRange01Exception : public std::exception
+struct FloatValueRange01Exception : public BaseException<double>
 {
-    const char* what() noexcept { return "Float value is out of range [0.0, 1.0)."; }
+    inline FloatValueRange01Exception() noexcept = default;
+    inline virtual ~FloatValueRange01Exception() noexcept = default;
+
+    inline FloatValueRange01Exception(const double value)
+        : BaseException<double>(value)
+    {}
+
+    const char* what() noexcept
+    {
+        if (_inited) {
+            _msg = "Float value (";
+            _msg += std::to_string(_value);
+            _msg += ") is out of range [0.0, 1.0).";
+            return _msg.c_str();
+        }
+        else {
+            return "Float value is out of range [0.0, 1.0).";
+        }
+    }
 };
 
+
+//---------------------------------------------------------------------------
 /** @brief Exponential law null lambda exception. */
-class GaussSigmaException : public std::exception
+struct GaussSigmaException : public BaseException<double>
 {
-public:
-    const char* what() noexcept { return "value for argument sigma must be greater than 0.0."; }
+    inline GaussSigmaException() noexcept = default;
+    inline virtual ~GaussSigmaException() noexcept = default;
+
+    inline GaussSigmaException(const double sigma)
+        : BaseException<double>(sigma)
+    {}
+
+    const char* what() noexcept
+    {
+        if (_inited) {
+            _msg = "value for argument sigma (";
+            _msg += std::to_string(_value);
+            _msg += ") must be greater than 0.0.";
+            return _msg.c_str();
+        }
+        else {
+            return "value for argument sigma must be greater than 0.0.";
+        }
+    }
 };
 
-/** @brief Not same sizes of containers exception. */
-struct MinMaxSizesException : public std::exception
-{
-    const char* what() noexcept { return "'min' and 'max' container arguments must have same sizes."; }
-};
 
+//---------------------------------------------------------------------------
 /** @brief Negative value for kappa parameter exception. */
-struct NegativeKappaException : public std::exception
+struct NegativeKappaException : public BaseException<double>
 {
-    const char* what() noexcept { return "'kappa' parameter cannot be negative."; }
+    inline NegativeKappaException() noexcept = default;
+    inline virtual ~NegativeKappaException() noexcept = default;
+
+    inline NegativeKappaException(const double kappa)
+        : BaseException<double>(kappa)
+    {}
+
+    const char* what() noexcept
+    {
+        if (_inited) {
+            _msg = "'kappa' parameter (";
+            _msg += std::to_string(_value);
+            _msg += ") cannot be negative.";
+            return _msg.c_str();
+        }
+        else {
+            return "'kappa' parameter cannot be negative.";
+        }
+    }
 };
 
+
+//---------------------------------------------------------------------------
 /** @brief Negative value for rotation bits count exception. */
-struct NegativeRotationException : public std::exception
+struct NegativeRotationException : public BaseException<int>
 {
-    const char* what() noexcept { return "rotation bits count cannot be negative."; }
+    inline NegativeRotationException() noexcept = default;
+    inline virtual ~NegativeRotationException() noexcept = default;
+
+    inline NegativeRotationException(const int rot_count)
+        : BaseException<int>(rot_count)
+    {}
+
+    const char* what() noexcept
+    {
+        if (_inited) {
+            _msg = "rotation bits count (";
+            _msg += std::to_string(_value);
+            _msg += ") cannot be negative.";
+            return _msg.c_str();
+        }
+        else {
+            return "rotation bits count cannot be negative.";
+        }
+    }
 };
 
+
+//---------------------------------------------------------------------------
 /** @brief Negative value for sigma paramater of Gauss law exception. */
 struct NormalSigmaException : public GaussSigmaException
-{};
+{
+    inline NormalSigmaException() noexcept = default;
+    inline virtual ~NormalSigmaException() noexcept = default;
 
+    inline NormalSigmaException(const double sigma)
+        : GaussSigmaException(sigma)
+    {}
+};
+
+
+//---------------------------------------------------------------------------
 /** @brief Not same sizes of containers exception. */
 class ParetoArgsValueException : public std::exception
 {
 public:
-    const char* what() noexcept { return "shape argument 'alpha' must not be 0.0."; }
+    const char* what() noexcept { return "shape argument 'alpha' must not be 0.0 (actually is)."; }
 };
 
+
+//---------------------------------------------------------------------------
 /** @brief Not a positive value exception. */
-class PositiveValueException : public std::exception
+struct PositiveValueException : public BaseException<long long>
 {
-public:
-    const char* what() noexcept { return "argument value must not be negative."; }
+    inline PositiveValueException() noexcept = default;
+    inline virtual ~PositiveValueException() noexcept = default;
+
+    inline PositiveValueException(const long long value)
+        : BaseException<long long>(value)
+    {}
+
+    const char* what() noexcept
+    {
+        if (_inited) {
+            _msg = "argument value (";
+            _msg += std::to_string(_value);
+            _msg += ") must not be negative.";
+            return _msg.c_str();
+        }
+        else {
+            return "argument value must not be negative (actually is).";
+        }
+    }
 };
 
+
+//---------------------------------------------------------------------------
 /** @brief Probability value out of range exception. */
-class ProbaOutOfRangeException : public std::exception
+struct ProbaOutOfRangeException : public BaseException<double>
 {
-public:
-    const char* what() noexcept { return "probabilitiy values must range in [0.0, 1.0]."; }
+    inline ProbaOutOfRangeException() noexcept = default;
+    inline virtual ~ProbaOutOfRangeException() noexcept = default;
+
+    inline ProbaOutOfRangeException(const double proba)
+        : BaseException<double>(proba)
+    {}
+
+    const char* what() noexcept
+    {
+        if (_inited) {
+            _msg = "probabilitiy values must range in [0.0, 1.0] (actually is ";
+            _msg += std::to_string(_value);
+            _msg += ").";
+            return _msg.c_str();
+        }
+        else {
+            return "probabilitiy values must range in [0.0, 1.0].";
+        }
+    }
 };
 
+
+//---------------------------------------------------------------------------
 /** @brief Range arguments with incoherent values exception. */
-struct RangeIncoherentValuesException : public std::exception
+template<typename T = long long, typename S = T>
+struct RangeIncoherentValuesException : public BaseException<T, S>
 {
-    const char* what() noexcept { return "'stop' value will never be reached associated with 'start' and 'step' arguments."; }
+    inline RangeIncoherentValuesException() noexcept
+        : BaseException<T, S>()
+    {}
+
+    inline virtual ~RangeIncoherentValuesException() noexcept = default;
+
+    inline RangeIncoherentValuesException(const T start, const T stop, const S step)
+        : BaseException<T, S>(start, stop, step)
+    {}
+
+    const char* what() noexcept
+    {
+        if (BaseException<T, S>::_inited) {
+            BaseException<T, S>::_msg = "'stop' value (";
+            BaseException<T, S>::_msg += std::to_string(BaseException<T, S>::_value2);
+            BaseException<T, S>::_msg += ") will never be reached associated with 'start' (";
+            BaseException<T, S>::_msg += std::to_string(BaseException<T, S>::_value);
+            BaseException<T, S>::_msg += ") and 'step' (";
+            BaseException<T, S>::_msg += std::to_string(BaseException<T, S>::_value3);
+            BaseException<T, S>::_msg += ") arguments.";
+            return BaseException<T, S>::_msg.c_str();
+        }
+        else {
+            return "'stop' value will never be reached associated with 'start' and 'step' arguments.";
+        }
+    }
 };
 
+
+//---------------------------------------------------------------------------
 /** @brief Range arguments with same value exception. */
-class RangeSameValuesException : public std::exception
+template<typename T = long long>
+struct RangeSameValuesException : public BaseException<T>
 {
-public:
-    const char* what() noexcept { return "'start' and 'stop' arguments must be different."; }
+    inline RangeSameValuesException() noexcept = default;
+    inline virtual ~RangeSameValuesException() noexcept = default;
+
+    inline RangeSameValuesException(const T start, const T stop)
+        : BaseException<T>(start, stop)
+    {}
+
+    const char* what() noexcept
+    {
+        if (BaseException<T>::_inited) {
+            BaseException<T>::_msg = "'start' (";
+            BaseException<T>::_msg += std::to_string(BaseException<T>::_value);
+            BaseException<T>::_msg += ") and 'stop' (";
+            BaseException<T>::_msg += std::to_string(BaseException<T>::_value2);
+            BaseException<T>::_msg += ") arguments must be different.";
+            return BaseException<T>::_msg.c_str();
+        }
+        else {
+            return "'start' and 'stop' arguments must be different.";
+        }
+    }
 };
 
+
+//---------------------------------------------------------------------------
 /** @brief Range arguments with same value exception. */
 class RangeZeroStepException : public std::exception
 {
 public:
-    const char* what() noexcept { return "'step' argument cannot be 0."; }
+    const char* what() noexcept { return "'step' argument cannot be 0 (actually is)."; }
 };
 
+
+//---------------------------------------------------------------------------
 /** @brief Range arguments with same value exception. */
-class SampleCountException : public std::exception
+struct SampleCountException : public BaseException<std::size_t>
 {
-public:
-    const char* what() noexcept { return "cannot sample a number of items that is greater than the overall population."; }
+    inline SampleCountException() noexcept = default;
+    inline virtual ~SampleCountException() noexcept = default;
+
+    inline SampleCountException(const std::size_t sample_size, const std::size_t population_size)
+        : BaseException<std::size_t>(sample_size, population_size)
+    {}
+
+    const char* what() noexcept
+    {
+        if (_inited) {
+            _msg = "cannot sample a number of items (";
+            _msg += std::to_string(_value);
+            _msg += ") that is greater than the overall population (";
+            _msg += std::to_string(_value2);
+            _msg += ").";
+            return _msg.c_str();
+        }
+        else {
+            return "cannot sample a number of items that is greater than the overall population.";
+        }
+    }
 };
 
+
+//---------------------------------------------------------------------------
 /** @brief Range arguments with same value exception. */
-class SampleSizesException : public std::exception
+struct SampleSizesException : public BaseException<std::size_t>
 {
-public:
-    const char* what() noexcept { return "sizes of arguments 'population' and 'counts' must be the same."; }
+    inline SampleSizesException() noexcept = default;
+    inline virtual ~SampleSizesException() noexcept = default;
+
+    inline SampleSizesException(const std::size_t population_size, const std::size_t count_size)
+        : BaseException<std::size_t>(population_size, count_size)
+    {}
+
+    const char* what() noexcept
+    {
+        if (_inited) {
+            _msg = "sizes of arguments 'population' (";
+            _msg += std::to_string(_value);
+            _msg += ") and 'counts' (";
+            _msg += std::to_string(_value2);
+            _msg += ") must be the same.";
+            return _msg.c_str();
+        }
+        else {
+            return "sizes of arguments 'population' and 'counts' must be the same.";
+        }
+    }
 };
 
+
+//---------------------------------------------------------------------------
 /** @brief Step value type exception. */
 struct StepValueTypeException : public std::exception
 {
     const char* what() noexcept { return "Type of 'step' values must be arithmetic."; }
 };
 
+
+//---------------------------------------------------------------------------
 /** @brief Too big value for rotation bits count exception. */
-struct TooBigRotationException : public std::exception
+template<typename IntT = unsigned long long>
+struct TooBigRotationException : public BaseException<int>
 {
-    const char* what() noexcept { return "rotation bits count is too big (must not exceed the rotated integer size)."; }
+    inline TooBigRotationException() noexcept = default;
+    inline virtual ~TooBigRotationException() noexcept = default;
+
+    inline TooBigRotationException(const int rot_count)
+        : BaseException<int>(rot_count)
+    {}
+
+    const char* what() noexcept
+    {
+        if (_inited) {
+            _msg = "rotation bits count (";
+            _msg += std::to_string(_value);
+            _msg += ") is too big (must not exceed the rotated integer size: ";
+            _msg += std::to_string(8 * sizeof(IntT));
+            _msg += ").";
+            return _msg.c_str();
+        }
+        else {
+            return "rotation bits count is too big (must not exceed the rotated integer size).";
+        }
+    }
 };
 
+
+//---------------------------------------------------------------------------
 /** @brief Weibull law arguments exception. */
 class WeibullArgsValueException : public std::exception
 {
 public:
-    const char* what() noexcept { return "shape argument 'beta' must not be 0.0."; }
+    const char* what() noexcept { return "shape argument 'beta' must not be 0.0 (actually is)."; }
 };
 
+
+//---------------------------------------------------------------------------
 /** @brief Not a positive value exception. */
 class ZeroLengthException : public std::exception
 {
 public:
-    const char* what() noexcept { return "argument length must not be zero."; }
+    const char* what() noexcept { return "length or count argument value must not be zero (actually is)."; }
 };
 
+
+//---------------------------------------------------------------------------
 /** @brief Not a positive value exception. */
 struct ZeroValueException : public std::exception
 {
-    const char* what() noexcept { return "argument value must not be zero."; }
+    const char* what() noexcept { return "argument value must not be zero (actually is)."; }
 };

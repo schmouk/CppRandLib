@@ -41,9 +41,9 @@ namespace utils
     inline const IntT rot_left(const IntT value, const int rot_count, const int BITS_COUNT = 8 * sizeof(IntT))
     {
         if (rot_count < 0)
-            throw NegativeRotationException();
+            throw NegativeRotationException(rot_count);
         if (rot_count > BITS_COUNT)
-            throw TooBigRotationException();
+            throw TooBigRotationException<IntT>(rot_count);
 
         if (rot_count == 0 || rot_count == BITS_COUNT)
             return value;
