@@ -30,6 +30,7 @@ SOFTWARE.
 #include <cstdint>
 
 #include "baseclasses/basewell.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================
@@ -100,36 +101,23 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline Well19937c() noexcept
-        : MyBaseClass()
-    {
-    }
+    Well19937c() noexcept;                                  //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    template<typename T>
-    inline Well19937c(const T seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::seed(seed_);
-    }
+    Well19937c(const int                seed) noexcept;     //!< Valued constructor (int).
+    Well19937c(const unsigned int       seed) noexcept;     //!< Valued constructor (unsigned int).
+    Well19937c(const long               seed) noexcept;     //!< Valued constructor (long)
+    Well19937c(const unsigned long      seed) noexcept;     //!< Valued constructor (unsigned long).
+    Well19937c(const long long          seed) noexcept;     //!< Valued constructor (long long).
+    Well19937c(const unsigned long long seed) noexcept;     //!< Valued constructor (unsigned long long).
+    Well19937c(const utils::UInt128&    seed) noexcept;     //!< Valued constructor (unsigned 128-bits).
+    Well19937c(const double             seed);              //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline Well19937c(const state_type& seed) noexcept
-        : MyBaseClass(seed)
-    {
-    }
+    Well19937c(const state_type& internal_state) noexcept;  //!< Valued constructor (full state).
 
-    Well19937c(const Well19937c&) noexcept = default;   //!< default copy constructor.
-    Well19937c(Well19937c&&) noexcept = default;        //!< default move constructor.
-    virtual ~Well19937c() noexcept = default;         //!< default destructor.
+    virtual inline ~Well19937c() noexcept = default;        //!< default destructor.
 
 
-    //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return an integer value coded on OUTPUT_BITS bits.
-    */
-    virtual const output_type next() noexcept override;
+    //---   Operations   ----------------------------------------------------
+    virtual const output_type next() noexcept override;     //!< The internal PRNG algorithm. @return an integer value coded on 32 bits.
 
 };

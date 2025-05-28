@@ -62,7 +62,7 @@ namespace utils
     */
     inline const std::uint64_t set_random_seed63()
     {
-        return set_random_seed64() & 0x7fff'ffff'ffff'ffffull;
+        return set_random_seed64() >> 1ull;  // & 0x7fff'ffff'ffff'ffffull;
     }
 
 
@@ -77,7 +77,7 @@ namespace utils
     */
     inline const std::uint32_t set_random_seed32()
     {
-        return set_random_seed64() & 0xffff'fffful;
+        return set_random_seed64() >> 32ull;  // & 0xffff'fffful;
     }
 
 
@@ -92,7 +92,7 @@ namespace utils
     */
     inline const std::uint32_t set_random_seed31()
     {
-        return set_random_seed64() & 0x7fff'fffful;
+        return set_random_seed64() >> 33ull;  // & 0x7fff'fffful;
     }
 
 }

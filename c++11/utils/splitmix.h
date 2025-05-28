@@ -29,7 +29,9 @@ SOFTWARE.
 //===========================================================================
 #include <cstdint>
 
+#include "../exceptions.h"
 #include "time.h"
+#include "uint128.h"
 
 
 //===========================================================================
@@ -56,26 +58,60 @@ namespace utils
     {
     public:
         /** @brief Empty constructor, uses current time to initialize the internal state. */
-        inline SplitMix64()  noexcept
+        inline SplitMix64() noexcept
             : _state(utils::get_time_us())
         {}
 
-        /** @brief Valued constructor - integer. */
-        template<typename IntT>
-        inline SplitMix64(const IntT seed)
+        /** @brief Valued constructor - 32-bits integer. */
+        inline SplitMix64(const int seed) noexcept
             : _state(seed)
         {}
 
-        /** @brief Valued constructor - double in range [0.0, 1.0). */
-        inline SplitMix64(const double seed) noexcept
-            : _state((seed <= 0.0) ? 0ull : (seed >= 1.0) ? 0xffff'ffff'ffff'ffffull : std::uint64_t(0xffff'ffff'ffff'ffffull * seed))
+        /** @brief Valued constructor - 32-bits unsigned integer. */
+        inline SplitMix64(const unsigned int seed) noexcept
+            : _state(seed)
         {}
+
+        /** @brief Valued constructor - 32-bits integer. */
+        inline SplitMix64(const long seed) noexcept
+            : _state(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits unsigned integer. */
+        inline SplitMix64(const unsigned long seed) noexcept
+            : _state(seed)
+        {
+        }
+
+        /** @brief Valued constructor - 64-bits integer. */
+        inline SplitMix64(const long long seed) noexcept
+            : _state(seed)
+        {}
+
+        /** @brief Valued constructor - 64-bits unsigned integer. */
+        inline SplitMix64(const unsigned long long seed) noexcept
+            : _state(seed)
+        {}
+
+        /** @brief Valued constructor - 128-bits unsigned integer. */
+        inline SplitMix64(const utils::UInt128& seed) noexcept
+            : _state(seed.lo)
+        {}
+
+        /** @brief Valued constructor - double in range [0.0, 1.0). */
+        inline SplitMix64(double seed)
+        {
+            if (seed < 0.0 || 1.0 <= seed)
+                throw FloatValueRange01Exception(seed);
+
+            _state = std::uint64_t(seed * double(0xffff'ffff'ffff'ffffULL));
+        }
 
         /** @brief Evaluates next pseudorandom value. */
         const std::uint64_t operator() () noexcept;
 
     private:
-        std::uint64_t _state;
+        std::uint64_t _state{};
 
     };
     
@@ -101,18 +137,47 @@ namespace utils
     {
     public:
         /** @brief Empty constructor, uses the shuffled current time to initialize the internal state. */
-        inline SplitMix63()  noexcept
+        inline SplitMix63() noexcept
             : SplitMix64()
         {}
 
-        /** @brief Valued constructor - integer. */
-        template<typename IntT>
-        inline SplitMix63(const IntT seed) noexcept
+        /** @brief Valued constructor - 32-bits integer. */
+        inline SplitMix63(const int seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits unsigned integer. */
+        inline SplitMix63(const unsigned int seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits integer. */
+        inline SplitMix63(const long seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits unsigned integer. */
+        inline SplitMix63(const unsigned long seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 64-bits integer. */
+        inline SplitMix63(const long long seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 64-bits unsigned integer. */
+        inline SplitMix63(const unsigned long long seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 128-bits unsigned integer. */
+        inline SplitMix63(const utils::UInt128& seed) noexcept
             : SplitMix64(seed)
         {}
 
         /** @brief Valued constructor - double. */
-        inline SplitMix63(const double seed) noexcept
+        inline SplitMix63(const double seed)
             : SplitMix64(seed)
         {}
 
@@ -146,18 +211,47 @@ namespace utils
     {
     public:
         /** @brief Empty constructor, uses the shuffled current time to initialize the internal state. */
-        inline SplitMix32()  noexcept
+        inline SplitMix32() noexcept
             : SplitMix64()
         {}
 
-        /** @brief Valued constructor - integer. */
-        template<typename IntT>
-        inline SplitMix32(const IntT seed) noexcept
+        /** @brief Valued constructor - 32-bits integer. */
+        inline SplitMix32(const int seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits unsigned integer. */
+        inline SplitMix32(const unsigned int seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits integer. */
+        inline SplitMix32(const long seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits unsigned integer. */
+        inline SplitMix32(const unsigned long seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 64-bits integer. */
+        inline SplitMix32(const long long seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 64-bits unsigned integer. */
+        inline SplitMix32(const unsigned long long seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 128-bits unsigned integer. */
+        inline SplitMix32(const utils::UInt128& seed) noexcept
             : SplitMix64(seed)
         {}
 
         /** @brief Valued constructor - double. */
-        inline SplitMix32(const double seed) noexcept
+        inline SplitMix32(const double seed)
             : SplitMix64(seed)
         {}
 
@@ -191,18 +285,47 @@ namespace utils
     {
     public:
         /** @brief Empty constructor, uses the shuffled current time to initialize the internal state. */
-        inline SplitMix31()  noexcept
+        inline SplitMix31() noexcept
             : SplitMix64()
         {}
 
-        /** @brief Valued constructor - integer. */
-        template<typename IntT>
-        inline SplitMix31(const IntT seed) noexcept
+        /** @brief Valued constructor - 32-bits integer. */
+        inline SplitMix31(const int seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits unsigned integer. */
+        inline SplitMix31(const unsigned int seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits integer. */
+        inline SplitMix31(const long seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 32-bits unsigned integer. */
+        inline SplitMix31(const unsigned long seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 64-bits integer. */
+        inline SplitMix31(const long long seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 64-bits unsigned integer. */
+        inline SplitMix31(const unsigned long long seed) noexcept
+            : SplitMix64(seed)
+        {}
+
+        /** @brief Valued constructor - 128-bits unsigned integer. */
+        inline SplitMix31(const utils::UInt128& seed) noexcept
             : SplitMix64(seed)
         {}
 
         /** @brief Valued constructor - double. */
-        inline SplitMix31(const double seed) noexcept
+        inline SplitMix31(const double seed)
             : SplitMix64(seed)
         {}
 

@@ -29,10 +29,92 @@ SOFTWARE.
 #include <cstdint>
 
 #include "utils/bits_rotations.h"
+#include "utils/uint128.h"
 #include "xoroshiro1024.h"
 
 
 //===========================================================================
+//---------------------------------------------------------------------------
+/** Empty constructor. */
+Xoroshiro1024::Xoroshiro1024() noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed();
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (int). */
+Xoroshiro1024::Xoroshiro1024(const int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned int). */
+Xoroshiro1024::Xoroshiro1024(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long). */
+Xoroshiro1024::Xoroshiro1024(const long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor(unsigned long). */
+Xoroshiro1024::Xoroshiro1024(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long long). */
+Xoroshiro1024::Xoroshiro1024(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long long). */
+Xoroshiro1024::Xoroshiro1024(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned 128-bits). */
+Xoroshiro1024::Xoroshiro1024(const utils::UInt128& seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (double). */
+Xoroshiro1024::Xoroshiro1024(const double seed_)
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (full state). */
+Xoroshiro1024::Xoroshiro1024(const state_type& internal_state) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::setstate(internal_state);
+}
+
+//---------------------------------------------------------------------------
 /** The internal PRNG algorithm. */
 const Xoroshiro1024::output_type Xoroshiro1024::next() noexcept
 {
@@ -42,7 +124,7 @@ const Xoroshiro1024::output_type Xoroshiro1024::next() noexcept
     // advances the internal state of the PRNG
     const std::uint64_t s_low{ _internal_state.state.list[new_index] };
     const std::uint64_t s_high{ _internal_state.state.list[previous_index] ^ s_low };
-    
+
     _internal_state.state.list[previous_index] = utils::rot_left(s_low, 25) ^ s_high ^ (s_high << 27);
     _internal_state.state.list[new_index] = utils::rot_left(s_high, 36);
 
@@ -50,15 +132,4 @@ const Xoroshiro1024::output_type Xoroshiro1024::next() noexcept
 
     // finally, returns pseudo random value as a 64-bits integer
     return utils::rot_left(s_low * 5, 7) * 9;
-
-    /** /
-    previousIndex = self._index
-    # advances the internal state of the PRNG
-    self._index = (self._index + 1) & Xoroshiro1024._SIZE_MODULO
-    sHigh = self._state[previousIndex] ^ (sLow : = self._state[self._index])
-    self._state[previousIndex] = BaseRandom._rotleft(sLow, 25) ^ sHigh ^ ((sHigh << 27) & Xoroshiro1024._MODULO)
-    self._state[self._index] = BaseRandom._rotleft(sHigh, 36)
-    # returns the output value
-    return (BaseRandom._rotleft(sLow * 5, 7) * 9) & Xoroshiro1024._MODULO
-    /**/
 }

@@ -31,42 +31,44 @@ SOFTWARE.
 
 #include "baseclasses/baserandom.h"
 #include "utils/seed_generation.h"
+#include "utils/splitmix.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================
 /** @brief Fast Linear Congruential Generator - 32 bits.
-* 
-*   Pseudo-random numbers generator - Linear Congruential Generator dedicated  
-*   to  32-bits  calculations with very short period (about 4.3e+09) but very 
+*
+*   Pseudo-random numbers generator - Linear Congruential Generator dedicated
+*   to  32-bits  calculations with very short period (about 4.3e+09) but very
 *   short time computation.
-* 
+*
 *   LCG models evaluate pseudo-random numbers suites x(i) as a simple mathem-
-*   atical function of 
-*   
-*       x(i) = (a * x(i-1) + c) mod m 
-*    
-*   Results  are  nevertheless  considered  to  be  poor  as  stated  in  the 
-*   evaluation done by Pierre L'Ecuyer and Richard Simard (Universite de 
-*   Montreal) in 'TestU01: A C Library for Empirical Testing of Random Number 
-*   Generators  -  ACM  Transactions  on Mathematical Software,  vol.33  n.4,  
-*   pp.22-40,  August 2007'.  It is not recommended to use such pseudo-random 
+*   atical function of
+*
+*       x(i) = (a * x(i-1) + c) mod m
+*
+*   Results  are  nevertheless  considered  to  be  poor  as  stated  in  the
+*   evaluation done by Pierre L'Ecuyer and Richard Simard (Universite de
+*   Montreal) in 'TestU01: A C Library for Empirical Testing of Random Number
+*   Generators  -  ACM  Transactions  on Mathematical Software,  vol.33  n.4,
+*   pp.22-40,  August 2007'.  It is not recommended to use such pseudo-random
 *   numbers generators for serious simulation applications.
-*  
-*   The implementation of this LCG 32-bits model is based  on  (a=69069, c=1) 
-*   since  these  two  values  have  evaluated to be the 'best' ones for LCGs 
+*
+*   The implementation of this LCG 32-bits model is based  on  (a=69069, c=1)
+*   since  these  two  values  have  evaluated to be the 'best' ones for LCGs
 *   within TestU01 while m = 2^32.
-* 
-*   See FastRand63 for a 2^63 (i.e. about 9.2e+18) period  LC-Generator  with  
-*   low  computation  time  also,  longer  period and quite better randomness 
+*
+*   See FastRand63 for a 2^63 (i.e. about 9.2e+18) period  LC-Generator  with
+*   low  computation  time  also,  longer  period and quite better randomness
 *   characteristics than for FastRand32.
-*     
+*
 *   Furthermore this class is callable:
 * @code
 *     FastRand32 rand{};
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(a) << std::endl;   // prints a uniform pseudo-random value within [0.0, a)
 * @endcode
-*   
+*
 *   Notice that for simulating the roll of a dice you should program:
 * @code
 *     FastRand32 diceRoll();
@@ -75,7 +77,7 @@ SOFTWARE.
 * @endcode
 *
 *   Reminder:
-*   We give you here below a copy of the table of tests for the LCGs that have 
+*   We give you here below a copy of the table of tests for the LCGs that have
 *   been implemented in CppRandLib, as provided in paper "TestU01, ..."  - see
 *   file README.md.
 * +------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -88,10 +90,10 @@ SOFTWARE.
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
 *   the expected characteristics for a pretty good PRNG;
 *
-*   * _crush_ is a bigger set of tests that test more deeply  expected  random 
+*   * _crush_ is a bigger set of tests that test more deeply  expected  random
 *   characteristics
-*   
-*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG 
+*
+*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
 class FastRand32 : public BaseRandom<std::uint32_t, std::uint32_t, 32>
@@ -100,41 +102,176 @@ public:
     //---   Wrappers   ------------------------------------------------------
     using MyBaseClass = BaseRandom<std::uint32_t, std::uint32_t, 32>;
 
-
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Default Empty constructor. */
-    inline FastRand32() noexcept
-        : MyBaseClass()
-    {
-        seed();
-    }
+    inline FastRand32() noexcept;                                   //!< Empty constructor.
 
-    /** @brief Valued construtor. */
-    template<typename T>
-    inline FastRand32(const T seed_) noexcept
-        : MyBaseClass()
-    {
-        seed(seed_);
-    }
+    inline FastRand32(const int                seed_) noexcept;     //!< Valued constructor (int).
+    inline FastRand32(const unsigned int       seed_) noexcept;     //!< Valued constructor (unsigned int).
+    inline FastRand32(const long               seed_) noexcept;     //!< Valued constructor (long)
+    inline FastRand32(const unsigned long      seed_) noexcept;     //!< Valued constructor (unsigned long).
+    inline FastRand32(const long long          seed_) noexcept;     //!< Valued constructor (long long).
+    inline FastRand32(const unsigned long long seed_) noexcept;     //!< Valued constructor (unsigned long long).
+    inline FastRand32(const utils::UInt128&    seed_) noexcept;     //!< Valued constructor (unsigned 128-bits).
+    inline FastRand32(const double             seed_);              //!< Valued constructor (double).
 
-    FastRand32(const FastRand32&) noexcept = default;   //!< default copy constructor.
-    FastRand32(FastRand32&&) noexcept = default;        //!< default move constructor.
-    virtual ~FastRand32() noexcept = default;           //!< default destructor.
-
-
-    //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm. */
-    virtual inline const output_type next() noexcept override
-    {
-        return _internal_state.state = 69'069 * _internal_state.state + 1;
-    }
+    virtual inline ~FastRand32() noexcept = default;                //!< default destructor.
 
 
     //---   Operations   ----------------------------------------------------
-    /** @brief Sets the internal state with an integer seed. */
-    virtual inline void _setstate(const std::uint64_t seed_) noexcept override
-    {
-        _internal_state.state = std::uint32_t(seed_ & 0xffff'ffff);
-    }
+    virtual inline const output_type next() noexcept override;      //!< The internal PRNG algorithm.
+
+    virtual inline void seed() noexcept override;                   //!< Initializes internal state (empty signature).
+
+    inline void seed(const int                seed_) noexcept;      //!< Initializes internal state (int).
+    inline void seed(const unsigned int       seed_) noexcept;      //!< Initializes internal state (unsigned int).
+    inline void seed(const long               seed_) noexcept;      //!< Initializes internal state (long)
+    inline void seed(const unsigned long      seed_) noexcept;      //!< Initializes internal state (unsigned long).
+    inline void seed(const long long          seed_) noexcept;      //!< Initializes internal state (long long).
+    inline void seed(const unsigned long long seed_) noexcept;      //!< Initializes internal state (unsigned long long).
+    inline void seed(const utils::UInt128&    seed_) noexcept;      //!< Initializes internal state (unsigned 128-bits).
+    inline void seed(const double             seed_);               //!< Initializes internal state (double).
+
+    virtual inline void _setstate(const std::uint64_t   seed_) noexcept override;   //!< Sets the internal state with a 64-bits integer seed.
+    virtual inline void _setstate(const utils::UInt128& seed_) noexcept override;   //!< Sets the internal state with a 128-bits integer seed.
 
 };
+
+
+//===========================================================================
+//---   IMPLEMENTATION   ----------------------------------------------------
+//---------------------------------------------------------------------------
+/** Empty constructor. */
+inline FastRand32::FastRand32() noexcept
+    : MyBaseClass()
+{
+    seed();
+}
+
+/** Valued constructor (int). */
+inline FastRand32::FastRand32(const int seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor (unsigned int). */
+inline FastRand32::FastRand32(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor (long). */
+inline FastRand32::FastRand32(const long seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor (unsigned long). */
+inline FastRand32::FastRand32(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor (long long). */
+inline FastRand32::FastRand32(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor (unsigned long long). */
+inline FastRand32::FastRand32(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Valued constructor (unsigned 128-bits). */
+inline FastRand32::FastRand32(const utils::UInt128& seed_) noexcept
+    : MyBaseClass()
+{
+    seed(seed_);
+}
+
+/** Valued constructor (double). */
+inline FastRand32::FastRand32(const double seed_)
+    : MyBaseClass()
+{
+    seed(seed_);
+}
+
+/** The internal PRNG algorithm. */
+inline const FastRand32::output_type FastRand32::next() noexcept
+{
+    return _internal_state.state = 69'069 * _internal_state.state + 1;
+}
+
+/** Initializes internal state (empty signature). */
+inline void FastRand32::seed() noexcept
+{
+    MyBaseClass::seed();
+}
+
+/** Initializes internal state (int). */
+inline void FastRand32::seed(const int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Initializes internal state (unsigned int). */
+inline void FastRand32::seed(const unsigned int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Initializes internal state (long). */
+inline void FastRand32::seed(const long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Initializes internal state (unsigned long). */
+inline void FastRand32::seed(const unsigned long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Initializes internal state (long long). */
+inline void FastRand32::seed(const long long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+/** Initializes internal state (unsigned long long). */
+inline void FastRand32::seed(const unsigned long long seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Initializes internal state (unsigned 128-bits). */
+inline void FastRand32::seed(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Initializes internal state (double). */
+inline void FastRand32::seed(const double seed_)
+{
+    MyBaseClass::seed(seed_);
+}
+
+/** Sets the internal state with an integer seed. */
+inline void FastRand32::_setstate(const std::uint64_t seed_) noexcept
+{
+    utils::SplitMix32 init_rand(seed_);
+    _internal_state.state = init_rand();
+}
+
+/** Sets the internal state with a 128-bits integer seed. */
+inline void FastRand32::_setstate(const utils::UInt128& seed_) noexcept
+{
+    _setstate(seed_.lo);
+}

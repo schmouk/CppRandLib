@@ -26,10 +26,76 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <cstdint>
+
 #include "mrg287.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================
+//---------------------------------------------------------------------------
+/** Empty constructor. */
+Mrg287::Mrg287() noexcept
+    : MyBaseClass()
+{
+    seed();
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (int). */
+Mrg287::Mrg287(const int seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned int). */
+Mrg287::Mrg287(const unsigned int seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long). */
+Mrg287::Mrg287(const long seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long). */
+Mrg287::Mrg287(const unsigned long seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long long). */
+Mrg287::Mrg287(const long long seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long long). */
+Mrg287::Mrg287(const unsigned long long seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (utils::UInt128). */
+Mrg287::Mrg287(const utils::UInt128& seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (double). */
+Mrg287::Mrg287(const double seed_)
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (full state). */
+Mrg287::Mrg287(const state_type& internal_state) noexcept
+    : MyBaseClass(internal_state)
+{}
+
+//---------------------------------------------------------------------------
 /** The internal PRNG algorithm. */
 const Mrg287::output_type Mrg287::next() noexcept
 {

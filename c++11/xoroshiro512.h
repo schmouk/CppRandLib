@@ -29,6 +29,7 @@ SOFTWARE.
 //===========================================================================
 #include <cstdint>
 
+#include "utils/uint128.h"
 #include "baseclasses/basexoroshiro.h"
 
 
@@ -60,7 +61,7 @@ SOFTWARE.
 * +------------------------------------------------------------------------------------------------------------------------------------------------------+
 * | PyRandLib class | initial xoroshiro algo name | Memory Usage | Period | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
 * | --------------- | --------------------------- | ------------ | ------ | ----------- | ------------ | ---------------- | ----------- | -------------- |
-* | Xoroshiro512    | xoroshiro256**              |  8 x 4-bytes | 2^256  |    n.a.     |     0.84     |          0       |       0     |       0        |
+* | Xoroshiro256    | xoroshiro256**              |  8 x 4-bytes | 2^256  |    n.a.     |     0.84     |          0       |       0     |       0        |
 * | Xoroshiro512    | xoroshiro512**              | 16 x 4-bytes | 2^512  |    n.a.     |     0.99     |          0       |       0     |       0        |
 * | Xoroshiro1024   | xoroshiro1024**             | 32 x 4-bytes | 2^1024 |    n.a.     |     1.17     |          0       |       0     |       0        |
 * +------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -82,36 +83,23 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline Xoroshiro512() noexcept
-        : MyBaseClass()
-    {
-    }
+    Xoroshiro512() noexcept;                                    //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    template<typename T>
-    inline Xoroshiro512(const T seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::seed(seed_);
-    }
+    Xoroshiro512(const int                seed) noexcept;       //!< Valued constructor (int).
+    Xoroshiro512(const unsigned int       seed) noexcept;       //!< Valued constructor (unsigned int).
+    Xoroshiro512(const long               seed) noexcept;       //!< Valued constructor (long)
+    Xoroshiro512(const unsigned long      seed) noexcept;       //!< Valued constructor (unsigned long).
+    Xoroshiro512(const long long          seed) noexcept;       //!< Valued constructor (long long).
+    Xoroshiro512(const unsigned long long seed) noexcept;       //!< Valued constructor (unsigned long long).
+    Xoroshiro512(const utils::UInt128&    seed) noexcept;       //!< Valued constructor (unsigned 128-bits).
+    Xoroshiro512(const double             seed);                //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline Xoroshiro512(const state_type& seed) noexcept
-        : MyBaseClass(seed)
-    {
-    }
+    Xoroshiro512(const state_type& internal_state) noexcept;    //!< Valued constructor (full state).
 
-    Xoroshiro512(const Xoroshiro512&) noexcept = default;   //!< default copy constructor.
-    Xoroshiro512(Xoroshiro512&&) noexcept = default;        //!< default move constructor.
-    virtual ~Xoroshiro512() noexcept = default;             //!< default destructor.
+    virtual inline ~Xoroshiro512() noexcept = default;          //!< default destructor.
 
 
-    //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return an integer value coded on OUTPUT_BITS bits.
-    */
-    virtual const output_type next() noexcept override;
+    //---   Operations   ----------------------------------------------------
+    virtual const output_type next() noexcept override;         //!< The internal PRNG algorithm. @return an integer value coded on 32 bits.
 
 };

@@ -28,7 +28,6 @@ SOFTWARE.
 
 //===========================================================================
 #include <cstdint>
-#include <type_traits>
 
 #include "baseclasses/basemrg31.h"
 #include "internalstates/listseedstate.h"
@@ -51,8 +50,8 @@ SOFTWARE.
 *   vol.33 n.4, pp.22-40, August 2007".  It is recommended to use  such  pseudo-random
 *   numbers generators rather than LCG ones for serious simulation applications.
 *
-*   The implementation of this MRG 31-bits model is  based  on  DX-47-3  pseudo-random
-*   generator  proposed  by  Deng  and  Lin.  The  DX-47-3 version uses the recurrence
+*   The implementation of this MRG 31-bits model is based on the 'DX-1597-2-7' MRG. It
+*   uses the recurrence
 *
 *       x(i) = (-2^25-2^7) * (x(i-7) + x(i-1597)) mod (2^31-1)
 *
@@ -60,7 +59,7 @@ SOFTWARE.
 *   computation time.
 *
 *   See Mrg287 for  a  short  period  MR-Generator  (2^287,  i.e. 2.49e+86)  with  low
-*   computation time but 256 integers memory consumption.
+*   computation time but 256 integers memory consumption (2^32 modulus calculations).
 *   See Mrg1457 for a longer period MR-Generator  (2^1457,  i.e. 4.0e+438)  and longer
 *   computation  time  (2^31-1 modulus calculations) but less memory space consumption
 *   (i.e. 47 integers).
@@ -92,12 +91,12 @@ SOFTWARE.
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
-*   the expected characteristics for a pretty good PRG;
+*   the expected characteristics for a pretty good PRNG;
 *
 *   * _crush_ is a bigger set of tests that test more deeply  expected  random
 *   characteristics;
 *
-*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
+*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
 class Mrg49507 : public BaseMRG31<1597>
@@ -108,36 +107,23 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline Mrg49507() noexcept
-        : MyBaseClass()
-    {}
+    Mrg49507() noexcept;                                    //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    template<typename T>
-        requires std::is_arithmetic_v<T>
-    inline Mrg49507(const T seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::MyBaseClass::seed(seed_);
-    }
+    Mrg49507(const int                seed) noexcept;       //!< Valued constructor (int).
+    Mrg49507(const unsigned int       seed) noexcept;       //!< Valued constructor (unsigned int).
+    Mrg49507(const long               seed) noexcept;       //!< Valued constructor (long)
+    Mrg49507(const unsigned long      seed) noexcept;       //!< Valued constructor (unsigned long).
+    Mrg49507(const long long          seed) noexcept;       //!< Valued constructor (long long).
+    Mrg49507(const unsigned long long seed) noexcept;       //!< Valued constructor (unsigned long long).
+    Mrg49507(const utils::UInt128&    seed) noexcept;       //!< Valued constructor (unsigned 128-bits).
+    Mrg49507(const double             seed);                //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline Mrg49507(const state_type& seed) noexcept
-        : MyBaseClass(seed)
-    {
-    }
+    Mrg49507(const state_type& internal_state) noexcept;    //!< Valued constructor (full state).
 
-    Mrg49507(const Mrg49507&) noexcept = default;   //!< defaul copy constructor.
-    Mrg49507(Mrg49507&&) noexcept = default;        //!< default move constructor.
-    virtual ~Mrg49507() noexcept = default;         //!< default destructor.
+    virtual inline ~Mrg49507() noexcept = default;         //!< default destructor.
 
 
-    //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return an integer value coded on OUTPUT_BITS bits.
-    */
-    virtual const output_type next() noexcept override;
+    //---   Operations   ----------------------------------------------------
+    virtual const output_type next() noexcept override;     //!< The internal PRNG algorithm.
 
 };

@@ -30,40 +30,41 @@ SOFTWARE.
 #include <cstdint>
 
 #include "baserandom.h"
-#include "internalstates/listseedstate.h"
-#include "utils/splitmix.h"
+#include "../internalstates/listseedstate.h"
+#include "../utils/splitmix.h"
+#include "../utils/uint128.h"
 
 
 //===========================================================================
 /** @brief The base class for all LFib PRNG based on 64-bits numbers.
 *
-*   Definition of the base class for all LFib pseudo-random generators based
-*   on 64-bits generated numbers.
-* 
+*   Definition of the base class for all LFib pseudo-random generators based on 64-bits
+*   generated numbers.
+*
 *   Lagged Fibonacci generators LFib( m, r, k, op) use the recurrence
-*   
+*
 *       x(i) = (x(i-r) op (x(i-k)) mod m
-*   
+*
 *   where op is an operation that can be:
 *       + (addition),
 *       - (substraction),
 *       * (multiplication),
 *       ^ (bitwise exclusive-or).
-*   
-*   With the + or - operation, such generators are in fact MRGs. They offer very large
-*   periods  with  the  best  known  results in the evaluation of their randomness, as
-*   stated in the evaluation done by Pierre L'Ecuyer and Richard Simard (Universite de
-*   Montreal)  in  "TestU01:  A  C  Library  for Empirical Testing  of  Random  Number  
-*   Generators - ACM Transactions  on  Mathematical  Software,  vol.33 n.4,  pp.22-40, 
-*   August 2007".  It  is  recommended  to  use  such pseudo-random numbers generators 
+*
+*   With the + or - operation, such generators are in fact MRGs.  They offer very large
+*   periods  with  the  best  known  results  in the evaluation of their randomness, as
+*   stated in the evaluation done by Pierre L'Ecuyer and Richard Simard  (Universite de
+*   Montreal)  in  "TestU01:  A  C  Library  for  Empirical Testing  of  Random  Number
+*   Generators  - ACM Transactions  on  Mathematical  Software,  vol.33 n.4,  pp.22-40,
+*   August  2007".  It  is  recommended  to  use  such pseudo-random numbers generators
 *   rather than LCG ones for serious simulation applications.
-*      
-*   See LFib78,  LFib116,  LFib668 and LFib1340 for long period LFib generators (resp. 
-*   2^78,  2^116,  2^668 and 2^1340 periods, i.e. resp. 3.0e+23, 8.3e+34, 1.2e+201 and 
-*   2.4e+403 periods) while same computation time and far  higher  precision  (64-bits  
-*   calculations) than MRGs,  but more memory consumption (resp. 17,  55, 607 and 1279 
+*
+*   See LFib78,  LFib116,  LFib668 and LFib1340 for long period LFib generators  (resp.
+*   2^78,  2^116,  2^668  and 2^1340 periods, i.e. resp. 3.0e+23, 8.3e+34, 1.2e+201 and
+*   2.4e+403 periods) while same computation time and  far  higher  precision  (64-bits
+*   calculations)  than MRGs,  but more memory consumption (resp. 17,  55, 607 and 1279
 *   integers).
-*   
+*
 *   Please notice that this class and all its  inheriting  sub-classes  are  callable.
 *   Example:
 * @code
@@ -78,9 +79,9 @@ SOFTWARE.
 *     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
-* 
+*
 *   Reminder:
-*   We give you here below a copy of the table of tests for the LCGs that have 
+*   We give you here below a copy of the table of tests for the LCGs that have
 *   been implemented in PyRandLib, as provided in paper "TestU01, ..."  -  see
 *   file README.md.
 * +--------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -95,53 +96,60 @@ SOFTWARE.
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
 *   the expected characteristics for a pretty good PRNG;
 *
-*   * _crush_ is a bigger set of tests that test more deeply  expected  random 
+*   * _crush_ is a bigger set of tests that test more deeply  expected  random
 *   characteristics;
 *
-*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG 
+*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
 template<const std::uint32_t SIZE, const std::uint32_t K>
-class BaseLFib64 : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>
+class BaseLFib64 : public BaseRandom<ListSeedState<utils::SplitMix64, std::uint64_t, SIZE>, std::uint64_t, 64>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t, 64>;
+    using MyBaseClass = BaseRandom<ListSeedState<utils::SplitMix64, std::uint64_t, SIZE>, std::uint64_t, 64>;
     using output_type = MyBaseClass::output_type;
-    using state_type = MyBaseClass::state_type;
-    using value_type = typename state_type::value_type; 
-    
+    using state_type  = MyBaseClass::state_type;
+    using value_type  = typename state_type::value_type;
+
     static const std::uint32_t SEED_SIZE{ SIZE };
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Default Empty constructor. */
-    inline BaseLFib64() noexcept;
+    inline BaseLFib64() noexcept;                                   //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    template<typename T>
-    inline BaseLFib64(const T seed_) noexcept;
+    inline BaseLFib64(const int                seed) noexcept;      //!< Valued constructor (int).
+    inline BaseLFib64(const unsigned int       seed) noexcept;      //!< Valued constructor (unsigned int).
+    inline BaseLFib64(const long               seed) noexcept;      //!< Valued constructor (long)
+    inline BaseLFib64(const unsigned long      seed) noexcept;      //!< Valued constructor (unsigned long).
+    inline BaseLFib64(const long long          seed) noexcept;      //!< Valued constructor (long long).
+    inline BaseLFib64(const unsigned long long seed) noexcept;      //!< Valued constructor (unsigned long long).
+    inline BaseLFib64(const utils::UInt128&    seed) noexcept;      //!< Valued constructor (unsigned 128-bits).
+    inline BaseLFib64(const double             seed);               //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline BaseLFib64(const state_type& internal_state) noexcept;
+    inline BaseLFib64(const state_type& internal_state) noexcept;   //!< Valued constructor (full state).
 
-    BaseLFib64(const BaseLFib64&) noexcept = default;   //!< default copy constructor.
-    BaseLFib64(BaseLFib64&&) noexcept = default;        //!< default move constructor.
-    virtual ~BaseLFib64() noexcept = default;           //!< default destructor.
-
+    virtual inline ~BaseLFib64() noexcept = default;                //!< default destructor.
 
     //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm. Outputs a 64-bits integer value.
-    */
-    virtual const output_type next() noexcept override;
+    virtual const output_type next() noexcept override;             //!< The internal PRNG algorithm.
 
+    inline void _initIndex(const size_t _index) noexcept;           //!< Inits the internal index pointing to the internal list.
 
-protected:
-    /** @brief Sets the internal state of this PRNG with an integer seed. */
-    virtual inline void _setstate(const std::uint64_t seed) noexcept override;
+    //---   Operations   ----------------------------------------------------
+    void inline seed() noexcept;                                    //!< Initializes internal state (empty signature).
 
-    /** @brief Inits the internal index pointing to the internal list. */
-    inline void _initIndex(const size_t _index) noexcept;
+    void inline seed(const int                seed_) noexcept;      //!< Initializes internal state (int).
+    void inline seed(const unsigned int       seed_) noexcept;      //!< Initializes internal state (unsigned int).
+    void inline seed(const long               seed_) noexcept;      //!< Initializes internal state (long)
+    void inline seed(const unsigned long      seed_) noexcept;      //!< Initializes internal state (unsigned long).
+    void inline seed(const long long          seed_) noexcept;      //!< Initializes internal state (long long).
+    void inline seed(const unsigned long long seed_) noexcept;      //!< Initializes internal state (unsigned long long).
+    void inline seed(const utils::UInt128&    seed_) noexcept;      //!< Initializes internal state (unsigned 128-bits).
+    void inline seed(const double             seed_);               //!< Initializes internal state (double).
+
+    virtual inline void _setstate(const std::uint64_t   seed) noexcept override;    //!< Sets the internal state of this PRNG with a 64-bits integer seed.
+    virtual inline void _setstate(const utils::UInt128& seed) noexcept override;    //!< Sets the internal state of this PRNG with a 128-bits integer seed.
 
 };
 
@@ -149,22 +157,84 @@ protected:
 //===========================================================================
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
 //---------------------------------------------------------------------------
-/** Default Empty constructor. */
+/** Empty constructor. */
 template<const std::uint32_t SIZE, std::uint32_t K >
 inline BaseLFib64<SIZE, K>::BaseLFib64() noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed();
+    seed();
 }
 
 //---------------------------------------------------------------------------
-/** Valued construtor. */
+/** Valued constructor (int). */
 template<const std::uint32_t SIZE, std::uint32_t K >
-template<typename T>
-inline BaseLFib64<SIZE, K>::BaseLFib64(const T seed_) noexcept
+inline BaseLFib64<SIZE, K>::BaseLFib64(const int seed_) noexcept
     : MyBaseClass()
 {
-    MyBaseClass::seed(seed_);
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned int). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline BaseLFib64<SIZE, K>::BaseLFib64(const long seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long long). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline BaseLFib64<SIZE, K>::BaseLFib64(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long long). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline BaseLFib64<SIZE, K>::BaseLFib64(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (utils::UInt128). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline BaseLFib64<SIZE, K>::BaseLFib64(const utils::UInt128& seed_) noexcept
+    : MyBaseClass()
+{
+    seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (double). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline BaseLFib64<SIZE, K>::BaseLFib64(const double seed_)
+    : MyBaseClass()
+{
+    seed(seed_);
 }
 
 //---------------------------------------------------------------------------
@@ -175,7 +245,6 @@ inline BaseLFib64<SIZE, K>::BaseLFib64(const state_type& internal_state) noexcep
 {
     MyBaseClass::setstate(internal_state);
 }
-
 
 //---------------------------------------------------------------------------
 /** The internal PRNG algorithm. */
@@ -201,19 +270,97 @@ const typename BaseLFib64<SIZE, K>::output_type BaseLFib64<SIZE, K>::next() noex
 }
 
 //---------------------------------------------------------------------------
-/** Sets the internal state of this PRNG with an integer seed. */
-template<const std::uint32_t SIZE, std::uint32_t K >
-inline void BaseLFib64<SIZE, K>::_setstate(const std::uint64_t seed) noexcept
-{
-    utils::SplitMix64 splitmix_64(seed);
-    for (std::uint64_t& s : MyBaseClass::_internal_state.state.list)
-        s = splitmix_64();
-}
-
-//---------------------------------------------------------------------------
 /** Inits the internal index pointing to the internal list. */
 template<const std::uint32_t SIZE, std::uint32_t K >
 inline void BaseLFib64<SIZE, K>::_initIndex(const size_t _index) noexcept
 {
     MyBaseClass::_internal_state.state.index = _index % SIZE;
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (empty signature). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline void BaseLFib64<SIZE, K>::seed() noexcept
+{
+    MyBaseClass::seed();
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (int). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline void BaseLFib64<SIZE, K>::seed(const int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned int). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline void BaseLFib64<SIZE, K>::seed(const unsigned int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline void BaseLFib64<SIZE, K>::seed(const long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+void BaseLFib64<SIZE, K>::seed(const unsigned long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long long). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline void BaseLFib64<SIZE, K>::seed(const long long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long long). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline void BaseLFib64<SIZE, K>::seed(const unsigned long long seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned 128-bits). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+void BaseLFib64<SIZE, K>::seed(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (double). */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline void BaseLFib64<SIZE, K>::seed(const double seed_)
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG with a 64-bits integer seed. */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline void BaseLFib64<SIZE, K>::_setstate(const std::uint64_t seed_) noexcept
+{
+    MyBaseClass::_internal_state.state.seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG with a 128-bits integer seed. */
+template<const std::uint32_t SIZE, std::uint32_t K >
+inline void BaseLFib64<SIZE, K>::_setstate(const utils::UInt128& seed) noexcept
+{
+    MyBaseClass::_setstate(seed);
 }

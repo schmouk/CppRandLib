@@ -57,7 +57,7 @@ SOFTWARE.
 *   with very low computation time, medium period,  64- bits output values and
 *   very good randomness characteristics.
 *
-*   See Cwg128 for a minimum 2^135 (i.e. about 4.36e+40)  period  CW-generator
+*   See Cwg128_64 for a minimum 2^135 (i.e. about 4.36e+40)  period  CW-generator
 *   with very low computation time, medium period,  128-bits output values and
 *   very good randomness characteristics.
 *
@@ -109,28 +109,39 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline Cwg128_64() noexcept
-        : MyBaseClass()
-    {}
+    inline Cwg128_64() noexcept = default;                  //!< Default empty constructor.
 
-    /** @brief Valued construtor (1/2). */
-    template<typename T>
-    inline Cwg128_64(const T seed_) noexcept
-        : MyBaseClass(seed_)
-    {}
+    Cwg128_64(const int                seed) noexcept;      //!< Valued constructor (int).
+    Cwg128_64(const unsigned int       seed) noexcept;      //!< Valued constructor (unsigned int).
+    Cwg128_64(const long               seed) noexcept;      //!< Valued constructor (long)
+    Cwg128_64(const unsigned long      seed) noexcept;      //!< Valued constructor (unsigned long).
+    Cwg128_64(const long long          seed) noexcept;      //!< Valued constructor (long long).
+    Cwg128_64(const unsigned long long seed) noexcept;      //!< Valued constructor (unsigned long long).
+    Cwg128_64(const utils::UInt128&    seed) noexcept;      //!< Valued constructor (unsigned 128-bits).
+    Cwg128_64(const double             seed);               //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline Cwg128_64(const state_type& internal_state) noexcept
-        : MyBaseClass(internal_state)
-    {}
+    Cwg128_64(const state_type& internal_state) noexcept;   //!< Valued constructor (full state).
 
-    /** @brief Default Destructor. */
-    virtual ~Cwg128_64() noexcept = default;
+    virtual ~Cwg128_64() noexcept = default;                //!< Default Destructor.
 
 
     //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm. */
-    virtual const output_type next() noexcept override;
+    virtual const output_type next() noexcept override;     // The internal PRNG algorithm.
+
+
+    //---   Operations   ----------------------------------------------------
+    void seed() noexcept;                                   //!< Initializes internal state (empty signature).
+
+    void seed(const int                seed_) noexcept;     //!< Initializes internal state (int).
+    void seed(const unsigned int       seed_) noexcept;     //!< Initializes internal state (unsigned int).
+    void seed(const long               seed_) noexcept;     //!< Initializes internal state (long)
+    void seed(const unsigned long      seed_) noexcept;     //!< Initializes internal state (unsigned long).
+    void seed(const long long          seed_) noexcept;     //!< Initializes internal state (long long).
+    void seed(const unsigned long long seed_) noexcept;     //!< Initializes internal state (unsigned long long).
+    void seed(const utils::UInt128&    seed_) noexcept;     //!< Initializes internal state (unsigned 128-bits).
+    void seed(const double             seed_);              //!< Initializes internal state (double).
+
+    virtual void _setstate(const std::uint64_t   seed_) noexcept override;  //!< Sets the internal state with a 64-bits integer seed.
+    virtual void _setstate(const utils::UInt128& seed_) noexcept override;  //!< Sets the internal state with a 128-bits integer seed.
 
 };

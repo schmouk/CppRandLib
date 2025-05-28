@@ -26,10 +26,76 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <cstdint>
+
 #include "mrg49507.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================
+//---------------------------------------------------------------------------
+/** Empty constructor. */
+Mrg49507::Mrg49507() noexcept
+    : MyBaseClass()
+{
+    seed();
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (int). */
+Mrg49507::Mrg49507(const int seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned int). */
+Mrg49507::Mrg49507(const unsigned int seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long). */
+Mrg49507::Mrg49507(const long seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long). */
+Mrg49507::Mrg49507(const unsigned long seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long long). */
+Mrg49507::Mrg49507(const long long seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long long). */
+Mrg49507::Mrg49507(const unsigned long long seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (utils::UInt128). */
+Mrg49507::Mrg49507(const utils::UInt128& seed_) noexcept
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (double). */
+Mrg49507::Mrg49507(const double seed_)
+    : MyBaseClass(seed_)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (full state). */
+Mrg49507::Mrg49507(const state_type& internal_state) noexcept
+    : MyBaseClass(internal_state)
+{}
+
+//---------------------------------------------------------------------------
 /** The internal PRNG algorithm. */
 const Mrg49507::output_type Mrg49507::next() noexcept
 {
@@ -41,12 +107,12 @@ const Mrg49507::output_type Mrg49507::next() noexcept
     const std::uint32_t k7{ (index < 7) ? (index + SEED_SIZE) - 7 : index - 7 };
 
     // evaluates current value and modifies internal state
-    const std::uint64_t value{ (0xffff'ffff'fdff'ff80ull * (
-            std::uint64_t(_internal_state.state.list[k7]) +
-            std::uint64_t(_internal_state.state.list[index])
-        )) % _MODULO
+    const std::uint64_t value{ 
+        (0xffff'ffff'fdff'ff80ull *  //i.e. (-2^25 - 2^7), or -67'108'992
+            std::uint64_t(_internal_state.state.list[k7] + _internal_state.state.list[index])
+        ) % _MODULO
     };
-    _internal_state.state.list[index] = uint32_t(value);
+    _internal_state.state.list[index] = std::uint32_t(value);
 
     // next index
     _internal_state.state.index = (index + 1) % SEED_SIZE;

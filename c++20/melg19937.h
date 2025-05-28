@@ -33,17 +33,17 @@ SOFTWARE.
 //===========================================================================
 /** @brief A 64-bits Maximally Equidistributed Long-period Linear Generator with a long period (4.32e+6,001).
 *
-*   Maximally  Equidistributed  Long-period  Linear  Generators   (MELG)   use   linear
-*   recurrence  based  on  state  transitions  with  double feedbacks and linear output
+*   Maximally  Equidistributed  Long-period  Linear  Generators  (MELG)   use   linear
+*   recurrence  based  on  state  transitions  with double feedbacks and linear output
 *   transformations with several memory references. See reference [11] in README.md.
 *
-*   MELGs offer large to very large periods with best known results in  the  evaluation
-*   of  their randomness.  They ensure a maximally equidistributed generation of pseudo
-*   random numbers.  They pass all TestU01 tests and newer ones but are the slowest  to
+*   MELGs offer large to very large periods with best known results in the  evaluation
+*   of their randomness.  They ensure a maximally equidistributed generation of pseudo
+*   random numbers.  They pass all TestU01 tests and newer ones but are the slowest to
 *   compute ones in the base of PRNGs that have been implemented in PyRandLib.
 *
-*   See Melg607 for a large period MELG-Generator (2^607,  i.e. 5.31e+182)  with medium
-*   computation   time  and  the  equivalent  of  21  32-bits  integers  memory  little
+*   See Melg607 for a large period MELG-Generator (2^607, i.e. 5.31e+182)  with medium
+*   computation  time  and  the  equivalent  of  21  32-bits  integers  memory  little
 *   consumption. This is the shortest period version proposed in paper [11].
 *
 *   See Melg44497 for a very large period (2^44,497,  i.e. 8.55e+13,395)  with  similar
@@ -97,39 +97,39 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline Melg19937() noexcept
-        : MyBaseClass()
-    {}
+    Melg19937() noexcept;                                   //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    template<typename T>
-    inline Melg19937(const T seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::MyBaseClass::seed(seed_);
-    }
+    Melg19937(const int                seed) noexcept;      //!< Valued constructor (int).
+    Melg19937(const unsigned int       seed) noexcept;      //!< Valued constructor (unsigned int).
+    Melg19937(const long               seed) noexcept;      //!< Valued constructor (long)
+    Melg19937(const unsigned long      seed) noexcept;      //!< Valued constructor (unsigned long).
+    Melg19937(const long long          seed) noexcept;      //!< Valued constructor (long long).
+    Melg19937(const unsigned long long seed) noexcept;      //!< Valued constructor (unsigned long long).
+    Melg19937(const utils::UInt128&    seed) noexcept;      //!< Valued constructor (unsigned 128-bits).
+    Melg19937(const double             seed);               //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline Melg19937(const state_type& seed_internal_state) noexcept
-        : MyBaseClass(seed_internal_state)
-    {}
+    Melg19937(const state_type& internal_state) noexcept;   //!< Valued constructor (full state).
 
-    Melg19937(const Melg19937&) noexcept = default;   //!< default copy constructor.
-    Melg19937(Melg19937&&) noexcept = default;        //!< default move constructor.
-    virtual ~Melg19937() noexcept = default;        //!< default destructor.
+    virtual inline ~Melg19937() noexcept = default;         //!< default destructor.
 
 
-    //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return an integer value coded on OUTPUT_BITS (i.e. 64) bits.
-    */
-    virtual const output_type next() noexcept override;
+    //---   Operations   ----------------------------------------------------
+    virtual const output_type next() noexcept override;     //!< The internal PRNG algorithm.
+
+    void seed() noexcept;                                   //!< Initializes internal state (empty signature).
+
+    void seed(const int                seed_) noexcept;     //!< Initializes internal state (int).
+    void seed(const unsigned int       seed_) noexcept;     //!< Initializes internal state (unsigned int).
+    void seed(const long               seed_) noexcept;     //!< Initializes internal state (long)
+    void seed(const unsigned long      seed_) noexcept;     //!< Initializes internal state (unsigned long).
+    void seed(const long long          seed_) noexcept;     //!< Initializes internal state (long long).
+    void seed(const unsigned long long seed_) noexcept;     //!< Initializes internal state (unsigned long long).
+    void seed(const utils::UInt128&    seed_) noexcept;     //!< Initializes internal state (unsigned 128-bits).
+    void seed(const double             seed_);              //!< Initializes internal state (double).
 
 
 private:
     // this definition will avoid an 'if' in method 'next()'
-    static constexpr value_type _A_COND[]{ 0ull, 0x5c32'e06d'f730'fc42ull};
+    static constexpr value_type _A_COND[]{ 0ull, 0x5c32'e06d'f730'fc42ull };
 
 };

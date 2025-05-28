@@ -30,8 +30,8 @@ SOFTWARE.
 #include <cstdint>
 
 #include "baserandom.h"
-#include "internalstates/listseedstate.h"
-#include "utils/splitmix.h"
+#include "../internalstates/listseedstate.h"
+#include "../utils/splitmix.h"
 
 
 //===========================================================================
@@ -96,40 +96,49 @@ SOFTWARE.
 *   should definitively pass.
 */
 template<const std::uint32_t SIZE>
-class BaseMRG31 : public BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uint32_t, 31>
+struct BaseMRG31 : public BaseRandom<ListSeedState<utils::SplitMix31, std::uint32_t, SIZE>, std::uint32_t, 31>
 {
-public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<ListSeedState<std::uint32_t, SIZE>, std::uint32_t, 31>;
+    using MyBaseClass = BaseRandom<ListSeedState<utils::SplitMix31, std::uint32_t, SIZE>, std::uint32_t, 31>;
 
     using output_type = MyBaseClass::output_type;
-    using state_type = MyBaseClass::state_type;
-    using value_type = typename state_type::value_type;
+    using state_type  = MyBaseClass::state_type;
+    using value_type  = typename state_type::value_type;
 
     static constexpr std::uint32_t SEED_SIZE{ SIZE };
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline BaseMRG31() noexcept;
+    inline BaseMRG31() noexcept;                                    //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    template<typename T>
-    inline BaseMRG31(const T seed_) noexcept;
+    inline BaseMRG31(const int                seed) noexcept;       //!< Valued constructor (int).
+    inline BaseMRG31(const unsigned int       seed) noexcept;       //!< Valued constructor (unsigned int).
+    inline BaseMRG31(const long               seed) noexcept;       //!< Valued constructor (long)
+    inline BaseMRG31(const unsigned long      seed) noexcept;       //!< Valued constructor (unsigned long).
+    inline BaseMRG31(const long long          seed) noexcept;       //!< Valued constructor (long long).
+    inline BaseMRG31(const unsigned long long seed) noexcept;       //!< Valued constructor (unsigned long long).
+    inline BaseMRG31(const utils::UInt128&    seed) noexcept;       //!< Valued constructor (unsigned 128-bits).
+    inline BaseMRG31(const double             seed);                //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline BaseMRG31(const state_type& internal_state) noexcept;
+    inline BaseMRG31(const state_type& internal_state) noexcept;    //!< Valued constructor (full state).
 
-    /** @brief Default Destructor. */
-    virtual ~BaseMRG31() noexcept = default;
+    virtual inline ~BaseMRG31() noexcept = default;                 //!< default destructor.
 
 
     //---   Operations   ----------------------------------------------------
-    /** @brief Sets the internal state of this PRNG from current time (empty signature). */
-    virtual inline void seed() noexcept override;
+    void inline seed() noexcept;                                    //!< Initializes internal state (empty signature).
 
-    /** @brief Sets the internal state of this PRNG with an integer seed. */
-    virtual inline void _setstate(const std::uint64_t seed) noexcept override;
+    void inline seed(const int                seed_) noexcept;      //!< Initializes internal state (int).
+    void inline seed(const unsigned int       seed_) noexcept;      //!< Initializes internal state (unsigned int).
+    void inline seed(const long               seed_) noexcept;      //!< Initializes internal state (long)
+    void inline seed(const unsigned long      seed_) noexcept;      //!< Initializes internal state (unsigned long).
+    void inline seed(const long long          seed_) noexcept;      //!< Initializes internal state (long long).
+    void inline seed(const unsigned long long seed_) noexcept;      //!< Initializes internal state (unsigned long long).
+    void inline seed(const utils::UInt128&    seed_) noexcept;      //!< Initializes internal state (unsigned 128-bits).
+    void inline seed(const double             seed_);               //!< Initializes internal state (double).
+
+    virtual inline void _setstate(const std::uint64_t   seed) noexcept override;    //!< Sets the internal state of this PRNG with a 64-bits integer seed.
+    virtual inline void _setstate(const utils::UInt128& seed) noexcept override;    //!< Sets the internal state of this PRNG with a 128-bits integer seed.
 
 };
 
@@ -146,10 +155,72 @@ inline BaseMRG31<SIZE>::BaseMRG31() noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued construtor. */
+/** Valued constructor (int). */
 template<const std::uint32_t SIZE>
-template<typename T>
-inline BaseMRG31<SIZE>::BaseMRG31(const T seed_) noexcept
+inline BaseMRG31<SIZE>::BaseMRG31(const int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned int). */
+template<const std::uint32_t SIZE>
+inline BaseMRG31<SIZE>::BaseMRG31(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long). */
+template<const std::uint32_t SIZE>
+inline BaseMRG31<SIZE>::BaseMRG31(const long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long). */
+template<const std::uint32_t SIZE>
+inline BaseMRG31<SIZE>::BaseMRG31(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long long). */
+template<const std::uint32_t SIZE>
+inline BaseMRG31<SIZE>::BaseMRG31(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long long). */
+template<const std::uint32_t SIZE>
+inline BaseMRG31<SIZE>::BaseMRG31(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned 128-bits). */
+template<const std::uint32_t SIZE>
+inline BaseMRG31<SIZE>::BaseMRG31(const utils::UInt128& seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (double). */
+template<const std::uint32_t SIZE>
+inline BaseMRG31<SIZE>::BaseMRG31(const double seed_)
     : MyBaseClass()
 {
     MyBaseClass::seed(seed_);
@@ -164,7 +235,6 @@ inline BaseMRG31<SIZE>::BaseMRG31(const state_type& internal_state) noexcept
     MyBaseClass::setstate(internal_state);
 }
 
-
 //---------------------------------------------------------------------------
 /** Sets the internal state of this PRNG from current time (empty signature). */
 template<const std::uint32_t SIZE>
@@ -174,11 +244,81 @@ inline void BaseMRG31<SIZE>::seed() noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Sets the internal state of this PRNG with an integer seed. */
+/** Initializes internal state (int). */
 template<const std::uint32_t SIZE>
-inline void BaseMRG31<SIZE>::_setstate(const std::uint64_t seed) noexcept
+inline void BaseMRG31<SIZE>::seed(const int seed_) noexcept
 {
-    utils::SplitMix31 splitmix_31(std::uint32_t(seed & 0x7fff'ffff));
-    for (auto& s : MyBaseClass::_internal_state.state.list)
-        s = splitmix_31();
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned int). */
+template<const std::uint32_t SIZE>
+inline void BaseMRG31<SIZE>::seed(const unsigned int seed_) noexcept
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long). */
+template<const std::uint32_t SIZE>
+inline void BaseMRG31<SIZE>::seed(const long seed_) noexcept
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long). */
+template<const std::uint32_t SIZE>
+inline void BaseMRG31<SIZE>::seed(const unsigned long seed_) noexcept
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long long). */
+template<const std::uint32_t SIZE>
+inline void BaseMRG31<SIZE>::seed(const long long seed_) noexcept
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long long). */
+template<const std::uint32_t SIZE>
+inline void BaseMRG31<SIZE>::seed(const unsigned long long seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned 128-bits). */
+template<const std::uint32_t SIZE>
+inline void BaseMRG31<SIZE>::seed(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (double). */
+template<const std::uint32_t SIZE>
+inline void BaseMRG31<SIZE>::seed(const double seed_)
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG with a 64-bits integer seed. */
+template<const std::uint32_t SIZE>
+inline void BaseMRG31<SIZE>::_setstate(const std::uint64_t seed_) noexcept
+{
+    MyBaseClass::_internal_state.state.seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG with a 128-bits integer seed. */
+template<const std::uint32_t SIZE>
+inline void BaseMRG31<SIZE>::_setstate(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::_internal_state.state.seed(seed_.lo);
 }

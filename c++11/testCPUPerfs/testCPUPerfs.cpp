@@ -164,12 +164,14 @@ void test_perf(
         p = end - start;
     }
 
+    std::cout << std::fixed << std::setprecision(4);
+
     const double nanoseconds{ 1.0 / nb_loops };
     for (std::uint64_t p : perfs)
         std::cout << p * nanoseconds << ' ';
     std::cout << std::endl;
 
-    std::cout << "--> " << std::fixed << std::setprecision(4) << *std::min_element(perfs.cbegin(), perfs.cend()) * nanoseconds << " ns\n\n";
+    std::cout << "--> " << *std::min_element(perfs.cbegin(), perfs.cend()) * nanoseconds << " ns\n\n";
 }
 
 

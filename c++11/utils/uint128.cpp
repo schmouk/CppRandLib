@@ -117,7 +117,7 @@ namespace utils
     //---------------------------------------------------------------------------
     UInt128& UInt128::operator>>= (const unsigned int shift) noexcept
     {
-        if (shift > 128) {
+        if (shift >= 128) {
             hi = lo = 0ull;
         }
         else if (shift >= 64) {
@@ -136,7 +136,7 @@ namespace utils
     //---------------------------------------------------------------------------
     UInt128& UInt128::operator<<= (const unsigned int shift) noexcept
     {
-        if (shift > 128) {
+        if (shift >= 128) {
             hi = lo = 0ull;
         }
         else if (shift >= 64) {

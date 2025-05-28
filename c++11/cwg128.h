@@ -45,7 +45,7 @@ SOFTWARE.
 *   This CWG model evaluates pseudo-random numbers suites  x(i)  as  a  simple
 *   mathematical function of
 *
-*       x(i+1) = (x(i) >> 1) * ((a += x(i)) | 1) ^ (weyl += s) 
+*       x(i+1) = (x(i) >> 1) * ((a += x(i)) | 1) ^ (weyl += s)
 *
 *   and returns as the output value the xored shifted: a >> 96 ^ x(i+1)
 *
@@ -104,40 +104,45 @@ public:
     using MyBaseClass = BaseCWG<utils::UInt128, utils::UInt128, utils::UInt128, 128>;
 
     using output_type = typename MyBaseClass::output_type;
-    using state_type = typename MyBaseClass::state_type;
-    using value_type = typename state_type::value_type;
+    using state_type  = typename MyBaseClass::state_type;
+    using value_type  = typename state_type::value_type;
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline Cwg128() noexcept
-        : MyBaseClass()
-    {}
+    inline Cwg128() noexcept = default;                                     //!< Default empty constructor.
 
-    /** @brief Valued construtor (1/2). */
-    template<typename T>
-    inline Cwg128(const T seed_) noexcept
-        : MyBaseClass(seed_)
-    {}
+    Cwg128(const int                seed) noexcept;                         //!< Valued constructor (int).
+    Cwg128(const unsigned int       seed) noexcept;                         //!< Valued constructor (unsigned int).
+    Cwg128(const long               seed) noexcept;                         //!< Valued constructor (long)
+    Cwg128(const unsigned long      seed) noexcept;                         //!< Valued constructor (unsigned long).
+    Cwg128(const long long          seed) noexcept;                         //!< Valued constructor (long long).
+    Cwg128(const unsigned long long seed) noexcept;                         //!< Valued constructor (unsigned long long).
+    Cwg128(const utils::UInt128&    seed) noexcept;                         //!< Valued constructor (unsigned 128-bits).
+    Cwg128(const double             seed);                                  //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline Cwg128(const state_type& internal_state) noexcept
-        : MyBaseClass(internal_state)
-    {}
+    Cwg128(const state_type& internal_state) noexcept;                      //!< Valued constructor (full state).
 
-    /** @brief Default Destructor. */
-    virtual ~Cwg128() noexcept = default;
-
-    inline Cwg128(const Cwg128&) noexcept = default;             //!< Default copy constructor.
-    inline Cwg128(Cwg128&&) noexcept = default;                  //!< Default move constructor.
-
-    inline Cwg128& operator=(const Cwg128&) noexcept = default;  //!< Default copy assignment
-    inline Cwg128& operator=(Cwg128&&) noexcept = default;       //!< Default move assignmentnoe
+    virtual ~Cwg128() noexcept = default;                                   //!< Default Destructor.
 
 
     //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm. */
-    virtual const output_type next() noexcept override;
+    virtual const output_type next() noexcept override;                     //!< The internal PRNG algorithm.
+
+
+    //---   Operations   ----------------------------------------------------
+    void seed() noexcept;                                                   //!< Initializes internal state (empty signature).
+
+    void seed(const int                seed_) noexcept;                     //!< Initializes internal state (int).
+    void seed(const unsigned int       seed_) noexcept;                     //!< Initializes internal state (unsigned int).
+    void seed(const long               seed_) noexcept;                     //!< Initializes internal state (long)
+    void seed(const unsigned long      seed_) noexcept;                     //!< Initializes internal state (unsigned long).
+    void seed(const long long          seed_) noexcept;                     //!< Initializes internal state (long long).
+    void seed(const unsigned long long seed_) noexcept;                     //!< Initializes internal state (unsigned long long).
+    void seed(const utils::UInt128&    seed_) noexcept;                     //!< Initializes internal state (unsigned 128-bits).
+    void seed(const double             seed_);                              //!< Initializes internal state (double).
+
+    virtual void _setstate(const std::uint64_t   seed_) noexcept override;  //!< Sets the internal state with a 64-bits integer seed.
+    virtual void _setstate(const utils::UInt128& seed_) noexcept override;  //!< Sets the internal state with a 128-bits integer seed.
 
 
     //---   Uniform [0, 1.0) random   ---------------------------------------
@@ -145,7 +150,7 @@ public:
     *
     * @return a double value uniformly contained within range [0.0, 1.0).
     */
-    template<typename T>
+    template<typename T = double>
     inline const T random()
     {
         if (!std::is_floating_point<T>::value)
@@ -155,7 +160,7 @@ public:
     }
 
     template<>
-    inline const long double random()
+    inline const long double random() noexcept                              //!< specialization for long double.
     {
         return (long double)next() * _NORMALIZE_LD;
     }

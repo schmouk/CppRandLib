@@ -162,16 +162,18 @@ void test_perf(
         p = end - start;
     }
 
+    std::cout << std::fixed << std::setprecision(4);
+
     const double nanoseconds{ 1.0 / nb_loops };
     std::ranges::for_each(
         perfs,
         [nanoseconds] (const std::uint64_t p) {
-            std::cout << std::fixed << std::setprecision(4) << p * nanoseconds << ' ';
+            std::cout << p * nanoseconds << ' ';
         }
     );
     std::cout << std::endl;
 
-    std::cout << "--> " << std::fixed << std::setprecision(4) << std::ranges::min(perfs) * nanoseconds << " ns\n\n";
+    std::cout << "--> " << std::ranges::min(perfs) * nanoseconds << " ns\n\n";
 }
 
 
@@ -184,13 +186,13 @@ int main()
     }
 
     {
-        Cwg128 cwg128(0x3ca5'8796'1f2e'b45aull);
-        test_perf("Cwg128", &cwg128);
+        Cwg128_64 cwg128_64(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Cwg128_64", &cwg128_64);
     }
 
     {
-        Cwg128_64 cwg128_64(0x3ca5'8796'1f2e'b45aull);
-        test_perf("Cwg128_64", &cwg128_64);
+        Cwg128 cwg128(0x3ca5'8796'1f2e'b45aull);
+        test_perf("Cwg128", &cwg128);
     }
 
     {

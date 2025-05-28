@@ -27,12 +27,12 @@ SOFTWARE.
 
 
 //===========================================================================
-#include <algorithm>
 #include <cstdint>
 
 #include "baserandom.h"
-#include "internalstates/listseedstate.h"
-#include "utils/splitmix.h"
+#include "../internalstates/listseedstate.h"
+#include "../utils/splitmix.h"
+#include "../utils/uint128.h"
 
 
 //===========================================================================
@@ -53,31 +53,31 @@ SOFTWARE.
 *   See Melg607 for a large period MELG-Generator (2^607, i.e. 5.31e+182)  with medium
 *   computation  time  and  the  equivalent  of  21  32-bits  integers  memory  little
 *   consumption. This is the shortest period version proposed in paper [11].
-* 
+*
 *   See Melg19937 for an even larger period MELG-Generator (2^19,937, i.e. 4.32e+6001),
 *   same computation time and equivalent of 625 integers memory consumption.
-* 
+*
 *   See Melg44497 for a very large period (2^44,497,  i.e. 8.55e+13,395)  with  similar
 *   computation  time  but  use  of even more memory space (equivalent of 1,393 32-bits
 *   integers). This is the longest period version proposed in paper [11].
 *
 *   Furthermore this class is callable:
 * @code
-*     BaseMELG rand(); // CAUTION: Replace 'BaseMELG' with any inheriting class constructor!
+*     BaseMELG rand();  // CAUTION: Replace 'BaseMELG' with any inheriting class constructor!
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
 * @endcode
 *
 *   Notice that for simulating the roll of a dice you should program:
 * @code
-*     BaseMELG diceRoll();
+*     BaseMELG diceRoll();  // CAUTION: Replace 'BaseMELG' with any inheriting class constructor!
 *     std::cout << int(diceRoll(1, 7)) << std::endl;    // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
 *
 *   Reminder:
-*   We give you here below a copy of the table of tests for the LCGs that have
-*   been implemented in PyRandLib, as provided in paper "TestU01, ..."  -  see
+*   We give you here below a copy of the table of tests for the MELGs that have
+*   been implemented in PyRandLib,  as provided in paper "TestU01, ..."  -  see
 *   file README.md.
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
 * | PyRabndLib class | TU01 generator name | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
@@ -97,38 +97,48 @@ SOFTWARE.
 *   should definitively pass.
 */
 template<const std::uint32_t SIZE>
-class BaseMELG : public BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t>
+class BaseMELG : public BaseRandom<ListSeedState<utils::SplitMix64, std::uint64_t, SIZE>, std::uint64_t>
 {
 public:
     //---   Wrappers   ------------------------------------------------------
-    using MyBaseClass = BaseRandom<ListSeedState<std::uint64_t, SIZE>, std::uint64_t>;
+    using MyBaseClass = BaseRandom<ListSeedState<utils::SplitMix64, std::uint64_t, SIZE>, std::uint64_t>;
 
-    using output_type = MyBaseClass::output_type;
-    using state_type = MyBaseClass::state_type;
+    using output_type = typename MyBaseClass::output_type;
+    using state_type = typename MyBaseClass::state_type;
     using value_type = typename state_type::value_type;
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline BaseMELG() noexcept;
+    inline BaseMELG() noexcept;                                     //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    template<typename T>
-    inline BaseMELG(const T seed_) noexcept;
+    inline BaseMELG(const int                seed) noexcept;        //!< Valued constructor (int).
+    inline BaseMELG(const unsigned int       seed) noexcept;        //!< Valued constructor (unsigned int).
+    inline BaseMELG(const long               seed) noexcept;        //!< Valued constructor (long)
+    inline BaseMELG(const unsigned long      seed) noexcept;        //!< Valued constructor (unsigned long).
+    inline BaseMELG(const long long          seed) noexcept;        //!< Valued constructor (long long).
+    inline BaseMELG(const unsigned long long seed) noexcept;        //!< Valued constructor (unsigned long long).
+    inline BaseMELG(const utils::UInt128&    seed) noexcept;        //!< Valued constructor (unsigned 128-bits).
+    inline BaseMELG(const double             seed);                 //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline BaseMELG(const state_type& internal_state) noexcept;
+    inline BaseMELG(const state_type& internal_state) noexcept;     //!< Valued constructor (full state).
 
-    /** @brief Default Destructor. */
-    virtual ~BaseMELG() noexcept = default;
+    virtual inline ~BaseMELG() noexcept = default;                  //!< default destructor.
 
 
     //---   Operations   ----------------------------------------------------
-    /** @brief Sets the internal state of this PRNG from current time (empty signature). */
-    virtual inline void seed() noexcept override;
+    void inline seed() noexcept;                                    //!< Initializes internal state (empty signature).
 
-    /** @brief Sets the internal state of this PRNG with an integer seed. */
-    virtual inline void _setstate(const std::uint64_t seed) noexcept override;
+    void inline seed(const int                seed_) noexcept;      //!< Initializes internal state (int).
+    void inline seed(const unsigned int       seed_) noexcept;      //!< Initializes internal state (unsigned int).
+    void inline seed(const long               seed_) noexcept;      //!< Initializes internal state (long)
+    void inline seed(const unsigned long      seed_) noexcept;      //!< Initializes internal state (unsigned long).
+    void inline seed(const long long          seed_) noexcept;      //!< Initializes internal state (long long).
+    void inline seed(const unsigned long long seed_) noexcept;      //!< Initializes internal state (unsigned long long).
+    void inline seed(const utils::UInt128&    seed_) noexcept;      //!< Initializes internal state (unsigned 128-bits).
+    void inline seed(const double             seed_);               //!< Initializes internal state (double).
+
+    virtual inline void _setstate(const std::uint64_t   seed) noexcept override;    //!< Sets the internal state of this PRNG with a 64-bits integer seed.
+    virtual inline void _setstate(const utils::UInt128& seed) noexcept override;    //!< Sets the internal state of this PRNG with a 128-bits integer seed.
 
 };
 
@@ -145,10 +155,72 @@ inline BaseMELG<SIZE>::BaseMELG() noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued construtor. */
+/** Valued constructor (int). */
 template<const std::uint32_t SIZE>
-template<typename T>
-inline BaseMELG<SIZE>::BaseMELG(const T seed_) noexcept
+inline BaseMELG<SIZE>::BaseMELG(const int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned int). */
+template<const std::uint32_t SIZE>
+inline BaseMELG<SIZE>::BaseMELG(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long). */
+template<const std::uint32_t SIZE>
+inline BaseMELG<SIZE>::BaseMELG(const long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long). */
+template<const std::uint32_t SIZE>
+inline BaseMELG<SIZE>::BaseMELG(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long long). */
+template<const std::uint32_t SIZE>
+inline BaseMELG<SIZE>::BaseMELG(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long long). */
+template<const std::uint32_t SIZE>
+inline BaseMELG<SIZE>::BaseMELG(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned 128 bits). */
+template<const std::uint32_t SIZE>
+inline BaseMELG<SIZE>::BaseMELG(const utils::UInt128& seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (double). */
+template<const std::uint32_t SIZE>
+inline BaseMELG<SIZE>::BaseMELG(const double seed_)
     : MyBaseClass()
 {
     MyBaseClass::seed(seed_);
@@ -164,18 +236,89 @@ inline BaseMELG<SIZE>::BaseMELG(const state_type& internal_state) noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Sets the internal state of this PRNG from current time (empty signature). */
+/** Initializes internal state (empty signature). */
 template<const std::uint32_t SIZE>
 inline void BaseMELG<SIZE>::seed() noexcept
 {
-    _setstate(utils::set_random_seed64());
+    MyBaseClass::seed();
 }
 
 //---------------------------------------------------------------------------
-/** Sets the internal state of this PRNG with an integer seed. */
+/** Initializes internal state (int). */
 template<const std::uint32_t SIZE>
-inline void BaseMELG<SIZE>::_setstate(const std::uint64_t seed) noexcept
+inline void BaseMELG<SIZE>::seed(const int seed_) noexcept
 {
-    utils::SplitMix64 splitmix_64(seed);
-    std::ranges::generate(MyBaseClass::_internal_state.state.list, [&] { return splitmix_64(); });
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned int). */
+template<const std::uint32_t SIZE>
+inline void BaseMELG<SIZE>::seed(const unsigned int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long). */
+template<const std::uint32_t SIZE>
+inline void BaseMELG<SIZE>::seed(const long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long). */
+template<const std::uint32_t SIZE>
+inline void BaseMELG<SIZE>::seed(const unsigned long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long long). */
+template<const std::uint32_t SIZE>
+inline void BaseMELG<SIZE>::seed(const long long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long long). */
+template<const std::uint32_t SIZE>
+inline void BaseMELG<SIZE>::seed(const unsigned long long seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned 128-bits). */
+template<const std::uint32_t SIZE>
+inline void BaseMELG<SIZE>::seed(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (double). */
+template<const std::uint32_t SIZE>
+inline void BaseMELG<SIZE>::seed(const double seed_)
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG with a 64-*bits integer seed. */
+template<const std::uint32_t SIZE>
+inline void BaseMELG<SIZE>::_setstate(const std::uint64_t seed_) noexcept
+{
+    MyBaseClass::_internal_state.state.seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG with a 128-bits integer seed. */
+template<const std::uint32_t SIZE>
+inline void BaseMELG<SIZE>::_setstate(const utils::UInt128& seed) noexcept
+{
+    MyBaseClass::_setstate(seed);
 }

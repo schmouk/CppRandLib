@@ -90,33 +90,23 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline Squares32() noexcept
-        : MyBaseClass()
-    {}
+    Squares32() noexcept;                                    //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    inline Squares32(const std::uint64_t seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::seed(seed_);
-    }
+    Squares32(const int                seed) noexcept;       //!< Valued constructor (int).
+    Squares32(const unsigned int       seed) noexcept;       //!< Valued constructor (unsigned int).
+    Squares32(const long               seed) noexcept;       //!< Valued constructor (long)
+    Squares32(const unsigned long      seed) noexcept;       //!< Valued constructor (unsigned long).
+    Squares32(const long long          seed) noexcept;       //!< Valued constructor (long long).
+    Squares32(const unsigned long long seed) noexcept;       //!< Valued constructor (unsigned long long).
+    Squares32(const utils::UInt128& seed) noexcept;       //!< Valued constructor (unsigned 128-bits).
+    Squares32(const double             seed);                //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline Squares32(const state_type& seed) noexcept
-        : MyBaseClass(seed)
-    {}
+    Squares32(const state_type& internal_state) noexcept;    //!< Valued constructor (full state).
 
-    Squares32(const Squares32&) noexcept = default;   //!< default copy constructor.
-    Squares32(Squares32&&) noexcept = default;        //!< default move constructor.
-    virtual ~Squares32() noexcept = default;         //!< default destructor.
+    virtual inline ~Squares32() noexcept = default;          //!< default destructor.
 
 
-    //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return an integer value coded on 32 bits.
-    */
-    virtual const output_type next() noexcept override;
+    //---   Operations   ----------------------------------------------------
+    virtual const output_type next() noexcept override;      //!< The internal PRNG algorithm. @return an integer value coded on 32 bits.
 
 };

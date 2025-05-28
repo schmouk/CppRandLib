@@ -27,23 +27,71 @@ SOFTWARE.
 
 
 //===========================================================================
+#include <type_traits>
 #include <vector>
 
 
 //===========================================================================
 /** @brief The internal state of many Pseudo Random Numbers Generators. */
-template<typename ValueType, const size_t SIZE>
+template<typename RandomT, typename ItemT, const std::uint32_t SIZE>
+    requires std::is_unsigned_v<ItemT>
 struct ListSeedState
 {
-    using value_type = ValueType;
+    using value_type = ItemT;
 
-    std::vector<ValueType> list{};
-    std::uint32_t          index{ 0 };
+    std::vector<ItemT> list{};
+    std::uint32_t      index{ 0 };
 
     inline ListSeedState() noexcept
         : index(0)
     {
         list.resize(SIZE);
+    }
+
+
+    /** @brief Increments the internal index pointing to the internal list. */
+    inline void inc_index() noexcept
+    {
+        index = (index + 1) % SIZE;
+    }
+
+
+    /** @brief Initializes the internal index pointing to the internal list. */
+    inline void init_index(const std::uint32_t new_index) noexcept
+    {
+        index = new_index % SIZE;
+    }
+
+
+    /** @brief Initializes the internal state container items.
+    *
+    * Initializes the container associated with the internal state of PRNGs.
+    * template argument ItemT must be an integral type.
+    * Notice:  MELG algorithm states that at least one of its internal state
+    * items must be non zero. Since we now use an internal implementation of
+    * `SplitMix` that never uses its internal state when its value is 0, not
+    * more  than  one  item  in the list of internal state items of any PRNG
+    * will be zero.
+    */
+    inline void seed(const std::uint64_t seed_) noexcept
+    {
+        index = 0UL;
+        RandomT init_rand(seed_);
+        std::ranges::generate(list, [&] { return ItemT(init_rand()); });
+    }
+
+
+    /** @brief Returns true if both states are the same. */
+    inline const bool operator== (const ListSeedState& other) const noexcept
+    {
+        return index == other.index && list == other.list;
+    }
+
+
+    /** @brief Returns true if states differ. */
+    inline const bool operator!= (const ListSeedState& other) const noexcept
+    {
+        return !(*this == other);
     }
 
 };

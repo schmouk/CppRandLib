@@ -100,36 +100,23 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline Well512a() noexcept
-        : MyBaseClass()
-    {
-    }
+    Well512a() noexcept;                                    //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    template<typename T>
-    inline Well512a(const T seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::seed(seed_);
-    }
+    Well512a(const int                seed) noexcept;       //!< Valued constructor (int).
+    Well512a(const unsigned int       seed) noexcept;       //!< Valued constructor (unsigned int).
+    Well512a(const long               seed) noexcept;       //!< Valued constructor (long)
+    Well512a(const unsigned long      seed) noexcept;       //!< Valued constructor (unsigned long).
+    Well512a(const long long          seed) noexcept;       //!< Valued constructor (long long).
+    Well512a(const unsigned long long seed) noexcept;       //!< Valued constructor (unsigned long long).
+    Well512a(const utils::UInt128&    seed) noexcept;       //!< Valued constructor (unsigned 128-bits).
+    Well512a(const double             seed);                //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline Well512a(const state_type& seed) noexcept
-        : MyBaseClass(seed)
-    {
-    }
+    Well512a(const state_type& internal_state) noexcept;    //!< Valued constructor (full state).
 
-    Well512a(const Well512a&) noexcept = default;   //!< default copy constructor.
-    Well512a(Well512a&&) noexcept = default;        //!< default move constructor.
-    virtual ~Well512a() noexcept = default;         //!< default destructor.
+    virtual inline ~Well512a() noexcept = default;          //!< default destructor.
 
 
-    //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return an integer value coded on OUTPUT_BITS bits.
-    */
-    virtual const output_type next() noexcept override;
+    //---   Operations   ----------------------------------------------------
+    virtual const output_type next() noexcept override;     //!< The internal PRNG algorithm. @return an integer value coded on 32 bits.
 
 };

@@ -30,10 +30,11 @@ SOFTWARE.
 #include <cstdint>
 
 #include "baseclasses/basewell.h"
+#include "utils/uint128.h"
 
 
 //===========================================================================
-/** @brief A fast 32-bits Well-Equidistributed Long-period Linear generator with a large period (2^1024, i.e. 1.80e+308).
+/** @brief A fast 32-bits Well-Equidistributed Long-period Linear generator with a large period (2^1,024, i.e. 1.80e+308).
 *
 *   Well-Equidistributed Long-period Linear Generators (WELL)  use  linear  recurrence
 *   based  on  primitive  characteristic  polynomials associated with left- and right-
@@ -100,36 +101,23 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline Well1024a() noexcept
-        : MyBaseClass()
-    {
-    }
+    Well1024a() noexcept;                                   //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    template<typename T>
-    inline Well1024a(const T seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::seed(seed_);
-    }
+    Well1024a(const int                seed) noexcept;      //!< Valued constructor (int).
+    Well1024a(const unsigned int       seed) noexcept;      //!< Valued constructor (unsigned int).
+    Well1024a(const long               seed) noexcept;      //!< Valued constructor (long)
+    Well1024a(const unsigned long      seed) noexcept;      //!< Valued constructor (unsigned long).
+    Well1024a(const long long          seed) noexcept;      //!< Valued constructor (long long).
+    Well1024a(const unsigned long long seed) noexcept;      //!< Valued constructor (unsigned long long).
+    Well1024a(const utils::UInt128&    seed) noexcept;      //!< Valued constructor (unsigned 128-bits).
+    Well1024a(const double             seed);               //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline Well1024a(const state_type& seed) noexcept
-        : MyBaseClass(seed)
-    {
-    }
+    Well1024a(const state_type& internal_state) noexcept;   //!< Valued constructor (full state).
 
-    Well1024a(const Well1024a&) noexcept = default;   //!< default copy constructor.
-    Well1024a(Well1024a&&) noexcept = default;        //!< default move constructor.
-    virtual ~Well1024a() noexcept = default;         //!< default destructor.
+    virtual inline ~Well1024a() noexcept = default;         //!< default destructor.
 
 
-    //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return an integer value coded on OUTPUT_BITS bits.
-    */
-    virtual const output_type next() noexcept override;
+    //---   Operations   ----------------------------------------------------
+    virtual const output_type next() noexcept override;     //!< The internal PRNG algorithm. @return an integer value coded on 32 bits.
 
 };

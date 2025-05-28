@@ -30,6 +30,8 @@ SOFTWARE.
 #include <type_traits>
 #include <vector>
 
+#include "../utils/splitmix.h"
+
 
 //===========================================================================
 /** @brief The internal state of many Pseudo Random Numbers Generators. */
@@ -44,10 +46,30 @@ struct ExtendedState
     std::vector<extended_value_type> extended_state{};
     StateType                        state{};
 
-    inline ExtendedState() noexcept
-        : state{}
-    {
-        extended_state.resize(EXTENDED_SIZE);
-    }
+    inline ExtendedState() noexcept;    //!< Empty constructor
+
+    inline void seed(const std::uint64_t seed_) noexcept;   //!< state and external state inbitialization
 
 };
+
+
+//===========================================================================
+//---   TEMPLATES IMPLEMENTATION   ------------------------------------------
+//---------------------------------------------------------------------------
+template<typename StateType, typename ExtendedValueType, const size_t EXTENDED_SIZE>
+inline ExtendedState<StateType, ExtendedValueType, EXTENDED_SIZE>::ExtendedState() noexcept
+    : state{}
+{
+    extended_state.resize(EXTENDED_SIZE);
+}
+
+//---------------------------------------------------------------------------
+template<typename StateType, typename ExtendedValueType, const size_t EXTENDED_SIZE>
+inline void ExtendedState<StateType, ExtendedValueType, EXTENDED_SIZE>::seed(const std::uint64_t seed_) noexcept
+{
+    state = StateType(seed_);
+    
+    utils::SplitMix32 splitmix_32(seed_);
+    for (auto& e : extended_state)
+        e = splitmix_32();
+}

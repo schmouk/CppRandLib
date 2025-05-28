@@ -97,35 +97,35 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline Melg19937() noexcept
-        : MyBaseClass()
-    {}
+    Melg19937() noexcept;                                   //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    template<typename T>
-    inline Melg19937(const T seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::MyBaseClass::seed(seed_);
-    }
+    Melg19937(const int                seed) noexcept;      //!< Valued constructor (int).
+    Melg19937(const unsigned int       seed) noexcept;      //!< Valued constructor (unsigned int).
+    Melg19937(const long               seed) noexcept;      //!< Valued constructor (long)
+    Melg19937(const unsigned long      seed) noexcept;      //!< Valued constructor (unsigned long).
+    Melg19937(const long long          seed) noexcept;      //!< Valued constructor (long long).
+    Melg19937(const unsigned long long seed) noexcept;      //!< Valued constructor (unsigned long long).
+    Melg19937(const utils::UInt128&    seed) noexcept;      //!< Valued constructor (unsigned 128-bits).
+    Melg19937(const double             seed);               //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline Melg19937(const state_type& seed_internal_state) noexcept
-        : MyBaseClass(seed_internal_state)
-    {}
+    Melg19937(const state_type& internal_state) noexcept;   //!< Valued constructor (full state).
 
-    Melg19937(const Melg19937&) noexcept = default;   //!< default copy constructor.
-    Melg19937(Melg19937&&) noexcept = default;        //!< default move constructor.
-    virtual ~Melg19937() noexcept = default;        //!< default destructor.
+    virtual inline ~Melg19937() noexcept = default;         //!< default destructor.
 
 
-    //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return an integer value coded on OUTPUT_BITS (i.e. 64) bits.
-    */
-    virtual const output_type next() noexcept override;
+    //---   Operations   ----------------------------------------------------
+    virtual const output_type next() noexcept override;     //!< The internal PRNG algorithm.
+
+    void seed() noexcept;                                   //!< Initializes internal state (empty signature).
+
+    void seed(const int                seed_) noexcept;     //!< Initializes internal state (int).
+    void seed(const unsigned int       seed_) noexcept;     //!< Initializes internal state (unsigned int).
+    void seed(const long               seed_) noexcept;     //!< Initializes internal state (long)
+    void seed(const unsigned long      seed_) noexcept;     //!< Initializes internal state (unsigned long).
+    void seed(const long long          seed_) noexcept;     //!< Initializes internal state (long long).
+    void seed(const unsigned long long seed_) noexcept;     //!< Initializes internal state (unsigned long long).
+    void seed(const utils::UInt128&    seed_) noexcept;     //!< Initializes internal state (unsigned 128-bits).
+    void seed(const double             seed_);              //!< Initializes internal state (double).
 
 
 private:

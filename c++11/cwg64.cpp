@@ -33,6 +33,61 @@ SOFTWARE.
 
 
 //===========================================================================
+//---------------------------------------------------------------------------
+/** Valued constructor (int). */
+Cwg64::Cwg64(const int seed) noexcept
+    : MyBaseClass(std::uint64_t(seed))
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned int). */
+Cwg64::Cwg64(const unsigned int seed) noexcept
+    : MyBaseClass(std::uint64_t(seed))
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long). */
+Cwg64::Cwg64(const long seed) noexcept
+    : MyBaseClass(std::uint64_t(seed))
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long). */
+Cwg64::Cwg64(const unsigned long seed) noexcept
+    : MyBaseClass(std::uint64_t(seed))
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (long long). */
+Cwg64::Cwg64(const long long seed) noexcept
+    : MyBaseClass(std::uint64_t(seed))
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned long long). */
+Cwg64::Cwg64(const unsigned long long seed) noexcept
+    : MyBaseClass(std::uint64_t(seed))
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned 128-bits). */
+Cwg64::Cwg64(const utils::UInt128& seed) noexcept
+    : MyBaseClass(seed.lo)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (double). */
+Cwg64::Cwg64(const double seed)
+    : MyBaseClass(seed)
+{}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (full state). */
+Cwg64::Cwg64(const state_type& internal_state) noexcept
+    : MyBaseClass(internal_state)
+{}
+
+//---------------------------------------------------------------------------
 /** The internal PRNG algorithm. */
 const Cwg64::output_type Cwg64::next() noexcept
 {
@@ -45,3 +100,65 @@ const Cwg64::output_type Cwg64::next() noexcept
     return _internal_state.state.state ^ (_internal_state.state.a >> 48);
 }
 
+//---------------------------------------------------------------------------
+/** Initializes internal state (empty signature). */
+void Cwg64::seed() noexcept
+{
+    MyBaseClass::seed();
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (int). */
+void Cwg64::seed(const int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned int). */
+void Cwg64::seed(const unsigned int seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long). */
+void Cwg64::seed(const long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long). */
+void Cwg64::seed(const unsigned long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long long). */
+void Cwg64::seed(const long long seed_) noexcept
+{
+    seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long long). */
+void Cwg64::seed(const unsigned long long seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned 128-bits). */
+void Cwg64::seed(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (double). */
+void Cwg64::seed(const double seed_)
+{
+    MyBaseClass::seed(seed_);
+}

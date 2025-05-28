@@ -95,44 +95,40 @@ class Pcg64_32 : public BasePCG<std::uint64_t, std::uint32_t>
 public:
     //---   Wrappers   ------------------------------------------------------
     using MyBaseClass = BasePCG<std::uint64_t, std::uint32_t>;
-    using value_type = std::uint64_t;
+    using value_type  = std::uint64_t;
+    // notice: output_type is defined in base class
 
-    static const std::uint64_t _MODULO{ (1ull << 32) - 1ull };
+    static const std::uint64_t _MODULO{ 0xffff'ffffull };  // i.e. (1ull << 32) - 1ull
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline Pcg64_32() noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::seed();
-    }
+    Pcg64_32() noexcept;                                    //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    inline Pcg64_32(const std::uint64_t seed_) noexcept
-        : MyBaseClass()
-    {
-        MyBaseClass::seed(seed_);
-    }
-
-    Pcg64_32(const Pcg64_32&) noexcept = default;   //!< default copy constructor.
-    Pcg64_32(Pcg64_32&&) noexcept = default;        //!< default move constructor.
-    virtual ~Pcg64_32() noexcept = default;         //!< default destructor.
-
-
-    //---   Internal PRNG   -------------------------------------------------
-    /** @brief The internal PRNG algorithm.
-    *
-    * @return an integer value coded on 32 bits.
-    */
-    virtual const output_type next() noexcept override;  // notice: output_type is defined in base class.
+    Pcg64_32(const int                seed) noexcept;       //!< Valued constructor (int).
+    Pcg64_32(const unsigned int       seed) noexcept;       //!< Valued constructor (unsigned int).
+    Pcg64_32(const long               seed) noexcept;       //!< Valued constructor (long)
+    Pcg64_32(const unsigned long      seed) noexcept;       //!< Valued constructor (unsigned long).
+    Pcg64_32(const long long          seed) noexcept;       //!< Valued constructor (long long).
+    Pcg64_32(const unsigned long long seed) noexcept;       //!< Valued constructor (unsigned long long).
+    Pcg64_32(const utils::UInt128&    seed) noexcept;       //!< Valued constructor (unsigned 128-bits).
+    Pcg64_32(const double             seed);                //!< Valued constructor (double).
 
 
     //---   Operations   ----------------------------------------------------
-    /** @brief Sets the internal state with an integer seed. */
-    virtual inline void _setstate(const std::uint64_t seed) noexcept override
-    {
-        _internal_state.state = seed;
-    }
+    virtual const output_type next() noexcept override;     //!< The internal PRNG algorithm.
+
+    virtual void seed() noexcept override;                  //!< Initializes internal state (empty signature).
+
+    void seed(const int                seed_) noexcept;     //!< Initializes internal state (int).
+    void seed(const unsigned int       seed_) noexcept;     //!< Initializes internal state (unsigned int).
+    void seed(const long               seed_) noexcept;     //!< Initializes internal state (long)
+    void seed(const unsigned long      seed_) noexcept;     //!< Initializes internal state (unsigned long).
+    void seed(const long long          seed_) noexcept;     //!< Initializes internal state (long long).
+    void seed(const unsigned long long seed_) noexcept;     //!< Initializes internal state (unsigned long long).
+    void seed(const utils::UInt128&    seed_) noexcept;     //!< Initializes internal state (unsigned 128-bits).
+    void seed(const double             seed_);              //!< Initializes internal state (double).
+
+    virtual void _setstate(const std::uint64_t   seed_) noexcept override;   //!< Sets the internal state with a 64-bits integer seed.
+    virtual void _setstate(const utils::UInt128& seed_) noexcept override;   //!< Sets the internal state with a 128-bits integer seed.
 
 };

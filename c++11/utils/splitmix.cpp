@@ -38,13 +38,12 @@ namespace utils
         // this is the 'Golden' Gamma value : std::uint64_t( ((1.0 + math.sqrt(5)) / 2.0) * 1<<64 )
         constexpr std::uint64_t GOLDEN_GAMMA{ 0x9e37'79b9'7f4a'7c15ull };
 
-        if (_state == 0)  // must never ever be zero
-            _state = 1;
+        _state += GOLDEN_GAMMA;
 
-        _state *= GOLDEN_GAMMA;
-        _state ^= (_state ^ (_state >> 30)) * 0xbf58'476d'1ce4'e5b9ull;
-        _state ^= (_state ^ (_state >> 27)) * 0x94d0'49bb'1331'11ebull;
-        return _state = _state ^ (_state >> 31);
+        std::uint64_t z{ _state };
+        z = (z ^ (z >> 30)) * 0xbf58'476d'1ce4'e5b9ull;
+        z = (z ^ (z >> 27)) * 0x94d0'49bb'1331'11ebull;
+        return z ^ (z >> 31);
     }
 
 }

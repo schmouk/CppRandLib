@@ -30,11 +30,12 @@ SOFTWARE.
 #include <cstdint>
 
 #include "baserandom.h"
-#include "internalstates/counterkeystate.h"
+#include "../internalstates/counterkeystate.h"
+#include "../utils/uint128.h"
 
 
 //===========================================================================
-/** @brief The base class for all Squares counter-based pseudo-random Generators.
+/** @brief The base class for all Squares counter-based pseudorandom Generators.
 *
 *   Squares models are based on an incremented counter and a key.  The
 *   algorithm squares a combination of the counter and the key values,
@@ -102,23 +103,36 @@ public:
 
 
     //---   Constructors / Destructor   -------------------------------------
-    /** @brief Empty constructor. */
-    inline BaseSquares() noexcept;
+    inline BaseSquares() noexcept;                                  //!< Default empty constructor.
 
-    /** @brief Valued construtor. */
-    inline BaseSquares(const std::uint64_t seed_) noexcept;
+    inline BaseSquares(const int                seed) noexcept;     //!< Valued constructor (int).
+    inline BaseSquares(const unsigned int       seed) noexcept;     //!< Valued constructor (unsigned int).
+    inline BaseSquares(const long               seed) noexcept;     //!< Valued constructor (long)
+    inline BaseSquares(const unsigned long      seed) noexcept;     //!< Valued constructor (unsigned long).
+    inline BaseSquares(const long long          seed) noexcept;     //!< Valued constructor (long long).
+    inline BaseSquares(const unsigned long long seed) noexcept;     //!< Valued constructor (unsigned long long).
+    inline BaseSquares(const utils::UInt128& seed) noexcept;     //!< Valued constructor (unsigned 128-bits).
+    inline BaseSquares(const double             seed);              //!< Valued constructor (double).
 
-    /** @brief Valued constructor (full state). */
-    inline BaseSquares(const state_type& internal_state) noexcept;
+    inline BaseSquares(const state_type& internal_state) noexcept;  //!< Valued constructor (full state).
 
-    BaseSquares(const BaseSquares&) noexcept = default;   //!< default copy constructor.
-    BaseSquares(BaseSquares&&) noexcept = default;        //!< default move constructor.
-    virtual ~BaseSquares() noexcept = default;            //!< default destructor.
+    virtual inline ~BaseSquares() noexcept = default;               //!< default destructor.
 
 
-protected:
-    /** @brief Sets the internal state of this PRNG with an integer seed. */
-    virtual inline void _setstate(const std::uint64_t seed) noexcept override;
+    //---   Operations   ----------------------------------------------------
+    void inline seed() noexcept;                                    //!< Initializes internal state (empty signature).
+
+    void inline seed(const int                seed_) noexcept;      //!< Initializes internal state (int).
+    void inline seed(const unsigned int       seed_) noexcept;      //!< Initializes internal state (unsigned int).
+    void inline seed(const long               seed_) noexcept;      //!< Initializes internal state (long)
+    void inline seed(const unsigned long      seed_) noexcept;      //!< Initializes internal state (unsigned long).
+    void inline seed(const long long          seed_) noexcept;      //!< Initializes internal state (long long).
+    void inline seed(const unsigned long long seed_) noexcept;      //!< Initializes internal state (unsigned long long).
+    void inline seed(const utils::UInt128& seed_) noexcept;      //!< Initializes internal state (unsigned 128-bits).
+    void inline seed(const double             seed_);               //!< Initializes internal state (double).
+
+    virtual inline void _setstate(const std::uint64_t   seed) noexcept override;    //!< Sets the internal state of this PRNG with a 64-bits integer seed.
+    virtual inline void _setstate(const utils::UInt128& seed) noexcept override;    //!< Sets the internal state of this PRNG with a 128-bits integer seed.
 
 };
 
@@ -126,7 +140,7 @@ protected:
 //===========================================================================
 //---   TEMPLATES IMPLEMENTATION   ------------------------------------------
 //---------------------------------------------------------------------------
-/** Default Empty constructor. */
+/** Empty constructor. */
 template<typename OutputT>
 inline BaseSquares<OutputT>::BaseSquares() noexcept
     : MyBaseClass()
@@ -135,9 +149,72 @@ inline BaseSquares<OutputT>::BaseSquares() noexcept
 }
 
 //---------------------------------------------------------------------------
-/** Valued construtor. */
+/** Valued constructor. */
 template<typename OutputT>
-inline BaseSquares<OutputT>::BaseSquares(const std::uint64_t seed_) noexcept
+inline BaseSquares<OutputT>::BaseSquares(const int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor. */
+template<typename OutputT>
+inline BaseSquares<OutputT>::BaseSquares(const unsigned int seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor. */
+template<typename OutputT>
+inline BaseSquares<OutputT>::BaseSquares(const long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor. */
+template<typename OutputT>
+inline BaseSquares<OutputT>::BaseSquares(const unsigned long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor. */
+template<typename OutputT>
+inline BaseSquares<OutputT>::BaseSquares(const long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor. */
+template<typename OutputT>
+inline BaseSquares<OutputT>::BaseSquares(const unsigned long long seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor (unsigned 128-bits). */
+template<typename OutputT>
+inline BaseSquares<OutputT>::BaseSquares(const utils::UInt128& seed_) noexcept
+    : MyBaseClass()
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Valued constructor. */
+template<typename OutputT>
+inline BaseSquares<OutputT>::BaseSquares(const double seed_)
     : MyBaseClass()
 {
     MyBaseClass::seed(seed_);
@@ -153,10 +230,91 @@ inline BaseSquares<OutputT>::BaseSquares(const state_type& internal_state) noexc
 }
 
 //---------------------------------------------------------------------------
-/** Sets the internal state of this PRNG with an integer seed. */
+/** Sets the internal state of this PRNG from current time (empty signature). */
 template<typename OutputT>
-inline void BaseSquares<OutputT>::_setstate(const std::uint64_t seed) noexcept
+inline void BaseSquares<OutputT>::seed() noexcept
 {
-    MyBaseClass::_internal_state.state.init_key(seed);  // notice: the std::uint64_t specialization of this method is automatically called here
+    _setstate(utils::set_random_seed64());
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (int). */
+template<typename OutputT>
+inline void BaseSquares<OutputT>::seed(const int seed_) noexcept
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned int). */
+template<typename OutputT>
+inline void BaseSquares<OutputT>::seed(const unsigned int seed_) noexcept
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long). */
+template<typename OutputT>
+inline void BaseSquares<OutputT>::seed(const long seed_) noexcept
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long). */
+template<typename OutputT>
+inline void BaseSquares<OutputT>::seed(const unsigned long seed_) noexcept
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (long long). */
+template<typename OutputT>
+inline void BaseSquares<OutputT>::seed(const long long seed_) noexcept
+{
+    MyBaseClass::seed(std::uint64_t(seed_));
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned long long). */
+template<typename OutputT>
+inline void BaseSquares<OutputT>::seed(const unsigned long long seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (unsigned 128-bits). */
+template<typename OutputT>
+inline void BaseSquares<OutputT>::seed(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Initializes internal state (double). */
+template<typename OutputT>
+inline void BaseSquares<OutputT>::seed(const double seed_)
+{
+    MyBaseClass::seed(seed_);
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG with a 64-bits integer seed. */
+template<typename OutputT>
+inline void BaseSquares<OutputT>::_setstate(const std::uint64_t seed_) noexcept
+{
+    MyBaseClass::_internal_state.state.seed(seed_);  // notice: the std::uint64_t specialization of this method is automatically called here
+    MyBaseClass::_internal_state.state.counter = 0;
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state of this PRNG with a 128-bits integer seed. */
+template<typename OutputT>
+inline void BaseSquares<OutputT>::_setstate(const utils::UInt128& seed_) noexcept
+{
+    MyBaseClass::_internal_state.state.seed(seed_.lo);
     MyBaseClass::_internal_state.state.counter = 0;
 }
