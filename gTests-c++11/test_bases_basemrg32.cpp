@@ -52,6 +52,8 @@ namespace tests_bases
                 EXPECT_NE(0ULL, mrg._internal_state.state.list[i]);
                 EXPECT_NE(mrg._internal_state.state.list[i - 1], mrg._internal_state.state.list[i]);
             }
+            EXPECT_FALSE(mrg._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
         }
 
 
@@ -64,6 +66,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x910a2dec89025cc1 >> 32, 0xbeeb8da1658eec67 >> 32, 0xf893a2eefb32555e >> 32, 0x71c18690ee42c90b >> 32, 0x71bb54d8d101b5b9 >> 32 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
+            EXPECT_FALSE(mrg._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
         }
         {
             BaseMRG32<5> mrg(-2);
@@ -71,6 +75,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0xf3203e9039f4a821 >> 32, 0xba56949915dcf9e9 >> 32, 0xd0d5127a96e8d90d >> 32, 0x1ef156bb76650c37 >> 32, 0x7842841591543f1d >> 32 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
+            EXPECT_FALSE(mrg._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
         }
         {
             BaseMRG32<5> mrg(9L);
@@ -78,6 +84,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0xaeaf52febe706064 >> 32, 0xc02d8a5e87afea62 >> 32, 0x43ec2be544b589b6 >> 32, 0xc8e98cd697316060 >> 32, 0x4336b3782f5887a1 >> 32 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
+            EXPECT_FALSE(mrg._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
         }
         {
             BaseMRG32<5> mrg(-11L);
@@ -85,6 +93,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x6fc5530939fb94c3 >> 32, 0x96caee613260cfca >> 32, 0x46d40b90622a734b >> 32, 0x6ecc725d7bedada9 >> 32, 0x69e6fff0691d876d >> 32 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
+            EXPECT_FALSE(mrg._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
         }
         {
             BaseMRG32<5> mrg(17UL);
@@ -92,6 +102,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x808475f02ee37363 >> 32, 0x6434ff62b4e8edd1 >> 32, 0x540d6c3702d41b8c >> 32, 0x395142ca8efaf003 >> 32, 0x46b1664f61a205e >> 32 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
+            EXPECT_FALSE(mrg._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
         }
         {
             BaseMRG32<5> mrg(0x0123'4567'89ab'cdefLL);
@@ -99,6 +111,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x157a3807a48faa9d >> 32, 0xd573529b34a1d093 >> 32, 0x2f90b72e996dccbe >> 32, 0xa2d419334c4667ec >> 32, 0x1404ce914938008 >> 32 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
+            EXPECT_FALSE(mrg._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
         }
         {
             BaseMRG32<5> mrg(-8'870'000'000'000'000'000LL);
@@ -106,6 +120,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x48bbc5b84275f3ca >> 32, 0xe2fbc345a799b5aa >> 32, 0x86ce19a135fba0de >> 32, 0x637c87187035ea06 >> 32, 0x2a03b9aff2bfd421 >> 32 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
+            EXPECT_FALSE(mrg._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
         }
         {
             BaseMRG32<5> mrg(8'870'000'000'000'000'000ULL);
@@ -113,6 +129,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0xeede014d9a5a6108 >> 32, 0xa6eb6466bac9f251 >> 32, 0x4246cbb1a64bf70c >> 32, 0xaf6aa8f43ebb8659 >> 32, 0xe1b0fb2c7e764cdb >> 32 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
+            EXPECT_FALSE(mrg._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
         }
         {
             BaseMRG32<5> mrg(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
@@ -120,6 +138,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0xf75f04cbb5a1a1dd >> 32, 0xec779c3693f88501 >> 32, 0xfed9eeb4936de39d >> 32, 0x6f9fb04b092bd30a >> 32, 0x260ffb0260bbbe5f >> 32 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
+            EXPECT_FALSE(mrg._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
         }
 
         EXPECT_THROW(BaseMRG32<5>(-0.357), FloatValueRange01Exception);
@@ -205,6 +225,8 @@ namespace tests_bases
             EXPECT_EQ(0, mrg_5._internal_state.state.index);
             EXPECT_FALSE(mrg._internal_state.gauss_valid);
             EXPECT_FALSE(mrg_5._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
+            EXPECT_DOUBLE_EQ(0.0, mrg_5._internal_state.gauss_next);
             bool diff{ false };
             for (int i = 0; i < 5; ++i)
                 if (mrg._internal_state.state.list[i] != mrg_5._internal_state.state.list[i]) {
@@ -228,10 +250,10 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0xe7186b7b3854a9bc >> 32, 0x4689d02b25c81d1 >> 32, 0x9daeb55b5a2ef996 >> 32, 0xa28288978dd3cea5 >> 32, 0xa9fa0fe2f8412ebe >> 32 };
 
             EXPECT_EQ(0, mrg._internal_state.state.index);
-            EXPECT_FALSE(mrg._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
+            EXPECT_FALSE(mrg._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
         }
         {
             BaseMRG32<5> mrg;
@@ -239,10 +261,10 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0xf75f04cbb5a1a1dd >> 32, 0xec779c3693f88501 >> 32, 0xfed9eeb4936de39d >> 32, 0x6f9fb04b092bd30a >> 32, 0x260ffb0260bbbe5f >> 32 };
 
             EXPECT_EQ(0, mrg._internal_state.state.index);
-            EXPECT_FALSE(mrg._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], mrg._internal_state.state.list[i]);
+            EXPECT_FALSE(mrg._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
         }
 
     }

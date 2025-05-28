@@ -187,7 +187,7 @@ namespace tests_bases
 
 
         //-- tests next()
-        BaseLFib64< 5, 2> lfib_5_2;
+        BaseLFib64<5, 2> lfib_5_2;
         {
             // notice: hard coded values below have been evaluated with PyRandLib.
             std::uint64_t expected[19]{
@@ -230,6 +230,19 @@ namespace tests_bases
 
 
         //-- tests seed(value)
+        {
+            lfib_5_2.seed(-1);
+
+            std::uint64_t expected[5]{
+                0xe4d971771b652c20, 0xe99ff867dbf682c9, 0x382ff84cb27281e9,
+                0x6d1db36ccba982d2, 0xb4a0472e578069ae
+            };
+
+            EXPECT_FALSE(lfib_5_2._internal_state.gauss_valid);
+            EXPECT_EQ(0, lfib_5_2._internal_state.state.index);
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], lfib_5_2._internal_state.state.list[i]);
+        }
         {
             lfib_5_2.seed(28031L);
 
@@ -332,7 +345,28 @@ namespace tests_bases
 
 
         //-- tests _setstate(seed_)
-        // Notice: already tested via seed() tests
+        {
+            lfib_5_2._setstate(0xffff'ffff'ffff'ffffULL);
+            std::uint64_t expected[5]{
+                0xe4d971771b652c20, 0xe99ff867dbf682c9, 0x382ff84cb27281e9,
+                0x6d1db36ccba982d2, 0xb4a0472e578069ae
+            };
+            EXPECT_FALSE(lfib_5_2._internal_state.gauss_valid);
+            EXPECT_EQ(0, lfib_5_2._internal_state.state.index);
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], lfib_5_2._internal_state.state.list[i]);
+        }
+        {
+            lfib_5_2._setstate(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
+            std::uint64_t expected[5]{
+                0xf75f04cbb5a1a1dd, 0xec779c3693f88501, 0xfed9eeb4936de39d,
+                0x6f9fb04b092bd30a, 0x260ffb0260bbbe5f
+            };
+            EXPECT_FALSE(lfib_5_2._internal_state.gauss_valid);
+            EXPECT_EQ(0, lfib_5_2._internal_state.state.index);
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], lfib_5_2._internal_state.state.list[i]);
+        }
 
     }
 

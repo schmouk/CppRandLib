@@ -315,27 +315,16 @@ namespace tests_prng
 
         //-- tests _setstate(seed_)
         // Notice: hard coded value below have been evaluated with PyRandLib
-        {
-            FastRand63 frand63(-1);
-
-            EXPECT_EQ(0x726cb8bb8db29610, frand63._internal_state.state);
-            EXPECT_FALSE(frand63._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, frand63._internal_state.gauss_next);
-
-            const std::uint64_t expected[]{ 0xd9dd201d6e32551, 0x1aaf6e00b7b1c706, 0x54371aa04c466bbf, 0x65c986545205154c, 0x7f9114bdec38e7bd };
-            for (std::uint64_t e : expected)
-                EXPECT_EQ(e, frand63.next());
-
-            EXPECT_EQ(0x7f9114bdec38e7bd, frand63._internal_state.state);
-            EXPECT_FALSE(frand63._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, frand63._internal_state.gauss_next);
-        }
 
         frand63._setstate(-1LL);
         EXPECT_EQ(0x726cb8bb8db29610, frand63._internal_state.state);
+        EXPECT_FALSE(frand63._internal_state.gauss_valid);
+        EXPECT_DOUBLE_EQ(0.0, frand63._internal_state.gauss_next);
 
         frand63._setstate(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
         EXPECT_EQ(0x7baf8265dad0d0ee, frand63._internal_state.state);
+        EXPECT_FALSE(frand63._internal_state.gauss_valid);
+        EXPECT_DOUBLE_EQ(0.0, frand63._internal_state.gauss_next);
 
 
         //-- tests equidistribution - notice: not more than 1 second of test, self-adaptation to platform and configuration

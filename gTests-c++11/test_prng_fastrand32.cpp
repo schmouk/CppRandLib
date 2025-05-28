@@ -315,27 +315,15 @@ namespace tests_prng
 
         //-- tests _setstate(seed_)
         // Notice: hard coded value below have been evaluated with PyRandLib
-        {
-            FastRand32 frand32(-1);
-
-            EXPECT_EQ(0xe4d97177, frand32._internal_state.state);
-            EXPECT_FALSE(frand32._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, frand32._internal_state.gauss_next);
-
-            const std::uint32_t expected[]{ 0xbe59e74c, 0xe60913dd, 0xbf2420fa, 0x6951a33, 0xf1ed91d8 };
-            for (std::uint32_t e : expected)
-                EXPECT_EQ(e, frand32.next());
-
-            EXPECT_EQ(0xf1ed91d8, frand32._internal_state.state);
-            EXPECT_FALSE(frand32._internal_state.gauss_valid);
-            EXPECT_DOUBLE_EQ(0.0, frand32._internal_state.gauss_next);
-        }
-
         frand32._setstate(-1LL);
         EXPECT_EQ(0xe4d97177, frand32._internal_state.state);
+        EXPECT_FALSE(frand32._internal_state.gauss_valid);
+        EXPECT_DOUBLE_EQ(0.0, frand32._internal_state.gauss_next);
 
         frand32._setstate(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
         EXPECT_EQ(0xf75f04cb, frand32._internal_state.state);
+        EXPECT_FALSE(frand32._internal_state.gauss_valid);
+        EXPECT_DOUBLE_EQ(0.0, frand32._internal_state.gauss_next);
 
 
         //-- tests equidistribution - notice: not more than 1 second of test, self-adaptation to platform and configuration

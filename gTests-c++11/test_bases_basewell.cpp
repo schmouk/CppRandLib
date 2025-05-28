@@ -52,6 +52,8 @@ namespace tests_bases
                 EXPECT_NE(0ULL, wll._internal_state.state.list[i]);
                 EXPECT_NE(wll._internal_state.state.list[i - 1], wll._internal_state.state.list[i]);
             }
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
         }
 
 
@@ -64,6 +66,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x910a2dec, 0xbeeb8da1, 0xf893a2ee, 0x71c18690, 0x71bb54d8 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
         }
         {
             BaseWell<5> wll(-2);
@@ -71,6 +75,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0xf3203e90, 0xba569499, 0xd0d5127a, 0x1ef156bb, 0x78428415 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
         }
         {
             BaseWell<5> wll(9L);
@@ -78,6 +84,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0xaeaf52fe, 0xc02d8a5e, 0x43ec2be5, 0xc8e98cd6, 0x4336b378 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
         }
         {
             BaseWell<5> wll(-11L);
@@ -85,6 +93,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x6fc55309, 0x96caee61, 0x46d40b90, 0x6ecc725d, 0x69e6fff0 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
         }
         {
             BaseWell<5> wll(17UL);
@@ -92,6 +102,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x808475f0, 0x6434ff62, 0x540d6c37, 0x395142ca, 0x046b1664 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
         }
         {
             BaseWell<5> wll(0x0123'4567'89ab'cdefLL);
@@ -99,6 +111,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x157a3807, 0xd573529b, 0x2f90b72e, 0xa2d41933, 0x1404ce9 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
         }
         {
             BaseWell<5> wll(-8'870'000'000'000'000'000LL);
@@ -106,6 +120,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x48bbc5b8, 0xe2fbc345, 0x86ce19a1, 0x637c8718, 0x2a03b9af };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
         }
         {
             BaseWell<5> wll(8'870'000'000'000'000'000ULL);
@@ -113,6 +129,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0xeede014d, 0xa6eb6466, 0x4246cbb1, 0xaf6aa8f4, 0xe1b0fb2c };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
         }
         {
             BaseWell<5> wll(utils::UInt128(0xfedc'ba98'7654'3210ULL, 0x0123'4567'89ab'cdefULL));
@@ -120,6 +138,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x157a3807, 0xd573529b, 0x2f90b72e, 0xa2d41933, 0x1404ce9 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
         }
         {
             BaseWell<5> wll(0.357);
@@ -127,6 +147,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x5fee464f, 0x954faf5a, 0xa985465a, 0x77714db9, 0xa3aac457 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
         }
 
         EXPECT_THROW(BaseWell<5>(-0.357), FloatValueRange01Exception);
@@ -142,6 +164,8 @@ namespace tests_bases
 
             EXPECT_EQ(st_5.index, wll_5._internal_state.state.index);
             EXPECT_EQ(st_5.list, wll_5._internal_state.state.list);
+            EXPECT_FALSE(wll_5._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll_5._internal_state.gauss_next);
         }
 
 
@@ -210,8 +234,6 @@ namespace tests_bases
 
             EXPECT_EQ(0, wll._internal_state.state.index);
             EXPECT_EQ(0, wll_5._internal_state.state.index);
-            EXPECT_FALSE(wll._internal_state.gauss_valid);
-            EXPECT_FALSE(wll_5._internal_state.gauss_valid);
             bool diff{ false };
             for (int i = 0; i < 5; ++i)
                 if (wll._internal_state.state.list[i] != wll_5._internal_state.state.list[i]) {
@@ -219,6 +241,10 @@ namespace tests_bases
                     break;
                 }
             EXPECT_TRUE(diff);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_FALSE(wll_5._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
+            EXPECT_DOUBLE_EQ(0.0, wll_5._internal_state.gauss_next);
         }
 
         BaseWell<5> wll;
@@ -229,6 +255,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x910a2dec, 0xbeeb8da1, 0xf893a2ee, 0x71c18690, 0x71bb54d8 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
         }
         {
             wll.seed(-2);
@@ -236,6 +264,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0xf3203e90, 0xba569499, 0xd0d5127a, 0x1ef156bb, 0x78428415 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
         }
         {
             wll.seed(9L);
@@ -243,6 +273,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0xaeaf52fe, 0xc02d8a5e, 0x43ec2be5, 0xc8e98cd6, 0x4336b378 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
         }
         {
             wll.seed(-11L);
@@ -250,6 +282,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x6fc55309, 0x96caee61, 0x46d40b90, 0x6ecc725d, 0x69e6fff0 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
         }
         {
             wll.seed(17UL);
@@ -257,6 +291,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x808475f0, 0x6434ff62, 0x540d6c37, 0x395142ca, 0x046b1664 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
         }
         {
             wll.seed(0x0123'4567'89ab'cdefLL);
@@ -264,6 +300,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x157a3807, 0xd573529b, 0x2f90b72e, 0xa2d41933, 0x1404ce9 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
         }
         {
             wll.seed(-8'870'000'000'000'000'000LL);
@@ -271,11 +309,46 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x48bbc5b8, 0xe2fbc345, 0x86ce19a1, 0x637c8718, 0x2a03b9af };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
         }
         {
             wll.seed(8'870'000'000'000'000'000ULL);
             EXPECT_EQ(0, wll._internal_state.state.index);
             const std::uint64_t expected[]{ 0xeede014d, 0xa6eb6466, 0x4246cbb1, 0xaf6aa8f4, 0xe1b0fb2c };
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
+        }
+        {
+            wll.seed(utils::UInt128(0xfedc'ba98'7654'3210ULL, 0x0123'4567'89ab'cdefULL));
+            EXPECT_EQ(0, wll._internal_state.state.index);
+            const std::uint64_t expected[]{ 0x157a3807, 0xd573529b, 0x2f90b72e, 0xa2d41933, 0x1404ce9 };
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
+        }
+        {
+            wll.seed(0.357);
+            EXPECT_EQ(0, wll._internal_state.state.index);
+            const std::uint64_t expected[]{ 0x5fee464f, 0x954faf5a, 0xa985465a, 0x77714db9, 0xa3aac457 };
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
+        }
+
+
+        //-- tests _setstate()
+        {
+            wll._setstate(0xa876'cb13'e2f0'594d);
+            std::uint64_t expected[]{ 0xe7186b7b, 0x4689d02, 0x9daeb55b, 0xa2828897, 0xa9fa0fe2 };
+
+            EXPECT_EQ(0, wll._internal_state.state.index);
+            EXPECT_FALSE(wll._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
         }
@@ -285,27 +358,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x157a3807, 0xd573529b, 0x2f90b72e, 0xa2d41933, 0x1404ce9 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
-        }
-        {
-            wll.seed(0.357);
-            EXPECT_EQ(0, wll._internal_state.state.index);
-            const std::uint64_t expected[]{ 0x5fee464f, 0x954faf5a, 0xa985465a, 0x77714db9, 0xa3aac457 };
-            for (int i = 0; i < 5; ++i)
-                EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
-        }
-
-
-        //-- tests _setstate()
-        {
-            BaseWell<5> wll;
-            wll._setstate(0xa876'cb13'e2f0'594d);
-            std::uint64_t expected[]{ 0xe7186b7b, 0x4689d02, 0x9daeb55b, 0xa2828897, 0xa9fa0fe2 };
-
-            EXPECT_EQ(0, wll._internal_state.state.index);
             EXPECT_FALSE(wll._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
-            for (int i = 0; i < 5; ++i)
-                EXPECT_EQ(expected[i], wll._internal_state.state.list[i]);
         }
 
     }

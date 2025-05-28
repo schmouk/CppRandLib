@@ -539,6 +539,17 @@ namespace tests_prng
         EXPECT_FALSE(melg._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, melg._internal_state.gauss_next);
 
+        melg._setstate(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
+        EXPECT_EQ(0, melg._internal_state.state.index);
+        EXPECT_EQ(0xe189cea064a6f2ec, melg._internal_state.state.list[14]);
+        EXPECT_EQ(0xd0ad13dad13c2a5e, melg._internal_state.state.list[153]);
+        EXPECT_EQ(0x0bbb6b2e84548ecd, melg._internal_state.state.list[292]);
+        EXPECT_EQ(0xbc6657fe06f2e294, melg._internal_state.state.list[431]);
+        EXPECT_EQ(0xaf4a5e323cd715c5, melg._internal_state.state.list[570]);
+        EXPECT_EQ(0x0986697ff828bfdf, melg._internal_state.state.list[695]);
+        EXPECT_FALSE(melg._internal_state.gauss_valid);
+        EXPECT_DOUBLE_EQ(0.0, melg._internal_state.gauss_next);
+
 
         //-- tests equidistribution - notice: not more than 1 second of test, self-adaptation to platform and configuration
         melg.seed();  // notice: tests will be done on very different seed values each time they are run

@@ -536,6 +536,17 @@ namespace tests_prng
         EXPECT_FALSE(lfib._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
 
+        lfib._setstate(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
+        EXPECT_EQ(0, lfib._internal_state.state.index);
+        EXPECT_EQ(0xf75f04cbb5a1a1dd, lfib._internal_state.state.list[0]);
+        EXPECT_EQ(0x71da8c61bc0cfda9, lfib._internal_state.state.list[10]);
+        EXPECT_EQ(0xed6e859bfa5e8dcc, lfib._internal_state.state.list[20]);
+        EXPECT_EQ(0xd1de816e066fa972, lfib._internal_state.state.list[30]);
+        EXPECT_EQ(0x5353e264bb834579, lfib._internal_state.state.list[40]);
+        EXPECT_EQ(0x5ba1c1d335e210df, lfib._internal_state.state.list[50]);
+        EXPECT_FALSE(lfib._internal_state.gauss_valid);
+        EXPECT_DOUBLE_EQ(0.0, lfib._internal_state.gauss_next);
+
 
         //-- tests equidistribution - notice: not more than 1 second of test, self-adaptation to platform and configuration
         lfib.seed();  // notice: tests will be done on very different seed values each time they are run

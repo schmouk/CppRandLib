@@ -546,6 +546,17 @@ namespace tests_prng
         EXPECT_FALSE(xrsr._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
 
+        xrsr._setstate(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
+        EXPECT_EQ(0, xrsr._internal_state.state.index);
+        EXPECT_EQ(0xf75f04cbb5a1a1dd, xrsr._internal_state.state.list[0]);
+        EXPECT_EQ(0x6f9fb04b092bd30a, xrsr._internal_state.state.list[3]);
+        EXPECT_EQ(0x7a5f67e38e997e3f, xrsr._internal_state.state.list[6]);
+        EXPECT_EQ(0x56a7458a6eece57b, xrsr._internal_state.state.list[9]);
+        EXPECT_EQ(0x149cc0b2e9f5efed, xrsr._internal_state.state.list[12]);
+        EXPECT_EQ(0x4a78cd4fccb7e9f8, xrsr._internal_state.state.list[15]);
+        EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+        EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
+
 
         //-- tests equidistribution - notice: not more than 1 second of test, self-adaptation to platform and configuration
         xrsr.seed();  // notice: tests will be done on very different seed values each time they are run

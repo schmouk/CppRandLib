@@ -562,6 +562,18 @@ namespace tests_prng
         EXPECT_FALSE(pcg._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
 
+        pcg._setstate(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
+        EXPECT_EQ(0xfffffffffffffffd, pcg._internal_state.state.state._internal_state.state);  // notice: (sic!)
+        EXPECT_EQ(0xec779c36, pcg._internal_state.state.extended_state[1]);
+        EXPECT_EQ(0x0ae1d8ad, pcg._internal_state.state.extended_state[171]);
+        EXPECT_EQ(0x9e0740e7, pcg._internal_state.state.extended_state[341]);
+        EXPECT_EQ(0x5d88abb1, pcg._internal_state.state.extended_state[511]);
+        EXPECT_EQ(0x32e7dd3a, pcg._internal_state.state.extended_state[681]);
+        EXPECT_EQ(0x0eadef97, pcg._internal_state.state.extended_state[851]);
+        EXPECT_EQ(0x86e22c5c, pcg._internal_state.state.extended_state[1021]);
+        EXPECT_FALSE(pcg._internal_state.gauss_valid);
+        EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
+
 
         //-- tests equidistribution - notice: not more than 1 second of test, self-adaptation to platform and configuration
         pcg.seed();  // notice: tests will be done on very different seed values each time they are run

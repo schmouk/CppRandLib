@@ -51,6 +51,8 @@ namespace tests_bases
                 EXPECT_NE(0ULL, xrsr._internal_state.state.list[i]);
                 EXPECT_NE(xrsr._internal_state.state.list[i - 1], xrsr._internal_state.state.list[i]);
             }
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
 
 
@@ -63,6 +65,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x910a2dec89025cc1, 0xbeeb8da1658eec67, 0xf893a2eefb32555e, 0x71c18690ee42c90b, 0x71bb54d8d101b5b9 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
         {
             BaseXoroshiro<5> xrsr(-2);
@@ -70,6 +74,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0xf3203e9039f4a821, 0xba56949915dcf9e9, 0xd0d5127a96e8d90d, 0x1ef156bb76650c37, 0x7842841591543f1d };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
         {
             BaseXoroshiro<5> xrsr(9L);
@@ -77,6 +83,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0xaeaf52febe706064, 0xc02d8a5e87afea62, 0x43ec2be544b589b6, 0xc8e98cd697316060, 0x4336b3782f5887a1 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
         {
             BaseXoroshiro<5> xrsr(-11L);
@@ -84,6 +92,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x6fc5530939fb94c3, 0x96caee613260cfca, 0x46d40b90622a734b, 0x6ecc725d7bedada9, 0x69e6fff0691d876d };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
         {
             BaseXoroshiro<5> xrsr(17UL);
@@ -91,6 +101,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x808475f02ee37363, 0x6434ff62b4e8edd1, 0x540d6c3702d41b8c, 0x395142ca8efaf003, 0x46b1664f61a205e };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
         {
             BaseXoroshiro<5> xrsr(0x0123'4567'89ab'cdefLL);
@@ -98,6 +110,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x157a3807a48faa9d, 0xd573529b34a1d093, 0x2f90b72e996dccbe, 0xa2d419334c4667ec, 0x1404ce914938008 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
         {
             BaseXoroshiro<5> xrsr(-8'870'000'000'000'000'000LL);
@@ -105,6 +119,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x48bbc5b84275f3ca, 0xe2fbc345a799b5aa, 0x86ce19a135fba0de, 0x637c87187035ea06, 0x2a03b9aff2bfd421 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
         {
             BaseXoroshiro<5> xrsr(8'870'000'000'000'000'000ULL);
@@ -112,6 +128,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0xeede014d9a5a6108, 0xa6eb6466bac9f251, 0x4246cbb1a64bf70c, 0xaf6aa8f43ebb8659, 0xe1b0fb2c7e764cdb };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
         {
             BaseXoroshiro<5> xrsr(utils::UInt128(0xfedc'ba98'7654'3210ULL, 0x0123'4567'89ab'cdefULL));
@@ -119,6 +137,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x157a3807a48faa9d, 0xd573529b34a1d093, 0x2f90b72e996dccbe, 0xa2d419334c4667ec, 0x1404ce914938008 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
         {
             BaseXoroshiro<5> xrsr(0.357);
@@ -126,6 +146,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x5fee464f36fc42c3, 0x954faf5a9ad49cf8, 0xa985465a4a5fc644, 0x77714db9e870d702, 0xa3aac457d81d552c };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
 
         EXPECT_THROW(BaseXoroshiro<5>(-0.357), FloatValueRange01Exception);
@@ -141,6 +163,8 @@ namespace tests_bases
 
             EXPECT_EQ(st_5.index, xrsr_5._internal_state.state.index);
             EXPECT_EQ(st_5.list, xrsr_5._internal_state.state.list);
+            EXPECT_FALSE(xrsr_5._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr_5._internal_state.gauss_next);
         }
 
 
@@ -207,6 +231,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x910a2dec89025cc1, 0xbeeb8da1658eec67, 0xf893a2eefb32555e, 0x71c18690ee42c90b, 0x71bb54d8d101b5b9 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
         {
             xrsr.seed(-2);
@@ -214,6 +240,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0xf3203e9039f4a821, 0xba56949915dcf9e9, 0xd0d5127a96e8d90d, 0x1ef156bb76650c37, 0x7842841591543f1d };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
         {
             xrsr.seed(9L);
@@ -221,6 +249,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0xaeaf52febe706064, 0xc02d8a5e87afea62, 0x43ec2be544b589b6, 0xc8e98cd697316060, 0x4336b3782f5887a1 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
         {
             xrsr.seed(-11L);
@@ -228,6 +258,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x6fc5530939fb94c3, 0x96caee613260cfca, 0x46d40b90622a734b, 0x6ecc725d7bedada9, 0x69e6fff0691d876d };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
         {
             xrsr.seed(17UL);
@@ -235,6 +267,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x808475f02ee37363, 0x6434ff62b4e8edd1, 0x540d6c3702d41b8c, 0x395142ca8efaf003, 0x46b1664f61a205e };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
         {
             xrsr.seed(0x0123'4567'89ab'cdefLL);
@@ -242,6 +276,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x157a3807a48faa9d, 0xd573529b34a1d093, 0x2f90b72e996dccbe, 0xa2d419334c4667ec, 0x1404ce914938008 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
         {
             xrsr.seed(-8'870'000'000'000'000'000LL);
@@ -249,11 +285,46 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x48bbc5b84275f3ca, 0xe2fbc345a799b5aa, 0x86ce19a135fba0de, 0x637c87187035ea06, 0x2a03b9aff2bfd421 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
         }
         {
             xrsr.seed(8'870'000'000'000'000'000ULL);
             EXPECT_EQ(0, xrsr._internal_state.state.index);
             const std::uint64_t expected[]{ 0xeede014d9a5a6108, 0xa6eb6466bac9f251, 0x4246cbb1a64bf70c, 0xaf6aa8f43ebb8659, 0xe1b0fb2c7e764cdb };
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
+        }
+        {
+            xrsr.seed(utils::UInt128(0xfedc'ba98'7654'3210ULL, 0x0123'4567'89ab'cdefULL));
+            EXPECT_EQ(0, xrsr._internal_state.state.index);
+            const std::uint64_t expected[]{ 0x157a3807a48faa9d, 0xd573529b34a1d093, 0x2f90b72e996dccbe, 0xa2d419334c4667ec, 0x1404ce914938008 };
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
+        }
+        {
+            xrsr.seed(0.357);
+            EXPECT_EQ(0, xrsr._internal_state.state.index);
+            const std::uint64_t expected[]{ 0x5fee464f36fc42c3, 0x954faf5a9ad49cf8, 0xa985465a4a5fc644, 0x77714db9e870d702, 0xa3aac457d81d552c };
+            for (int i = 0; i < 5; ++i)
+                EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
+        }
+
+
+        //-- tests _setstate()
+        {
+            xrsr._setstate(0xa876'cb13'e2f0'594d);
+            std::uint64_t expected[]{ 0xe7186b7b3854a9bc, 0x4689d02b25c81d1, 0x9daeb55b5a2ef996, 0xa28288978dd3cea5, 0xa9fa0fe2f8412ebe };
+
+            EXPECT_EQ(0, xrsr._internal_state.state.index);
+            EXPECT_FALSE(xrsr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
         }
@@ -263,27 +334,8 @@ namespace tests_bases
             const std::uint64_t expected[]{ 0x157a3807a48faa9d, 0xd573529b34a1d093, 0x2f90b72e996dccbe, 0xa2d419334c4667ec, 0x1404ce914938008 };
             for (int i = 0; i < 5; ++i)
                 EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
-        }
-        {
-            xrsr.seed(0.357);
-            EXPECT_EQ(0, xrsr._internal_state.state.index);
-            const std::uint64_t expected[]{ 0x5fee464f36fc42c3, 0x954faf5a9ad49cf8, 0xa985465a4a5fc644, 0x77714db9e870d702, 0xa3aac457d81d552c };
-            for (int i = 0; i < 5; ++i)
-                EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
-        }
-
-
-        //-- tests _setstate()
-        {
-            BaseXoroshiro<5> xrsr;
-            xrsr._setstate(0xa876'cb13'e2f0'594d);
-            std::uint64_t expected[]{ 0xe7186b7b3854a9bc, 0x4689d02b25c81d1, 0x9daeb55b5a2ef996, 0xa28288978dd3cea5, 0xa9fa0fe2f8412ebe };
-
-            EXPECT_EQ(0, xrsr._internal_state.state.index);
             EXPECT_FALSE(xrsr._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, xrsr._internal_state.gauss_next);
-            for (int i = 0; i < 5; ++i)
-                EXPECT_EQ(expected[i], xrsr._internal_state.state.list[i]);
         }
 
     }

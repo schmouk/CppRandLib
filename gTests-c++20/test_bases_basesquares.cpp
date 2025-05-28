@@ -55,52 +55,72 @@ namespace tests_bases
             BaseSquares<unsigned long> sqr(1);
             EXPECT_EQ(0, sqr._internal_state.state.counter);
             EXPECT_EQ(1, sqr._internal_state.state.key & 0x1);
-            EXPECT_EQ(0x9bd658ae46c9d5e3, sqr._internal_state.state.key);  // 0x9bd658ae46c9d5e3
+            EXPECT_EQ(0x9bd658ae46c9d5e3, sqr._internal_state.state.key);
+            EXPECT_FALSE(sqr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, sqr._internal_state.gauss_next);
         }
         {
             BaseSquares<unsigned long> sqr(-2);
             EXPECT_EQ(0, sqr._internal_state.state.counter);
             EXPECT_EQ(0xfbe269a13c127d8f, sqr._internal_state.state.key);
+            EXPECT_FALSE(sqr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, sqr._internal_state.gauss_next);
         }
         {
             BaseSquares<unsigned long> sqr(9L);
             EXPECT_EQ(0, sqr._internal_state.state.counter);
             EXPECT_EQ(0xbf4a3268dabe3f75, sqr._internal_state.state.key);
+            EXPECT_FALSE(sqr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, sqr._internal_state.gauss_next);
         }
         {
             BaseSquares<unsigned long> sqr(-11L);
             EXPECT_EQ(0, sqr._internal_state.state.counter);
             EXPECT_EQ(0x79465e8f732a18f5, sqr._internal_state.state.key);
+            EXPECT_FALSE(sqr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, sqr._internal_state.gauss_next);
         }
         {
             BaseSquares<unsigned long> sqr(17UL);
             EXPECT_EQ(0, sqr._internal_state.state.counter);
             EXPECT_EQ(0x86531bae9b4edf83, sqr._internal_state.state.key);
+            EXPECT_FALSE(sqr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, sqr._internal_state.gauss_next);
         }
         {
             BaseSquares<unsigned long> sqr(0x0123'4567'89ab'cdefLL);
             EXPECT_EQ(0, sqr._internal_state.state.counter);
             EXPECT_EQ(0x2c381b75cd1e96f3, sqr._internal_state.state.key);
+            EXPECT_FALSE(sqr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, sqr._internal_state.gauss_next);
         }
         {
             BaseSquares<unsigned long> sqr(-8'870'000'000'000'000'000LL);
             EXPECT_EQ(0, sqr._internal_state.state.counter);
             EXPECT_EQ(0x5d7f246839ae54f3, sqr._internal_state.state.key);
+            EXPECT_FALSE(sqr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, sqr._internal_state.gauss_next);
         }
         {
             BaseSquares<unsigned long> sqr(8'870'000'000'000'000'000ULL);
             EXPECT_EQ(0, sqr._internal_state.state.counter);
             EXPECT_EQ(0xea49fd182c19435d, sqr._internal_state.state.key);
+            EXPECT_FALSE(sqr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, sqr._internal_state.gauss_next);
         }
         {
             BaseSquares<unsigned long> sqr(0.357);
             EXPECT_EQ(0, sqr._internal_state.state.counter);
             EXPECT_EQ(0x69ef8b1a6eda9b27, sqr._internal_state.state.key);
+            EXPECT_FALSE(sqr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, sqr._internal_state.gauss_next);
         }
         {
             BaseSquares<unsigned long> sqr(utils::UInt128(0xfedc'ba98'7654'3210ULL, 0x0123'4567'89ab'cdefULL));
             EXPECT_EQ(0, sqr._internal_state.state.counter);
             EXPECT_EQ(0x2c381b75cd1e96f3, sqr._internal_state.state.key);
+            EXPECT_FALSE(sqr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, sqr._internal_state.gauss_next);
         }
 
         EXPECT_THROW(BaseSquares<unsigned long>(-0.357), FloatValueRange01Exception);
@@ -171,10 +191,17 @@ namespace tests_bases
 
 
         //-- tests _setstate()
+        BaseSquares<unsigned long> sqr;
         {
-            BaseSquares<unsigned long> sqr;
             sqr._setstate(0x0123'4567'89ab'cdefLL);
 
+            EXPECT_EQ(0, sqr._internal_state.state.counter);
+            EXPECT_EQ(0x2c381b75cd1e96f3, sqr._internal_state.state.key);
+            EXPECT_FALSE(sqr._internal_state.gauss_valid);
+            EXPECT_DOUBLE_EQ(0.0, sqr._internal_state.gauss_next);
+        }
+        {
+            sqr._setstate(utils::UInt128(0xfedc'ba98'7654'3210ULL, 0x0123'4567'89ab'cdefULL));
             EXPECT_EQ(0, sqr._internal_state.state.counter);
             EXPECT_EQ(0x2c381b75cd1e96f3, sqr._internal_state.state.key);
             EXPECT_FALSE(sqr._internal_state.gauss_valid);

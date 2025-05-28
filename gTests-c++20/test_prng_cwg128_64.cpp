@@ -464,6 +464,15 @@ namespace tests_prng
         EXPECT_EQ(0.0, cwg128_64._internal_state.gauss_next);
         EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
 
+        cwg128_64._setstate(utils::UInt128(0xffff'ffff'ffff'fffeULL, 0xffff'ffff'ffff'fffdULL));
+        EXPECT_EQ(0x0, cwg128_64._internal_state.state.a);
+        EXPECT_EQ(0xf75f04cbb5a1a1dd, cwg128_64._internal_state.state.s);
+        EXPECT_EQ(0xf3203e9039f4a821, cwg128_64._internal_state.state.state.hi);
+        EXPECT_EQ(0xec779c3693f88501, cwg128_64._internal_state.state.state.lo);
+        EXPECT_EQ(0x0, cwg128_64._internal_state.state.weyl);
+        EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
+        EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
+
 
         //-- tests equidistribution - notice: not more than 1 second of test, self-adaptation to platform and configuration
         cwg128_64.seed();  // notice: tests will be done on very different seed values each time they are run

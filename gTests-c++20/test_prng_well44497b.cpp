@@ -570,6 +570,17 @@ namespace tests_prng
         EXPECT_FALSE(wll._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
 
+        wll._setstate(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
+        EXPECT_EQ(0, wll._internal_state.state.index);
+        EXPECT_EQ(0x33f37c98, wll._internal_state.state.list[127]);
+        EXPECT_EQ(0xd9760a2a, wll._internal_state.state.list[358]);
+        EXPECT_EQ(0x2774c2e3, wll._internal_state.state.list[589]);
+        EXPECT_EQ(0x3827beea, wll._internal_state.state.list[820]);
+        EXPECT_EQ(0xb9dcad84, wll._internal_state.state.list[1051]);
+        EXPECT_EQ(0x986d6ae2, wll._internal_state.state.list[1282]);
+        EXPECT_FALSE(wll._internal_state.gauss_valid);
+        EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
+
 
         //-- tests equidistribution - notice: not more than 1 second of test, self-adaptation to platform and configuration
         wll.seed();  // notice: tests will be done on very different seed values each time they are run

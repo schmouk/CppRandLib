@@ -536,6 +536,17 @@ namespace tests_prng
         EXPECT_FALSE(mrg._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
 
+        mrg._setstate(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
+        EXPECT_EQ(0, mrg._internal_state.state.index);
+        EXPECT_EQ(0x1dacc61b, mrg._internal_state.state.list[41]);
+        EXPECT_EQ(0x7d78f872, mrg._internal_state.state.list[307]);
+        EXPECT_EQ(0x132a5660, mrg._internal_state.state.list[573]);
+        EXPECT_EQ(0x59ea938c, mrg._internal_state.state.list[839]);
+        EXPECT_EQ(0x21161c1b, mrg._internal_state.state.list[1105]);
+        EXPECT_EQ(0x0a371094, mrg._internal_state.state.list[1371]);
+        EXPECT_FALSE(mrg._internal_state.gauss_valid);
+        EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
+
 
         //-- tests equidistribution - notice: not more than 1 second of test, self-adaptation to platform and configuration
         mrg.seed();  // notice: tests will be done on very different seed values each time they are run
