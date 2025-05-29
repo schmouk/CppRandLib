@@ -71,7 +71,7 @@ struct BaseException : public std::exception
 
 //===========================================================================
 //---------------------------------------------------------------------------
-/** @brief Exponential law null lambda exception. */
+/** @brief Negative values for alpha or beta arguments of Betavariate law exception. */
 struct AlphaBetaArgsException : public BaseException<double>
 {
     inline AlphaBetaArgsException() noexcept = default;
@@ -99,7 +99,7 @@ struct AlphaBetaArgsException : public BaseException<double>
 
 
 //---------------------------------------------------------------------------
-/** @brief Wrong argument type - not arithmetic. */
+/** @brief Wrong argument type exception - not arithmetic. */
 struct ArithmeticValueTypeException : public std::exception
 {
     const char* what() noexcept { return "Argument(s) must be of an arithmetic type."; }
@@ -123,7 +123,7 @@ struct ExponentialZeroLambdaException : public std::exception
 
 
 //---------------------------------------------------------------------------
-/** @brief Wrong argument type - not floating point. */
+/** @brief Wrong argument type exception - not floating point. */
 struct FloatingPointTypeException : public std::exception
 {
     const char* what() noexcept { return "Argument(s) must be of a floating pointg type."; }
@@ -131,7 +131,7 @@ struct FloatingPointTypeException : public std::exception
 
 
 //---------------------------------------------------------------------------
-/** @brief Float value is out of range [0.0, 1.0). */
+/** @brief Float value is out of range [0.0, 1.0) exception. */
 struct FloatValueRange01Exception : public BaseException<double>
 {
     inline FloatValueRange01Exception() noexcept = default;
@@ -199,7 +199,7 @@ struct IntegralValueTypeException : public std::exception
 
 
 //---------------------------------------------------------------------------
-/** @brief Max value type exception. */
+/** @brief Max value type exception - not artihmetic. */
 struct MaxValueTypeException : public std::exception
 {
     const char* what() noexcept { return "Type of 'max' values must be arithmetic."; }
@@ -207,7 +207,7 @@ struct MaxValueTypeException : public std::exception
 
 
 //---------------------------------------------------------------------------
-/** @brief Min value type exception. */
+/** @brief Min value type exception - not arithmetic. */
 struct MinValueTypeException : public std::exception
 {
     const char* what() noexcept { return "Type of 'min' values must be arithmetic."; }
@@ -215,7 +215,7 @@ struct MinValueTypeException : public std::exception
 
 
 //---------------------------------------------------------------------------
-/** @brief Negative value for kappa parameter exception. */
+/** @brief Negative value for kappa parameter of Vvonmises law exception. */
 struct NegativeKappaException : public BaseException<double>
 {
     inline NegativeKappaException() noexcept = default;
@@ -403,7 +403,7 @@ struct RangeSameValuesException : public BaseException<T>
 
 
 //---------------------------------------------------------------------------
-/** @brief Zero step argument exception. */
+/** @brief Zero step argument in range exception. */
 struct RangeZeroStepException : public std::exception
 {
     const char* what() noexcept { return "'step' argument cannot be 0 (actually is)."; }
@@ -439,7 +439,7 @@ struct SampleCountException : public BaseException<std::size_t>
 
 
 //---------------------------------------------------------------------------
-/** @brief Counts type exception. */
+/** @brief Counts type exception - not integral. */
 struct SampleCountsTypeException : public std::exception
 {
     const char* what() noexcept { return "type of 'counts' values must be integral."; }
@@ -475,7 +475,7 @@ struct SampleSizesException : public BaseException<std::size_t>
 
 
 //---------------------------------------------------------------------------
-/** @brief Step value type exception. */
+/** @brief Step value type exception - not arithmetic. */
 struct StepValueTypeException : public std::exception
 {
     const char* what() noexcept { return "Type of 'step' values must be arithmetic."; }
@@ -512,7 +512,7 @@ struct TooBigRotationException : public BaseException<int>
 
 
 //---------------------------------------------------------------------------
-/** @brief Arithemtic type of values exception. */
+/** @brief Values type exception - not arithmetic. */
 struct ValueTypeException : public std::exception
 {
     const char* what() noexcept { return "Type of values must be arithmetic."; }

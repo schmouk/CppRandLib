@@ -69,8 +69,7 @@ SOFTWARE.
 *   while same computation time and far higher precision (64-bits  calculations)  than
 *   MRGs, but memory consumption (resp. 17, 55 and 1279 integers).
 * 
-*   Please notice that this class and all its  inheriting  sub-classes  are  callable.
-*   Example:
+*   Furthermore this class is callable:
 * @code
 *     LFib607 rand{};
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
@@ -80,16 +79,16 @@ SOFTWARE.
 *   Notice that for simulating the roll of a dice you should program:
 * @code
 *     LFib607 diceRoll();
-*     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
+*     std::cout << 1 + int(diceRoll(6)) << std::endl;   // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
 
 *   Reminder:
-*   We give you here below a copy of the table of tests for the LCGs that have
-*   been implemented in PyRandLib, as provided in paper "TestU01, ..."  -  see
+*   We give you here below a copy of the table of tests for the LFibs that have
+*   been  implemented in CppRandLib,  as provided in paper "TestU01, ..." - see
 *   file README.md.
 * +--------------------------------------------------------------------------------------------------------------------------------------------------------+
-* | PyRabndLib class | TU01 generator name      | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
+* | CppRandLib class | TU01 generator name      | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
 * | ---------------- | ------------------------ | --------------- | ------- | ----------- | ------------ | ---------------- | ----------- | -------------- |
 * | LFib78           | LFib(2^64, 17, 5, +)     |    34 x 4-bytes | 2^78    |    n.a.     |     1.1      |          0       |       0     |       0        |
 * | LFib116          | LFib(2^64, 55, 24, +)    |   110 x 4-bytes | 2^116   |    n.a.     |     1.0      |          0       |       0     |       0        |

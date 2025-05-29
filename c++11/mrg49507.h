@@ -74,16 +74,16 @@ SOFTWARE.
 *   Notice that for simulating the roll of a dice you should program:
 * @code
 *     Mrg49507 diceRoll();
-*     std::cout << int(diceRoll(1, 7)) << std::endl;    // prints a uniform roll within range {1, ..., 6}
+*     std::cout << 1 + int(diceRoll(6)) << std::endl;   // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
 *
 *   Reminder:
-*   We give you here below a copy of the table of tests for the LCGs that have
-*   been implemented in PyRandLib, as provided in paper "TestU01, ..."  -  see
+*   We give you here below a copy of the table of tests for the MRGs that have
+*   been implemented in CppRandLib,  as provided in paper "TestU01, ..." - see
 *   file README.md.
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
-* | PyRabndLib class | TU01 generator name | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
+* | CppRandLib class | TU01 generator name | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
 * | ---------------- | ------------------- | --------------- | ------- | ----------- | ------------ | ---------------- | ----------- | -------------- |
 * | Mrg287           | Marsa-LFIB4         |   256 x 4-bytes | 2^287   |    3.40     |     0.8      |          0       |       0     |       0        |
 * | Mrg1457          | DX-47-3             |    47 x 4-bytes | 2^1457  |    n.a.     |     1.4      |          0       |       0     |       0        |

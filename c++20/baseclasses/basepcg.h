@@ -75,22 +75,22 @@ SOFTWARE.
 *   Please notice that for simulating the roll of a dice you may use any of:
 * @code
 *     BasePCG diceRoll{};                 // CAUTION: Replace 'BasePCG' with any inheriting class constructor!
-*     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
+*     std::cout << 1 + int(diceRoll(6)) << std::endl;   // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
 *
 *   Reminder:
-*   We give you here below a copy of the table of tests for the WELL  algorithms  that
+*   We give you here below a copy of the table of tests for the  PCG  algorithms  that
 *   have  been implemented in CppRandLib, as provided in paper "TestU01, ..." and when
 *   available.
 *
-* +--------------------------------------------------------------------------------------------------------------------------------------------+
-* | PyRandLib class | initial PCG algo name ([7]) | Memory Usage   | Period   | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
-* | --------------- | --------------------------- | -------------- | -------- | ------------ | ---------------- | ----------- | -------------- |
-* | Pcg64_32        | PCG XSH RS 64/32 (LCG)      |    2 x 4-bytes | 2^64     |     0.79     |          0       |       0     |       0        |
-* | Pcg128_64       | PCG XSL RR 128/64 (LCG)     |    4 x 4-bytes | 2^128    |     1.70     |          0       |       0     |       0        |
-* | Pcg1024_32      | PCG XSH RS 64/32 (EXT 1024) | 1026 x 4-bytes | 2^32,830 |     0.78     |          0       |       0     |       0        |
-* +--------------------------------------------------------------------------------------------------------------------------------------------+
+* +---------------------------------------------------------------------------------------------------------------------------------------------+
+* | CppRandLib class | initial PCG algo name ([7]) | Memory Usage   | Period   | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
+* | ---------------- | --------------------------- | -------------- | -------- | ------------ | ---------------- | ----------- | -------------- |
+* | Pcg64_32         | PCG XSH RS 64/32 (LCG)      |    2 x 4-bytes | 2^64     |     0.79     |          0       |       0     |       0        |
+* | Pcg128_64        | PCG XSL RR 128/64 (LCG)     |    4 x 4-bytes | 2^128    |     1.70     |          0       |       0     |       0        |
+* | Pcg1024_32       | PCG XSH RS 64/32 (EXT 1024) | 1026 x 4-bytes | 2^32,830 |     0.78     |          0       |       0     |       0        |
+* +---------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that  quickly  tests  some  of  the
 *   expected characteristics for a pretty good PRNG;

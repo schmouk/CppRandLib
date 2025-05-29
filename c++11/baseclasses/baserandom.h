@@ -76,11 +76,11 @@ SOFTWARE.
 *   Please notice that for simulating the roll of a dice you may use any of:
 * @code
 *     FastRand32 diceRoll{};                            // notice: use of FastRand32 is for sole example purpose
-*     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
+*     std::cout << 1 + int(diceRoll(6)) << std::endl;   // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
 *
-*   Conforming to the former Python version of this library (PyRandLib),  next methods
+*   Conforming to the former Python version of this library (CppRandLib), next methods
 *   are available - built-in function in Python module 'random':
 *    |
 *    |  betavariate(alpha, beta)

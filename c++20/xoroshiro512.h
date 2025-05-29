@@ -53,18 +53,32 @@ SOFTWARE.
 *   PRNG,  with  low computation time,  64-bits output values and very good randomness
 *   characteristics.
 *
+*   Furthermore this class is callable:
+* @code
+*     Xoroshiro512 rand();
+*     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
+*     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
+* @endcode
+*
+*   Notice that for simulating the roll of a dice you should program:
+* @code
+*     Xoroshiro512 diceRoll();
+*     std::cout << 1 + int(diceRoll(6)) << std::endl;   // prints a uniform roll within range {1, ..., 6}
+*     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
+* @endcode
+*
 *   Reminder:
 *   We give you here below a copy of the table of tests for the xoroshiros  that  have
 *   been  implemented  in CppRandLib,  as  described by the authors of xoroshiro - see
 *   reference [10] in file README.md.
 *
-* +------------------------------------------------------------------------------------------------------------------------------------------------------+
-* | PyRandLib class | initial xoroshiro algo name | Memory Usage | Period | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
-* | --------------- | --------------------------- | ------------ | ------ | ----------- | ------------ | ---------------- | ----------- | -------------- |
-* | Xoroshiro256    | xoroshiro256**              |  8 x 4-bytes | 2^256  |    n.a.     |     0.84     |          0       |       0     |       0        |
-* | Xoroshiro512    | xoroshiro512**              | 16 x 4-bytes | 2^512  |    n.a.     |     0.99     |          0       |       0     |       0        |
-* | Xoroshiro1024   | xoroshiro1024**             | 32 x 4-bytes | 2^1024 |    n.a.     |     1.17     |          0       |       0     |       0        |
-* +------------------------------------------------------------------------------------------------------------------------------------------------------+
+* +-------------------------------------------------------------------------------------------------------------------------------------------------------+
+* | CppRandLib class | initial xoroshiro algo name | Memory Usage | Period | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
+* | ---------------- | --------------------------- | ------------ | ------ | ----------- | ------------ | ---------------- | ----------- | -------------- |
+* | Xoroshiro256     | xoroshiro256**              |  8 x 4-bytes | 2^256  |    n.a.     |     0.84     |          0       |       0     |       0        |
+* | Xoroshiro512     | xoroshiro512**              | 16 x 4-bytes | 2^512  |    n.a.     |     0.99     |          0       |       0     |       0        |
+* | Xoroshiro1024    | xoroshiro1024**             | 32 x 4-bytes | 2^1024 |    n.a.     |     1.17     |          0       |       0     |       0        |
+* +-------------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
 *   the expected characteristics for a pretty good PRNG;

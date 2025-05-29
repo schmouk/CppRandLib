@@ -58,6 +58,20 @@ SOFTWARE.
 *   As such,  only minimalist optimization has been coded,  with the aim at easing the
 *   verification of its proper implementation.
 *
+*   Furthermore this class is callable:
+* @code
+*     Well1024a rand();
+*     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
+*     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
+* @endcode
+*
+*   Notice that for simulating the roll of a dice you should program:
+* @code
+*     Well1024a diceRoll();
+*     std::cout << 1 + int(diceRoll(6)) << std::endl;   // prints a uniform roll within range {1, ..., 6}
+*     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
+* @endcode
+*
 *   See Well512a for a large period WELL-Generator (2^512,  i.e. 1.34e+154)  with  low
 *   computation time and 16 integers memory consumption.
 *   See Well199937c for a far longer period  (2^19,937, i.e. 4.32e+6,001) with similar
@@ -67,20 +81,20 @@ SOFTWARE.
 *
 *   Reminder:
 *   We give you here below a copy of the table of tests for the WELL  algorithms  that
-*   have  been implemented in PyRandLib,  as provided in paper "TestU01, ..." and when
+*   have been implemented in CppRandLib,  as provided in paper "TestU01, ..." and when
 *   available.
 *
-* +--------------------------------------------------------------------------------------------------------------------------------------------------+
-* | PyRandLib class | TU01 generator name | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
-* | --------------- | ------------------- | --------------- | ------- | ----------- | ------------ | ---------------- | ----------- | -------------- |
-* | Well512a        | not available       |    16 x 4-bytes | 2^512   |    n.a.     |     n.a.     |        n.a.      |     n.a.    |     n.a.       |
-* | Well1024a       | WELL1024a           |    32 x 4-bytes | 2^1024  |    4.0      |     1.1      |          0       |       4     |       4        |
-* | Well19937c (1)  | WELL19937a          |   624 x 4-bytes | 2^19937 |    4.3      |     1.3      |          0       |       2     |       2        |
-* | Well44497b      | not available       | 1,391 x 4-bytes | 2^44497 |    n.a.     |     n.a.     |        n.a.      |     n.a.    |     n.a.       |
-* +--------------------------------------------------------------------------------------------------------------------------------------------------+
+* +---------------------------------------------------------------------------------------------------------------------------------------------------+
+* | CppRandLib class | TU01 generator name | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
+* | ---------------- | ------------------- | --------------- | ------- | ----------- | ------------ | ---------------- | ----------- | -------------- |
+* | Well512a         | not available       |    16 x 4-bytes | 2^512   |    n.a.     |     n.a.     |        n.a.      |     n.a.    |     n.a.       |
+* | Well1024a        | WELL1024a           |    32 x 4-bytes | 2^1024  |    4.0      |     1.1      |          0       |       4     |       4        |
+* | Well19937c (1)   | WELL19937a          |   624 x 4-bytes | 2^19937 |    4.3      |     1.3      |          0       |       2     |       2        |
+* | Well44497b       | not available       | 1,391 x 4-bytes | 2^44497 |    n.a.     |     n.a.     |        n.a.      |     n.a.    |     n.a.       |
+* +---------------------------------------------------------------------------------------------------------------------------------------------------+
 *
-*   (1)The Well19937c generator provided with library PyRandLib implements the
-*   Well19937a  algorithm  augmented  with  an associated tempering algorithm.
+*   (1) The Well19937c generator provided with library  CppRandLib  implements
+*   the Well19937a algorithm augmented with an associated tempering algorithm.
 *   This should very slightly slow down its CPU  performance  while  enhancing
 *   its pseudo-randomness quality, as measured by TestU01.
 *

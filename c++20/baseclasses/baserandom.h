@@ -82,7 +82,7 @@ SOFTWARE.
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
 *
-*   Conforming to the former version PyRandLib  of  this  library,  next  methods  are
+*   Conforming to the former version CppRandLib of  this  library,  next  methods  are
 *   available:
 *    |
 *    |  betavariate(alpha, beta)

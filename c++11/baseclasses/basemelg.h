@@ -44,7 +44,7 @@ SOFTWARE.
 *   MELGs offer large to very large periods with best known results in the  evaluation
 *   of their randomness.  They ensure a maximally equidistributed generation of pseudo
 *   random numbers.  They pass all TestU01 tests and newer ones but are the slowest to
-*   compute ones in the base of PRNGs that have been implemented in PyRandLib.
+*   compute ones in the base of PRNGs that have been implemented in CppRandLib.
 *
 *   Notice: while the WELL algorithms use 32-bits integers as their internal state and
 *   output pseudo-random 32-bits integers also, the MELG algorithm is full 64-bits.
@@ -70,16 +70,16 @@ SOFTWARE.
 *   Notice that for simulating the roll of a dice you should program:
 * @code
 *     BaseMELG diceRoll();  // CAUTION: Replace 'BaseMELG' with any inheriting class constructor!
-*     std::cout << int(diceRoll(1, 7)) << std::endl;    // prints a uniform roll within range {1, ..., 6}
+*     std::cout << 1 + int(diceRoll(6)) << std::endl;   // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
 *
 *   Reminder:
 *   We give you here below a copy of the table of tests for the MELGs that have
-*   been implemented in PyRandLib,  as provided in paper "TestU01, ..."  -  see
+*   been  implemented in CppRandLib,  as provided in paper "TestU01, ..." - see
 *   file README.md.
 * +---------------------------------------------------------------------------------------------------------------------------------------------------+
-* | PyRabndLib class | TU01 generator name | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
+* | CppRandLib class | TU01 generator name | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
 * | ---------------- | ------------------- | --------------- | ------- | ----------- | ------------ | ---------------- | ----------- | -------------- |
 * | Melg607          | melg607-64          |    21 x 4-bytes | 2^607   |    n.a.     |      n.a.    |        n.a.      |     n.a.    |     n.a.       |
 * | Melg19937        | melg19937-64        |   625 x 4-bytes | 2^19937 |    n.a.     |     4.21     |          0       |       0     |       0        |
