@@ -1,4 +1,4 @@
-# CppRandLib  [![Latest release](http://img.shields.io/github/release/schmouk/cpprandlib.svg?style=plastic&labelColor=blueviolet&color=success)](https://github.com/schmouk/cpprandlib/releases)  [![license](http://img.shields.io/github/license/schmouk/cpprandlib.svg?style=plastic&labelColor=blueviolet&color=success)](https://github.com/schmouk/cpprandlib/license)
+# CppRandLib  [![Latest release](http://img.shields.io/github/release/schmouk/cpprandlib.svg?style=plastic&labelColor=blueviolet&color=success)](https://github.com/schmouk/cpprandlib/releases)  [![license](http://img.shields.io/github/license/schmouk/cpprandlib.svg?style=plastic&labelColor=blueviolet&color=success)](https://github.com/schmouk/cpprandlib/license)  [![code_coverage](https://img.shields.io/badge/code_coverage-100%25-success?style=plastic&labelColor=blueviolet)]()  [![tests](https://img.shields.io/badge/tests-pass-success?style=plastic&labelColor=blueviolet)]()
 Many best in class pseudo random generators grouped into one simple library - c++11 and c++20 versions.
 
 This is a c++ counterpart of library PyRandLib (Python).
