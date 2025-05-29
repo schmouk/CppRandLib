@@ -66,7 +66,7 @@ SOFTWARE.
 *   Please notice that for simulating the roll of a dice you may use any of:
 * @code
 *     BaseSquares diceRoll{};               // CAUTION: Replace 'BaseSquares' with any inheriting class constructor!
-*     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
+*     std::cout << 1 + int(diceRoll(6)) << std::endl;   // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
 *

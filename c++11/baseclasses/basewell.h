@@ -69,8 +69,7 @@ SOFTWARE.
 *   See Well44497b for a very large period (2^44,497,  i.e. 15.1e+13,466) with similar
 *   computation time but use of even more memory space (1,391 integers).
 *
-*   Please notice that this class and all its  inheriting  sub-classes  are  callable.
-*   Example:
+*   Furthermore this class is callable:
 * @code
 *     BaseWell rand{};                      // CAUTION: Replace 'BaseWell' with any inheriting class constructor!
 *     std::cout << rand() << std::endl;     // prints a uniform pseudo-random value within [0.0, 1.0)
@@ -80,7 +79,7 @@ SOFTWARE.
 *   Please notice that for simulating the roll of a dice you may use any of:
 * @code
 *     BaseWell diceRoll{};                  // CAUTION: Replace 'BaseWell' with any inheriting class constructor!
-*     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
+*     std::cout << 1 + int(diceRoll(6)) << std::endl;   // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
 *

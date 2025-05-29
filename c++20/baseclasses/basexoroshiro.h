@@ -49,7 +49,7 @@ SOFTWARE.
 *   An addition or a multiplication operation is internally applied also to the  state
 *   of  the  PRNGs.  Doubling the same operation has proven to enhance then randomness
 *   quality of the PRNG.  This is the model of the algorithms that  is  implemeted  in
-*   PyRandLib.
+*   CppRandLib.
 *
 *   The implemented algorithms shortly escape from the zeroland (10 to 100  calls  are
 *   enough  to  get  equiprobability  of bits 0 and 1 on 4 successive calls).  The 256
@@ -73,7 +73,7 @@ SOFTWARE.
 *   Please notice that for simulating the roll of a dice you may use any of:
 * @code
 *     BaseXoroshiro diceRoll{}; // CAUTION: Replace 'BaseXoroshiro' with any inheriting class constructor!
-*     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
+*     std::cout << 1 + int(diceRoll(6)) << std::endl;   // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
 *
@@ -82,15 +82,15 @@ SOFTWARE.
 *
 *   Reminder:
 *   We give you here below a copy of the table of tests for the xoroshiros  that  have
-*   been  implemented  in PyRandLib,  as  described  by the authors of xoroshiro - see
+*   been  implemented in CppRandLib,  as  described  by the authors of xoroshiro - see
 *   reference [10] in file README.md.
 *
 * +-------------------------------------------------------------------------------------------------------------------------------------------------------+
-* | PyRandLib class | initial xoroshiro algo name | Memory Usage | Period | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
-* | --------------- | --------------------------- | ------------ | ------ | ----------- | ------------ | ---------------- | ----------- | -------------- |
-* | Xoroshiro256    | xoroshiro256**              |  8 x 4-bytes | 2^256  |    n.a.     |     0.84     |          0       |       0     |       0        |
-* | Xoroshiro512    | xoroshiro512**              | 16 x 4-bytes | 2^512  |    n.a.     |     0.99     |          0       |       0     |       0        |
-* | Xoroshiro1024   | xoroshiro1024**             | 32 x 4-bytes | 2^1024 |    n.a.     |     1.17     |          0       |       0     |       0        |
+* | CppRandLib class | initial xoroshiro algo name | Memory Usage | Period | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
+* | ---------------- | --------------------------- | ------------ | ------ | ----------- | ------------ | ---------------- | ----------- | -------------- |
+* | Xoroshiro256     | xoroshiro256**              |  8 x 4-bytes | 2^256  |    n.a.     |     0.84     |          0       |       0     |       0        |
+* | Xoroshiro512     | xoroshiro512**              | 16 x 4-bytes | 2^512  |    n.a.     |     0.99     |          0       |       0     |       0        |
+* | Xoroshiro1024    | xoroshiro1024**             | 32 x 4-bytes | 2^1024 |    n.a.     |     1.17     |          0       |       0     |       0        |
 * +-------------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
