@@ -74,7 +74,7 @@ struct BaseException : public std::exception
 
 //===========================================================================
 //---------------------------------------------------------------------------
-/** @brief Exponential law null lambda exception. */
+/** @brief Negative values for alpha or beta arguments of Betavariate function exception. */
 struct AlphaBetaArgsException : public BaseException<double>
 {
     inline AlphaBetaArgsException() noexcept = default;
@@ -120,7 +120,7 @@ public:
 
 
 //---------------------------------------------------------------------------
-/** @brief Float value is out of range [0.0, 1.0). */
+/** @brief Float value is out of range [0.0, 1.0) exception. */
 struct FloatValueRange01Exception : public BaseException<double>
 {
     inline FloatValueRange01Exception() noexcept = default;
@@ -172,7 +172,7 @@ struct GaussSigmaException : public BaseException<double>
 
 
 //---------------------------------------------------------------------------
-/** @brief Negative value for kappa parameter exception. */
+/** @brief Negative value for kappa parameter of Vvonmises law exception. */
 struct NegativeKappaException : public BaseException<double>
 {
     inline NegativeKappaException() noexcept = default;
@@ -361,7 +361,7 @@ struct RangeSameValuesException : public BaseException<T>
 
 
 //---------------------------------------------------------------------------
-/** @brief Range arguments with same value exception. */
+/** @brief Zero step argument in range exception. */
 class RangeZeroStepException : public std::exception
 {
 public:
