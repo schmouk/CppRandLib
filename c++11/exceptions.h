@@ -462,13 +462,13 @@ struct SampleSizesException : public BaseException<std::size_t>
         if (_inited) {
             _msg = "sizes of arguments 'population' (";
             _msg += std::to_string(_value);
-            _msg += ") and 'counts' (";
+            _msg += ") and 'counts' (or 'weights') (";
             _msg += std::to_string(_value2);
             _msg += ") must be the same.";
             return _msg.c_str();
         }
         else {
-            return "sizes of arguments 'population' and 'counts' must be the same.";
+            return "sizes of arguments 'population' and 'counts' (or 'weights') must be the same.";
         }
     }
 };
@@ -512,6 +512,36 @@ struct TooBigRotationException : public BaseException<int>
 
 
 //---------------------------------------------------------------------------
+/** @brief Too big value for returned bits count exception. */
+template<typename IntT = unsigned long long>
+struct TooMuchReturnedBitsException : public BaseException<int>
+{
+    inline TooMuchReturnedBitsException() noexcept = default;
+    inline virtual ~TooMuchReturnedBitsException() noexcept = default;
+
+    inline TooMuchReturnedBitsException(const int rot_count)
+        : BaseException<int>(rot_count)
+    {
+    }
+
+    const char* what() noexcept
+    {
+        if (_inited) {
+            _msg = "returned bits count (";
+            _msg += std::to_string(_value);
+            _msg += ") is too big (must not exceed the output integer bits count: ";
+            _msg += std::to_string(8 * sizeof(IntT));
+            _msg += ").";
+            return _msg.c_str();
+        }
+        else {
+            return "returned bits count is too big (must not exceed the output integer bits count).";
+        }
+    }
+};
+
+
+//---------------------------------------------------------------------------
 /** @brief Values type exception - not arithmetic. */
 struct ValueTypeException : public std::exception
 {
@@ -528,10 +558,10 @@ struct WeibullArgsValueException : public std::exception
 
 
 //---------------------------------------------------------------------------
-/** @brief Zero length or count exception. */
+/** @brief Zero length exception. */
 struct ZeroLengthException : public std::exception
 {
-    const char* what() noexcept { return "length or count argument value must not be zero (actually is)."; }
+    const char* what() noexcept { return "length argument value, counts argument value or population length must not be zero (actually is)."; }
 };
 
 

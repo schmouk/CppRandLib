@@ -43,16 +43,14 @@ struct BaseException : public std::exception
         : std::exception()
         , _inited(true)
         , _value(value)
-    {
-    }
+    {}
 
     inline BaseException(const T value, const T value2) noexcept
         : std::exception()
         , _inited(true)
         , _value(value)
         , _value2(value2)
-    {
-    }
+    {}
 
     inline BaseException(const T value, const T value2, const S value3) noexcept
         : std::exception()
@@ -60,8 +58,7 @@ struct BaseException : public std::exception
         , _value(value)
         , _value2(value2)
         , _value3(value3)
-    {
-    }
+    {}
 
 
     std::string _msg{};
@@ -413,13 +410,13 @@ struct SampleSizesException : public BaseException<std::size_t>
         if (_inited) {
             _msg = "sizes of arguments 'population' (";
             _msg += std::to_string(_value);
-            _msg += ") and 'counts' (";
+            _msg += ") and 'counts' (or 'weights') (";
             _msg += std::to_string(_value2);
             _msg += ") must be the same.";
             return _msg.c_str();
         }
         else {
-            return "sizes of arguments 'population' and 'counts' must be the same.";
+            return "sizes of arguments 'population' and 'counts' (or 'weights') must be the same.";
         }
     }
 };
@@ -436,6 +433,7 @@ struct StepValueTypeException : public std::exception
 //---------------------------------------------------------------------------
 /** @brief Too big value for rotation bits count exception. */
 template<typename IntT = unsigned long long>
+    requires std::is_integral_v<IntT>
 struct TooBigRotationException : public BaseException<int>
 {
     inline TooBigRotationException() noexcept = default;
@@ -463,6 +461,36 @@ struct TooBigRotationException : public BaseException<int>
 
 
 //---------------------------------------------------------------------------
+/** @brief Too big value for returned bits count exception. */
+template<typename IntT = unsigned long long>
+    requires std::is_integral_v<IntT>
+struct TooMuchReturnedBitsException : public BaseException<int>
+{
+    inline TooMuchReturnedBitsException() noexcept = default;
+    inline virtual ~TooMuchReturnedBitsException() noexcept = default;
+
+    inline TooMuchReturnedBitsException(const int rot_count)
+        : BaseException<int>(rot_count)
+    {}
+
+    const char* what() noexcept
+    {
+        if (_inited) {
+            _msg = "returned bits count (";
+            _msg += std::to_string(_value);
+            _msg += ") is too big (must not exceed the output integer bits count: ";
+            _msg += std::to_string(8 * sizeof(IntT));
+            _msg += ").";
+            return _msg.c_str();
+        }
+        else {
+            return "returned bits count is too big (must not exceed the output integer bits count).";
+        }
+    }
+};
+
+
+//---------------------------------------------------------------------------
 /** @brief Weibull law arguments exception. */
 class WeibullArgsValueException : public std::exception
 {
@@ -472,11 +500,11 @@ public:
 
 
 //---------------------------------------------------------------------------
-/** @brief Not a positive value exception. */
+/** @brief Zero length exception. */
 class ZeroLengthException : public std::exception
 {
 public:
-    const char* what() noexcept { return "length or count argument value must not be zero (actually is)."; }
+    const char* what() noexcept { return "length argument value, counts argument value or population length must not be zero (actually is)."; }
 };
 
 

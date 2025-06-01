@@ -518,6 +518,102 @@ namespace tests_bases
         EXPECT_THROW(br33.choice(std::array<std::uint32_t, 0>()), ChoiceEmptySequenceException);
 
 
+        //-- tests choices() and choices_cum()
+        std::vector<char> v_res;
+        std::vector<char> v_population{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J' };
+        v_res = br0.choices(v_population, 28);
+        for (char v : v_res)
+            EXPECT_EQ('A', v);
+        v_res = br1.choices(v_population, 28);
+        for (char v : v_res)
+            EXPECT_EQ('J', v);
+        v_res = br33.choices(v_population, 28);
+        for (char v : v_res)
+            EXPECT_EQ('D', v);
+
+        v_population.push_back('K');
+        v_res = br0.choices(v_population, 28);
+        for (char v : v_res)
+            EXPECT_EQ('A', v);
+        v_res = br1.choices(v_population, 28);
+        for (char v : v_res)
+            EXPECT_EQ('K', v);
+        v_res = br33.choices(v_population, 28);
+        for (char v : v_res)
+            EXPECT_EQ('D', v);
+
+        v_population.push_back('L');
+        v_res = br0.choices(v_population, 28);
+        for (char v : v_res)
+            EXPECT_EQ('A', v);
+        v_res = br1.choices(v_population, 28);
+        for (char v : v_res)
+            EXPECT_EQ('L', v);
+        v_res = br33.choices(v_population, 28);
+        for (char v : v_res)
+            EXPECT_EQ('D', v);
+
+        v_population.push_back('M');
+        v_res = br0.choices(v_population, 28);
+        for (char v : v_res)
+            EXPECT_EQ('A', v);
+        v_res = br1.choices(v_population, 28);
+        for (char v : v_res)
+            EXPECT_EQ('M', v);
+        v_res = br33.choices(v_population, 28);
+        for (char v : v_res)
+            EXPECT_EQ('E', v);
+
+        v_population = { 'A', 'B', 'C', 'D', 'E', 'F' };
+        std::vector<double> d_weights{ 0.10, 0.10, 0.10, 0.15, 0.30, 0.25 };
+        std::vector<int> i_weights{ 2, 2, 2, 3, 6, 5 };
+        v_res = br0.choices(v_population, d_weights, 28);
+        for (char v : v_res)
+            EXPECT_EQ('A', v);
+        v_res = br0.choices(v_population, i_weights, 28);
+        for (char v : v_res)
+            EXPECT_EQ('A', v);
+
+        d_weights = { 0.10, 0.10, 0.10, 0.15, 0.30, 0.25 };
+        i_weights = { 2, 2, 2, 3, 6, 5 };
+        v_res = br1.choices(v_population, d_weights, 28);
+        for (char v : v_res)
+            EXPECT_EQ('F', v);
+        v_res = br1.choices(v_population, i_weights, 28);
+        for (char v : v_res)
+            EXPECT_EQ('F', v);
+
+        d_weights = { 0.10, 0.10, 0.10, 0.15, 0.30, 0.25 };
+        i_weights = { 2, 2, 2, 3, 6, 5 };
+        v_res = br33.choices(v_population, d_weights, 28);
+        for (char v : v_res)
+            EXPECT_EQ('D', v);
+        v_res = br33.choices(v_population, i_weights, 28);
+        for (char v : v_res)
+            EXPECT_EQ('D', v);
+
+        d_weights = { 0.10, 0.20, 0.30, 0.45, 0.75, 1.00 };
+        i_weights = { 2, 4, 6, 9, 15, 20 };
+        v_res = br0.choices_cum(v_population, d_weights, 28);
+        for (char v : v_res)
+            EXPECT_EQ('A', v);
+        v_res = br0.choices_cum(v_population, i_weights, 28);
+        for (char v : v_res)
+            EXPECT_EQ('A', v);
+        v_res = br1.choices_cum(v_population, d_weights, 28);
+        for (char v : v_res)
+            EXPECT_EQ('F', v);
+        v_res = br1.choices_cum(v_population, i_weights, 28);
+        for (char v : v_res)
+            EXPECT_EQ('F', v);
+        v_res = br33.choices_cum(v_population, d_weights, 28);
+        for (char v : v_res)
+            EXPECT_EQ('D', v);
+        v_res = br33.choices_cum(v_population, i_weights, 28);
+        for (char v : v_res)
+            EXPECT_EQ('D', v);
+
+
         //-- tests getstate()
         struct BaseRandom<std::uint64_t, std::uint32_t, 32>::_InternalState internal_state{ brbase.getstate() };
 
@@ -1272,6 +1368,11 @@ namespace tests_bases
         EXPECT_EQ(br33.state(), 0x123'4567ULL);
         EXPECT_TRUE(br33.gauss_valid());
         EXPECT_DOUBLE_EQ(0.321, br33.gauss_next());
+
+        br0.setstate(br1.getstate());
+        EXPECT_EQ(br0._internal_state.state, br1.getstate().state);
+        EXPECT_EQ(br0._internal_state.gauss_next, br1.getstate().gauss_next);
+        EXPECT_EQ(br0._internal_state.gauss_valid, br1.getstate().gauss_valid);
 
 
         //-- tests shuffle()

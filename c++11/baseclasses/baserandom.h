@@ -103,6 +103,46 @@ SOFTWARE.
 *    |      Choose a random element from a non-empty sequence.
 *    |
 *    |
+*    |  choices(population, weights=None, *, cum_weights=None, k=1)
+*    |      Important notice: CppRandLib implements this function via
+*    |      different signatures.
+*    |
+*    |      Python documentation:
+*    |      Return a k sized list of elements chosen from the population
+*    |      with replacement. If the population is empty, raises an
+*    |      error.
+*    |
+*    |      If a weights sequence is specified, selections are made
+*    |      according to the relative weights. Alternatively, if a
+*    |      cum_weights sequence is given, the selections are made
+*    |      according to the cumulative weights (perhaps computed using
+*    |      itertools.accumulate()). For example, the relative weights
+*    |      [10, 5, 30, 5] are equivalent to the cumulative weights
+*    |      [10, 15, 45, 50]. Internally, the relative weights are
+*    |      converted to cumulative weights before making selections,
+*    |      so supplying the cumulative weights saves work.
+*    |
+*    |      If neither weights nor cum_weights are specified, selections
+*    |      are made with equal probability. If a weights sequence is
+*    |      supplied, it must be the same length as the population
+*    |      sequence. It is a TypeError to specify both weights and
+*    |      cum_weights.
+*    |
+*    |      The weights or cum_weights can use any numeric type that
+*    |      interoperates with the float values returned by random()
+*    |      (that includes integers, floats, and fractions but excludes
+*    |      decimals). Weights are assumed to be non-negative and finite.
+*    |      A ValueError is raised if all weights are zero.
+*    |
+*    |      For a given seed, the choices() function with equal
+*    |      weighting typically produces a different sequence than
+*    |      repeated calls to choice(). The algorithm used by choices()
+*    |      uses floating-point arithmetic for internal consistency and
+*    |      speed. The algorithm used by choice() defaults to integer
+*    |      arithmetic with repeated selections to avoid small biases
+*    |      from round-off error.
+*    |
+*    |
 *    |  expovariate(lambda = 1.0)
 *    |      Exponential distribution.
 *    |      https://en.wikipedia.org/wiki/Exponential_distribution
@@ -133,6 +173,10 @@ SOFTWARE.
 *    |
 *    |  getstate()
 *    |      Return internal state; can be passed to setstate() later.
+*    |
+*    |
+*    |  getrandbits(k)
+*    |      Returns a non-negative integer with k random bits.
 *    |
 *    |
 *    |  lognormvariate(mu, sigma)
@@ -400,8 +444,36 @@ public:
     const T& choice(const std::array<T, n>& seq);
 
 
+    /** @brief Returns a k sized vector of elements chosen from the population with replacement (same weights). */
+    template<typename T>
+    std::vector<T> choices(const std::vector<T>& population, const std::size_t k);
+
+    /** @brief Returns a k sized vector of elements chosen from the population with replacement (individual weights). */
+    template<typename T, typename C>
+    std::vector<T> choices(const std::vector<T>& population, std::vector<C>& weights, const std::size_t k);
+
+    /** @brief Returns a k sized vector of elements chosen from the population with replacement (cumulative weights). */
+    template<typename T, typename C>
+    std::vector<T> choices_cum(const std::vector<T>& population, const std::vector<C>& cum_weights, const std::size_t k);
+
+
+    /** @brief Returns a non-negative integer with k random bits. */
+    OutputT getrandbits(const unsigned int k)
+    {
+        if (k == 0)
+            return 0;
+        if (k > OUTPUT_BITS)
+            throw TooMuchReturnedBitsException<OutputT>();
+
+        const unsigned int rot{ OUTPUT_BITS - k };
+        const OutputT n{ next() };
+        const OutputT ret{ n >> rot };
+        return ret;
+    }
+
+
     /** @brief Returns the internal state of this PRNG; can be passed to setstate() later. */
-    struct _InternalState getstate() const noexcept
+    inline struct _InternalState getstate() const noexcept
     {
         return _internal_state;
     }
@@ -427,11 +499,11 @@ public:
     template<typename T, const std::size_t n>
     inline std::array<T, n> n_evaluate();
 
-    /** @brief Returns n values that are uniformly contained within range [0, max). */
+    /** @brief Returns an array of n values that are uniformly contained within range [0, max). */
     template<typename T, const std::size_t n, typename U = T>
     std::array<T, n> n_evaluate(const U max);
 
-    /** @brief Returns n values that are uniformly contained within range [min, max). */
+    /** @brief Returns an array of n values that are uniformly contained within range [min, max). */
     template<typename T, const std::size_t n, typename U = T, typename V = U>
     std::array<T, n> n_evaluate(const U min, const V max);
 
@@ -463,12 +535,15 @@ public:
     inline const T randint(const T a, const T b);
 
 
-    /** @brief Returns a random value from range [start, stop) with specified step. */
+    /** @brief Returns a random value in  range [start, stop) with specified step.
+    * 
+    * Template arguments T and S must be arithmetic types.
+    */
     template<typename T, typename S = T>
     const T randrange(const T start, const T stop, const S step = S(1));
 
 
-    /** @brief Chooses k unique random elements from a population sequence (out std::vector, in container, default counts per element = 1).
+    /** @brief Chooses k unique random elements from a population sequence. All population elements have same weight for the sampling and are each chosen only once.
     *
     * Evaluates a vector containing  elements  from  the  population  while
     * leaving  the  original  population  unchanged.  The resulting list is
@@ -476,28 +551,15 @@ public:
     * samples.  This  allows  raffle winners (the sample) to be partitioned
     * into grand prize and second place winners (the subslices).
     *
-    * Members of the population need not be  hashable  or  unique.  If  the
-    * population  contains  repeats,  then  each  occurrence  is a possible
-    * selection in the sample.
-    *
-    * Repeated elements can be specified one at a time or with the optional
-    * counts parameter.  For example:
-    *     sample(['red', 'blue'], counts=[4, 2], k=5);
-    * is equivalent to:
-    *     sample(['red', 'red', 'red', 'red', 'blue', 'blue'], k=5);
-    *
-    * To choose a sample from a range of  integers,  use  range()  for  the
-    * population  argument.  This  is  especially  fast and space efficient
-    * for sampling from a large population:
-    *     sample(range(10000000), 60);
-    *
-    * Important notice: the ContainerType class MUST provide method '.size()'.
+    * Members of the population need  not  be  unique.  If  the  population
+    * contains repeats, then each occurrence is a possible selection in the
+    * sample.
     */
     template<typename T>
     void sample(std::vector<T>& out, const std::vector<T>& population, const std::size_t k);
 
 
-    /** @brief Chooses k unique random elements from a population sequence (out std::array<>, in std::array<>, default counts per element = 1).
+    /** @brief Chooses k unique random elements from a population sequence. All population elements have same weight for the sampling and are each chosen only once.
     *
     * Evaluates a vector containing  elements  from  the  population  while
     * leaving  the  original  population  unchanged.  The resulting list is
@@ -505,20 +567,9 @@ public:
     * samples.  This  allows  raffle winners (the sample) to be partitioned
     * into grand prize and second place winners (the subslices).
     *
-    * Members of the population need not be  hashable  or  unique.  If  the
-    * population  contains  repeats,  then  each  occurrence  is a possible
-    * selection in the sample.
-    *
-    * Repeated elements can be specified one at a time or with the optional
-    * counts parameter.  For example:
-    *     sample(['red', 'blue'], counts=[4, 2], k=5);
-    * is equivalent to:
-    *     sample(['red', 'red', 'red', 'red', 'blue', 'blue'], k=5);
-    *
-    * To choose a sample from a range of  integers,  use  range()  for  the
-    * population  argument.  This  is  especially  fast and space efficient
-    * for sampling from a large population:
-    *     sample(range(10000000), 60);
+    * Members of the population need  not  be  unique.  If  the  population
+    * contains repeats, then each occurrence is a possible selection in the
+    * sample. Notice: k must be greater than n.
     */
     template<typename T, const std::size_t k, const std::size_t n>
     void sample(std::array<T, k>& out, const std::array<T, n>& population);
@@ -532,26 +583,14 @@ public:
     * samples.  This  allows  raffle winners (the sample) to be partitioned
     * into grand prize and second place winners (the subslices).
     *
-    * Members of the population need not be  hashable  or  unique.  If  the
-    * population  contains  repeats,  then  each  occurrence  is a possible
+    * Members of the population need  not  be  unique.  If  the  population
+    * contains repeats, then each occurrence is a possible selection in the
     * selection in the sample.
     *
-    * Repeated elements can be specified one at a time or with the optional
-    * counts parameter.  For example:
-    *     sample(['red', 'blue'], counts=[4, 2], k=5);
+    * Repeated elements are specified by the counts parameter. For example:
+    *     sample({"red", "blue"}, {4, 2}, 5);
     * is equivalent to:
-    *     sample(['red', 'red', 'red', 'red', 'blue', 'blue'], k=5);
-    *
-    * To choose a sample from a range of  integers,  use  range()  for  the
-    * population  argument.  This  is  especially  fast and space efficient
-    * for sampling from a large population:
-    *     sample(range(10000000), 60);
-    *
-    * The implemented algorithm in CppRandLib is NOT the one that is  impl-
-    * emented  in Python 3 library Random.  In CppRandLib, we use a simpler 
-    * form which should be more efficient as  long  as  population's  items 
-    * are  movable  (i.e.  Move  Constructor  and maybe Move assignment are 
-    * defined).
+    *     sample({"red", "red", "red", "red", "blue", "blue"}, 5);
     */
     template<typename T, typename C>
     inline void sample(std::vector<T>& out, const std::vector<T>& population, const std::vector<C>& counts, const std::size_t k);
@@ -559,32 +598,21 @@ public:
 
     /** @brief Chooses k unique random elements from a population sequence (std::array<>, with counts array).
     *
-    * Evaluates a vector containing  elements  from  the  population  while
+    * Evaluates an array containing k elements from  the  population  while
     * leaving  the  original  population  unchanged.  The resulting list is
     * in selection order so that all sub-slices will also be  valid  random
     * samples.  This  allows  raffle winners (the sample) to be partitioned
     * into grand prize and second place winners (the subslices).
     *
-    * Members of the population need not be  hashable  or  unique.  If  the
-    * population  contains  repeats,  then  each  occurrence  is a possible
-    * selection in the sample.
+    * Members of the population need  not  be  unique.  If  the  population
+    * contains repeats, then each occurrence is a possible selection in the
+    * sample.
     *
-    * Repeated elements can be specified one at a time or with the optional
-    * counts parameter.  For example:
-    *     sample(['red', 'blue'], counts=[4, 2], k=5);
+    * Repeated elements are specified by the counts parameter. For example:
+    * std::array<char*, 5> out;
+    *     sample(out, std::array<char*, 2>{"red", "blue"}, std::array<int,2>{4, 2});
     * is equivalent to:
-    *     sample(['red', 'red', 'red', 'red', 'blue', 'blue'], k=5);
-    *
-    * To choose a sample from a range of  integers,  use  range()  for  the
-    * population  argument.  This  is  especially  fast and space efficient
-    * for sampling from a large population:
-    *     sample(range(10000000), 60);
-    *
-    * The implemented algorithm in CppRandLib is NOT the one that is  impl-
-    * emented  in Python 3 library Random.  In CppRandLib, we use a simpler
-    * form which should be more efficient as  long  as  population's  items
-    * are  movable  (i.e.  Move  Constructor  and maybe Move assignment are
-    * defined).
+    *     sample(out, std::array<char*, 6>{"red", "red", "red", "red", "blue", "blue"});
     */
     template<typename T, typename C, const std::size_t k, const std::size_t n>
     inline void sample(std::array<T, k>& out, const std::array<T, n>& population, const std::array<C, n>& counts);
@@ -620,11 +648,15 @@ public:
     /** @brief Initalizes internal state from a double seed. */
     virtual inline void seed(const double seed_);
 
-    /** @brief Restores the internal state of this PRNG from seed. */
+    /** @brief Restores internal state from object returned by getstate(). */
+    inline void setstate(const struct _InternalState& new_internal_state) noexcept;
+
+    /** @brief Sets the internal state from a new internal state content. */
     inline void setstate(const StateT& new_internal_state) noexcept;
 
-    /** @brief Restores the internal state of this PRNG from seed and gauss_next. */
+    /** @brief Sets the internal state from a new internal state content and with gauss_next. */
     inline void setstate(const StateT& new_internal_state, const double gauss_next) noexcept;
+
 
 
     /** @brief Returns the current internal state value. */
@@ -633,7 +665,7 @@ public:
 
     /** @brief Shuffles specified sequence in place.
     *
-    * The container type must provide method '.size()'.
+    * The Container type must be either std::vector or std::array.
     */
     template<typename ContainerType>
     void shuffle(ContainerType& seq);
@@ -878,7 +910,7 @@ protected:
     static const double SG_MAGICCONST;
     static const double TWO_PI;
 
-    static constexpr std::uint64_t _MODULO{ (((1ull << ((OUTPUT_BITS > 64 ? 64 : OUTPUT_BITS) - 1)) - 1) << 1) | 0xf };  // notice: complex formula to avoid warning on bits overflow, should be (1 << OUTPUT_BITS) - 1
+    static constexpr std::uint64_t _MODULO{ (((1ull << ((OUTPUT_BITS > 64 ? 64 : OUTPUT_BITS) - 1)) - 1) << 1) | 0x1 };  // notice: complex formula to avoid warning on bits overflow, should be (1 << OUTPUT_BITS) - 1
 
     static constexpr long double _NORMALIZE_LD{ (OUTPUT_BITS <= 64)
         ? 1.0l / ((long double)_MODULO + 1.0l)
@@ -1101,7 +1133,80 @@ const T& BaseRandom<StateT, OutputT, OUTPUT_BITS>::choice(const std::array<T, n>
 }
 
 //---------------------------------------------------------------------------
-/** Returns n values that are uniformly contained within range [0.0, 1.0). */
+/** Returns a k sized vector of elements chosen from the population with replacement (same weights). */
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+template<typename T>
+std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::choices(
+    const std::vector<T>& population,
+    const std::size_t k
+)
+{
+    if (population.size() == 0)
+        throw ZeroLengthException();
+
+    std::vector<std::uint64_t> cum_weights(population.size());
+    std::iota(cum_weights.begin(), cum_weights.end(), 1);
+
+    return choices_cum<T, std::uint64_t>(population, cum_weights, k);
+}
+
+//---------------------------------------------------------------------------
+/** Returns a k sized vector of elements chosen from the population with replacement (individual weights). */
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+template<typename T, typename C>
+std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::choices(
+    const std::vector<T>& population,
+    std::vector<C>& weights,
+    const std::size_t k
+)
+{
+    if (!std::is_arithmetic<C>::value)
+        throw ArithmeticValueTypeException();
+    if (population.size() == 0)
+        throw ZeroLengthException();
+    if (population.size() != weights.size())
+        throw SampleSizesException(population.size(), weights.size());
+
+    std::partial_sum(weights.begin(), weights.end(), weights.begin());
+
+    return choices_cum(population, weights, k);
+}
+
+//---------------------------------------------------------------------------
+/** Returns a k sized vector of elements chosen from the population with replacement (cumulative weights). */
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+template<typename T, typename C>
+std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::choices_cum(
+    const std::vector<T>& population,
+    const std::vector<C>& cum_weights,
+    const std::size_t k
+)
+{
+    if (!std::is_arithmetic<C>::value)
+        throw ArithmeticValueTypeException();
+    if (population.size() == 0)
+        throw ZeroLengthException();
+    if (population.size() != cum_weights.size())
+        throw SampleSizesException(population.size(), cum_weights.size());
+
+    const C max_weight{ cum_weights.back() };
+    std::vector<T> res(k);
+    std::generate(res.begin(), res.end(),
+        [&]() {
+            return population[
+                std::distance(
+                    cum_weights.cbegin(),
+                    std::upper_bound(cum_weights.cbegin(), cum_weights.cend(), uniform<C>(max_weight))
+                )
+            ];
+        }
+    );
+
+    return res;
+}
+
+//---------------------------------------------------------------------------
+/** Returns a vector of n values that are uniformly contained within range [0.0, 1.0). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 template<typename T>
 inline std::vector<T> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate(const std::size_t n)
@@ -1197,7 +1302,7 @@ inline std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate()
 }
 
 //---------------------------------------------------------------------------
-/** Returns n values that are uniformly contained within range [0, max). */
+/** Returns an array of n values that are uniformly contained within range [0, max). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 template<typename T, const std::size_t n, typename U>
 std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate(const U max)
@@ -1216,7 +1321,7 @@ std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate(const U ma
 }
 
 //---------------------------------------------------------------------------
-/** Returns n values that are uniformly contained within range [min, max). */
+/** Returns an array of n values that are uniformly contained within range [min, max). */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 template<typename T, const std::size_t n, typename U, typename V>
 std::array<T, n> BaseRandom<StateT, OutputT, OUTPUT_BITS>::n_evaluate(const U min, const V max)
@@ -1308,7 +1413,7 @@ inline std::vector<std::uint8_t> BaseRandom<StateT, OutputT, OUTPUT_BITS>::randb
 }
 
 //---------------------------------------------------------------------------
-/** Returns random integer in range [a, b], including both end points. */
+/** Returns a random integer in range [a, b], including both end points. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 template<typename T>
 inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::randint(const T a, const T b)
@@ -1323,7 +1428,7 @@ inline const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::randint(const T a, cons
 }
 
 //---------------------------------------------------------------------------
-/** Returns a random value from range [start, stop) with specified step. */
+/** Returns a random value in range [start, stop) with specified step. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 template<typename T, typename S>
 const T BaseRandom<StateT, OutputT, OUTPUT_BITS>::randrange(const T start, const T stop, const S step)
@@ -1553,7 +1658,15 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed(const double seed_)
 }
 
 //---------------------------------------------------------------------------
-/** Restores the internal state of this PRNG from seed. */
+/** Restores internal state from object returned by getstate(). */
+template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
+inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::setstate(const struct _InternalState& new_internal_state) noexcept
+{
+    _internal_state = new_internal_state;
+}
+
+//---------------------------------------------------------------------------
+/** Sets the internal state from a new internal state content. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::setstate(const StateT& new_internal_state) noexcept
 {
@@ -1563,7 +1676,7 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::setstate(const StateT& new
 }
 
 //---------------------------------------------------------------------------
-/** Restores the internal state of this PRNG from seed and gauss_next. */
+/** Sets the internal state from a new internal state content and with gauss_next. */
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::setstate(const StateT& new_internal_state, const double gauss_next) noexcept
 {
