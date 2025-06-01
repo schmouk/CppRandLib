@@ -72,7 +72,7 @@ MT offers a very good period (2^19937, i.e. about 4.3e+6,001). Unfortunately, th
 
 ---
 ## Installation
-Currently, the only way to install CppRandLib is to download the .zip or .tar.gz archive, then to directly put sub-directory `c++11` or `c++20` from archive into your project directory.  
+Currently, the only way to install **CppRandLib** is to download the .zip or .tar.gz archive, then to directly put sub-directory `c++11` or `c++20` from archive into your project directory.  
 See [CppRandLib repository](https://schmouk.github.io/CppRandLib/) for an easy access to download versions or click on link [**Releases**](https://github.com/schmouk/CppRandLib/releases) on the home page of GitHub repository.
 
 
@@ -88,7 +88,7 @@ We give you here below a copy of the resulting table for the PRNGs that have bee
 We add in this table the evaluations provided by the authors of every new PRNGs that have been published after the publication of [1]. Some fields may be missing for them in the belowing table, then.  
 Notice: a comparison of the computation times for all implemented PRNGs in **CppRandLib** is provided in an another table - see next subsection.
 
- | CppRabndLib class | TU01 generator name (1)            | Memory Usage    | Period   | SmallCrush fails | Crush fails | BigCrush fails | time-64 bits | time-32bits |
+ | CppRandLib class | TU01 generator name (1)            | Memory Usage    | Period   | SmallCrush fails | Crush fails | BigCrush fails | time-64 bits | time-32bits |
  | ---------------- | ---------------------------------- | --------------- | -------- | ---------------- | ----------- | -------------- | ------------ | ----------- |
  | Cwg64            | *CWG64*                            |     8 x 4-bytes | >= 2^70  |          0       |       0     |       0        |     n.a.     |    n.a.     |
  | Cwg128_64        | *CWG128-64*                        |    10 x 4-bytes | >= 2^71  |          0       |       0     |       0        |     n.a.     |    n.a.     |
@@ -114,7 +114,7 @@ Notice: a comparison of the computation times for all implemented PRNGs in **Cpp
  | Well1024a        | WELL1024a                          |    32 x 4-bytes | 2^1,024  |          0       |       4     |       4        |     1.1      |    4.0      |
  | Well19937c (2)   | WELL19937a                         |   624 x 4-bytes | 2^19,937 |          0       |       2     |       2        |     1.3      |    4.3      |
  | Well44497b (3)   | not available                      | 1,391 x 4-bytes | 2^44,497 |        n.a.      |     n.a.    |     n.a.       |     n.a.     |    n.a.     |
- | Mersenne twister | MT19937                            |   624 x 4-bytes | 2^19,937 |          0       |       2     |       2        |     1.6      |    4.30     |
+ | Mersenne Twister | MT19937                            |   624 x 4-bytes | 2^19,937 |          0       |       2     |       2        |     1.6      |    4.30     |
  | Xoroshiro256     | *xiroshiro256***                   |    16 x 4-bytes | 2^256    |          0       |       0     |       0        |     0.84     |    n.a.     |
  | Xoroshiro512     | *xiroshiro512***                   |    32 x 4-bytes | 2^512    |          0       |       0     |       0        |     0.99     |    n.a.     |
  | Xoroshiro1024    | *xiroshiro1024***                  |    64 x 4-bytes | 2^1,024  |          0       |       0     |       0        |     1.17     |    n.a.     |
@@ -138,7 +138,7 @@ Measures have been done with 32 bits and 64 bits generated code versions, in ful
 The evaluation source code file is provided in subdirectories `c++11/testCPUPerfs` and `c++20/testCPUPerfs` and is named `testCPUPerfs.cpp`. You'll have to install **gTests** Google library to be able to use it.
 
 **CppRandLib** time 64 bits and 32 bits table:
- | PyRabndLib class | 64-bits |  32-bits  | SmallCrush fails | Crush fails | BigCrush fails |
+ | CppRandLib class | 64-bits |  32-bits  | SmallCrush fails | Crush fails | BigCrush fails |
  | ---------------- | ------- | --------- | ---------------- | ----------- | -------------- |
  | Cwg64            |   1.52  |    2.74   |        *0*       |      *0*    |      *0*       |
  | Cwg128_64        |   2.54  |    7.32   |        *0*       |      *0*    |      *0*       |
@@ -174,8 +174,8 @@ The evaluation source code file is provided in subdirectories `c++11/testCPUPerf
 
 ---
 ## Implementation
-Current implementation of CppRandLib is provided for c++11 and c++20 standards. Final performances are similar, except for *FastRand63* which has proven to be 33% slower for the c++20 version of the code than for the c++11 version (we don't know why) and for *Squares64* which is 18% faster for the c++20 version.  
-Notice also: some of the PRNG algorithms involve 128-bits integer artihemtics. **CppRandLib** provides its own minimalist library for such computations since not all c++ compilers provide it (e.g. Microsoft compiler). Meanwhile, some other c++ compilers do implement 128-bits integer arithmetics (e.g. gcc). It might be of interest for users aware of this that they modify **CppRandLib** code by their side to take benefit of this. Conditional code is currently not implemented in **CppRandLib**.
+Current implementation of **CppRandLib** is provided for c++11 and c++20 standards. Final performances are similar, except for *FastRand63* which has proven to be 33% slower for the c++20 version of the code than for the c++11 version (we don't know why) and for *Squares64* which is 18% faster for the c++20 version.  
+Notice also: some of the PRNG algorithms involve 128-bits integer artihmetics. **CppRandLib** provides its own minimalist library for such computations since not all c++ compilers provide it (e.g. Microsoft compiler). Meanwhile, some other c++ compilers do implement 128-bits integer arithmetics (e.g. gcc). It might be of interest for users aware of this that they modify **CppRandLib** code by their side to take benefit of this. Conditional code is currently not implemented in **CppRandLib**.
 
 
 ---
@@ -222,7 +222,7 @@ This is available starting at version 2.0 of **CppRandLib**:
     vect_i = rand( {1, 2, 3, 8, 6}, {10, 15, 20, 25, 30} );
 ```
 
-* Version 2.0 of **PyRandLib** implements some new other "recent" PRNGs - see their list below. It also provides two Google tests codes, enhanced documentation and some other internal development features. Finally, it is splitted in two subdirectories each dedicated to a specific standard of c++: c++11 and c++20.
+* Version 2.0 of **CppRandLib** implements some new other "recent" PRNGs - see their list below. It also provides two Google tests codes, enhanced documentation and some other internal development features. Finally, it is splitted in two subdirectories each dedicated to a specific standard of c++: c++11 and c++20.
 
 **Major 2.0 novelties are listed below:**
 
@@ -261,7 +261,7 @@ So, if you want to see what is currently going on for the next release of **CppR
 
 ---
 ## Architecture overview
-c++11 and c++20 versions of the code are coded in separate subdirectories. Thise two directories are both provided at root level of **CppRandLib** repository.
+c++11 and c++20 versions of the code are coded in separate subdirectories. These two directories are both provided at root level of **CppRandLib** repository.
 
 They each contain three subdirectories:
 * `baseclasses`:  
@@ -271,9 +271,9 @@ They each contain three subdirectories:
 * `utils`:  
  contains the implementation of utilities - some of which could be of interest to your projects.
 
-Each of the implemented PRNG is defined in an independent header file. If not templated, it is implemented in the related `.cpp` file. The name of the header and implementation files is directly related to the name of the related PRNG class.
+Each of the implemented PRNGs is defined in an independent header file. If not templated, it is implemented in the related `.cpp` file. The name of the header and implementation files is directly related to the name of the related PRNG class.
 
-Furthermore, a c++11 version and a c++20 version of Google tests are provided in two separate subdirectories, resp. `gTests-c++11` and `gTests-c++20`. Those tests have been implemented to fully validated the code. The code coverage is 100% and all tests pass for Release 2.0.
+Furthermore, a c++11 version and a c++20 version of Google tests are provided in two separate subdirectories, resp. `gTests-c++11` and `gTests-c++20`. Those tests have been implemented to fully validated the code. The code coverage is 100% and all tests passed for Release 2.0.
 
 The user is strongly encouraged to have a look at Google tests code. This code provides examples of how to use **CppRandLib** and how to call templated methods.
 
@@ -282,7 +282,7 @@ The user is strongly encouraged to have a look at Google tests code. This code p
 
 **BaseRandom** is the base class for every implemented PRNG in library **CppRandLib**. It is a templated class. It aims at providing common behavior for all PRNG classes of the library, the most noticeable one being the 'callable' nature of every implemented PRNG.
 
-**CppRandLib** being a counterpart of inital library **PyRandLib** with aiming at providing the same level of functionnalities, **BaseRandom** provides inn **CppRandLib** the access to many useful distribution functions as described in further section **Inherited Distribution Functions**. This is not the way the STL numerics library functions (see the [CPP Reference](https://en.cppreference.com/w/cpp/numeric/random.html) dedicated page site) to get an overview of it). Notice: Release 3.0 of **CppRandLib** will implement an interface for all **CppRandLib** PRNG classes to conform to the implementation of PRNGs in the c++ STL.
+**CppRandLib** being a counterpart of inital library **PyRandLib** with aiming at providing the same level of functionnalities, **BaseRandom** provides in **CppRandLib** the access to many useful distribution functions as described in further section **Inherited Distribution Functions**. This is not the way the STL numerics library functions (see the [CPP Reference](https://en.cppreference.com/w/cpp/numeric/random.html) dedicated page site) to get an overview of it). Notice: Release 3.0 of **CppRandLib** will implement an interface for all **CppRandLib** PRNG classes to conform to the implementation of PRNGs in the c++ STL.
 
 Furthermore, every inheriting class MUST override the next methods :
 
@@ -295,12 +295,12 @@ and may override the next three methods:
 * `seed()`,
 * `getrandbits()`,
 
-Notice: Since CppRandLib 2.0, class `BaseRandom` declares the new method `next()` which is substituted to `random()`. `next()` should now contain the core of the pseudo-random numbers generator while `random()` calls it to return a float value in the interval [0.0, 1.0) according to the uniform distribution, just as did all previous versions of the library.  
-Since version 2.0 of CppRandLib also, the newly implemented method `getrandbits()` is provided as well the `choices()` and `choices_cum()` methods.
+Notice: Since **CppRandLib 2.0**, class `BaseRandom` declares the new method `next()` which is substituted to `random()`. `next()` should now contain the core of the pseudo-random numbers generator while `random()` calls it to return a float value in the interval [0.0, 1.0) according to the uniform distribution, just as did all previous versions of the library.  
+Since version **2.0** of **CppRandLib** also, the newly implemented method `getrandbits()` is provided as well the `choices()` and `choices_cum()` methods.
 
 
 ---
-### Cwg64  -  minimum 2^70 period
+### Cwg64  --  minimum 2^70 period
 
 **Cwg64** implements the full 64 bits version of the Collatz-Weyl Generator algorithm: computations are done on 64-bits, the output generated value is coded on 64-bits also. It provides a medium period which is at minimum 2^70 (i.e. about 1.18e+21), short computation time and a four 64-bits integers internal state (x, a, weyl, s).
 
@@ -313,7 +313,7 @@ This version of the CGW algorithm evaluates pseudo-random suites *output(i)* as 
 
 
 
-### Cwg64  -  minimum 2^70 period
+### Cwg64  --  minimum 2^70 period
 
 **Cwg64** implements the full 64 bits version of the Collatz-Weyl Generator algorithm: computations are done on 64-bits. The output generated value is coded on 64-bits also. It provides a medium period which is at minimum 2^70 (i.e. about 1.18e+21), short computation time and a four 64-bits integers internal state (x, a, weyl, s).
 
@@ -325,9 +325,9 @@ This version of the CGW algorithm evaluates pseudo-random suites *output(i)* as 
     output(i) = (a(i) >> 48) ^ x(i)
 
 
-### Cwg128_64  -  minimum 2^71 period
+### Cwg128_64  --  minimum 2^71 period
 
-**Cwg128_64** implements the mixed 128/64 bits version of the Collatz-Weyl Generator algorithm: computations are done on 128- and 64-bits. The output generated value is coded on 64-bits also. It provides a medium period which is at minimum 2^71 (i.e. about 2.36e+21), short computation time and a three 64-bits (a, weyl, s) plus one 128-bits integer internal state (x). 
+**Cwg128_64** implements the mixed 128/64 bits version of the Collatz-Weyl Generator algorithm: computations are done on 128- and 64- bits. The output generated value is coded on 64-bits also. It provides a medium period which is at minimum 2^71 (i.e. about 2.36e+21), short computation time and a three 64-bits (a, weyl, s) plus one 128-bits integer internal state (x). 
 
 This version of the CGW algorithm evaluates pseudo-random suites *output(i)* as the combination of the next instructions applied to *state(i-1)*:
 
@@ -338,7 +338,7 @@ This version of the CGW algorithm evaluates pseudo-random suites *output(i)* as 
 
 
 
-### Cwg128  -  minimum 2^135 period
+### Cwg128  --  minimum 2^135 period
 
 **Cwg128** implements the full 128 bits version of the Collatz-Weyl Generator algorithm: computations are done on 128-bits. The output generated value is coded on 128-bits also. It provides a medium period which is at minimum 2^135 (i.e. about 4.36e+40), short computation time and a four 128-bits integers internal state (x, a, weyl, s).
 
@@ -351,7 +351,7 @@ This version of the CGW algorithm evaluates pseudo-random suites *output(i)* as 
 
 
 ---
-### FastRand32  -  2^32 periodicity
+### FastRand32  --  2^32 periodicity
 
 **FastRand32** implements a Linear Congruential Generator dedicated to 32-bits calculations with very short period (about 4.3e+09) but very short 
 time computation.
@@ -368,7 +368,7 @@ See FastRand63 for a 2^63 (i.e. about 9.2e+18) period LC-Generator with low comp
 
 
 
-### FastRand63  -  2^63 periodicity
+### FastRand63  --  2^63 periodicity
 
 **FastRand63** implements a Linear Congruential Generator dedicated to  63-bits calculations with a short period (about 9.2e+18) and very short time computation.
 
@@ -378,15 +378,15 @@ LCG model  evaluate pseudo-random numbers suites *x(i)* as a simple mathematical
    
 The implementation of this LCG 63-bits model is based on (*a*=9219741426499971445, *c*=1) since these two values have evaluated to be the *best* ones for LCGs within TestU01 while *m* = 2^63.
  
-Results are nevertheless considered to be poor as stated in the evaluation done by Pierre L'Ecuyer and Richard Simard. Therefore, it is not recommended to use this pseudo-random numbers generatorsfor serious simulation applications, even if FastRandom63 fails on very far less tests than does FastRandom32.
+Results are nevertheless considered to be poor as stated in the evaluation done by Pierre L'Ecuyer and Richard Simard. Therefore, it is not recommended to use this pseudo-random numbers generators for serious simulation applications, even if FastRandom63 fails on very far less tests than does FastRandom32.
 
 See FastRand32 for a 2^32 period (i.e. about 4.3e+09) LC-Generator with 34% lower computation time.
 
 
 ---
-### LFibRand78  -  2^78 periodicity
+### LFibRand78  --  2^78 periodicity
 
-**LFibRand78** implements a fast 64-bits Lagged Fibonacci generator (LFib). Lagged Fibonacci generators *LFib( m, r, k, op)* use the recurrence
+**LFibRand78** implements a fast 64-bits Lagged Fibonacci generator (LFib). Lagged Fibonacci generators *LFib(m, r, k, op)* use the recurrence:
 
     x(i) = ( x(i-r) op (x(i-k) ) mod m
 
@@ -408,9 +408,9 @@ Please notice that the TestU01 article states that the operator should be '*' wh
 
 
 
-### LFibRand116  -  2^116 periodicity
+### LFibRand116  --  2^116 periodicity
 
-**LFibRand116** implements an LFib 64-bits generator proposed by George Marsaglia in [4]. This PRNG uses the recurrence
+**LFibRand116** implements an LFib 64-bits generator proposed by George Marsaglia in [4]. This PRNG uses the recurrence:
 
     x(i) = ( x(i-24) + x(i-55) ) mod 2^64
     
@@ -420,9 +420,9 @@ Please notice that the TestU01 article states that the operator should be '*' wh
 
 
 
-### LFibRand668  -  2^668 periodicity
+### LFibRand668  --  2^668 periodicity
 
-**LFibRand668** implements an LFib 64-bits generator proposed by George Marsaglia in [4]. This PRNG uses the recurrence
+**LFibRand668** implements an LFib 64-bits generator proposed by George Marsaglia in [4]. This PRNG uses the recurrence:
 
     x(i) = ( x(i-273) + x(i-607) ) mod 2^64
     
@@ -432,9 +432,9 @@ Please notice that the TestU01 article states that the operator should be '*' wh
 
 
 
-### LFibRand1340  -  2^1,340 periodicity
+### LFibRand1340  --  2^1,340 periodicity
 
-**LFibRand1340** implements an LFib 64-bits generator proposed by George Marsaglia in [4]. This PRNG uses the recurrence
+**LFibRand1340** implements an LFib 64-bits generator proposed by George Marsaglia in [4]. This PRNG uses the recurrence:
 
     x(i) = ( x(i-861) + x(i-1279) ) mod 2^64
     
@@ -444,7 +444,7 @@ Please notice that the TestU01 article states that the operator should be '*' wh
 
 
 ---
-### Melg627 --  2^627 periodicity
+### Melg627  -- 2^627 periodicity
 
 **Melg627** implements a fast 64-bits Maximally Equidistributed Long-period Linear Generator (MELG) with a large period (2^627, i.e. 5.31e+182) and low computation time. The internal state of this PRNG is equivalent to 21 integers 32-bits coded.
 
@@ -452,7 +452,7 @@ The base MELG algorithm mixes, xor's and shifts its internal state and offers la
 
 
 
-### Melg19937 --  2^19937 periodicity
+### Melg19937  --  2^19937 periodicity
 
 **Melg19937** implements a fast 64-bits Maximally Equidistributed Long-period Linear Generator (MELG) with a large period (2^19,937, i.e. 4.32e+6,001) and low computation time. The internal state of this PRNG is equivalent to 625 integers 32-bits coded.
 
@@ -460,7 +460,7 @@ The base MELG algorithm mixes, xor's and shifts its internal state and offers la
 
 
 
-### Melg44497 --  2^44497 periodicity
+### Melg44497  --  2^44497 periodicity
 
 **Melg44497** implements a fast 64-bits Maximally Equidistributed Long-period Linear Generator (MELG) with a very large period (2^44,497,  i.e. 15.1e+13,466) and low computation time. The internal state of this PRNG is equivalent to 1.393 integers 32-bits coded.
 
@@ -468,7 +468,7 @@ The base MELG algorithm mixes, xor's and shifts its internal state and offers la
 
 
 ---
-### Mrg287  -  2^287 periodicity
+### Mrg287  --  2^287 periodicity
 
 **Mrg287** implements a fast 32-bits Multiple Recursive Generator (MRG) with a long period  (2^287, i.e. 2.49e+86) and low computation time (about twice the computation time of above LCGs) but 256 integers 32-bits coded memory consumption.
 
@@ -480,7 +480,7 @@ MRGs offer very large periods with the best known results in the evaluation of t
 
 The implementation of this specific MRG 32-bits model is finally based on a Lagged Fibonacci generator (LFIB), the Marsa-LFIB4 one.
 
-Lagged Fibonacci generators *LFib( m, r, k, op)* use the recurrence
+Lagged Fibonacci generators *LFib( m, r, k, op)* use the recurrence:
 
     x(i) = ( x(i-r) op (x(i-k) ) mod m
 
@@ -498,9 +498,9 @@ The Marsa-LIBF4 version, i.e. **Mrg287** implementation, uses the recurrence:
 
 
 
-### Mrg1457  -  2^1,457 periodicity
+### Mrg1457  --  2^1,457 periodicity
 
-**Mrg1457** implements a fast 31-bits Multiple Recursive Generator with a longer period than MRGRan287 (2^1457 vs. 2^287, i.e. 4.0e+438 vs. 2.5e+86) and 3.2x computation time but with much less memory space consumption (47 vs. 256 integers 32-bits coded).
+**Mrg1457** implements a fast 31-bits Multiple Recursive Generator with a longer period than MRG287 (2^1457, i.e. 4.0e+438) and 3.2x computation time but with much less memory space consumption (47 vs. 256 integers 32-bits coded).
    
 The implementation of this MRG 31-bits model is based on  DX-47-3 pseudo-random generator proposed by Deng and Lin, see [2]. The DX-47-3 version uses the recurrence:
 
@@ -510,7 +510,7 @@ See Mrg287 above description for an explanation of the MRG original algorithm.
 
 
 
-### Mrg49507  -  2^49,507 periodicity
+### Mrg49507  --  2^49,507 periodicity
 
 **Mrg49507** implements a fast 31-bits Multiple Recursive Generator with the longer period of all of the PRNGs that are implemented in **PyRandLib** (2^49,507, i.e. 1.2e+14,903) with low computation time also (x2.1 as for Mrg287) but use of much more memory space (1,597 integers 32-bits coded).
      
@@ -522,7 +522,7 @@ See Mrg287 above description for an explanation of the MRG original algorithm.
 
 
 ---
-### Pcg64_32  -  2^64 periodicity
+### Pcg64_32  --  2^64 periodicity
 
 **Pcg64_32** implements a fast 64-bits state and 32-bits output Permutated Congruential Generator with a medium period (2^64, i.e. 1.84e+19) with low computation time and very small memory space consumption (2 integers 32-bits coded).
 
@@ -550,24 +550,28 @@ The underlying algorithm acts as an LCG associated with a bits permutation as it
 
 
 ---
-### Squares32  -  2^64 periodicity
+### Squares32  --  2^64 periodicity
 
-**Squares32** implements a fast counter-based pseudo-random numbers generator which outputs 32-bits random values. The core of the algorithm evaluates and squares 64-bits intermediate values, then exchanges their higher and lower bits on a four rounds operations. It uses a 64-bits counter and a 64-bits key. It provides multi-streams feature via different values of key and gets robust randomness characteristics. The counter starts counting at 0. Once returning to 0 modulo 2^64 the whole period of the algorithm will have been exhausted. Values for keys have to be cautiously chosen: the **PyRandLib** implementation of the manner to do it as recommended in [9] is of our own but stricly respects the original recommendation and is implemented in `utils/balanced_bits_generation.h`.  
+**Squares32** implements a fast counter-based pseudo-random numbers generator which outputs 32-bits random values.  
+The core of the algorithm evaluates and squares 64-bits intermediate values, then exchanges their higher and lower bits on a four rounds operations. It uses a 64-bits counter and a 64-bits key. It provides multi-streams feature via different values of key and gets robust randomness characteristics.  
+The counter starts counting at 0. Once returning to 0 modulo 2^64 the whole period of the algorithm will have been exhausted. Values for keys have to be cautiously chosen: the **CppRandLib** implementation of the manner to do it as recommended in [9] is of our own but stricly respects the original recommendation and is implemented in `utils/balanced_bits_generation.h`.  
 **CppRandLib** Squares32 class implements the *squares32* version of the algorithm as described in [9]. 
 
 
 
-### Squares64  -  2^64 periodicity
+### Squares64  --  2^64 periodicity
 
-**Squares64** implements a fast counter-based pseudo-random numbers generator which outputs 64-bits random values. The core of the algorithm evaluates and squares 64-bits intermadiate values then exchanges their higher and lower bits on a five rounds operations. It uses a 64-bits counter and a 64-bits key. It provides multi-streams feature via different values of key and gets robust randomness characteristics. The counter starts counting at 0. Once returning to 0 modulo 2^64 the whole period of the algorithm will have been exhausted. Values for keys have to be cautiously chosen: the **PyRandLib** implementation of the manner to do it as recommended in [9] is of our own but stricly respects the original recommendation and is implemented in `utils/balanced_bits_generation.h`.  
+**Squares64** implements a fast counter-based pseudo-random numbers generator which outputs 64-bits random values.  
+The core of the algorithm evaluates and squares 64-bits intermediate values then exchanges their higher and lower bits on a five rounds operations. It uses a 64-bits counter and a 64-bits key. It provides multi-streams feature via different values of key and gets robust randomness characteristics.  
+The counter starts counting at 0. Once returning to 0 modulo 2^64 the whole period of the algorithm will have been exhausted. Values for keys have to be cautiously chosen: the **CppRandLib** implementation of the manner to do it as recommended in [9] is of our own but stricly respects the original recommendation and is implemented in `utils/balanced_bits_generation.h`.  
 Notice: this version of the algorithm should not pass the birthday test, which is a randmoness issue, while this is not mentionned in the original paper [9].  
 **CppRandLib** Squares64 class implements the *squares64* version of the algorithm as described in [9]. 
 
 
 ---
-### Well512a  -  2^512 periodicity
+### Well512a  --  2^512 periodicity
 
-**Well512a** implements the Well-Equilibrated Long-period Linear generators (WELL) proposed by François Panneton, Pierre L'ECcuyer and Makoto Matsumoto in [6]. This PRNG uses linear recurrence based on primitive characteristic polynomials associated with left- and right- shifts and xor operations to fastly evaluate pseudo-random numbers suites.
+**Well512a** implements the Well-Equilibrated Long-period Linear generators (WELL) proposed by François Panneton, Pierre L'Ecuyer and Makoto Matsumoto in [6]. This PRNG uses linear recurrence based on primitive characteristic polynomials associated with left- and right- shifts and xor operations to fastly evaluate pseudo-random numbers suites.
 
 It offers a long period of value 2^252 - i.e. 1.34e+154 - with short computation time and 16 integers 32-bits coded memory consumption.  
 It escapes the zeroland at a fast pace.  
@@ -575,9 +579,9 @@ Meanwhile, it should not be able to pass some of the *crush* and *big-crush* tes
 
 
 
-### Well1024a  -  2^1,024 periodicity
+### Well1024a  --  2^1,024 periodicity
 
-**Well1024a** implements the Well-Equilibrated Long-period Linear generators (WELL) proposed by François Panneton, Pierre L'ECcuyer and Makoto Matsumoto in [6]. This PRNG uses linear recurrence based on primitive characteristic polynomials associated with left- and right- shifts and xor operations to fastly evaluate pseudo-random numbers suites.
+**Well1024a** implements the Well-Equilibrated Long-period Linear generators (WELL) proposed by François Panneton, Pierre L'Ecuyer and Makoto Matsumoto in [6]. This PRNG uses linear recurrence based on primitive characteristic polynomials associated with left- and right- shifts and xor operations to fastly evaluate pseudo-random numbers suites.
 
 It offers a long period of value 2^1,024 - i.e. 2.68+308 - with short computation time and 32 integers 32-bits coded memory consumption.  
 It escapes the zeroland at a fast pace.  
@@ -585,9 +589,9 @@ Meanwhile, it does not pass 4 of the *crush* and 4 of the *big-crush* tests of T
 
 
 
-### Well199937c  -  2^19,937 periodicity
+### Well199937c  --  2^19,937 periodicity
 
-**Well199937c** implements the Well-Equilibrated Long-period Linear generators (WELL) proposed by François Panneton, Pierre L'ECcuyer and Makoto Matsumoto in [6]. This PRNG uses linear recurrence based on primitive characteristic polynomials associated with left- and right- shifts and xor operations to fastly evaluate pseudo-random numbers suites.
+**Well199937c** implements the Well-Equilibrated Long-period Linear generators (WELL) proposed by François Panneton, Pierre L'Ecuyer and Makoto Matsumoto in [6]. This PRNG uses linear recurrence based on primitive characteristic polynomials associated with left- and right- shifts and xor operations to fastly evaluate pseudo-random numbers suites.
 
 It offers a long period of value 2^19,937 - i.e. 4.32e+6,001 - with short computation time and 624 integers 32-bits coded memory consumption - just as the Mersenne-Twister algorithm).  
 It escapes the zeroland at a very fast pace.  
@@ -595,9 +599,9 @@ Meanwhile, it does not pass 2 of the *crush* and 2 of the *big-crush* tests of T
 
 
 
-### Well44497b  -  2^44,497 periodicity
+### Well44497b  --  2^44,497 periodicity
 
-**WellWell44497b** implements the Well-Equilibrated Long-period Linear generators (WELL) proposed by François Panneton, Pierre L'ECcuyer and Makoto Matsumoto in [6]. This PRNG uses linear recurrence based on primitive characteristic polynomials associated with left- and right- shifts and xor operations to fastly evaluate pseudo-random numbers suites.
+**WellWell44497b** implements the Well-Equilibrated Long-period Linear generators (WELL) proposed by François Panneton, Pierre L'Ecuyer and Makoto Matsumoto in [6]. This PRNG uses linear recurrence based on primitive characteristic polynomials associated with left- and right- shifts and xor operations to fastly evaluate pseudo-random numbers suites.
 
 It offers a long period of value 2^44,497 - i.e. 1.51e+13,466 - with short computation time and 1,391 integers 32-bits coded memory consumption.  
 It escapes the zeroland at a fast pace.  
@@ -605,27 +609,30 @@ Meanwhile, it might not be able to pass a very few of the *crush* and *big-crush
 
 
 ---
-### Xoroshiro256  - 2^256 periodicity
+### Xoroshiro256  --  2^256 periodicity
 
-**Xoroshiro256** implements the *xoroshiro256*** version of the Scrambled Linear Pseudorandom Number Generators algorithm proposed by David Blackman and Sebastiano Vigna in [10]. This xoroshiro linear transformation updates cyclically two words of a 4 integers state array. The base xoroshiro linear transformation is obtained combining a rotation, a shift, and again a rotation. It also applies a double multiplication as the scrambler model before outputing values. Internal state and output values are coded on 64 bits.
+**Xoroshiro256** implements the *xoroshiro256*** version of the Scrambled Linear Pseudorandom Number Generators algorithm proposed by David Blackman and Sebastiano Vigna in [10].  
+This xoroshiro linear transformation updates cyclically two words of a 4 integers state array. The base xoroshiro linear transformation is obtained combining a rotation, a shift, and again a rotation. It also applies a double multiplication as the scrambler model before outputing values. Internal state and output values are coded on 64 bits.
 
 It offers a medium period of value 2^256 - i.e. 1.16e+77 - with short computation time and 4 integers 64-bits coded memory consumption.  
 It escapes the zeroland at a very fast pace (about 10 loops) and offers jump-ahead feature. Notice: the 256 version of the algorithm has shown close repeats flaws, with a bad Hamming weight near zero as explained by the authors in [10] and explained in [xoshiro-repeat-flaws.html](https://www.pcg-random.org/posts/xoshiro-repeat-flaws.html).
 
 
 
-### Xoroshiro512  - 2^512 periodicity
+### Xoroshiro512  --  2^512 periodicity
 
-**Xoroshiro512** implements the *xoroshiro512*** version of the Scrambled Linear Pseudorandom Number Generators algorithm proposed by David Blackman and Sebastiano Vigna in[10]. This xoroshiro linear transformation updates cyclically two words of a 8 integers state array. The base xoroshiro linear transformation is obtained combining a rotation, a shift, and again a rotation. It also applies a double multiplication as the scrambler model before outputing values. Internal state and output values are coded on 64 bits.
+**Xoroshiro512** implements the *xoroshiro512*** version of the Scrambled Linear Pseudorandom Number Generators algorithm proposed by David Blackman and Sebastiano Vigna in[10].  
+This xoroshiro linear transformation updates cyclically two words of an 8 integers state array. The base xoroshiro linear transformation is obtained combining a rotation, a shift, and again a rotation. It also applies a double multiplication as the scrambler model before outputing values. Internal state and output values are coded on 64 bits.
 
 It offers a medium period of value 2^512 - i.e. 1.34e+154 - with short computation time and 4 integers 64-bits coded memory consumption.  
 It escapes the zeroland at a very fast pace (about 30 loops) and offers jump-ahead feature.
 
 
 
-### Xoroshiro1024  - 2^1,024 periodicity
+### Xoroshiro1024  --  2^1,024 periodicity
 
-**Xoroshiro** implements the *xoroshiro1024*** version of the Scrambled Linear Pseudorandom Number Generators algorithm proposed by David Blackman and Sebastiano Vigna in[10]. This xoroshiro linear transformation updates cyclically two words of a 16 integers state array and a 4 bits index. The base xoroshiro linear transformation is obtained combining a rotation, a shift, and again a rotation. It also applies a double multiplication as the scrambler model before outputing values. Internal state and output values are coded on 64 bits.
+**Xoroshiro** implements the *xoroshiro1024*** version of the Scrambled Linear Pseudorandom Number Generators algorithm proposed by David Blackman and Sebastiano Vigna in[10].  
+This xoroshiro linear transformation updates cyclically two words of a 16 integers state array and a 4 bits index. The base xoroshiro linear transformation is obtained combining a rotation, a shift, and again a rotation. It also applies a double multiplication as the scrambler model before outputing values. Internal state and output values are coded on 64 bits.
 
 It offers a medium period of value 2^1,024 - i.e. 1.80e+308 - with short computation time and 4 integers 64-bits coded memory consumption.  
 It escapes the zeroland at a fast pace (about 100 loops) and offers jump-ahead feature.
@@ -645,7 +652,7 @@ Since the base class **BaseRandom** implements all these distribution and generi
 
 Beta distribution.
 
-Conditions on the parameters are alpha > 0 and beta > 0.  
+Conditions on the parameters are `alpha > 0` and `beta > 0`.  
 Returned values range between 0 and 1.
 
 
@@ -687,7 +694,7 @@ Returns a k sized vector of elements chosen from the population with replacement
 
 Exponential distribution.
 
-lambda is 1.0 divided by the desired  mean. It should be nonzero.  
+`lambda` is 1.0 divided by the desired  mean. It should be nonzero.  
 Returned values range from 0 to positive infinity if lambda is positive, and from negative infinity to 0 if lambda is negative.
 
 
@@ -696,13 +703,13 @@ Returned values range from 0 to positive infinity if lambda is positive, and fro
 
 Gamma distribution. Not the gamma function!
     
-Conditions on the parameters are alpha > 0 and beta > 0.
+Conditions on the parameters are `alpha > 0` and `beta > 0`.
 
 
 ---
 `const double `**`gauss`**` () noexcept;`
 
-Gaussian distribution with default values mu = 0.0 and sigma = 1.0.  
+Gaussian distribution with default values `mu = 0.0` and `sigma = 1.0`.  
 This is slightly faster than the normalvariate() function.  
 Notice: not thread-safe without a lock around calls.
 
@@ -715,7 +722,7 @@ Important notice: the implemented code is a translation from Python built-in lib
 
 Gaussian distribution.
 
-mu is the mean, and sigma is the standard deviation.  
+`mu` is the mean, and `sigma` is the standard deviation.  
 This is slightly faster than the normalvariate() function.  
 Notice: not thread-safe without a lock around calls.
 
@@ -725,7 +732,7 @@ Important notice: the implemented code is a translation from Python built-in lib
 ---
 `OutputT `**`getrandbits`**` (const unsigned int k)`
 
-Returns an unsigned integer with k random bits. Notice: `OutputT` is a template argment of templated class `BaseRandom`. It specifies the type of integer that any inheriting PRNG returns on method `next()` calls. 
+Returns an unsigned integer with k random bits. Notice: `OutputT` is a template argment of templated class `BaseRandom`. It specifies the type of integer that any inheriting PRNG returns on class of method `next()`. 
 
 
 ---
@@ -746,7 +753,7 @@ If you take the natural logarithm of this distribution, you'll get a normal dist
 Log normal distribution.
 
 If you take the natural logarithm of this distribution, you'll get a normal distribution with mean mu and standard deviation sigma.  
-mu can have any value, and sigma must be greater than zero.
+`mu` can have any value, and `sigma` must be greater than zero.
 
 
 ---
@@ -810,7 +817,7 @@ Returns an array of n values that are uniformly contained within range [min, max
 `requires std::is_arithmetic_v<T> && std::is_arithmetic_v<U> && (m != 0) && (n != 0)`  
 `std::array<T, m> `**`n_evaluate`**` (const std::array<U, n>& max);`
 
-Returns an array of std::min(m, n) values in range [0; max[i]).
+Returns an array of std::min(m, n) values in range [0; max[i]), 0 <= i < std::min(m, n).
 
 
 ---
@@ -818,7 +825,7 @@ Returns an array of std::min(m, n) values in range [0; max[i]).
 `requires std::is_arithmetic_v<T> && std::is_arithmetic_v<U> && std::is_arithmetic_v<V> && (m != 0) && (n != 0) && (p != 0)`  
 `std::array<T, m> `**`n_evaluate`**` (const std::array<U, n>& min, const std::array<V, p>& max) noexcept;`
 
-Returns an array of std::min(m, n, p) values in range [min[i]; max[i]).
+Returns an array of std::min(m, n, p) values in range [min[i]; max[i]), std::min(m, n, p).
 
 
 ---
@@ -835,12 +842,12 @@ Important notice:  the implemented code is a translation from Python built-in li
 
 Normal distribution.
 
-mu is the mean, and sigma is the standard deviation.  
-mu can be any value, sigma must be greater than 0.0.  
+`mu` is the mean, and `sigma` is the standard deviation.  
+`mu` can be any value, `sigma` must be greater than 0.0.  
 See method gauss() for a faster equivalent.
 
 The Python version of this method uses Kinderman and Monahan method (reference: Kinderman, A.J.and Monahan, J.F., "Computer generation of random variables using the ratio of  uniform  deviates", ACM Trans. Math Software, 3, (1977), pp. 257 - 260).  
-This method is slightlly slower than the gauss method. Furthermore, we've s lightly modified the original algorithm here to fulfill very special cases that might happen in very specific conditions. This slows down also the running of **normalvariate()** in these very specific conditions. You should prefer then to use method  gauss() instead of this one.
+This method is slightlly slower than the gauss method. Furthermore, we've slightly modified the original algorithm here to fulfill very special cases that might happen in very specific conditions. This slows down also the running of **normalvariate()** in these very specific conditions. You should prefer then to use method  gauss() instead of this one.
 
 Important notice:  the implemented code is a translation from Python built-in library module [random.py](https://github.com/python/cpython/blob/3.11/Lib/random.py) into c++.
 
@@ -849,7 +856,7 @@ Important notice:  the implemented code is a translation from Python built-in li
 `const double `**`paretovariate`**` (const double alpha);`
 
 Pareto distribution.  
-alpha is the shape parameter. It cannot be 0.0.
+`alpha` is the shape parameter. It cannot be 0.0.
 
 Important notice:  the implemented code is a translation from Python built-in library module [random.py](https://github.com/python/cpython/blob/3.11/Lib/random.py) into c++.
 
@@ -909,7 +916,7 @@ Chooses k unique random elements from a population sequence. All population elem
 Evaluates a vector containing  elements from the population while leaving the original population unchanged. The resulting vector is in selection order so that all sub-slices will also be valid random samples. This allows raffle winners (the sample) to be partitioned into grand prize and second place winners (the subslices).
 
 Members of the population need not be unique. If the population contains repeats, then each occurrence is a possible selection in the sample.  
-Notice: k must be greater than k.
+Notice: k must be greater than n.
 
 
 ---
@@ -1010,7 +1017,7 @@ MUST BE overridden in **128-bits** inheriting classes : this method uses the 64-
 `requires utils::is_indexable_v<ContainerType>`  
 `void `**`shuffle`**` (ContainerType& seq);`
 
-In place Shuffles the specified sequence.
+In place shuffles the specified sequence.
 
 The Container type must be either std::vector or std::array.
 
@@ -1031,7 +1038,7 @@ See [http://en.wikipedia.org/wiki/Triangular_distribution](http://en.wikipedia.o
 
 Triangular distribution.
 
-This is aontinuous distribution bounded by given lower and upper limits, and having a given mode value in-between.  
+This is a continuous distribution bounded by given lower and upper limits, and having a given mode value in-between.  
 Returns a random floating point number *N* such that low <= *N* <= high and with the specified mode between those bounds. The low and high bounds default to zero and one. The mode argument defaults to the midpoint between the bounds, giving a symmetric distribution.
 
 See [http://en.wikipedia.org/wiki/Triangular_distribution](http://en.wikipedia.org/wiki/Triangular_distribution).
