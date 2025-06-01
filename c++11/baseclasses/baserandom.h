@@ -188,6 +188,16 @@ SOFTWARE.
 *    |      mu can have any value, and sigma must be greater than zero.
 *    |
 *    |
+*    |  n_evaluate()
+*    |      This method is not available in PyRandLib and is not part of
+*    |      Python API. It is specific to the c++ version CppRandLib in
+*    |      which many different signature are available.
+*    |
+*    |      See code documentation below and document README.md, section
+*    |      "Distribution Functions and Generic Functions", for full details
+*    |      of the different available signatures of this method.
+*    |
+*    |
 *    |  normalvariate(mu, sigma)
 *    |      Normal distribution.
 *    |      https://en.wikipedia.org/wiki/Normal_distribution
