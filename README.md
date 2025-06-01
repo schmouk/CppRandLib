@@ -3,6 +3,7 @@ Many best in class pseudo random generators grouped into one simple library - c+
 
 This is a c++ counterpart of library PyRandLib (Python).
 
+CppRandLib github web pages are here: [https://schmouk.github.io/CppRandLib/](https://schmouk.github.io/CppRandLib/)
 
 ---
 ## License
