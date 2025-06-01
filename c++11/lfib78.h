@@ -2,7 +2,9 @@
 /*
 MIT License
 
-Copyright (c) 2022 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+
+This file is part of library CppRandLib.
 
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
@@ -25,16 +27,11 @@ SOFTWARE.
 
 
 //===========================================================================
-#include "baselfib64.h"
+#include "baseclasses/baselfib64.h"
 
 
 //===========================================================================
-/** @brief The base class for all LFib PRNG based on 64-bits numbers.
-*
-*   Pseudo-random numbers generator  -  Definition of a fast 64-bits Lagged  Fibonacci
-*   Generator with quite short period (3.0e+23).
-* 
-*   This module is part of library CppRandLib.
+/** @brief A fast 64-bits Lagged Fibonacci Generator with a short period (3.0e+23).
 *
 *   Lagged Fibonacci generators LFib( m, r, k, op) use the recurrence
 *
@@ -71,28 +68,26 @@ SOFTWARE.
 *   while same computation time and far higher precision (64-bits  calculations)  than
 *   MRGs,  but memory consumption (resp. 55, 607 and 1279 integers).
 *
-*   Please notice that this class and all its  inheriting  sub-classes  are  callable.
-*   Example:
+*   Furthermore this class is callable:
 * @code
 *     LFib78 rand{};
 *     std::cout << rand() << std::endl;    // prints a uniform pseudo-random value within [0.0, 1.0)
 *     std::cout << rand(b) << std::endl;   // prints a uniform pseudo-random value within [0.0, b)
-*     std::cout << rand(a,b) << std::endl; // prints a uniform pseudo-random value within [a  , b)
 * @endcode
 * *
 *   Notice that for simulating the roll of a dice you should program:
 * @code
 *     LFib78 diceRoll();
-*     std::cout << int(diceRoll(1, 7))    << std::endl; // prints a uniform roll within range {1, ..., 6}
+*     std::cout << 1 + int(diceRoll(6)) << std::endl;   // prints a uniform roll within range {1, ..., 6}
 *     std::cout << diceRoll.randint(1, 6) << std::endl; // prints also a uniform roll within range {1, ..., 6}
 * @endcode
 
 *   Reminder:
-*   We give you here below a copy of the table of tests for the LCGs that have
-*   been implemented in PyRandLib, as provided in paper "TestU01, ..."  -  see
+*   We give you here below a copy of the table of tests for the LFibs that have
+*   been  implemented in CppRandLib,  as provided in paper "TestU01, ..." - see
 *   file README.md.
 * +--------------------------------------------------------------------------------------------------------------------------------------------------------+
-* | PyRabndLib class | TU01 generator name      | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
+* | CppRandLib class | TU01 generator name      | Memory Usage    | Period  | time-32bits | time-64 bits | SmallCrush fails | Crush fails | BigCrush fails |
 * | ---------------- | ------------------------ | --------------- | ------- | ----------- | ------------ | ---------------- | ----------- | -------------- |
 * | LFib78           | LFib(2^64, 17, 5, +)     |    34 x 4-bytes | 2^78    |    n.a.     |     1.1      |          0       |       0     |       0        |
 * | LFib116          | LFib(2^64, 55, 24, +)    |   110 x 4-bytes | 2^116   |    n.a.     |     1.0      |          0       |       0     |       0        |
@@ -101,12 +96,12 @@ SOFTWARE.
 * +--------------------------------------------------------------------------------------------------------------------------------------------------------+
 *
 *   * _small crush_ is a small set of simple tests that quickly tests some  of
-*   the expected characteristics for a pretty good PRG;
+*   the expected characteristics for a pretty good PRNG;
 *
 *   * _crush_ is a bigger set of tests that test more deeply  expected  random
 *   characteristics;
 *
-*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRG
+*   * _big crush_ is the ultimate set of difficult tests  that  any  GOOD  PRNG
 *   should definitively pass.
 */
 using LFib78 = BaseLFib64<17, 5>;
