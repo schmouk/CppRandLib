@@ -139,6 +139,7 @@ Measures have been done with 32 bits and 64 bits generated code versions, in ful
 The evaluation source code file is provided in subdirectories `c++11/testCPUPerfs` and `c++20/testCPUPerfs` and is named `testCPUPerfs.cpp`. You'll have to install **gTests** Google library to be able to use it.
 
 **CppRandLib** time 64 bits and 32 bits table:
+
  | CppRandLib class | 64-bits |  32-bits  | SmallCrush fails | Crush fails | BigCrush fails |
  | ---------------- | ------- | --------- | ---------------- | ----------- | -------------- |
  | Cwg64            |   1.52  |    2.74   |        *0*       |      *0*    |      *0*       |
