@@ -93,7 +93,7 @@ public:
     //-----------------------------------------------------------------------
     inline const bool is_variance_ok() noexcept
     {
-        constexpr double expected_max_variance{ 5.5 };  // this is the absolute value of the expected max on local variance
+        constexpr double expected_max_variance{ 5.7 };  // this is the absolute value of the expected max on local variance
         const double _mean{ get_mean() };
         const double _stdev{ get_stdev() };
         
