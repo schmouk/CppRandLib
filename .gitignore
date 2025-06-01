@@ -48,3 +48,4 @@ docs
 packages
 *.config
 scripts
+*.xlsx

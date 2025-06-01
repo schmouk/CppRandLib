@@ -271,11 +271,11 @@ namespace tests_cpprl
         //-- tests SampleSizesException
         {
             SampleSizesException sse;
-            EXPECT_STREQ("sizes of arguments 'population' and 'counts' must be the same.", sse.what());
+            EXPECT_STREQ("sizes of arguments 'population' and 'counts' (or 'weights') must be the same.", sse.what());
         }
         {
             SampleSizesException sse(15, 11);
-            EXPECT_STREQ("sizes of arguments 'population' (15) and 'counts' (11) must be the same.", sse.what());
+            EXPECT_STREQ("sizes of arguments 'population' (15) and 'counts' (or 'weights') (11) must be the same.", sse.what());
         }
 
         //-- tests StepValueTypeException
@@ -302,6 +302,24 @@ namespace tests_cpprl
             EXPECT_STREQ("rotation bits count (9) is too big (must not exceed the rotated integer size: 8).", tbr.what());
         }
 
+        //-- tests TooMuchReturnedBitsException
+        {
+            TooMuchReturnedBitsException<> tmrb;
+            EXPECT_STREQ("returned bits count is too big (must not exceed the output integer bits count).", tmrb.what());
+        }
+        {
+            TooMuchReturnedBitsException<> tmrb(65);
+            EXPECT_STREQ("returned bits count (65) is too big (must not exceed the output integer bits count: 64).", tmrb.what());
+        }
+        {
+            TooMuchReturnedBitsException<long> tmrb(48);
+            EXPECT_STREQ("returned bits count (48) is too big (must not exceed the output integer bits count: 32).", tmrb.what());
+        }
+        {
+            TooMuchReturnedBitsException<std::uint8_t> tmrb(9);
+            EXPECT_STREQ("returned bits count (9) is too big (must not exceed the output integer bits count: 8).", tmrb.what());
+        }
+
         //-- tests ValueTypeException
         {
             ValueTypeException vt;
@@ -323,7 +341,7 @@ namespace tests_cpprl
         //-- tests ZeroLengthException
         {
             ZeroLengthException zl;
-            EXPECT_STREQ("length or count argument value must not be zero (actually is).", zl.what());
+            EXPECT_STREQ("length argument value, counts argument value or population length must not be zero (actually is).", zl.what());
         }
 
         //-- tests ZeroValueException
