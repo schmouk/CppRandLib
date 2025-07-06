@@ -1541,10 +1541,10 @@ template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
     requires std::is_integral_v<OutputT> || std::is_same_v<OutputT, utils::UInt128>
 inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed(const double seed_)
 {
-    if (seed_ < 0.0 || 1.0 <= seed_)
+    if (0.0 <= seed_ && seed_ <= 1.0)
+        seed(std::uint64_t(seed_ * double(0xffff'ffff'ffff'ffffULL)));
+    else
         throw FloatValueRange01Exception();
-
-    seed(std::uint64_t(seed_ * double(0xffff'ffff'ffff'ffffULL)));
 }
 
 //---------------------------------------------------------------------------

@@ -1661,10 +1661,10 @@ inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed(const utils::UInt128&
 template<typename StateT, typename OutputT, const std::uint8_t OUTPUT_BITS>
 inline void BaseRandom<StateT, OutputT, OUTPUT_BITS>::seed(const double seed_)
 {
-    if (seed_ < 0.0 || 1.0 <= seed_)
+    if (0.0 <= seed_ && seed_ <= 1.0)
+        seed(std::uint64_t(seed_ * double(0xffff'ffff'ffff'ffffULL)));
+    else
         throw FloatValueRange01Exception();
-
-    seed(std::uint64_t(seed_ * double(0xffff'ffff'ffff'ffffULL)));
 }
 
 //---------------------------------------------------------------------------
@@ -1743,7 +1743,7 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::expovariate(const double 
         throw ExponentialZeroLambdaException();
 
     const double u{ uniform() };
-    if (u < 1.0)  // should always happen, let's check for it nevertheless
+    if (u < 1.0)  // should always happen, let's check it nevertheless
         return -std::log(1.0 - u) / lambda;
     else
         return 0.0;

@@ -331,7 +331,7 @@ namespace tests_bases
         }
 
         EXPECT_THROW(melg.seed(-0.001), FloatValueRange01Exception);
-        EXPECT_THROW(melg.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(melg.seed(1.0001), FloatValueRange01Exception);
 
 
         //-- tests _setstate()

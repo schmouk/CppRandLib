@@ -178,7 +178,7 @@ void Pcg1024_32::seed(const utils::UInt128& seed_) noexcept
 /** Initializes internal state (double). */
 void Pcg1024_32::seed(const double seed_)
 {
-    if (seed_ < 0.0 || 1.0 <= seed_)
+    if (seed_ < 0.0 || seed_ > 1.0)
         throw FloatValueRange01Exception(seed_);
 
     MyBaseClass::seed(std::uint64_t(0xffff'ffff'ffff'ffffULL * seed_ + seed_));

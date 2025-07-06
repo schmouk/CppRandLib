@@ -334,7 +334,7 @@ namespace tests_prng
         }
 
         EXPECT_THROW(Melg44497(-8.87e+18), FloatValueRange01Exception);
-        EXPECT_THROW(Melg44497(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(Melg44497(1.0001), FloatValueRange01Exception);
 
 
         //-- tests copy constructor
@@ -509,7 +509,7 @@ namespace tests_prng
         EXPECT_FALSE(melg._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, melg._internal_state.gauss_next);
 
-        EXPECT_THROW(melg.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(melg.seed(1.0001), FloatValueRange01Exception);
         EXPECT_THROW(melg.seed(-0.001), FloatValueRange01Exception);
 
         melg.seed(utils::UInt128(0xffff'ffff'ffff'fffe, 0xffff'ffff'ffff'fffd));
@@ -523,7 +523,7 @@ namespace tests_prng
         EXPECT_FALSE(melg._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, melg._internal_state.gauss_next);
 
-        EXPECT_THROW(melg.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(melg.seed(1.0001), FloatValueRange01Exception);
         EXPECT_THROW(melg.seed(-0.001), FloatValueRange01Exception);
 
 
