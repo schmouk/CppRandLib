@@ -107,9 +107,15 @@ const Mrg49507::output_type Mrg49507::next() noexcept
     const std::uint32_t k7{ (index < 7) ? (index + SEED_SIZE) - 7 : index - 7 };
 
     // evaluates current value and modifies internal state
+    const std::int64_t s = std::int64_t(_internal_state.state.list[k7]) + std::int64_t(_internal_state.state.list[index]);
+    const std::int64_t v1 = Mrg49507::_MULT * s;
+    const std::int64_t v2 = v1 % _MODULO;
+    const std::uint64_t value_ = v2 & 0x7fff'ffff;
+
     const std::uint64_t value{
-        (0xffff'ffff'fdff'ff80ull *  //i.e. (-2^25 - 2^7), or -67'108'992
-            std::uint64_t(_internal_state.state.list[k7] + _internal_state.state.list[index])
+        //(0xffff'ffff'fdff'ff80ull *  //i.e. (-2^25 - 2^7), or -67'108'992
+        (Mrg49507::_MULT *  //i.e. (-2^25 - 2^7)
+            std::int64_t(_internal_state.state.list[k7] + _internal_state.state.list[index])
         ) % _MODULO
     };
     _internal_state.state.list[index] = std::uint32_t(value);

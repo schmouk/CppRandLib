@@ -126,4 +126,8 @@ public:
     //---   Operations   ----------------------------------------------------
     virtual const output_type next() noexcept override;     //!< The internal PRNG algorithm.
 
+
+private:
+    static const std::int64_t _MULT{ -(1 << 25) - (1 << 7) };
+
 };
