@@ -112,7 +112,9 @@ const Pcg1024_32::output_type Pcg1024_32::next() noexcept
     const value_type current_state{ _internal_state.state.state.state() };  // (sic!)
     if ((current_state & 0xffff'ffff) == 0)
         _advance_table();
-    const extended_value_type extended_value{ _internal_state.state.extended_state[current_state & _INDEX_MODULO] };
+
+    const std::uint64_t index{ current_state >> 22 };
+    const extended_value_type extended_value{ _internal_state.state.extended_state[index & _INDEX_MODULO] };
 
     // then xor's it with the next 32-bits value evaluated with the internal state
     return _internal_state.state.state.next() ^ extended_value;
