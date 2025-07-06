@@ -1206,3 +1206,13 @@ In ACM Transactions on Mathematical Software, Volume 44, Issue 3, April 2018, Ar
 Also published in arXiv, March 2022 (11 pages)  
 Last reference: arXiv:1505.06582v6 [cs.DS] 20 Nov 2017, see [https://arxiv.org/pdf/1505.06582](https://arxiv.org/pdf/1505.06582).  
 DOI: https://doi.org/10.1145/3159444, https://doi.org/10.48550/arXiv.1505.06582
+
+
+**[12]** Marsaglia, G. 1972.  
+*The structure of linear congruential sequences.*  
+In Applications of Number Theory to Numerical Analysis, S. K. Zaremba, Ed. Academic Press, 249–285.
+
+
+**[13]** Brown, F. B. and Nagaya, Y. 2002.  
+*The MCNP5 random number generator.*  
+Tech. rep. LA-UR-02-3782, Los Alamos National Laboratory

@@ -408,7 +408,7 @@ namespace tests_prng
         }
 
         EXPECT_THROW(Cwg128(-8.87e+18), FloatValueRange01Exception);
-        EXPECT_THROW(Cwg128(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(Cwg128(1.0001), FloatValueRange01Exception);
 
 
         //-- tests Valued constructor (full state).
@@ -631,7 +631,7 @@ namespace tests_prng
         EXPECT_FALSE(cwg128._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, cwg128._internal_state.gauss_next);
 
-        EXPECT_THROW(cwg128.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(cwg128.seed(1.0001), FloatValueRange01Exception);
         EXPECT_THROW(cwg128.seed(-0.001), FloatValueRange01Exception);
 
 

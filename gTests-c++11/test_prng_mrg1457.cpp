@@ -345,7 +345,7 @@ namespace tests_prng
         }
 
         EXPECT_THROW(Mrg1457(-8.87e+18), FloatValueRange01Exception);
-        EXPECT_THROW(Mrg1457(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(Mrg1457(1.0001), FloatValueRange01Exception);
 
 
         //-- tests copy constructor
@@ -537,7 +537,7 @@ namespace tests_prng
         EXPECT_FALSE(mrg._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, mrg._internal_state.gauss_next);
 
-        EXPECT_THROW(mrg.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(mrg.seed(1.0001), FloatValueRange01Exception);
         EXPECT_THROW(mrg.seed(-0.001), FloatValueRange01Exception);
 
 

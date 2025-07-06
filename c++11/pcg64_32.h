@@ -97,8 +97,6 @@ public:
     using value_type  = std::uint64_t;
     // notice: output_type is defined in base class
 
-    static const std::uint64_t _MODULO{ 0xffff'ffffull };  // i.e. (1ull << 32) - 1ull
-
 
     //---   Constructors / Destructor   -------------------------------------
     Pcg64_32() noexcept;                                    //!< Default empty constructor.

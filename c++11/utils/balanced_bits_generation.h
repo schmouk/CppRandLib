@@ -45,15 +45,15 @@ namespace utils
     * keys generation that  is  available  in  file  keys/keys.c  in  related
     * software package https://squaresrng.wixsite.com/rand.
     * ( Bernard Widynski1, March 2022, extracted text from keys/keys.c:
-    *   The keys are created so that the upper 8 digits are different and also *
-    *   that the lower 8 digits are different.  The lower 8 digits are created *
-    *   systematically so that all possible combinations are produced.  The    *
-    *   ninth digit is chosen to be different than the eighth digit.  The rest *
-    *   of the upper 7 digits are chosen randomly.  For any two keys produced, *
-    *   it is certain that at least one digit is different in the lower 9      *
-    *   digits.  Testing has shown that this prevents similarities that can    *
-    *   arise in streams produced by keys that vary only in the upper digits.  *
-    * )
+    *   The keys are created so that the upper 8 digits are different and also  *
+    *   that the lower 8 digits are different.  The lower 8 digits are created  *
+    *   systematically so that all possible  combinations  are  produced.  The  *
+    *   ninth digit is chosen to be different than the eighth digit.  The rest  *
+    *   of the upper 7 digits are chosen randomly.  For any two keys produced,  *
+    *   it  is  certain  that  at  least one digit is different in the lower 9  *
+    *   digits.  Testing has shown that this prevents  similarities  that  can  *
+    *   arise in streams produced by keys that vary only in the upper digits. ) *
+    *
     * Notice: Should you need to call this function many times to  initialize 
     * multiple streams of PRNGs,  ensure that no two initial seeds values are 
     * finaly the same on their 9 lowest hexa digits.
@@ -64,7 +64,7 @@ namespace utils
         static_assert(std::is_integral<IntT>::value, "balanced bits are only generated for integers.");
 
         constexpr std::uint32_t HEX_DIGITS_COUNT{ 2 * sizeof(IntT) };
-        constexpr double NORMALIZE{ 1.0 / (1ull << 32) };  //0.5 / double(0x8000'0000'0000'0000ull)};  // i.e. 1.0 / (1 << 64)
+        constexpr double NORMALIZE{ 1.0 / (1ull << 32) };
 
         std::uint64_t hex_digits[]{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf };
         utils::SplitMix32 splitmix_32(seed);

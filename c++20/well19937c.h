@@ -49,7 +49,7 @@ SOFTWARE.
 *   Furthermore, WELLs have proven their great ability  to  very  fastly  escape  from
 *   zeroland.
 *
-*   Notice: the algorithm in its Well19937c version has been coded  here  as  a  direct
+*   Notice: the algorithm in its Well19937c version has been coded here  as  a  direct
 *   implementation  of  its  description  in the initial paper:  "Improved Long-Period
 *   Generators Based on Linear Recurrences Modulo 2",  François  PANNETON  and  Pierre
 *   L'ECUYER (Université de Montréal) and Makoto MATSUMOTO (Hiroshima University),  in
@@ -60,8 +60,10 @@ SOFTWARE.
 *
 *   See Well512a for a large period WELL-Generator (2^512,  i.e. 1.34e+154)  with  low
 *   computation time and 16 integers memory consumption.
+* 
 *   See Well1024a for a longer period WELL-Generator (2^1,024,  i.e. 1.80e+308),  same
 *   computation time and 32 integers memory consumption.
+* 
 *   See Well44497b for a very large period (2^44,497,  i.e. 15.1e+13,466) with similar
 *   computation time but use of even more memory space (1,391 integers).
 *

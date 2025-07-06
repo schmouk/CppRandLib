@@ -77,6 +77,7 @@ SOFTWARE.
 *   See Mrg1457 for a longer period MR-Generator  (2^1457,  i.e. 4.0e+438)  and longer
 *   computation  time  (2^31-1 modulus calculations) but less memory space consumption
 *   (i.e. 47 integers).
+* 
 *   See Mrg49507 for  a  far  longer  period  (2^49,507,  i.e. 1.2e+14,903)  with  low
 *   computation  time  too  (31-bits  modulus)  but  use  of  more memory space (1,597
 *   integers).

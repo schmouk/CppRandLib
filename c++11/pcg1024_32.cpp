@@ -112,7 +112,9 @@ const Pcg1024_32::output_type Pcg1024_32::next() noexcept
     const value_type current_state{ _internal_state.state.state.state() };  // (sic!)
     if ((current_state & 0xffff'ffff) == 0)
         _advance_table();
-    const extended_value_type extended_value{ _internal_state.state.extended_state[current_state & _INDEX_MODULO] };
+
+    const std::uint64_t index{ current_state >> 22 };
+    const extended_value_type extended_value{ _internal_state.state.extended_state[index & _INDEX_MODULO] };
 
     // then xor's it with the next 32-bits value evaluated with the internal state
     return _internal_state.state.state.next() ^ extended_value;
@@ -178,10 +180,10 @@ void Pcg1024_32::seed(const utils::UInt128& seed_) noexcept
 /** Initializes internal state (double). */
 void Pcg1024_32::seed(const double seed_)
 {
-    if (seed_ < 0.0 || 1.0 <= seed_)
+    if (0.0 <= seed_ && seed_ <= 1.0)
+        MyBaseClass::seed(std::uint64_t(0xffff'ffff'ffff'ffffULL * seed_ + seed_));
+    else
         throw FloatValueRange01Exception(seed_);
-
-    MyBaseClass::seed(std::uint64_t(0xffff'ffff'ffff'ffffULL * seed_ + seed_));
 }
 
 //---------------------------------------------------------------------------
@@ -219,14 +221,13 @@ void Pcg1024_32::_advance_table() noexcept
 const bool Pcg1024_32::_external_step(extended_value_type value, unsigned int i) noexcept
 {
     extended_value_type state{ 0xacb8'6d69ul * (value ^ (value >> 22)) };
-    state = _invxrs(state, 32, 4 + (state >> 28) & 0x0f);
-    state = 0x108e'f2d9ul * state + 2 * (i + 1);
+    state = _invxrs(state, 32, 4 + (state >> 28));
+    state = 0x2c92'77b5ul * state + 2 * (i + 1);
 
-    extended_value_type result{ 0x108e'f2d9ul * (state ^ (state >> (4 + (state >> 28)))) };
-    result ^= result >> 22;
-    _internal_state.state.extended_state[i] = result;
+    state ^= state >> 16;
+    _internal_state.state.extended_state[i] = state;
 
-    return result == (state & 0b11);
+    return state == (state & 0b11);
 }
 
 //---------------------------------------------------------------------------

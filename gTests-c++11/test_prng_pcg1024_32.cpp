@@ -76,7 +76,7 @@ namespace tests_prng
             EXPECT_FALSE(pcg._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0xbeeb8da1, 0x1c35f887, 0xc49eaf29, 0x03150c5a, 0x62cd7273 };
+            const std::uint64_t expected[]{ 0x910a2dec, 0x1364cbc7, 0xec5f61c7, 0x82a5b817, 0x28cc1c10 };
             for (std::uint64_t e : expected)
                 EXPECT_EQ(e, pcg.next());
 
@@ -104,7 +104,7 @@ namespace tests_prng
             EXPECT_FALSE(pcg._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0x511e5b4c, 0xf8abc99b, 0xd2969192, 0xa8fa3fa5, 0x0489139c };
+            const std::uint64_t expected[]{ 0x567368d, 0x4b1ab02, 0x4c8abf2a, 0x42c79439, 0xf19624b2 };
             for (std::uint64_t e : expected)
                 EXPECT_EQ(e, pcg.next());
 
@@ -132,7 +132,7 @@ namespace tests_prng
             EXPECT_FALSE(pcg._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0xca067431, 0x1460d37d, 0xea6b334f, 0x2097f11a, 0x98c2e25b };
+            const std::uint64_t expected[]{ 0xaeaf52fe, 0x1d8cedec, 0x87a87820, 0x8f067248, 0xdf69f1a5 };
             for (std::uint64_t e : expected)
                 EXPECT_EQ(e, pcg.next());
 
@@ -160,7 +160,7 @@ namespace tests_prng
             EXPECT_FALSE(pcg._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0x27af79a1, 0xce4f2e76, 0xed6d0bac, 0x36472af8, 0xbcc1c274 };
+            const std::uint64_t expected[]{ 0xb439ee8f, 0xc660f366, 0x8215ee59, 0x52e4b080, 0xe79a29e };
             for (std::uint64_t e : expected)
                 EXPECT_EQ(e, pcg.next());
 
@@ -188,7 +188,7 @@ namespace tests_prng
             EXPECT_FALSE(pcg._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0x6cb7d6f5, 0xe19f39d3, 0xe644b6e3, 0x8943629b, 0x778f7a7a };
+            const std::uint64_t expected[]{ 0x808475f0, 0xc990e87f, 0xc096f410, 0xe11e036a, 0x96edc8d8 };
             for (std::uint64_t e : expected)
                 EXPECT_EQ(e, pcg.next());
 
@@ -216,7 +216,7 @@ namespace tests_prng
             EXPECT_FALSE(pcg._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0x2182f35e, 0x5fb50759, 0x333e6892, 0x1a035b45, 0x0fb6d765 };
+            const std::uint64_t expected[]{ 0x57207a74, 0x77abc3ae, 0xafe24cef, 0xbac4f59f, 0x5b7e3bd4 };
             for (std::uint64_t e : expected)
                 EXPECT_EQ(e, pcg.next());
 
@@ -244,7 +244,7 @@ namespace tests_prng
             EXPECT_FALSE(pcg._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0x71603eed, 0x1a7f6de4, 0xba81eecf, 0x2d92276e, 0x71e8c99e };
+            const std::uint64_t expected[]{ 0x443e55db, 0xbb4d2c09, 0x26c3c3a9, 0xe3f660fa, 0xc2f33fc8 };
             for (std::uint64_t e : expected)
                 EXPECT_EQ(e, pcg.next());
 
@@ -272,7 +272,7 @@ namespace tests_prng
             EXPECT_FALSE(pcg._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0x6297f7e6, 0x738790af, 0xea82f55e, 0x13e4819a, 0xf4b19ae8 };
+            const std::uint64_t expected[]{ 0xabb96f67, 0x470ed664, 0xb911a476, 0x3ecfed68, 0x83a8878d };
             for (std::uint64_t e : expected)
                 EXPECT_EQ(e, pcg.next());
 
@@ -300,7 +300,7 @@ namespace tests_prng
             EXPECT_FALSE(pcg._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0x3bb53772, 0x43c61728, 0x4e3b1e0a, 0x64ac95f0, 0x12104ab0 };
+            const std::uint64_t expected[]{ 0x313a03cd, 0x19e0b3e7, 0xebea2f9b, 0x26de931e, 0x77638b76 };
             for (std::uint64_t e : expected)
                 EXPECT_EQ(e, pcg.next());
 
@@ -328,7 +328,7 @@ namespace tests_prng
             EXPECT_FALSE(pcg._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0x791dcc5c, 0x9051dc05, 0x33883106, 0x5bd7734c, 0x7a785dd3 };
+            const std::uint64_t expected[]{ 0xc18a3c14, 0xc6fd545f, 0x583af8aa, 0x99fcc31, 0x1dcdfe50 };
             for (std::uint64_t e : expected)
                 EXPECT_EQ(e, pcg.next());
 
@@ -344,7 +344,7 @@ namespace tests_prng
         }
 
         EXPECT_THROW(Pcg1024_32(-8.87e+18), FloatValueRange01Exception);
-        EXPECT_THROW(Pcg1024_32(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(Pcg1024_32(1.0001), FloatValueRange01Exception);
 
 
         //-- tests copy constructor
@@ -545,7 +545,7 @@ namespace tests_prng
         EXPECT_FALSE(pcg._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, pcg._internal_state.gauss_next);
 
-        EXPECT_THROW(pcg.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(pcg.seed(1.0001), FloatValueRange01Exception);
         EXPECT_THROW(pcg.seed(-0.001), FloatValueRange01Exception);
 
 

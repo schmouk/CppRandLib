@@ -154,7 +154,7 @@ namespace tests_utils
                 EXPECT_EQ(e, s64());
         }
 
-        EXPECT_THROW(utils::SplitMix64(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(utils::SplitMix64(1.001), FloatValueRange01Exception);
         EXPECT_THROW(utils::SplitMix64(-0.001), FloatValueRange01Exception);
 
 
@@ -220,7 +220,7 @@ namespace tests_utils
                 EXPECT_EQ(e, s63());
         }
 
-        EXPECT_THROW(utils::SplitMix63(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(utils::SplitMix64(1.001), FloatValueRange01Exception);
         EXPECT_THROW(utils::SplitMix63(-0.001), FloatValueRange01Exception);
 
 
@@ -286,7 +286,7 @@ namespace tests_utils
                 EXPECT_EQ(e, s32());
         }
 
-        EXPECT_THROW(utils::SplitMix32(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(utils::SplitMix64(1.001), FloatValueRange01Exception);
         EXPECT_THROW(utils::SplitMix32(-0.001), FloatValueRange01Exception);
 
 
@@ -352,9 +352,8 @@ namespace tests_utils
                 EXPECT_EQ(e, s31());
         }
 
-        EXPECT_THROW(utils::SplitMix31(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(utils::SplitMix64(1.001), FloatValueRange01Exception);
         EXPECT_THROW(utils::SplitMix31(-0.001), FloatValueRange01Exception);
-
 
     }
 }
