@@ -488,6 +488,21 @@ namespace tests_utils
         EXPECT_EQ(v.lo, 2ULL);
         EXPECT_EQ(v.hi, 0xffff'fffd'ffff'ffffULL);  // Notice: correct value is 0xffff'ffff'ffff'fffd'ffff'ffff, truncated on the 64 lower bits
 
+        va.hi = 0x2360ed051fc65da4;
+        va.lo = 0x4385df649fccf645;
+        vc = { 0x5851f42d4c957f2d, 0x14057b7ef767814f };
+        v.hi = 0x123456789accdef;
+        v.lo = 0xfedcba9876533210;
+        v = va * v + vc;
+        EXPECT_EQ(v.hi, 0xcd3a2da2fc64a3c2);
+        EXPECT_EQ(v.lo, 0x2739bceea2af5f9f);
+        v = va * v + vc;
+        EXPECT_EQ(v.hi, 0x920ef24d7ce66f7b);
+        EXPECT_EQ(v.lo, 0x82bf23654a43112a);
+        v = va * v + vc;
+        EXPECT_EQ(v.hi, 0x9b9cb64bb7b094e6);
+        EXPECT_EQ(v.lo, 0x725c7aab31717da1);
+
 
         //-- tests right-shift operator
         std::uint64_t mask_hi{ 0xaaaa'aaaa'aaaa'aaaaULL };
