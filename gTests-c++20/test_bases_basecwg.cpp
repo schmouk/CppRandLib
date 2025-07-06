@@ -168,7 +168,7 @@ namespace tests_bases
         }
 
         EXPECT_THROW((BaseCWG<std::uint64_t, std::uint64_t, std::uint64_t, 64>(-8.87e+18)), FloatValueRange01Exception);
-        EXPECT_THROW((BaseCWG<std::uint64_t, std::uint64_t, std::uint64_t, 64>(1.0)), FloatValueRange01Exception);
+        EXPECT_THROW((BaseCWG<std::uint64_t, std::uint64_t, std::uint64_t, 64>(1.0001)), FloatValueRange01Exception);
 
         {
             BaseCWG<utils::UInt128, utils::UInt128, utils::UInt128, 128> cwg128(1);
@@ -312,7 +312,7 @@ namespace tests_bases
         }
 
         EXPECT_THROW((BaseCWG<utils::UInt128, utils::UInt128, utils::UInt128, 128>(-8.87e+18)), FloatValueRange01Exception);
-        EXPECT_THROW((BaseCWG<utils::UInt128, utils::UInt128, utils::UInt128, 128>(1.0)), FloatValueRange01Exception);
+        EXPECT_THROW((BaseCWG<utils::UInt128, utils::UInt128, utils::UInt128, 128>(1.0001)), FloatValueRange01Exception);
 
         {
             BaseCWG<std::uint64_t, utils::UInt128, std::uint64_t, 64> cwg128_64(1);
@@ -426,7 +426,7 @@ namespace tests_bases
         }
 
         EXPECT_THROW((BaseCWG<std::uint64_t, utils::UInt128, std::uint64_t, 64>(-8.87e+18)), FloatValueRange01Exception);
-        EXPECT_THROW((BaseCWG<std::uint64_t, utils::UInt128, std::uint64_t, 64>(1.0)), FloatValueRange01Exception);
+        EXPECT_THROW((BaseCWG<std::uint64_t, utils::UInt128, std::uint64_t, 64>(1.0001)), FloatValueRange01Exception);
 
 
         //-- tests Valued constructor (full state).
@@ -658,7 +658,7 @@ namespace tests_bases
         EXPECT_FALSE(cwg64._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, cwg64._internal_state.gauss_next);
 
-        EXPECT_THROW(cwg64.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(cwg64.seed(1.0001), FloatValueRange01Exception);
         EXPECT_THROW(cwg64.seed(-0.001), FloatValueRange01Exception);
 
         cwg128.seed(-1);
@@ -793,7 +793,7 @@ namespace tests_bases
         EXPECT_FALSE(cwg128._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, cwg128._internal_state.gauss_next);
 
-        EXPECT_THROW(cwg128.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(cwg128.seed(1.0001), FloatValueRange01Exception);
         EXPECT_THROW(cwg128.seed(-0.001), FloatValueRange01Exception);
 
         cwg128_64.seed(-1);
@@ -895,7 +895,7 @@ namespace tests_bases
         EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
 
-        EXPECT_THROW(cwg128_64.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(cwg128_64.seed(1.0001), FloatValueRange01Exception);
         EXPECT_THROW(cwg128_64.seed(-0.001), FloatValueRange01Exception);
 
 

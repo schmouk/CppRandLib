@@ -239,7 +239,7 @@ namespace tests_bases
         {
             BaseMRG32<5> mrg;
             EXPECT_THROW(mrg.seed(-0.001), FloatValueRange01Exception);
-            EXPECT_THROW(mrg.seed(1.0), FloatValueRange01Exception);
+            EXPECT_THROW(mrg.seed(1.0001), FloatValueRange01Exception);
         }
 
 

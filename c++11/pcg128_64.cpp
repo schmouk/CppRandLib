@@ -180,7 +180,7 @@ void Pcg128_64::seed(const utils::UInt128& seed_) noexcept
 /** Initializes internal state (double). */
 void Pcg128_64::seed(const double seed_)
 {
-    if (seed_ < 0.0 || 1.0 <= seed_)
+    if (seed_ < 0.0 || 1.0 < seed_)
         throw FloatValueRange01Exception(seed_);
 
     _internal_state.state.hi = std::uint64_t(0xffff'ffff'ffff'ffffULL * seed_ + seed_);

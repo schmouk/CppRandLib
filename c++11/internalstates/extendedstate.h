@@ -34,7 +34,7 @@ SOFTWARE.
 
 
 //===========================================================================
-/** @brief The internal state of many Pseudo Random Numbers Generators. */
+/** @brief The internal extended state of some Pseudo Random Numbers Generators. */
 template<typename StateType, typename ExtendedValueType, const size_t EXTENDED_SIZE>
 struct ExtendedState
 {
@@ -48,7 +48,7 @@ struct ExtendedState
 
     inline ExtendedState() noexcept;    //!< Empty constructor
 
-    inline void seed(const std::uint64_t seed_) noexcept;   //!< state and external state inbitialization
+    inline void seed(const std::uint64_t seed_) noexcept;   //!< state and external state initialization
 
 };
 

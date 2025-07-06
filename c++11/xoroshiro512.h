@@ -49,6 +49,7 @@ SOFTWARE.
 *   See Xoroshiro256 for a large 2^256 period (i.e. about  1.16e+77)  scramble  linear
 *   PRNG,  with  low  computation  time,  64-bits  output  values  and good randomness
 *   characteristics.
+* 
 *   See Xoroshiro1024 for a large 2^1024 period (i.e. about 1.80e+308) scramble linear
 *   PRNG,  with  low computation time,  64-bits output values and very good randomness
 *   characteristics.

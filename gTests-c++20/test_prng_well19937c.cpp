@@ -357,7 +357,7 @@ namespace tests_prng
         }
 
         EXPECT_THROW(Well19937c(-8.87e+18), FloatValueRange01Exception);
-        EXPECT_THROW(Well19937c(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(Well19937c(1.0001), FloatValueRange01Exception);
 
 
         //-- tests copy constructor
@@ -557,7 +557,7 @@ namespace tests_prng
         EXPECT_FALSE(wll._internal_state.gauss_valid);
         EXPECT_DOUBLE_EQ(0.0, wll._internal_state.gauss_next);
 
-        EXPECT_THROW(wll.seed(1.0), FloatValueRange01Exception);
+        EXPECT_THROW(wll.seed(1.0001), FloatValueRange01Exception);
         EXPECT_THROW(wll.seed(-0.001), FloatValueRange01Exception);
 
 

@@ -38,10 +38,10 @@ SOFTWARE.
 *
 *      x(i) = (a*x(i-1) + c) mod m
 *
-*   PCGs associate to this recurrence a permutation of a subpart o f the  bits 
-*   of  the internal state of the PRNG.  The output of PCGs is this permutated
-*   subpart of its internal state,  leading to a very large enhancement of the
-*   randomness of these algorithms compared with the LCGs one.
+*   PCGs associate to this recurrence a permutation  of  a  subpart  of  their
+*   internal state bits.  The output of PCGs is this permutated subpart of its
+*   internal state,  leading to a very large enhancement of the randomness  of
+*   these algorithms compared with the LCGs one.
 *
 *   These PRNGs have been tested with TestU01 by the authors and have shown to 
 *   pass  all  tests  (about  TestU01,  see Pierre L'Ecuyer and Richard Simard 
