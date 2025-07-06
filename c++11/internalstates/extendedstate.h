@@ -48,7 +48,7 @@ struct ExtendedState
 
     inline ExtendedState() noexcept;    //!< Empty constructor
 
-    inline void seed(const std::uint64_t seed_) noexcept;   //!< state and external state inbitialization
+    inline void seed(const std::uint64_t seed_) noexcept;   //!< state and external state initialization
 
 };
 
