@@ -115,7 +115,7 @@ const Pcg64_32::output_type Pcg64_32::next() noexcept
     _internal_state.state = 0x5851'f42d'4c95'7f2dull * previous_state + 0x1405'7b7e'f767'814full;
 
     // computes the permutated output
-    return ((previous_state ^ (previous_state >> 22)) >> (22 + random_shift)) & _MODULO;
+    return Pcg64_32::output_type((previous_state ^ (previous_state >> 22)) >> (22 + random_shift));
 }
 
 //---------------------------------------------------------------------------
