@@ -181,7 +181,21 @@ Notice also: some of the PRNG algorithms involve 128-bits integer artihmetics. *
 
 
 ---
-## New in release 2.0
+## What's new in release 2.1
+
+Release **2.1** is an enhancement of release 2.0:
+
+* Tests on float values for the initialization of `SplitMixXX` instances have been fixed: value `1.0` is now accepted as it is a correct value;
+* Fixed also the same test of the initialization float value for all `seed()` methods;
+* Fixed a bug in method `Pcg1024_32.next()`: release 2.0 is not removed but **should no more be used**;
+* Augmented unitary tests on `utils::UInt128`;
+* Augmented unitary tests on every `MELGxxx` tests;
+* Fixed typos in doxygen comments in nearly all header files;
+* Added two documents references at end of file `README.md`.
+
+
+---
+## What's new in release 2.0
 First of all, Release 1.0 (2022/09) is NO MORE available. Release 2.0 implements now far more PRNG algorithms than release 1.0, with **fully validated code**. 
 
 This is available starting at version 2.0 of **CppRandLib**:
