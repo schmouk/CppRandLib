@@ -59,8 +59,10 @@ SOFTWARE.
 *
 *   See Well1024a for a longer period WELL-Generator (2^1,024,  i.e. 1.80e+308),  same
 *   computation time and 32 integers memory consumption.
+* 
 *   See Well199937c for a far longer period  (2^19,937, i.e. 4.32e+6,001) with similar
 *   computation time but use of more memory space (624 integers).
+* 
 *   See Well44497b for a very large period (2^44,497,  i.e. 15.1e+13,466) with similar
 *   computation time but use of even more memory space (1,391 integers).
 *

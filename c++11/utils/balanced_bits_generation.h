@@ -45,15 +45,15 @@ namespace utils
     * keys generation that  is  available  in  file  keys/keys.c  in  related
     * software package https://squaresrng.wixsite.com/rand.
     * ( Bernard Widynski1, March 2022, extracted text from keys/keys.c:
-    *   The keys are created so that the upper 8 digits are different and also *
-    *   that the lower 8 digits are different.  The lower 8 digits are created *
-    *   systematically so that all possible combinations are produced.  The    *
-    *   ninth digit is chosen to be different than the eighth digit.  The rest *
-    *   of the upper 7 digits are chosen randomly.  For any two keys produced, *
-    *   it is certain that at least one digit is different in the lower 9      *
-    *   digits.  Testing has shown that this prevents similarities that can    *
-    *   arise in streams produced by keys that vary only in the upper digits.  *
-    * )
+    *   The keys are created so that the upper 8 digits are different and also  *
+    *   that the lower 8 digits are different.  The lower 8 digits are created  *
+    *   systematically so that all possible  combinations  are  produced.  The  *
+    *   ninth digit is chosen to be different than the eighth digit.  The rest  *
+    *   of the upper 7 digits are chosen randomly.  For any two keys produced,  *
+    *   it  is  certain  that  at  least one digit is different in the lower 9  *
+    *   digits.  Testing has shown that this prevents  similarities  that  can  *
+    *   arise in streams produced by keys that vary only in the upper digits. ) *
+    *
     * Notice: Should you need to call this function many times to  initialize 
     * multiple streams of PRNGs,  ensure that no two initial seeds values are 
     * finaly the same on their 9 lowest hexa digits.

@@ -60,6 +60,7 @@ SOFTWARE.
 *
 *   See Mrg287 for  a  short  period  MR-Generator  (2^287,  i.e. 2.49e+86)  with  low
 *   computation time but 256 integers memory consumption (2^32 modulus calculations).
+* 
 *   See Mrg1457 for a longer period MR-Generator  (2^1457,  i.e. 4.0e+438)  and longer
 *   computation  time  (2^31-1 modulus calculations) but less memory space consumption
 *   (i.e. 47 integers).
