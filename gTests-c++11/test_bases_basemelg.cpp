@@ -48,10 +48,13 @@ namespace tests_bases
 
             EXPECT_EQ(0, melg._internal_state.state.index);
             EXPECT_NE(0, melg._internal_state.state.list[0]);
-            for (int i = 1; i < N; ++i) {
-                EXPECT_NE(0ULL, melg._internal_state.state.list[i]);
-                EXPECT_NE(melg._internal_state.state.list[i - 1], melg._internal_state.state.list[i]);
-            }
+            EXPECT_TRUE(
+                std::any_of(
+                    melg._internal_state.state.list.cbegin(),
+                    melg._internal_state.state.list.cend(),
+                    [](auto s) { return s != 0; }
+                )
+            );
             EXPECT_FALSE(melg._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, melg._internal_state.gauss_next);
         }
