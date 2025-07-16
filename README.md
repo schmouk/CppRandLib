@@ -7,7 +7,7 @@ CppRandLib github web pages are here: [https://schmouk.github.io/CppRandLib/](ht
 
 ---
 ## License
-PyRandLib is distributed under the MIT license for its largest use.  
+**CppRandLib** is distributed under the MIT license for its largest use.  
 If you decide to use this library, please mention it and add the copyright notice to your software as stated in the LICENSE file.
 
 ```
@@ -249,7 +249,7 @@ In **CppRandLib**, the WELL algorithm is provided in next forms: Well512a, Well1
 **CppRandLib** implements its 3 major versions with resp. 2^32, 2^64 and 2^128 periodicities: resp. Pcg64_32, Pcg128_64 and Pcg1024_32 classes which generate output values coded on resp. 32-, 64- and 32- bits. The original library (C and C++) can be downloaded from here [pcg-cpp-0.98.zip](https://www.pcg-random.org/downloads/pcg-cpp-0.98.zip) as well as can its code be cloned from Github, here: [https://github.com/imneme/pcg-cpp](https://github.com/imneme/pcg-cpp).
 
 1. The CWG algorithm (Collatz-Weyl Generator, see [8], 2024) is now implemented in **CppRandLib**. This algorithm is fast, uses four integers as its internal state and generates chaos via multiplication and xored-shifted instructions. Periods are medium to large and the generated randomness is of up quality. It does not offer jump ahead but multi-streams feature is available via the simple modification of a well specified integer from its four integers state.  
-In **PyRandLib**, the CWG algorithm is provided in next forms: Cwg64, Cwg64-128 and Cwg128 that  generate output values coded on resp. 64-, 64- and 128- bits .
+In **CppRandLib**, the CWG algorithm is provided in next forms: Cwg64, Cwg64-128 and Cwg128 that  generate output values coded on resp. 64-, 64- and 128- bits .
 
 1. The Squares algorithm (see "Squares: A Fast Counter-Based RNG" [9], 2022) is now implemented in **CppRandLib**. This algorithm is fast, uses two 64-bits integers as its internal state (a counter and a key), gets a period of 2^64 and runs through 4 to 5 rounds of squaring, exchanging high and low bits and xoring intermediate values. Multi-streams feature is available via the value of the key.  
 In **CppRandLib**, the Squares32 and Squares64 versions of the algorithm are implemented. They provide resp. 32- and 64- bits output values. Caution: the 64-bits versions should not pass the birthday test, which is a randmoness issue, while this is not mentionned in the original paper [9].
@@ -528,7 +528,7 @@ See Mrg287 above description for an explanation of the MRG original algorithm.
 
 ### Mrg49507  --  2^49,507 periodicity
 
-**Mrg49507** implements a fast 31-bits Multiple Recursive Generator with the longer period of all of the PRNGs that are implemented in **PyRandLib** (2^49,507, i.e. 1.2e+14,903) with low computation time also (x2.1 as for Mrg287) but use of much more memory space (1,597 integers 32-bits coded).
+**Mrg49507** implements a fast 31-bits Multiple Recursive Generator with the longer period of all of the PRNGs that are implemented in **CppRandLib** (2^49,507, i.e. 1.2e+14,903) with low computation time also (x2.1 as for Mrg287) but use of much more memory space (1,597 integers 32-bits coded).
      
 The implementation of this MRG 31-bits model is based on the 'DX-1597-2-7' MRG proposed by Deng, see [3]. It uses the recurrence:
 
