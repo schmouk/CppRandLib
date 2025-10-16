@@ -1,0 +1,25 @@
+var class_fast_rand63 =
+[
+    [ "FastRand63", "class_fast_rand63.html#a95a6b80a83258abb5b359a029768b3d3", null ],
+    [ "FastRand63", "class_fast_rand63.html#afafb3574aad5b49b322ecc01bc40d732", null ],
+    [ "FastRand63", "class_fast_rand63.html#adee683f8cd2e0a8269ba235e86b5f8a3", null ],
+    [ "FastRand63", "class_fast_rand63.html#a63a2da4e57963bf20323fa09398a929a", null ],
+    [ "FastRand63", "class_fast_rand63.html#a8a49194892fdab4c718b1898a214f5a0", null ],
+    [ "FastRand63", "class_fast_rand63.html#ae7c6017edcbe634f5474827bc29134f4", null ],
+    [ "FastRand63", "class_fast_rand63.html#af6197a34cd6ec3e0e524a2a402ba89d5", null ],
+    [ "FastRand63", "class_fast_rand63.html#af10f3957f81e47b51533ab887d39b750", null ],
+    [ "FastRand63", "class_fast_rand63.html#a75a7adfbbb521860a2e9c45fb9b037a6", null ],
+    [ "~FastRand63", "class_fast_rand63.html#aef585922110c7b7b863ef076a08ec192", null ],
+    [ "_setstate", "class_fast_rand63.html#a6ddba7b14dc171728935910f34d09ec1", null ],
+    [ "_setstate", "class_fast_rand63.html#a2875ad75f8e7158aef60dae6cf76c595", null ],
+    [ "next", "class_fast_rand63.html#affa1d8b7123f81ee395ac4c08da08110", null ],
+    [ "seed", "class_fast_rand63.html#af6b5b93789fead7de166e91e30755d1c", null ],
+    [ "seed", "class_fast_rand63.html#acd6d817d21ee4ca90afd488740843d2c", null ],
+    [ "seed", "class_fast_rand63.html#a20a8ea55cfe2baa38b486b998331ff44", null ],
+    [ "seed", "class_fast_rand63.html#af986612fd677903ad805f87ce23f1585", null ],
+    [ "seed", "class_fast_rand63.html#ad8a9b12383f489de0db48b9f103143af", null ],
+    [ "seed", "class_fast_rand63.html#adea0a34d3a59ab8f0f0198d47caa0f30", null ],
+    [ "seed", "class_fast_rand63.html#a07a1ac7c9fc2f7507aca4d3de622e77d", null ],
+    [ "seed", "class_fast_rand63.html#aa63ddc1022b588d403ab361ae555005b", null ],
+    [ "seed", "class_fast_rand63.html#a710f1d2b981998a1eaf39514f3449315", null ]
+];

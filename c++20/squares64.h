@@ -98,7 +98,7 @@ public:
     Squares64(const unsigned long      seed) noexcept;       //!< Valued constructor (unsigned long).
     Squares64(const long long          seed) noexcept;       //!< Valued constructor (long long).
     Squares64(const unsigned long long seed) noexcept;       //!< Valued constructor (unsigned long long).
-    Squares64(const utils::UInt128& seed) noexcept;       //!< Valued constructor (unsigned 128-bits).
+    Squares64(const utils::UInt128&    seed) noexcept;       //!< Valued constructor (unsigned 128-bits).
     Squares64(const double             seed);                //!< Valued constructor (double).
 
     Squares64(const state_type& internal_state) noexcept;    //!< Valued constructor (full state).
