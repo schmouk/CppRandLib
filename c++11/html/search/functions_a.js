@@ -1,23 +1,9 @@
 var searchData=
 [
-  ['_7ecwg128_0',['~Cwg128',['../class_cwg128.html#a02c800d54db169a09aca0ac601d9d0d3',1,'Cwg128']]],
-  ['_7ecwg128_5f64_1',['~Cwg128_64',['../class_cwg128__64.html#a0aef25f8d11fd2bb1c9d77e0fb5bd1f0',1,'Cwg128_64']]],
-  ['_7ecwg64_2',['~Cwg64',['../class_cwg64.html#a650c725b4a400c66c1e1c99b74994559',1,'Cwg64']]],
-  ['_7efastrand32_3',['~FastRand32',['../class_fast_rand32.html#adab738ce482c1e3d0e8e45be1603cd59',1,'FastRand32']]],
-  ['_7efastrand63_4',['~FastRand63',['../class_fast_rand63.html#aef585922110c7b7b863ef076a08ec192',1,'FastRand63']]],
-  ['_7emelg19937_5',['~Melg19937',['../class_melg19937.html#ae9ca6f0c133c99466e59c3086bdaa24e',1,'Melg19937']]],
-  ['_7emelg44497_6',['~Melg44497',['../class_melg44497.html#a7db31b4e17cff884048c046fc19216e3',1,'Melg44497']]],
-  ['_7emelg607_7',['~Melg607',['../class_melg607.html#abbc797ab6c4a044f25f6cf0186c4bf8a',1,'Melg607']]],
-  ['_7emrg1457_8',['~Mrg1457',['../class_mrg1457.html#a4ed99483ad5b17f0c09797cac97d77a2',1,'Mrg1457']]],
-  ['_7emrg287_9',['~Mrg287',['../class_mrg287.html#a75ca90c25dd301943487df4b67380f5a',1,'Mrg287']]],
-  ['_7emrg49507_10',['~Mrg49507',['../class_mrg49507.html#a90293253993a7e19e5eb556f6504fccc',1,'Mrg49507']]],
-  ['_7esquares32_11',['~Squares32',['../class_squares32.html#a67b0c03e75bb22eb52c0885a25d8797d',1,'Squares32']]],
-  ['_7esquares64_12',['~Squares64',['../class_squares64.html#aff383f1067e52639bc1c4c2a1fbdfceb',1,'Squares64']]],
-  ['_7ewell1024a_13',['~Well1024a',['../class_well1024a.html#a423f799eb8c9d87b68ef8d16ec5e7ea1',1,'Well1024a']]],
-  ['_7ewell19937c_14',['~Well19937c',['../class_well19937c.html#a9cdbc27ab3309bf0c1749f15fef4adfb',1,'Well19937c']]],
-  ['_7ewell44497b_15',['~Well44497b',['../class_well44497b.html#aec8584804931888483d7715c536b97f7',1,'Well44497b']]],
-  ['_7ewell512a_16',['~Well512a',['../class_well512a.html#a7594b9b82260c58d52c5258399ccafb3',1,'Well512a']]],
-  ['_7exoroshiro1024_17',['~Xoroshiro1024',['../class_xoroshiro1024.html#a9b7fd5896c7c0485e424ab2d0eed027b',1,'Xoroshiro1024']]],
-  ['_7exoroshiro256_18',['~Xoroshiro256',['../class_xoroshiro256.html#a1746f0099454cb5a9d1c2b20df332c83',1,'Xoroshiro256']]],
-  ['_7exoroshiro512_19',['~Xoroshiro512',['../class_xoroshiro512.html#a937419f2fb54e9c17288f3a4e4636dfe',1,'Xoroshiro512']]]
+  ['operator_20const_20double_0',['operator const double',['../classutils_1_1_u_int128.html#ac67e510688334211650772cf7f72e1ca',1,'utils::UInt128']]],
+  ['operator_20const_20long_20double_1',['operator const long double',['../classutils_1_1_u_int128.html#a12cf7ab75beb8f5a87cfc7a6dc00fe68',1,'utils::UInt128']]],
+  ['operator_21_3d_2',['operator!=',['../struct_list_seed_state.html#acca0717a835a15ba181e2904b66812a9',1,'ListSeedState']]],
+  ['operator_28_29_3',['operator()',['../class_base_random.html#a03d66ce52ac7a9d21069fba62677ea65',1,'BaseRandom::operator()() noexcept'],['../class_base_random.html#a940e175e1dd09f769724a9df85a2287c',1,'BaseRandom::operator()(const T max)'],['../class_base_random.html#a8a3dd28e28eb5c1214289c9bd9a3ab44',1,'BaseRandom::operator()(const T max, const std::size_t n)'],['../class_base_random.html#a7016b659c3abe67c5088ea8c64260bb6',1,'BaseRandom::operator()(const T min, const T max, const std::size_t n)'],['../class_base_random.html#ad46e92e2c0d88d36ed4e9004374b3eb3',1,'BaseRandom::operator()(const std::vector&lt; T &gt; &amp;max)'],['../class_base_random.html#ad1546d1ac18402ada9b5caf724662452',1,'BaseRandom::operator()(const std::array&lt; T, n &gt; &amp;max)'],['../class_base_random.html#a8b8904245206aa7a8bd6a42e6d3fe8f2',1,'BaseRandom::operator()(const std::vector&lt; T &gt; &amp;min, const std::vector&lt; T &gt; &amp;max)'],['../class_base_random.html#a6cf4b50aa446a4dcbbd64ac12e91303b',1,'BaseRandom::operator()(const std::array&lt; T, n &gt; &amp;min, const std::array&lt; T, n &gt; &amp;max)'],['../classutils_1_1_split_mix64.html#a2f481b1c1a48e6c0b464514a75cf0135',1,'utils::SplitMix64::operator()()'],['../classutils_1_1_split_mix63.html#acb76d1abb8fcade73e0e3abcc27d5e5c',1,'utils::SplitMix63::operator()()'],['../classutils_1_1_split_mix32.html#ade7d1081dbae6cee2d990c1001225753',1,'utils::SplitMix32::operator()()'],['../classutils_1_1_split_mix31.html#a4f84936ec497d0539a05dc7c1faa2f05',1,'utils::SplitMix31::operator()()']]],
+  ['operator_3d_4',['operator=',['../class_base_random.html#a3e7e3672a15330c7cf83b071bab7ae36',1,'BaseRandom::operator=(const BaseRandom &amp;) noexcept=default'],['../class_base_random.html#aa3aaf21f0017631ed21bd63a7c45c570',1,'BaseRandom::operator=(BaseRandom &amp;&amp;) noexcept=default'],['../class_base_random.html#ad02805768224c97446ffb53bcc469022',1,'BaseRandom::operator=(const StateT &amp;new_internal_state) noexcept'],['../struct_collatz_weyl_state.html#abfda0af067f10bf00c3edee56088ed4e',1,'CollatzWeylState::operator=(const CollatzWeylState &amp;other) noexcept=default'],['../struct_collatz_weyl_state.html#a1e29be061fe58f3f4ac54f74ca1236bc',1,'CollatzWeylState::operator=(CollatzWeylState &amp;&amp;other) noexcept=default'],['../classutils_1_1_u_int128.html#a8dab91a07562abdec4f141afe73ffa78',1,'utils::UInt128::operator=(const UInt128 &amp;) noexcept=default'],['../classutils_1_1_u_int128.html#a53dd7ba378a1918e961ad57f2a77f8fa',1,'utils::UInt128::operator=(UInt128 &amp;&amp;) noexcept=default']]],
+  ['operator_3d_3d_5',['operator==',['../struct_collatz_weyl_state.html#ab3dcad1eb22f8860884f66ec0135be75',1,'CollatzWeylState::operator==()'],['../struct_list_seed_state.html#a1bc4d5cffceffa6c3a94f4de4c4f97c7',1,'ListSeedState::operator==()']]]
 ];

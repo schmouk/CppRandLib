@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['random_0',['random',['../class_cwg128.html#ae9d9fb1b66331ec74bfed8cb3f2a53b7',1,'Cwg128::random()'],['../class_cwg128.html#ab8286bf56b432e6ddc39ef70e97c8296',1,'Cwg128::random() noexcept']]]
+  ['inc_5findex_0',['inc_index',['../struct_list_seed_state.html#a548126c4a9eedd702ca5087ada52e528',1,'ListSeedState']]],
+  ['init_5findex_1',['init_index',['../struct_list_seed_state.html#aeddf65b13d7f27c9975c266a1672f455',1,'ListSeedState']]]
 ];

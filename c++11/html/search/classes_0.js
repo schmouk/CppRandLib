@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['alphabetaargsexception_0',['AlphaBetaArgsException',['../struct_alpha_beta_args_exception.html',1,'']]],
-  ['arithmeticvaluetypeexception_1',['ArithmeticValueTypeException',['../struct_arithmetic_value_type_exception.html',1,'']]]
+  ['_5finternalstate_0',['_InternalState',['../struct_base_random_1_1___internal_state.html',1,'BaseRandom']]]
 ];

@@ -26,17 +26,23 @@ var NAVTREE =
 [
   [ "CppRandLib - c++11", "index.html", [
     [ "README", "md__r_e_a_d_m_e.html", null ],
+    [ "Topics", "topics.html", "topics" ],
+    [ "Namespaces", "namespaces.html", [
+      [ "Namespace List", "namespaces.html", "namespaces_dup" ],
+      [ "Namespace Members", "namespacemembers.html", [
+        [ "All", "namespacemembers.html", null ],
+        [ "Functions", "namespacemembers_func.html", null ]
+      ] ]
+    ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", "functions_dup" ],
-        [ "Functions", "functions_func.html", "functions_func" ]
+        [ "Functions", "functions_func.html", "functions_func" ],
+        [ "Variables", "functions_vars.html", null ]
       ] ]
-    ] ],
-    [ "Files", "files.html", [
-      [ "File List", "files.html", "files_dup" ]
     ] ]
   ] ]
 ];
@@ -44,7 +50,9 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"class_pcg128__64.html#a2761cf7006dee75d41880cae2e9ce769"
+"class_cwg128__64.html#a43bbbeee24c2b426406e541477756e2b",
+"class_pcg64__32.html#aa4a8c61ab02585d871df268168e253ac",
+"functions_func_e.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';
