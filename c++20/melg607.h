@@ -25,6 +25,12 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @addtogroup MELG-algorithms
+ *
+ *  @{
+ */
+
 
 //===========================================================================
 #include "baseclasses/basemelg.h"
@@ -132,3 +138,5 @@ private:
     static constexpr value_type _A_COND[]{ 0ull, 0x81f1'fd68'0123'48bcull };
 
 };
+
+/** @}*/

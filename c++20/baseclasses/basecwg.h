@@ -25,6 +25,29 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @defgroup CWG-algorithms Collatz-Weyl Generators (CWG) algorithm
+ *
+ *  This is the group for all the CppRandLib implementations of the Collatz-Weyl
+ *  pseudorandom Generators (CWG) algorithm.
+ *
+ *  CWG models are chaotic generators that are combined with Weyl sequences to
+ *  eliminate  the risk of short cycles.  They have a large period,  a uniform
+ *  distribution,  and the ability to generate multiple independent streams by
+ *  changing  their  internal  parameters  (Weyl  increment).  CWGs  owe their
+ *  exceptional  quality  to  the  arithmetical  dynamics   of  noninvertible,
+ *  generalized, Collatz mappings based on the wellknown Collatz conjecture.
+ *  There is no jump function, but each  odd  number  of  the  Weyl  increment
+ *  initiates  a  new  unique  period,  which  enables quick initialization of
+ *  independent streams (this text is extracted from [8], see README.md).
+ *
+ *  The internal implementation of the CWG algorithm varies according  to  its
+ *  implemented  version.  See  implementation  classes  to  get  their formal
+ *  description.
+ *
+ *  @{
+ */
+
 
 //===========================================================================
 #include <cstdint>
@@ -321,3 +344,5 @@ inline void BaseCWG<ValueType, StateValueType, OutputType, OUTPUT_BITS>::_setsta
 {
     MyBaseClass::_internal_state.state.seed(seed_);
 }
+
+/** @}*/

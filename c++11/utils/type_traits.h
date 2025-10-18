@@ -25,7 +25,7 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/** \addtogroup utils
+/** \addtogroup utils 
  *  @{
  */
 
@@ -38,7 +38,15 @@ SOFTWARE.
 //===========================================================================
 namespace utils
 {
+    /** \defgroup type_traits CppRandLib specific traits utilities
+     *
+     * Defines traits utilities that are internally used in CppRandLib.
+     *
+     *  @{
+     */
+
     //-----------------------------------------------------------------------
+    /** \brief The default container-trait class. Always states the a template type is NOT a container. */
     template<typename ContainerType>
     class is_indexable
     {
@@ -51,6 +59,7 @@ namespace utils
 
 
     //-----------------------------------------------------------------------
+    /** \brief Specialization of class is_indexable<> for std::vectors. States that std::vectors are of container type. */
     template<typename T>
     class is_indexable<std::vector<T>>
     {
@@ -59,6 +68,7 @@ namespace utils
     };
 
     //-----------------------------------------------------------------------
+    /** \brief Specialization of class is_indexable<> for std::arrays. States that std::arrays are of container type. */
     template<typename T, const std::size_t n>
     class is_indexable<std::array<T, n>>
     {
@@ -66,6 +76,7 @@ namespace utils
         static const bool value{ true };
     };
 
+    /** @} */
 }
 
 /** @} */

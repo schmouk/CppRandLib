@@ -29,7 +29,6 @@ SOFTWARE.
  *  @{
  */
 
-
 //===========================================================================
 #include <cassert>
 #include <type_traits>
@@ -40,8 +39,13 @@ SOFTWARE.
 //===========================================================================
 namespace utils
 {
+    /** \defgroup bits_rotations Bits rotation utility on unsigned integers
+    *
+    * @{
+    */
+
     //=======================================================================
-    /** @brief Bits left rotation on unsigned integers. */
+    /** @brief Left bits rotation on unsigned integers. */
     template<typename IntT>
     inline const IntT rot_left(const IntT value, const int rot_count, const int BITS_COUNT = 8 * sizeof(IntT))
     {
@@ -60,6 +64,7 @@ namespace utils
 
         return ((value & lo_mask) << rot_count) | ((value & hi_mask) >> (BITS_COUNT - rot_count));
     }
+    /** @} */
 
 }
 

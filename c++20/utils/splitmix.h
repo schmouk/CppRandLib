@@ -25,6 +25,10 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/** \addtogroup utils
+ *  @{
+ */
+
 
 //===========================================================================
 #include <cstdint>
@@ -37,7 +41,17 @@ SOFTWARE.
 //===========================================================================
 namespace utils
 {
-    //===========================================================================
+    /** \defgroup SplitMix Splittable pseudorandom number generators
+     *
+     * This is a CppRandLib implementation of the Fast Splittable  Pseudorandom
+     * Number Generators proposed by Steele Jr, Guy L., Doug Lea, and Christine
+     * H. Flood in "Fast splittable pseudorandom number  generators.",  in  ACM
+     * SIGPLAN Notices 49.10 (2014): pp. 453-472.
+     *
+     *  @{
+     */
+
+     //===========================================================================
     /** @brief The splitting and mixing algorithm used to initialize 64-bits internal states of PRNGs.
     *
     * This method is used to split and mix bits of  64-bits  integers.  It  is
@@ -371,4 +385,7 @@ namespace utils
 
     };
 
+    /** @}*/
 }
+
+/** @}*/

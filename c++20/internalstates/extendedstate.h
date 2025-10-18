@@ -25,6 +25,12 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/** \addtogroup internalstates
+ *
+ *  @{
+ */
+
+
 
 //===========================================================================
 #include <type_traits>
@@ -73,3 +79,5 @@ inline void ExtendedState<StateType, ExtendedValueType, EXTENDED_SIZE>::seed(con
     utils::SplitMix32 splitmix_32(seed_);
     std::ranges::generate(extended_state, [&] { return splitmix_32(); });
 }
+
+/** @} */

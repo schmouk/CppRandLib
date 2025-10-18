@@ -25,6 +25,29 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @defgroup LCG-algorithms Linear Congruential Generator (LCG) algorithms
+ *
+ *  This is the group for all the CppRandLib implementations  of  the  Linear
+ *  Congruential Generator (LCG) algorithm.
+ *
+ *  LCG models  evaluate  pseudo-random  numbers  suites  x(i)  as  a  simple
+ *  mathematical function of
+ * @code
+ *       x(i) = (a * x(i-1) + c) mod m
+ * @endcode
+ *
+ *  Results  are  nevertheless  considered  to  be  poor  as  stated  in  the
+ *  evaluation  done  by  Pierre  L'Ecuyer and Richard Simard (Universite  de
+ *  Montreal) in 'TestU01: A C Library for Empirical Testing of Random Number
+ *  Generators  -  ACM  Transactions  on Mathematical Software,  vol.33  n.4,
+ *  pp.22-40,  August 2007'.  It is not recommended to use such pseudo-random
+ *  numbers generators for serious simulation applications.
+ *
+ *  @{
+ */
+
+
 
 //===========================================================================
 #include <cstdint>
@@ -275,3 +298,5 @@ inline void FastRand32::_setstate(const utils::UInt128& seed_) noexcept
 {
     _setstate(seed_.lo);
 }
+
+/** @}*/

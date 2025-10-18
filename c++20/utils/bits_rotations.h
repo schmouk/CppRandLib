@@ -25,6 +25,9 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/** \addtogroup utils
+ *  @{
+ */
 
 //===========================================================================
 #include <type_traits>
@@ -35,6 +38,11 @@ SOFTWARE.
 //===========================================================================
 namespace utils
 {
+    /** \defgroup bits_rotations Bits rotation utility on unsigned integers
+    *
+    * @{
+    */
+
     //=======================================================================
     template<typename IntT>
         requires std::is_unsigned_v<IntT>
@@ -53,5 +61,8 @@ namespace utils
 
         return ((value & lo_mask) << rot_count) | ((value & hi_mask) >> (BITS_COUNT - rot_count));
     }
+    /** @}*/
 
 }
+
+/** @}*/

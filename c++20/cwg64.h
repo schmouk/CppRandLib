@@ -25,6 +25,12 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @addtogroup CWG-algorithms
+ *
+ *  @{
+ */
+
 
 //===========================================================================
 #include <cstdint>
@@ -142,3 +148,5 @@ public:
     void seed(const double             seed_);               //!< Initializes internal state (double).
 
 };
+
+/** @}*/

@@ -25,6 +25,12 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @addtogroup PCG-algorithms
+ *
+ *  @{
+ */
+
 
 //===========================================================================
 #include <cstdint>
@@ -136,3 +142,5 @@ private:
     static const utils::UInt128 _c;  // (std::uint64_t(0x5851'f42d'4c95'7f2d), 0x1405'7b7e'f767'814f);
 
 };
+
+/** @}*/

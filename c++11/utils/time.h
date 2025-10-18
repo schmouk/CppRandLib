@@ -39,6 +39,15 @@ SOFTWARE.
 //===========================================================================
 namespace utils
 {
+    /** \defgroup time System time utility
+     *
+     * Defines utility functions to get actual system time as 64-bits integer
+     * values with a resolution of milliseconds,  microseconds or nanoseconds
+     * (when available with the underlying operating system).
+     *
+     *  @{
+     */
+
     //=======================================================================
     /** @brief Returns the current time since epoch as a 64-bits milliseconds integer. */
     inline const std::uint64_t get_time_ms() noexcept

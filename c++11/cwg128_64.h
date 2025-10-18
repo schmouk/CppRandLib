@@ -25,6 +25,12 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @addtogroup CWG-algorithms
+ *
+ *  @{
+ */
+
 
 //===========================================================================
 #include <cstdint>
@@ -145,3 +151,5 @@ public:
     virtual void _setstate(const utils::UInt128& seed_) noexcept override;  //!< Sets the internal state with a 128-bits integer seed.
 
 };
+
+/** @}*/

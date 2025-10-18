@@ -41,6 +41,11 @@ SOFTWARE.
 //===========================================================================
 namespace utils
 {
+    /** \defgroup balanced_bits_generation Generation of balanced bits patterns in integers
+    * 
+    * @{
+    */
+
     //=======================================================================
     /** @brief Generates balanced bits patterns in integers.
     *
@@ -103,6 +108,8 @@ namespace utils
 
         return balanced_value;
     }
+
+    /** @}*/
 }
 
 /** @} */

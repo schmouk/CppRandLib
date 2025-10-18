@@ -25,6 +25,15 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @defgroup BaseRandom Base class for all PRNGs (Pseudo Random Numbers Generators)
+ *
+ * This is the definition of the base class for all pseudo-random numbers generators
+ * that are implemented in CppRandLib.
+ * 
+ *  @{
+ */
+
 
 //===========================================================================
 #include <algorithm>
@@ -124,6 +133,7 @@ SOFTWARE.
 *
 *   Conforming to the former Python version of this library (i.e. PyRandLib), next methods
 *   are available - built-in function in Python module 'random':
+* @code
 *    |
 *    |  betavariate(alpha, beta)
 *    |      Beta distribution.
@@ -334,6 +344,7 @@ SOFTWARE.
 *    |      https://en.wikipedia.org/wiki/Weibull_distribution
 *    |
 *    |      alpha is the scale parameter and beta is the shape parameter.
+* @endcode
 */
 template<
     typename StateT,
@@ -2094,3 +2105,5 @@ const double BaseRandom<StateT, OutputT, OUTPUT_BITS>::weibullvariate(const doub
 
     return alpha * std::pow(-std::log(1.0 - uniform()), 1.0 / beta);
 }
+
+/** @}*/
