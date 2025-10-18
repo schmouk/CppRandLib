@@ -26,7 +26,7 @@ SOFTWARE.
 */
 
 /**
- * @defgroup CWG-algorithms Collatz-Weyl Generators (CWG) algorithm
+ * @defgroup CWG-algorithms algos: CWG - Collatz-Weyl Generators
  *
  *  This is the group for all the CppRandLib implementations of the Collatz-Weyl
  *  pseudorandom Generators (CWG) algorithm.

@@ -26,7 +26,7 @@ SOFTWARE.
 */
 
 /**
- * @defgroup LFib-algorithms Lagged Fibonacci (LFib) algorithm
+ * @defgroup LFib-algorithms algos: LFib - Lagged Fibonacci generators
  *
  *  This is the group for all the CppRandLib  implementations  of  the  Lagged
  *  Fibonacci pseudorandom generators (LFib) algorithm.

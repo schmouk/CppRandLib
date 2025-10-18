@@ -38,12 +38,18 @@ SOFTWARE.
 //===========================================================================
 namespace utils
 {
-    /** \defgroup bits_rotations Bits rotation utility on unsigned integers
+    /** \defgroup bits_rotations utils: Bits rotation utility on unsigned integers
     *
     * @{
     */
 
     //=======================================================================
+    /** @brief Left bits rotation on unsigned integers.
+    *
+    * Evaluates left rotation to bits on the passed value. The rot_count left
+    * bits  are  finally inserted with same ordering at the right side of the
+    * returned result.
+    */
     template<typename IntT>
         requires std::is_unsigned_v<IntT>
     inline const IntT rot_left(const IntT value, const int rot_count, const int BITS_COUNT = 8 * sizeof(IntT))
@@ -61,8 +67,8 @@ namespace utils
 
         return ((value & lo_mask) << rot_count) | ((value & hi_mask) >> (BITS_COUNT - rot_count));
     }
-    /** @}*/
 
+    /** @}*/
 }
 
 /** @}*/

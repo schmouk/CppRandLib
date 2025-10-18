@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['xoroshiro_20algorithm_0',['Scrambled Linear Pseudorandom Number Generators (xoroshiro) algorithm',['../group__xoroshiro-algorithms.html',1,'']]]
+  ['xoroshiro_20scrambled_20linear_20pseudorandom_20number_20generators_0',['algos: Xoroshiro - Scrambled Linear Pseudorandom Number generators',['../group__xoroshiro-algorithms.html',1,'']]]
 ];

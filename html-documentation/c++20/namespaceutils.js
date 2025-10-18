@@ -12,6 +12,7 @@ var namespaceutils =
     [ "get_time_ms", "group__time.html#ga35dceb7cd29a26073df614942344275b", null ],
     [ "get_time_ns", "group__time.html#gab639d904bdabb7c4bdd6839d279ffea4", null ],
     [ "get_time_us", "group__time.html#gab388d78b01c09999118032de7f935941", null ],
+    [ "rot_left", "group__bits__rotations.html#ga1d24f9b7537f7bc439a760c3b67dcd8b", null ],
     [ "set_random_seed31", "group__seed__generation.html#gac58ff90fbcf4381a927807a9e1315fa4", null ],
     [ "set_random_seed32", "group__seed__generation.html#ga5855b54804f5d7a2e1621f46f613bdef", null ],
     [ "set_random_seed63", "group__seed__generation.html#ga2b7c2dcbf4ae230e5cc191406265839e", null ],

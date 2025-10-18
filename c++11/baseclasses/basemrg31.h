@@ -26,7 +26,7 @@ SOFTWARE.
 */
 
 /**
- * @defgroup MRG-algorithms Multiple Recursive Generators (MRG) algorithm
+ * @defgroup MRG-algorithms algos: MRG - Multiple Recursive Generators
  *
  *  This is the group for all the CppRandLib implementations of the Multiple
  *  Recursive pseudorandom Generators (MRG) algorithm.

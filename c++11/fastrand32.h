@@ -26,7 +26,7 @@ SOFTWARE.
 */
 
 /**
- * @defgroup LCG-algorithms Linear Congruential Generator (LCG) algorithms
+ * @defgroup LCG-algorithms algos: LCG - Linear Congruential Generators
  *
  *  This is the group for all the CppRandLib implementations  of  the  Linear 
  *  Congruential Generator (LCG) algorithm.

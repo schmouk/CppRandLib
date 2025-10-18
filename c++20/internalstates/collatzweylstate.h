@@ -25,7 +25,7 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/** \defgroup internalstates Algorithms Internal States Definitions
+/** \defgroup internalstates internal states: Definition of generators internal states
  *
  * Internal States are grouped together in directory 'internalstates'.  They
  * describe and define structures and operations of internal states that are

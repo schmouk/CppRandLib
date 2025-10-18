@@ -26,7 +26,7 @@ SOFTWARE.
 */
 
 /**
- * @defgroup PCG-algorithms Permuted Congruential Generator (PCG) algorithm
+ * @defgroup PCG-algorithms algos: PCG - Permuted Congruential Generators
  *
  *  This is the group for all the CppRandLib implementations of  the  Permuted 
  *  Congruential Generator (PCG) counter-based pseudorandom algorithm.

@@ -37,7 +37,7 @@ SOFTWARE.
 
 namespace utils
 {
-    /** \defgroup UInt128 A minimalist 128-bits integer type
+    /** \defgroup UInt128 utils: UInt128 - A minimalist 128-bits integer type
      *
      * Defines a minimalist 128-bits type for addition, multiplication,
      * bitshift, bitor and bitxor operations in CppRandLib since such a

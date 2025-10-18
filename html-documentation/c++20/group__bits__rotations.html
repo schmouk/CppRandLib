@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.14.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>CppRandLib - c++20: Bits rotation utility on unsigned integers</title>
+<title>CppRandLib - c++20: utils: Bits rotation utility on unsigned integers</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -86,18 +86,61 @@ $(function(){initNavTree('group__bits__rotations.html','',''); });
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">Bits rotation utility on unsigned integers </div></div>
+  <div class="headertitle"><div class="title">utils: Bits rotation utility on unsigned integers </div></div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga1d24f9b7537f7bc439a760c3b67dcd8b" id="r_ga1d24f9b7537f7bc439a760c3b67dcd8b"><td class="memTemplParams" colspan="2"><a id="ga1d24f9b7537f7bc439a760c3b67dcd8b" name="ga1d24f9b7537f7bc439a760c3b67dcd8b"></a>
-template&lt;typename IntT&gt; <br />
+<tr class="memitem:ga1d24f9b7537f7bc439a760c3b67dcd8b" id="r_ga1d24f9b7537f7bc439a760c3b67dcd8b"><td class="memTemplParams" colspan="2">template&lt;typename IntT&gt; <br />
 requires std::is_unsigned_v&lt;IntT&gt;</td></tr>
-<tr class="memitem:ga1d24f9b7537f7bc439a760c3b67dcd8b template"><td class="memItemLeft" align="right" valign="top">const IntT&#160;</td><td class="memItemRight" valign="bottom"><b>utils::rot_left</b> (const IntT value, const int rot_count, const int BITS_COUNT=8 *sizeof(IntT))</td></tr>
+<tr class="memitem:ga1d24f9b7537f7bc439a760c3b67dcd8b template"><td class="memItemLeft" align="right" valign="top">const IntT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga1d24f9b7537f7bc439a760c3b67dcd8b">utils::rot_left</a> (const IntT value, const int rot_count, const int BITS_COUNT=8 *sizeof(IntT))</td></tr>
+<tr class="memdesc:ga1d24f9b7537f7bc439a760c3b67dcd8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Left bits rotation on unsigned integers.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
+<a id="ga1d24f9b7537f7bc439a760c3b67dcd8b" name="ga1d24f9b7537f7bc439a760c3b67dcd8b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1d24f9b7537f7bc439a760c3b67dcd8b">&#9670;&#160;</a></span>rot_left()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename IntT&gt; <br />
+requires std::is_unsigned_v&lt;IntT&gt;</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const IntT utils::rot_left </td>
+          <td>(</td>
+          <td class="paramtype">const IntT</td>          <td class="paramname"><span class="paramname"><em>value</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int</td>          <td class="paramname"><span class="paramname"><em>rot_count</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int</td>          <td class="paramname"><span class="paramname"><em>BITS_COUNT</em></span><span class="paramdefsep"> = </span><span class="paramdefval">8&#160;*&#160;sizeof(IntT)</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Left bits rotation on unsigned integers. </p>
+<p>Evaluates left rotation to bits on the passed value. The rot_count left bits are finally inserted with same ordering at the right side of the returned result. </p>
+
+<p class="reference">Referenced by <a class="el" href="class_xoroshiro1024.html#a10c4f9c4326d8fac70ee6974bfdb049f">Xoroshiro1024::next()</a>, <a class="el" href="class_xoroshiro256.html#a0f256ec83c494421c59b963da6ad7023">Xoroshiro256::next()</a>, and <a class="el" href="class_xoroshiro512.html#a79223bee0e0b8380a7de48a2723cd721">Xoroshiro512::next()</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <div id="page-nav" class="page-nav-panel">

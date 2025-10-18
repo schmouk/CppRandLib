@@ -39,7 +39,7 @@ SOFTWARE.
 //===========================================================================
 namespace utils
 {
-    /** \defgroup time System time utility
+    /** \defgroup time utils: System time utility
      *
      * Defines utility functions to get actual system time as 64-bits integer
      * values with a resolution of milliseconds,  microseconds or nanoseconds

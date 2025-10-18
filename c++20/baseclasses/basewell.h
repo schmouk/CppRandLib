@@ -26,7 +26,7 @@ SOFTWARE.
 */
 
 /**
- * @defgroup WELL-algorithms Well-Equidistributed Long-period Linear Generators (WELL) algorithm
+ * @defgroup WELL-algorithms algos: WELL - Well-Equidistributed Long-period Linear generators
  *
  *  This  is  the  group  for  all  the  CppRandLib  implementations  of   the   Well-
  *  Equidistributed  Long-period  Linear  Generators  pseudo-random  generators (WELL)

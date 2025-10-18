@@ -26,7 +26,7 @@ SOFTWARE.
 */
 
 /**
- * @defgroup BaseRandom Base class for all PRNGs (Pseudo Random Numbers Generators)
+ * @defgroup BaseRandom algos: BaseRandom - Base class for all PRNGs (Pseudo Random Numbers Generators)
  *
  * This is the definition of the base class for all pseudo-random numbers generators
  * that are implemented in CppRandLib.

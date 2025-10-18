@@ -39,7 +39,7 @@ SOFTWARE.
 //===========================================================================
 namespace utils
 {
-    /** \defgroup seed_generation Random seeds generation
+    /** \defgroup seed_generation utils: Random seeds default generation
     *
     * These utilities return 64-, 63-, 32- and 31-bits integers set with the
     * xored and shuffled value of current system time. They are used to seed

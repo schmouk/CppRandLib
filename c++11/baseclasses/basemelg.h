@@ -26,7 +26,7 @@ SOFTWARE.
 */
 
 /**
- * @defgroup MELG-algorithms Maximally Equidistributed Long-period Linear Generators (MELG) algorithm
+ * @defgroup MELG-algorithms algos: MELG - Maximally Equidistributed Long-period Linear Generators
  *
  *  This is the group for all the CppRandLib implementations  of  Maximally 
  *  Equidistributed Long-period Linear Generators (MELG) algorithm.

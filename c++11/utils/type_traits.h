@@ -38,7 +38,7 @@ SOFTWARE.
 //===========================================================================
 namespace utils
 {
-    /** \defgroup type_traits CppRandLib specific traits utilities
+    /** \defgroup type_traits utils: CppRandLib specific traits utilities
      *
      * Defines traits utilities that are internally used in CppRandLib.
      *

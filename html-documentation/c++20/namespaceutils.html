@@ -86,7 +86,7 @@ $(function(){initNavTree('namespaceutils.html','',''); });
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">utils Namespace Reference<div class="ingroups"><a class="el" href="group__utils.html">Utilities</a></div></div></div>
+  <div class="headertitle"><div class="title">utils Namespace Reference<div class="ingroups"><a class="el" href="group__utils.html">utils: CppRandLib Utilities</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
@@ -117,10 +117,10 @@ Functions</h2></td></tr>
 <tr class="memdesc:gab639d904bdabb7c4bdd6839d279ffea4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current time since epoch as a 64-bits nanoseconds integer.  <br /></td></tr>
 <tr class="memitem:gab388d78b01c09999118032de7f935941" id="r_gab388d78b01c09999118032de7f935941"><td class="memItemLeft" align="right" valign="top">const std::uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__time.html#gab388d78b01c09999118032de7f935941">get_time_us</a> () noexcept</td></tr>
 <tr class="memdesc:gab388d78b01c09999118032de7f935941"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current time since epoch as a 64-bits microseconds integer.  <br /></td></tr>
-<tr class="memitem:ga1d24f9b7537f7bc439a760c3b67dcd8b" id="r_ga1d24f9b7537f7bc439a760c3b67dcd8b"><td class="memTemplParams" colspan="2">
-template&lt;typename IntT&gt; <br />
+<tr class="memitem:ga1d24f9b7537f7bc439a760c3b67dcd8b" id="r_ga1d24f9b7537f7bc439a760c3b67dcd8b"><td class="memTemplParams" colspan="2">template&lt;typename IntT&gt; <br />
 requires std::is_unsigned_v&lt;IntT&gt;</td></tr>
-<tr class="memitem:ga1d24f9b7537f7bc439a760c3b67dcd8b template"><td class="memItemLeft" align="right" valign="top">const IntT&#160;</td><td class="memItemRight" valign="bottom"><b>rot_left</b> (const IntT value, const int rot_count, const int BITS_COUNT=8 *sizeof(IntT))</td></tr>
+<tr class="memitem:ga1d24f9b7537f7bc439a760c3b67dcd8b template"><td class="memItemLeft" align="right" valign="top">const IntT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__bits__rotations.html#ga1d24f9b7537f7bc439a760c3b67dcd8b">rot_left</a> (const IntT value, const int rot_count, const int BITS_COUNT=8 *sizeof(IntT))</td></tr>
+<tr class="memdesc:ga1d24f9b7537f7bc439a760c3b67dcd8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Left bits rotation on unsigned integers.  <br /></td></tr>
 <tr class="memitem:gac58ff90fbcf4381a927807a9e1315fa4" id="r_gac58ff90fbcf4381a927807a9e1315fa4"><td class="memItemLeft" align="right" valign="top">const std::uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__seed__generation.html#gac58ff90fbcf4381a927807a9e1315fa4">set_random_seed31</a> ()</td></tr>
 <tr class="memdesc:gac58ff90fbcf4381a927807a9e1315fa4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a 31-bits random seed for PRNGs, based on the current system time.  <br /></td></tr>
 <tr class="memitem:ga5855b54804f5d7a2e1621f46f613bdef" id="r_ga5855b54804f5d7a2e1621f46f613bdef"><td class="memItemLeft" align="right" valign="top">const std::uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__seed__generation.html#ga5855b54804f5d7a2e1621f46f613bdef">set_random_seed32</a> ()</td></tr>

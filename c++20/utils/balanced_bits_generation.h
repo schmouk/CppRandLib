@@ -40,7 +40,7 @@ SOFTWARE.
 //===========================================================================
 namespace utils
 {
-    /** \defgroup balanced_bits_generation Generation of balanced bits patterns in integers
+    /** \defgroup balanced_bits_generation utils: Generation of balanced bits patterns in integers
     *
     * @{
     */

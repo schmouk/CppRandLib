@@ -26,7 +26,7 @@ SOFTWARE.
 */
 
 /**
- * @defgroup Squares-algorithms Squares counter-based pseudorandom Generators algorithm
+ * @defgroup Squares-algorithms algos: Squares - Squares counter-based pseudorandom generators
  *
  *  This is the group for all the CppRandLib  implementations  of  the  
  *  Squares counter-based pseudorandom Generators (Squares) algorithm.

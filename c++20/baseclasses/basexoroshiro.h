@@ -26,7 +26,7 @@ SOFTWARE.
 */
 
 /**
- * @defgroup xoroshiro-algorithms Scrambled Linear Pseudorandom Number Generators (xoroshiro) algorithm
+ * @defgroup xoroshiro-algorithms algos: Xoroshiro - Scrambled Linear Pseudorandom Number generators
  *
  *  This is the group for all the CppRandLib implementations of the  Scrambled  Linear
  *  Pseudorandom Number Generators (xoroshiro) algorithm.

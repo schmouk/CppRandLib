@@ -41,7 +41,7 @@ SOFTWARE.
 //===========================================================================
 namespace utils
 {
-    /** \defgroup SplitMix Splittable pseudorandom number generators
+    /** \defgroup SplitMix utils: Splittable numbers generators
      *
      * This is a CppRandLib implementation of the Fast Splittable  Pseudorandom
      * Number Generators proposed by Steele Jr, Guy L., Doug Lea, and Christine
