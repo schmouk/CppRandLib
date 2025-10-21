@@ -1,0 +1,25 @@
+var class_base_xoroshiro =
+[
+    [ "BaseXoroshiro", "group__xoroshiro-algorithms.html#ga70df826585bdfd5c6d63c8637927a544", null ],
+    [ "BaseXoroshiro", "group__xoroshiro-algorithms.html#gaffa03b52dff4b8aac76b707dbe675ac8", null ],
+    [ "BaseXoroshiro", "group__xoroshiro-algorithms.html#ga3032c78ccf908caa0c58158a387cd858", null ],
+    [ "BaseXoroshiro", "group__xoroshiro-algorithms.html#ga469bf8cd486ea1d7b60a06b2c0a0ecae", null ],
+    [ "BaseXoroshiro", "group__xoroshiro-algorithms.html#gaf3a8e5a153bb4716c06477b910c939c5", null ],
+    [ "BaseXoroshiro", "group__xoroshiro-algorithms.html#ga5ba19e23bb181be7e9245e67689cafdc", null ],
+    [ "BaseXoroshiro", "group__xoroshiro-algorithms.html#ga79a8ef90705ae4d3556435da236444dc", null ],
+    [ "BaseXoroshiro", "group__xoroshiro-algorithms.html#ga20a2b4cbb59ed6e44c94dc0bb3b5e0e5", null ],
+    [ "BaseXoroshiro", "group__xoroshiro-algorithms.html#ga19ac0d07a0f6b366d094cdb5a1a7ea59", null ],
+    [ "BaseXoroshiro", "group__xoroshiro-algorithms.html#gae5f2dbbe973cb6a1791bb4e873c35965", null ],
+    [ "~BaseXoroshiro", "class_base_xoroshiro.html#aa62037d274e795c309902be12d93d7a6", null ],
+    [ "_setstate", "group__xoroshiro-algorithms.html#ga7da7cd81c492a461ed30561a09faa913", null ],
+    [ "_setstate", "group__xoroshiro-algorithms.html#ga86c416a496ee6a04ef6b8a5039ed141d", null ],
+    [ "seed", "group__xoroshiro-algorithms.html#gafac318ad57a8a083f06fc7fc9f7570f5", null ],
+    [ "seed", "group__xoroshiro-algorithms.html#ga4aeb934fd6b2029c948233bd53c845b1", null ],
+    [ "seed", "group__xoroshiro-algorithms.html#gad3611602f1456b05cf431587860e6f0b", null ],
+    [ "seed", "group__xoroshiro-algorithms.html#ga92c59d08c38aa65dc437165f5e28d53b", null ],
+    [ "seed", "group__xoroshiro-algorithms.html#ga5a376a60707e6340e66c30d07b48ff1f", null ],
+    [ "seed", "group__xoroshiro-algorithms.html#ga2dc169d0ebdcbe276a63b2d61d60645f", null ],
+    [ "seed", "group__xoroshiro-algorithms.html#ga0bba3bbcd12e3f28d2980995107d27ab", null ],
+    [ "seed", "group__xoroshiro-algorithms.html#ga7d64b4f698371c5c9f2dd169a955130c", null ],
+    [ "seed", "group__xoroshiro-algorithms.html#gae616aab5761d6ada7f3dd5d23ec7eff6", null ]
+];

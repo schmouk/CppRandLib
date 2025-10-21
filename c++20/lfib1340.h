@@ -25,6 +25,13 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @addtogroup LFib-algorithms
+ *
+ *  @{
+ */
+
+
 
 //===========================================================================
 #include "baseclasses/baselfib64.h"
@@ -107,3 +114,5 @@ SOFTWARE.
 *   should definitively pass.
 */
 using LFib1340 = BaseLFib64<1279, 861>;
+
+/** @}*/

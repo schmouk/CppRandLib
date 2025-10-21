@@ -25,6 +25,34 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @defgroup LFib-algorithms algos: LFib - Lagged Fibonacci generators
+ *
+ *  This is the group for all the CppRandLib  implementations  of  the  Lagged
+ *  Fibonacci pseudorandom generators (LFib) algorithm.
+ *
+ *  Lagged Fibonacci generators LFib( m, r, k, op) use the recurrence
+ * @code
+ *       x(i) = (x(i-r) op (x(i-k)) mod m
+ * @endcode
+ *   where op is an operation that can be:
+ * @code
+ *       + (addition),
+ *       - (substraction),
+ *       * (multiplication),
+ *       ^ (bitwise exclusive-or).
+ * @endcode
+ *
+ *   With the + or - operation, such generators are in fact MRGs.  They offer very large
+ *   periods  with  the  best  known  results  in the evaluation of their randomness, as
+ *   stated in the evaluation done by Pierre L'Ecuyer and Richard Simard  (Universite de
+ *   Montreal)  in  "TestU01:  A  C  Library  for  Empirical Testing  of  Random  Number
+ *   Generators  - ACM Transactions  on  Mathematical  Software,  vol.33 n.4,  pp.22-40,
+ *   August  2007".
+ *
+ *  @{
+ */
+
 
 //===========================================================================
 #include <cstdint>
@@ -360,3 +388,5 @@ inline void BaseLFib64<SIZE, K>::_setstate(const utils::UInt128& seed) noexcept
 {
     MyBaseClass::_setstate(seed);
 }
+
+/** @}*/

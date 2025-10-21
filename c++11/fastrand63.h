@@ -25,6 +25,12 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @addtogroup LCG-algorithms
+ *
+ *  @{
+ */
+
 
 //===========================================================================
 #include <cstdint>
@@ -280,3 +286,5 @@ inline void FastRand63::_setstate(const utils::UInt128& seed_) noexcept
 {
     _setstate(seed_.lo);
 }
+
+/** @}*/

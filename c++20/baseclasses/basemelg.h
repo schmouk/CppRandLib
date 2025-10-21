@@ -25,6 +25,26 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @defgroup MELG-algorithms algos: MELG - Maximally Equidistributed Long-period Linear Generators
+ *
+ *  This is the group for all the CppRandLib implementations  of  Maximally
+ *  Equidistributed Long-period Linear Generators (MELG) algorithm.
+ *
+ *  Maximally Equidistributed  Long-period  Linear  Generators  (MELG)  use
+ *  linear  recurrence  based  on  state  transitions with double feedbacks
+ *  and linear output transformations with several memory references.
+ *
+ *  MELGs offer large to very large periods with best known results in  the
+ *  evaluation of their randomness. They ensure a maximally equidistributed
+ *  generation  of  pseudo random numbers.  They pass all TestU01 tests and
+ *  newer ones but are the slowest to compute ones in  the  base  of  PRNGs
+ *  that have been implemented in CppRandLib.
+ *
+ *  @{
+ */
+
+
 
 //===========================================================================
 #include <cstdint>
@@ -322,3 +342,5 @@ inline void BaseMELG<SIZE>::_setstate(const utils::UInt128& seed) noexcept
 {
     MyBaseClass::_setstate(seed);
 }
+
+/** @}*/

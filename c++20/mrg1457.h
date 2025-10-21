@@ -25,6 +25,12 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @addtogroup MRG-algorithms
+ *
+ *  @{
+ */
+
 
 //===========================================================================
 #include <cstdint>
@@ -128,3 +134,5 @@ public:
     virtual const output_type next() noexcept override;     //!< The internal PRNG algorithm.
 
 };
+
+/** @}*/

@@ -25,6 +25,16 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/** \defgroup internalstates internal states: Definition of generators internal states
+ *
+ * Internal States are grouped together in directory 'internalstates'.  They
+ * describe and define structures and operations of internal states that are
+ * common to many PRNGs implemented in CppRandLib.
+ *
+ *  @{
+ */
+
+
 
 //===========================================================================
 #include <cstdint>
@@ -34,7 +44,7 @@ SOFTWARE.
 
 
 //===========================================================================
-/** @brief The internal state of counter-based Pseudo Random Numbers Generators. */
+/** \brief The internal state of counter-based Pseudo Random Numbers Generators. */
 template<typename ValueType, typename StateValueType>
 struct CollatzWeylState
 {
@@ -42,7 +52,7 @@ struct CollatzWeylState
     using state_value_type = StateValueType;
 
     value_type       a{ value_type(0) };
-    value_type       s{ value_type(1) };  // notice: _s must be odd
+    value_type       s{ value_type(1) };  // notice: s must be odd
     state_value_type state{ state_value_type(0) };
     value_type       weyl{ value_type(0) };
 
@@ -94,6 +104,7 @@ inline void CollatzWeylState<ValueType, StateValueType>::seed(const std::uint64_
     state = StateValueType(splitmix_64());
 }
 
+/** Specialization for <64-, 64-> bits internal state. */
 template<>
 inline void CollatzWeylState<std::uint64_t, std::uint64_t>::seed(const std::uint64_t seed_) noexcept
 {
@@ -104,6 +115,7 @@ inline void CollatzWeylState<std::uint64_t, std::uint64_t>::seed(const std::uint
     state = splitmix_64();
 }
 
+/** Specialization for <64-, 128-> bits internal state. */
 template<>
 inline void CollatzWeylState<std::uint64_t, utils::UInt128>::seed(const std::uint64_t seed_) noexcept
 {
@@ -116,6 +128,7 @@ inline void CollatzWeylState<std::uint64_t, utils::UInt128>::seed(const std::uin
     state.lo = splitmix_64();
 }
 
+/** Specialization for <128-, 128-> bits internal state. */
 template<>
 inline void CollatzWeylState<utils::UInt128, utils::UInt128>::seed(const std::uint64_t seed_) noexcept
 {
@@ -143,6 +156,7 @@ inline void CollatzWeylState<ValueType, StateValueType>::seed(const utils::UInt1
     state = StateValueType(splitmix_64());
 }
 
+/** Specialization for <64-, 64-> bits internal state. */
 template<>
 inline void CollatzWeylState<std::uint64_t, std::uint64_t>::seed(const utils::UInt128& seed_) noexcept
 {
@@ -153,6 +167,7 @@ inline void CollatzWeylState<std::uint64_t, std::uint64_t>::seed(const utils::UI
     state = splitmix_64();  // Notice: state is coded on 64-bits here
 }
 
+/** Specialization for <64-, 128-> bits internal state. */
 template<>
 inline void CollatzWeylState<std::uint64_t, utils::UInt128>::seed(const utils::UInt128& seed_) noexcept
 {
@@ -166,6 +181,7 @@ inline void CollatzWeylState<std::uint64_t, utils::UInt128>::seed(const utils::U
     state.lo = splitmix_lo();
 }
 
+/** Specialization for <128-, 128-> bits internal state. */
 template<>
 inline void CollatzWeylState<utils::UInt128, utils::UInt128>::seed(const utils::UInt128& seed_) noexcept
 {
@@ -180,3 +196,5 @@ inline void CollatzWeylState<utils::UInt128, utils::UInt128>::seed(const utils::
     state.hi = splitmix_hi();  // Notice: in the original paper, the internal state seems to be erroneously initialized on the sole 64 lowest bits
     state.lo = splitmix_lo();
 }
+
+/** @} */

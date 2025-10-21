@@ -25,6 +25,12 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @addtogroup CWG-algorithms
+ *
+ *  @{
+ */
+
 
 //===========================================================================
 #include <type_traits>
@@ -138,7 +144,7 @@ public:
     void seed(const unsigned long      seed_) noexcept;                     //!< Initializes internal state (unsigned long).
     void seed(const long long          seed_) noexcept;                     //!< Initializes internal state (long long).
     void seed(const unsigned long long seed_) noexcept;                     //!< Initializes internal state (unsigned long long).
-    void seed(const utils::UInt128&    seed_) noexcept;                     //!< Initializes internal state (unsigned 128-bits).
+    void seed(const utils::UInt128& seed_) noexcept;                     //!< Initializes internal state (unsigned 128-bits).
     void seed(const double             seed_);                              //!< Initializes internal state (double).
 
     virtual void _setstate(const std::uint64_t   seed_) noexcept override;  //!< Sets the internal state with a 64-bits integer seed.
@@ -166,3 +172,5 @@ public:
     }
 
 };
+
+/** @}*/

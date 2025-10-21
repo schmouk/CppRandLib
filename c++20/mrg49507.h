@@ -25,6 +25,12 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @addtogroup MRG-algorithms
+ *
+ *  @{
+ */
+
 
 //===========================================================================
 #include <cstdint>
@@ -132,3 +138,5 @@ private:
     static const std::int64_t _MULT{ -(1 << 25) - (1 << 7) };
 
 };
+
+/** @}*/

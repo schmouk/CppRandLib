@@ -25,6 +25,10 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/** \addtogroup utils
+ *  @{
+ */
+
 
 //===========================================================================
 #include <array>
@@ -34,7 +38,14 @@ SOFTWARE.
 //===========================================================================
 namespace utils
 {
-    //-----------------------------------------------------------------------
+    /** \defgroup type_traits utils: CppRandLib specific traits utilities
+     *
+     * Defines traits utilities that are internally used in CppRandLib.
+     *
+     *  @{
+     */
+
+     //-----------------------------------------------------------------------
     template<typename ContainerType>
     class is_indexable
     {
@@ -62,4 +73,7 @@ namespace utils
         static const bool value{ true };
     };
 
+    /** @}*/
 }
+
+/** @}*/

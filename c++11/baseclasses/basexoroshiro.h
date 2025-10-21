@@ -25,6 +25,32 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @defgroup xoroshiro-algorithms algos: Xoroshiro - Scrambled Linear Pseudorandom Number generators
+ *
+ *  This is the group for all the CppRandLib implementations of the  Scrambled  Linear
+ *  Pseudorandom Number Generators (xoroshiro) algorithm.
+ *
+ *  The xoroshiro algorithm is a version of the Scrambled Linear  Pseudorandom  Number
+ *  Generators.  The xoroshiro linear transformation updates cyclically two words of a
+ *  larger state array. The base xoroshiro linear transformation is obtained combining
+ *  a rotation, a shift, and again a rotation.
+ *  (extracted from the original paper, see reference [10] in file README.md)
+ *
+ *  An addition or a multiplication operation is internally applied also to the  state
+ *  of  the  PRNGs.  Doubling  the same operation has proven to enhance the randomness
+ *  quality of the PRNG.  This is the model of the algorithms that  is  implemeted  in
+ *  CppRandLib.
+ *
+ *  The implemented algorithms shortly escape from the zeroland (10 to 100  calls  are
+ *  enough  to  get  equiprobability  of bits 0 and 1 on 4 successive calls).  The 256
+ *  version of the algorithm has nevertheless shown close repeats flaws,  with  a  bad
+ *  Hamming weight near zero. Xoroshiro512 seems to best fit this property.
+ *  (see https://www.pcg-random.org/posts/xoshiro-repeat-flaws.html).
+ *
+ *  @{
+ */
+
 
 //===========================================================================
 #include <cstdint>
@@ -47,7 +73,7 @@ SOFTWARE.
 *   (extracted from the original paper, see [10] in file README.md)
 *
 *   An addition or a multiplication operation is internally applied also to the  state
-*   of  the  PRNGs.  Doubling the same operation has proven to enhance then randomness
+*   of  the  PRNGs.  Doubling  the same operation has proven to enhance the randomness
 *   quality of the PRNG.  This is the model of the algorithms that  is  implemeted  in
 *   CppRandLib.
 *
@@ -327,3 +353,5 @@ inline void BaseXoroshiro<SIZE>::_setstate(const utils::UInt128& seed_) noexcept
 {
     MyBaseClass::_internal_state.state.seed(seed_.lo);
 }
+
+/** @}*/

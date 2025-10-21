@@ -25,6 +25,12 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @addtogroup MRG-algorithms
+ *
+ *  @{
+ */
+
 
 //===========================================================================
 #include <cstdint>
@@ -153,3 +159,5 @@ private:
     static constexpr std::uint32_t _INDEX_MODULO{ 0xff };   // related to SEED_SIZE = 256
 
 };
+
+/** @}*/

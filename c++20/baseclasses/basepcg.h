@@ -25,6 +25,38 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @defgroup PCG-algorithms algos: PCG - Permuted Congruential Generators
+ *
+ *  This is the group for all the CppRandLib implementations of  the  Permuted
+ *  Congruential Generator (PCG) counter-based pseudorandom algorithm.
+ *
+ *  As LCGs do, PCG models evaluate pseudo-random numbers suites  x(i)  as  a
+ *  simple mathematical function of x(i-1):
+ * @code
+ *      x(i) = (a*x(i-1) + c) mod m
+ * @endcode
+ *
+ *  PCGs associate to this recurrence a permutation  of  a  subpart  of  their
+ *  internal state bits.  The output of PCGs is this permutated subpart of its
+ *  internal state,  leading to a very large enhancement of the randomness  of
+ *  these algorithms compared with the LCGs one.
+ *
+ *  These PRNGs have been tested with TestU01 by the authors and have shown to
+ *  pass  all  tests  (about  TestU01,  see Pierre L'Ecuyer and Richard Simard
+ *  (Universite de Montreal) in 'TestU01: A C Library for Empirical Testing of
+ *  Random  Number  Generators  -  ACM  Transactions on Mathematical Software,
+ *  vol.33 n.4, pp.22-40, August 2007')
+ *
+ *  PCGs are very fast generators, with low memory usage except for a very few
+ *  of them and medium to very large periods.  They offer jump ahead and multi
+ *  streams features for most of them. They are difficult to very difficult to
+ *  invert and to predict.
+ *
+ *  @{
+ */
+
+
 
 //===========================================================================
 #include "baserandom.h"
@@ -103,3 +135,5 @@ SOFTWARE.
 */
 template<typename StateT, typename OutputT>
 using BasePCG = BaseRandom<StateT, OutputT, 8 * sizeof(OutputT)>;
+
+/** @}*/

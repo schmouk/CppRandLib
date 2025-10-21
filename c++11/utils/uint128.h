@@ -37,8 +37,17 @@ SOFTWARE.
 
 namespace utils
 {
+    /** \defgroup UInt128 utils: UInt128 - A minimalist 128-bits integer type
+     *
+     * Defines a minimalist 128-bits type for addition, multiplication,
+     * bitshift, bitor and bitxor operations in CppRandLib since such a
+     * type is not yet defined by all today c++ compilers.
+     *
+     *  @{
+     */
+
     //===========================================================================
-    /** @brief 128 bits integer minimalist arithmetic.
+    /** \brief 128 bits integer minimalist arithmetic.
     *
     *   Visual Studio provides no 128-bits integer arithmetic. Some of the
     *   implemented  PRNGs in CppRandLib use this type of arithmetic.  So,
@@ -278,6 +287,7 @@ namespace utils
 
     };
 
+    /** @} */
 }
 
 /** @} */

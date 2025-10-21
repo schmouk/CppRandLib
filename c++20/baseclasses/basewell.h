@@ -25,6 +25,40 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @defgroup WELL-algorithms algos: WELL - Well-Equidistributed Long-period Linear generators
+ *
+ *  This  is  the  group  for  all  the  CppRandLib  implementations  of   the   Well-
+ *  Equidistributed  Long-period  Linear  Generators  pseudo-random  generators (WELL)
+ *  algorithm.
+ *
+ *  Well-Equidistributed Long-period Linear Generators (WELL)  use  linear  recurrence
+ *  based  on  primitive  characteristic  polynomials associated with left- and right-
+ *  shifts and xor operations to fastly evaluate pseudo-random numbers suites.
+ *
+ *  WELLs offer large to very large periods with best known results in the  evaluation
+ *  of their randomness,  as stated in the evaluation  done  by  Pierre  L'Ecuyer  and
+ *  Richard Simard (Universite de Montreal) in  "TestU01:  A C Library  for  Empirical
+ *  Testing of Random  Number Generators  - ACM Transactions on Mathematical Software,
+ *  vol.33 n.4, pp.22-40, August 2007".  It is recommended to use  such  pseudo-random
+ *  numbers generators rather than LCG ones for serious simulation applications.
+ *  Furthermore, WELLs have proven their great ability  to  very  fastly  escape  from
+ *  zeroland.
+ *
+ *  Notice: the algorithm in the 4 different versions implemented here has been  coded
+ *  as  a  direct  implementation of their descriptions in the initial paper "Improved
+ *  Long-Period Generators Based on Linear Recurrences  Modulo 2",  Francois  PANNETON
+ *  and  Pierre  L'ECUYER  (Universite  de  Montreal)  and Makoto MATSUMOTO (Hiroshima
+ *  University),  in ACM Transactions on Mathematical Software,  Vol. 32, No. 1, March
+ *  2006, Pages 1-16.
+ *  (see https://www.iro.umontreal.ca/~lecuyer/myftp/papers/wellrng.pdf).
+ *  So,  only minimalist optimization has been coded,  with  the  aim  at  easing  the
+ *  verification of its proper implementation.
+ *
+ *  @{
+ */
+
+
 
 //===========================================================================
 #include <cstdint>
@@ -52,8 +86,8 @@ SOFTWARE.
 *
 *   Notice: the algorithm in the 4 different versions implemented here has been  coded
 *   as  a  direct  implementation of their descriptions in the initial paper "Improved
-*   Long-Period Generators Based on Linear Recurrences  Modulo 2",  François  PANNETON
-*   and  Pierre  L'ECUYER  (Université  de  Montréal)  and Makoto MATSUMOTO (Hiroshima
+*   Long-Period Generators Based on Linear Recurrences  Modulo 2",  Francois  PANNETON
+*   and  Pierre  L'ECUYER  (Universite  de  Montreal)  and Makoto MATSUMOTO (Hiroshima
 *   University),  in ACM Transactions on Mathematical Software,  Vol. 32, No. 1, March
 *   2006, Pages 1-16.
 *   (see https://www.iro.umontreal.ca/~lecuyer/myftp/papers/wellrng.pdf).
@@ -494,3 +528,5 @@ inline typename BaseWell<SIZE>::value_type BaseWell<SIZE>::_tempering(
     value_type x_{ x ^ (((x << 7) & 0xffff'fffful) & b) };
     return x_ ^ (((x_ << 15) & 0xffff'fffful) & c);
 }
+
+/** @}*/

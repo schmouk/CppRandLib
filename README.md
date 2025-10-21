@@ -4,7 +4,8 @@
 
 Many best in class pseudo random generators grouped into one simple library - c++11 and c++20 versions.
 
-This is a c++ counterpart of library PyRandLib (Python).
+This is a c++ counterpart of library PyRandLib (Python, see Github repository [https://github.com/schmouk/PyRandLib/](https://github.com/schmouk/PyRandLib/)
+).
 
 CppRandLib github web pages are here: [https://schmouk.github.io/CppRandLib/](https://schmouk.github.io/CppRandLib/)
 
@@ -41,11 +42,8 @@ SOFTWARE.
 ## Intro
 This library implements some of the best-in-class pseudo-random generators as evaluated by Pierre L'Ecuyer and Richard Simard in their famous paper "TestU01:  A C library for empirical testing of random  number generators" (ACM Trans. Math. Softw. Vol. 33 N.4, August 2007 -  see reference [1]. The reader might then want to take the benefit of reading L'Ecuyer & Simard's paper.
 
-The latest release of **CppRandLib** is version **2.0**, released by June 2025. It provides additional implementations of recent pseudo-random generators with very good randomness characteristics. It provides also implementations dedicated to different standards of c++: c++11 and c++20. Time performances of every PRNG have been evaluated and are provided in a table below - see section *CPU Performances*. 
+**CppRandLib** implements also more recent pseudo-random generators with best known randomness characteristics. Their exhaustive list is provided here below (since CppRandLib 2.0, 2025/06):
 
-Each of the Pseudo Random Numbers Generators (PRNGs) implemented in **CppRandLib** is self documented. Names of classes directly refer to the type of PRNG they implement augmented with some number characterizing their periodicity. All of their randomness characteristics are explained in every related module.
-
-Exhaustive list of currently implemented algorithms (CppRandLib 2.0, 2025/06):
 * **Collatz-Weyl Generator** (2023)  
  (CWG, 64 bits, 128 bits or 128/64 bits, 3 different values of periodicities, see reference [8]);
 * **Linear Congruential Generator**  
@@ -66,12 +64,19 @@ Exhaustive list of currently implemented algorithms (CppRandLib 2.0, 2025/06):
  (Xoroshiro, 64 bits, 4 different values of periodicities, see reference [10]).
  
 
+Each of the Pseudo Random Numbers Generators (PRNGs) implemented in **CppRandLib** is self documented. Names of classes directly refer to the type of PRNG they implement augmented with some number characterizing their periodicity. All of their randomness characteristics are explained in every related module.
+
+Latest version of *CppyRandLib** is version **2.1.2**, released by October 2025.
+* It provides also implementations dedicated to different standards of c++: c++11 and c++20.
+* Time performances of every PRNG have been evaluated and are provided in a table below - see section *CPU Performances*.
+* Furthermore, starting from release 2.1 **CppRandLib** is **fully validated**. **gTest** is now used to unit-test the code with a full 100% code coverage.
+
 
 ### Why not Mersenne twister?
 
 The Mersenne Twister PRNG (MT) proposed by Matsumoto and Nishimura - see [5] - is currently the most widely used PRNG algorithm. The c++ STL implements this PRNG as the standard default one. It is also implemented in Python and Java standard libraries for instance.
 
-MT offers a very good period (2^19937, i.e. about 4.3e+6,001). Unfortunately, this PRNG is a little bit long to compute (up to 3 times than LCGs, or 60% more than LFibs, see below  at section 'Architecture overview'). It embeds an internal state of 624 32-bits integers, which is larger to far larger than some other PRNGs. Moreover, MT fails four of the hardest TestU01 tests. You can still use it as your preferred PRNG but **CppRandLib** implements many other PRNGs that are either far faster, or that are far better in terms of generated pseudo-randomness than the Mersenne twister PRNG while consuming less memory space.
+It offers a very good period (2^19937, i.e. about 4.3e+6,001). Unfortunately, this PRNG is a little bit long to compute (up to 3 times than LCGs, or 60% more than LFibs, see below  at section 'Architecture overview'). It embeds an internal state of 624 32-bits integers, which is larger to far larger than some other PRNGs. Moreover, MT fails four of the hardest TestU01 tests. You can still use it as your preferred PRNG but **CppRandLib** implements many other PRNGs that are either far faster, or that are far better in terms of generated pseudo-randomness than the Mersenne twister PRNG while consuming less memory space.
 
 
 ---
@@ -92,37 +97,331 @@ We give you here below a copy of the resulting table for the PRNGs that have bee
 We add in this table the evaluations provided by the authors of every new PRNGs that have been published after the publication of [1]. Some fields may be missing for them in the belowing table, then.  
 Notice: a comparison of the computation times for all implemented PRNGs in **CppRandLib** is provided in an another table - see next subsection.
 
- | CppRandLib class | TU01 generator name (1)            | Memory Usage    | Period   | SmallCrush fails | Crush fails | BigCrush fails | time-64 bits | time-32bits |
- | ---------------- | ---------------------------------- | --------------- | -------- | ---------------- | ----------- | -------------- | ------------ | ----------- |
- | Cwg64            | *CWG64*                            |     8 x 4-bytes | >= 2^70  |          0       |       0     |       0        |     n.a.     |    n.a.     |
- | Cwg128_64        | *CWG128-64*                        |    10 x 4-bytes | >= 2^71  |          0       |       0     |       0        |     n.a.     |    n.a.     |
- | Cwg128           | *CWG128*                           |    16 x 4-bytes | >= 2^135 |          0       |       0     |       0        |     n.a.     |    n.a.     |
- | FastRand32       | LCG(2^32, 69069, 1)                |     1 x 4-bytes | 2^32     |         11       |     106     |   *too many*   |     0.67     |    3.20     |
- | FastRand63       | LCG(2^63, 9219741426499971445, 1)  |     2 x 4-bytes | 2^63     |          0       |       5     |       7        |     0.75     |    4.20     |
- | LFib78           | LFib(2^64, 17, 5, +)               |    34 x 4-bytes | 2^78     |          0       |       0     |       0        |     1.1      |    n.a.     |
- | LFib116          | LFib(2^64, 55, 24, +)              |   110 x 4-bytes | 2^116    |          0       |       0     |       0        |     1.0      |    n.a.     |
- | LFib668          | LFib(2^64, 607, 273, +)            | 1,214 x 4-bytes | 2^668    |          0       |       0     |       0        |     0.9      |    n.a.     |
- | LFib1340         | LFib(2^64, 1279, 861, +)           | 2,558 x 4-bytes | 2^1,340  |          0       |       0     |       0        |     0.9      |    n.a.     |
- | Melg607          | *Melg607-64*                       |    21 x 4-bytes | 2^607    |          0       |       0     |       0        |     n.a.     |    n.a      |
- | Melg19937        | *Melg19937-64*                     |   625 x 4-bytes | 2^19,937 |          0       |       0     |       0        |     n.a.     |    n.a      |
- | Melg44497        | *Melg44497-64*                     | 1,392 x 4-bytes | 2^44,497 |          0       |       0     |       0        |     n.a.     |    n.a      |
- | Mrg287           | Marsa-LFIB4                        |   256 x 4-bytes | 2^287    |          0       |       0     |       0        |     0.8      |    3.40     |
- | Mrg1457          | DX-47-3                            |    47 x 4-bytes | 2^1,457  |          0       |       0     |       0        |     1.4      |    n.a.     |
- | Mrg49507         | DX-1597-2-7                        | 1,597 x 4-bytes | 2^49,507 |          0       |       0     |       0        |     1.4      |    n.a.     |
- | Pcg64_32         | *PCG XSH RS 64/32 (LCG)*           |     2 x 4 bytes | 2^64     |          0       |       0     |       0        |     n.a.     |    n.a.     |
- | Pcg128_64        | *PCG XSL RR 128/64 (LCG)*          |     4 x 4 bytes | 2^128    |          0       |       0     |       0        |     n.a.     |    n.a.     |
- | Pcg1024_32       | *PCG XSH RS 64/32 (EXT 1024)*      | 1,026 x 4 bytes | 2^32,830 |          0       |       0     |       0        |     n.a.     |    n.a.     | 
- | Squares32        | *squares32*                        |     4 x 4-bytes | 2^64     |          0       |       0     |       0        |     n.a.     |    n.a.     |
- | Squares64        | *squares64*                        |     4 x 4-bytes | 2^64     |          0       |       0     |       0        |     n.a.     |    n.a.     |
- | Well512a         | not available                      |    16 x 4-bytes | 2^512    |        n.a.      |     n.a.    |     n.a.       |     n.a.     |    n.a.     |
- | Well1024a        | WELL1024a                          |    32 x 4-bytes | 2^1,024  |          0       |       4     |       4        |     1.1      |    4.0      |
- | Well19937c (2)   | WELL19937a                         |   624 x 4-bytes | 2^19,937 |          0       |       2     |       2        |     1.3      |    4.3      |
- | Well44497b (3)   | not available                      | 1,391 x 4-bytes | 2^44,497 |        n.a.      |     n.a.    |     n.a.       |     n.a.     |    n.a.     |
- | Mersenne Twister | MT19937                            |   624 x 4-bytes | 2^19,937 |          0       |       2     |       2        |     1.6      |    4.30     |
- | Xoroshiro256     | *xiroshiro256***                   |    16 x 4-bytes | 2^256    |          0       |       0     |       0        |     0.84     |    n.a.     |
- | Xoroshiro512     | *xiroshiro512***                   |    32 x 4-bytes | 2^512    |          0       |       0     |       0        |     0.99     |    n.a.     |
- | Xoroshiro1024    | *xiroshiro1024***                  |    64 x 4-bytes | 2^1,024  |          0       |       0     |       0        |     1.17     |    n.a.     |
-
+<table style="text-align:center">
+  <thead>
+    <tr>
+      <th>CppRandLib class</th>
+      <th>TU01 generator name (1)</th>
+      <th>Memory Usage</th>
+      <th>Period</th>
+      <th>SmallCrush fails</th>
+      <th>Crush fails</th>
+      <th>BigCrush fails</th>
+      <th>time-64 bits</th>
+      <th>time-32bits</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Cwg64</td>
+      <td>*CWG64*</td>
+      <td>8 x 4-bytes</td>
+      <td>&gt;= 2^70</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>n.a.</td>
+      <td>n.a.</td>
+    </tr>
+    <tr>
+      <td>Cwg128_64</td>
+      <td>*CWG128-64*</td>
+      <td>10 x 4-bytes</td>
+      <td>&gt;= 2^71</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>n.a.</td>
+      <td>n.a.</td>
+    </tr>
+    <tr>
+      <td>Cwg128</td>
+      <td>*CWG128*</td>
+      <td>16 x 4-bytes</td>
+      <td>&gt;= 2^135</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>n.a.</td>
+      <td>n.a.</td>
+    </tr>
+    <tr>
+      <td>FastRand32</td>
+      <td>LCG(2^32, 69069, 1)</td>
+      <td>1 x 4-bytes</td>
+      <td>2^32</td>
+      <td>11</td>
+      <td>106</td>
+      <td>*too many*</td>
+      <td>0.67</td>
+      <td>3.20</td>
+    </tr>
+    <tr>
+      <td>FastRand63</td>
+      <td>LCG(2^63, 9219741426499971445, 1)</td>
+      <td>2 x 4-bytes</td>
+      <td>2^63</td>
+      <td>0</td>
+      <td>5</td>
+      <td>7</td>
+      <td>0.75</td>
+      <td>4.20</td>
+    </tr>
+    <tr>
+      <td>LFib78</td>
+      <td>LFib(2^64, 17, 5, +)</td>
+      <td>34 x 4-bytes</td>
+      <td>2^78</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1.1</td>
+      <td>n.a.</td>
+    </tr>
+    <tr>
+      <td>LFib116</td>
+      <td>LFib(2^64, 55, 24, +)</td>
+      <td>110 x 4-bytes</td>
+      <td>2^116</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1.0</td>
+      <td>n.a.</td>
+    </tr>
+    <tr>
+      <td>LFib668</td>
+      <td>LFib(2^64, 607, 273, +)</td>
+      <td>1,214 x 4-bytes</td>
+      <td>2^668</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.9</td>
+      <td>n.a.</td>
+    </tr>
+    <tr>
+      <td>LFib1340</td>
+      <td>LFib(2^64, 1279, 861, +)</td>
+      <td>2,558 x 4-bytes</td>
+      <td>2^1,340</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.9</td>
+      <td>n.a.</td>
+    </tr>
+    <tr>
+      <td>Melg607</td>
+      <td>*Melg607-64*</td>
+      <td>21 x 4-bytes</td>
+      <td>2^607</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>n.a.</td>
+      <td>n.a</td>
+    </tr>
+    <tr>
+      <td>Melg19937</td>
+      <td>*Melg19937-64*</td>
+      <td>625 x 4-bytes</td>
+      <td>2^19,937</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>n.a.</td>
+      <td>n.a</td>
+    </tr>
+    <tr>
+      <td>Melg44497</td>
+      <td>*Melg44497-64*</td>
+      <td>1,392 x 4-bytes</td>
+      <td>2^44,497</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>n.a.</td>
+      <td>n.a</td>
+    </tr>
+    <tr>
+      <td>Mrg287</td>
+      <td>Marsa-LFIB4</td>
+      <td>256 x 4-bytes</td>
+      <td>2^287</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.8</td>
+      <td>3.40</td>
+    </tr>
+    <tr>
+      <td>Mrg1457</td>
+      <td>DX-47-3</td>
+      <td>47 x 4-bytes</td>
+      <td>2^1,457</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1.4</td>
+      <td>n.a.</td>
+    </tr>
+    <tr>
+      <td>Mrg49507</td>
+      <td>DX-1597-2-7</td>
+      <td>1,597 x 4-bytes</td>
+      <td>2^49,507</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1.4</td>
+      <td>n.a.</td>
+    </tr>
+    <tr>
+      <td>Pcg64_32</td>
+      <td>*PCG XSH RS 64/32 (LCG)*</td>
+      <td>2 x 4 bytes</td>
+      <td>2^64</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>n.a.</td>
+      <td>n.a.</td>
+    </tr>
+    <tr>
+      <td>Pcg128_64</td>
+      <td>*PCG XSL RR 128/64 (LCG)*</td>
+      <td>4 x 4 bytes</td>
+      <td>2^128</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>n.a.</td>
+      <td>n.a.</td>
+    </tr>
+    <tr>
+      <td>Pcg1024_32</td>
+      <td>*PCG XSH RS 64/32 (EXT 1024)*</td>
+      <td>1,026 x 4 bytes</td>
+      <td>2^32,830</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>n.a.</td>
+      <td>n.a.</td>
+    </tr>
+    <tr>
+      <td>Squares32</td>
+      <td>*squares32*</td>
+      <td>4 x 4-bytes</td>
+      <td>2^64</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>n.a.</td>
+      <td>n.a.</td>
+    </tr>
+    <tr>
+      <td>Squares64</td>
+      <td>*squares64*</td>
+      <td>4 x 4-bytes</td>
+      <td>2^64</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>n.a.</td>
+      <td>n.a.</td>
+    </tr>
+    <tr>
+      <td>Well512a</td>
+      <td>not available</td>
+      <td>16 x 4-bytes</td>
+      <td>2^512</td>
+      <td>n.a.</td>
+      <td>n.a.</td>
+      <td>n.a.</td>
+      <td>n.a.</td>
+      <td>n.a.</td>
+    </tr>
+    <tr>
+      <td>Well1024a</td>
+      <td>WELL1024a</td>
+      <td>32 x 4-bytes</td>
+      <td>2^1,024</td>
+      <td>0</td>
+      <td>4</td>
+      <td>4</td>
+      <td>1.1</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <td>Well19937c (2)</td>
+      <td>WELL19937a</td>
+      <td>624 x 4-bytes</td>
+      <td>2^19,937</td>
+      <td>0</td>
+      <td>2</td>
+      <td>2</td>
+      <td>1.3</td>
+      <td>4.3</td>
+    </tr>
+    <tr>
+      <td>Well44497b (3)</td>
+      <td>not available</td>
+      <td>1,391 x 4-bytes</td>
+      <td>2^44,497</td>
+      <td>n.a.</td>
+      <td>n.a.</td>
+      <td>n.a.</td>
+      <td>n.a.</td>
+      <td>n.a.</td>
+    </tr>
+    <tr>
+      <td>Mersenne Twister</td>
+      <td>MT19937</td>
+      <td>624 x 4-bytes</td>
+      <td>2^19,937</td>
+      <td>0</td>
+      <td>2</td>
+      <td>2</td>
+      <td>1.6</td>
+      <td>4.30</td>
+    </tr>
+    <tr>
+      <td>Xoroshiro256</td>
+      <td>*xiroshiro256***</td>
+      <td>16 x 4-bytes</td>
+      <td>2^256</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.84</td>
+      <td>n.a.</td>
+    </tr>
+    <tr>
+      <td>Xoroshiro512</td>
+      <td>*xiroshiro512***</td>
+      <td>32 x 4-bytes</td>
+      <td>2^512</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.99</td>
+      <td>n.a.</td>
+    </tr>
+    <tr>
+      <td>Xoroshiro1024</td>
+      <td>*xiroshiro1024***</td>
+      <td>64 x 4-bytes</td>
+      <td>2^1,024</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1.17</td>
+      <td>n.a.</td>
+    </tr>
+  </tbody>
+</table>
 (1) *or the generator original name in the related more recent paper*  
 (2) The Well19937c generator provided with library CppRandLib implements the Well19937a algorithm augmented with an associated *tempering* algorithm - see [6] p.9.  
 (3) The Well44497b generator provided with library CppRandLib implements the Well44497a algorithm augmented with an associated *tempering* algorithm - see [6] p.9.
@@ -132,46 +431,249 @@ Notice: a comparison of the computation times for all implemented PRNGs in **Cpp
 ## CPU Performances - Times evaluation
 
 The above table provides times related to the C implementation of the specified PRNGs as measured with TestU01 [1] by the authors of the paper.  
-We provide in the table below the evaluation of times spent in calling method `next()` for all PRNGs implemented in library **CppRandLib**. Doing so, the measured elapsed time eventually includes the calling and returning c++ mechanisms and not only the computation time of the sole algorithm code. This is the duration of interest to you since this is the main use that you will have of the library. It only helps comparing the performances between the implemented PRNGs.  
-Notice: times are similar btw. the c++11 and c++20 versions of the code, except for *FastRand63* which has proven to be 33% slower for the c++20 version of the code than for the c++11 version (we don't know why) and for *Squares64* which is 18% faster for the c++20 version.  
+We provide in the table below the evaluation of times spent in calling method `next()` for all PRNGs implemented in library **CppRandLib**. Doing so, the measured elapsed time eventually includes the calling and returning c++ mechanisms and not only the computation time of the sole algorithm code. This is the duration of interest to you since this is the main use that you will have of the library. It only helps comparing the performances between the implemented PRNGs.
+
+Notice: times are similar btw. the c++11 and c++20 versions of the code, except for *FastRand63* which has proven to be 33% slower for the c++20 version of the code than for the c++11 version (we don't know why) and for *Squares64* which is 18% faster for the c++20 version.
+
 Notice also: some of the PRNG algorithms involve 128-bits integer artihemtics. **CppRandLib** provides its own minimalist library for such computations since not all c++ compilers provide it (e.g. Microsoft compiler). Meanwhile, some other c++ compilers do implement 128-bits integer arithmetics (e.g. gcc). It might be of interest for users aware of this that they modify **CppRandLib** code by their side to take benefit of this. Conditional code is currently not implemented in **CppRandLib**.
 
-Time unit is nanosecond. Tests have been run on an Intel&reg; Core&trade; 7 150U @ 1.80 GHz, 10 cores, 64-bits, with 16 GB RAM (5,600 MHz) and over Microsoft Windows 11 ed. Family (build 26100.4061, 18 Apr. 2025).  
+Time unit is nanosecond. Tests have been run on an Intel&reg; Core&trade; i7-150U @ 1.80 GHz, 10 cores, 64-bits, with 16 GB RAM (5,600 MHz) and over Microsoft Windows 11 ed. Family (build 26100.4061, 18 Apr. 2025).  
 Measures have been done with 32 bits and 64 bits generated code versions, in fully optimized mode and on the same 64 bits CPU.
 
-The evaluation source code file is provided in subdirectories `c++11/testCPUPerfs` and `c++20/testCPUPerfs` and is named `testCPUPerfs.cpp`. You'll have to install **gTests** Google library to be able to use it.
+The evaluation source code file is provided in subdirectories `c++11/testCPUPerfs` and `c++20/testCPUPerfs` and is named `testCPUPerfs.cpp`.
 
 **CppRandLib** time 64 bits and 32 bits table:
 
- | CppRandLib class | 64-bits |  32-bits  | SmallCrush fails | Crush fails | BigCrush fails |
- | ---------------- | ------- | --------- | ---------------- | ----------- | -------------- |
- | Cwg64            |   1.52  |    2.74   |        *0*       |      *0*    |      *0*       |
- | Cwg128_64        |   2.54  |    7.32   |        *0*       |      *0*    |      *0*       |
- | Cwg128           |   4.60  |   29.64   |        *0*       |      *0*    |      *0*       |
- | FastRand32       |   0.75  |    1.68   |       *11*       |    *106*    |   *too many*   |
- | FastRand63       |   1.14  |    1.89   |        *0*       |      *5*    |      *7*       |
- | LFib78           |   1.96  |    3.16   |        *0*       |      *0*    |      *0*       |
- | LFib116          |   2.54  |    3.16   |        *0*       |      *0*    |      *0*       |
- | LFib668          |   1.97  |    3.16   |        *0*       |      *0*    |      *0*       |
- | LFib1340         |   2.55  |    3.17   |        *0*       |      *0*    |      *0*       |
- | Melg607          |   2.43  |    4.13   |        *0*       |      *0*    |      *0*       |
- | Melg19937        |   2.73  |    3.78   |        *0*       |      *0*    |      *0*       |
- | Melg44497        |   3.20  |    3.94   |        *0*       |      *0*    |      *0*       |
- | Mrg287           |   1.33  |    2.06   |        *0*       |      *0*    |      *0*       |
- | Mrg1457          |   4.28  |   10.44   |        *0*       |      *0*    |      *0*       |
- | Mrg49507         |   2.81  |    4.25   |        *0*       |      *0*    |      *0*       |
- | Pcg64_32         |   1.15  |    2.45   |        *0*       |      *0*    |      *0*       |
- | Pcg128_64        |   3.69  |   20.25   |        *0*       |      *0*    |      *0*       |
- | Pcg1024_32       |   2.24  |    3.45   |        *0*       |      *0*    |      *0*       | 
- | Squares32        |   1.15  |    8.66   |        *0*       |      *0*    |      *0*       |
- | Squares64        |   1.14  |   10.67   |        *0*       |      *0*    |      *0*       |
- | Well512a         |   3.57  |    3.61   |      *n.a.*      |    *n.a.*   |    *n.a.*      |
- | Well1024a        |   2.30  |    2.34   |        *0*       |      *4*    |      *4*       |
- | Well19937c (1)   |   3.60  |    3.45   |        *0*       |      *2*    |      *2*       |
- | Well44497b (2)   |   3.42  |    3.80   |      *n.a.*      |    *n.a.*   |    *n.a.*      |
- | Xoroshiro256     |   2.41  |    3.71   |        *0*       |      *0*    |      *0*       |
- | Xoroshiro512     |   2.64  |    5.23   |        *0*       |      *0*    |      *0*       |
- | Xoroshiro1024    |   1.44  |    3.46   |        *0*       |      *0*    |      *0*       |
+<table style="text-align:center">
+  <thead>
+    <tr>
+      <th>CppRandLib class</th>
+      <th>64-bits</th>
+      <th>32-bits</th>
+      <th>SmallCrush fails</th>
+      <th>Crush fails</th>
+      <th>BigCrush fails</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Cwg64</td>
+      <td>1.52</td>
+      <td>2.74</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>Cwg128_64</td>
+      <td>2.54</td>
+      <td>7.32</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>Cwg128</td>
+      <td>4.60</td>
+      <td>29.64</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>FastRand32</td>
+      <td>0.75</td>
+      <td>1.68</td>
+      <td>*11*</td>
+      <td>*106*</td>
+      <td>*too many*</td>
+    </tr>
+    <tr>
+      <td>FastRand63</td>
+      <td>1.14</td>
+      <td>1.89</td>
+      <td>*0*</td>
+      <td>*5*</td>
+      <td>*7*</td>
+    </tr>
+    <tr>
+      <td>LFib78</td>
+      <td>1.96</td>
+      <td>3.16</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>LFib116</td>
+      <td>2.54</td>
+      <td>3.16</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>LFib668</td>
+      <td>1.97</td>
+      <td>3.16</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>LFib1340</td>
+      <td>2.55</td>
+      <td>3.17</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>Melg607</td>
+      <td>2.43</td>
+      <td>4.13</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>Melg19937</td>
+      <td>2.73</td>
+      <td>3.78</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>Melg44497</td>
+      <td>3.20</td>
+      <td>3.94</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>Mrg287</td>
+      <td>1.33</td>
+      <td>2.06</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>Mrg1457</td>
+      <td>4.28</td>
+      <td>10.44</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>Mrg49507</td>
+      <td>2.81</td>
+      <td>4.25</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>Pcg64_32</td>
+      <td>1.15</td>
+      <td>2.45</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>Pcg128_64</td>
+      <td>3.69</td>
+      <td>20.25</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>Pcg1024_32</td>
+      <td>2.24</td>
+      <td>3.45</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>Squares32</td>
+      <td>1.15</td>
+      <td>8.66</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>Squares64</td>
+      <td>1.14</td>
+      <td>10.67</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>Well512a</td>
+      <td>3.57</td>
+      <td>3.61</td>
+      <td>*n.a.*</td>
+      <td>*n.a.*</td>
+      <td>*n.a.*</td>
+    </tr>
+    <tr>
+      <td>Well1024a</td>
+      <td>2.30</td>
+      <td>2.34</td>
+      <td>*0*</td>
+      <td>*4*</td>
+      <td>*4*</td>
+    </tr>
+    <tr>
+      <td>Well19937c (1)</td>
+      <td>3.60</td>
+      <td>3.45</td>
+      <td>*0*</td>
+      <td>*2*</td>
+      <td>*2*</td>
+    </tr>
+    <tr>
+      <td>Well44497b (2)</td>
+      <td>3.42</td>
+      <td>3.80</td>
+      <td>*n.a.*</td>
+      <td>*n.a.*</td>
+      <td>*n.a.*</td>
+    </tr>
+    <tr>
+      <td>Xoroshiro256</td>
+      <td>2.41</td>
+      <td>3.71</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>Xoroshiro512</td>
+      <td>2.64</td>
+      <td>5.23</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+    <tr>
+      <td>Xoroshiro1024</td>
+      <td>1.44</td>
+      <td>3.46</td>
+      <td>*0*</td>
+      <td>*0*</td>
+      <td>*0*</td>
+    </tr>
+  </tbody>
+</table>
 
 (1) The Well19937c generator provided with library CppRandLib implements the Well19937a algorithm augmented with an associated *tempering* algorithm - see [6] p.9.  
 (2) The Well44497b generator provided with library CppRandLib implements the Well44497a algorithm augmented with an associated *tempering* algorithm - see [6] p.9.
@@ -179,8 +681,18 @@ The evaluation source code file is provided in subdirectories `c++11/testCPUPerf
 
 ---
 ## Implementation
-Current implementation of **CppRandLib** is provided for c++11 and c++20 standards. Final performances are similar, except for *FastRand63* which has proven to be 33% slower for the c++20 version of the code than for the c++11 version (we don't know why) and for *Squares64* which is 18% faster for the c++20 version.  
-Notice also: some of the PRNG algorithms involve 128-bits integer artihmetics. **CppRandLib** provides its own minimalist library for such computations since not all c++ compilers provide it (e.g. Microsoft compiler). Meanwhile, some other c++ compilers do implement 128-bits integer arithmetics (e.g. gcc). It might be of interest for users aware of this that they modify **CppRandLib** code by their side to take benefit of this. Conditional code is currently not implemented in **CppRandLib**.
+Current implementation of **CppRandLib** is provided for c++11 and c++20 standards. Final performances are similar, except for *FastRand63* which has proven to be 33% slower for the c++20 version of the code than for the c++11 version (we don't know why) and for *Squares64* which is 18% faster for the c++20 version.
+
+Notice also: some of the PRNG algorithms involve 128-bits integer artihmetics. **CppRandLib** provides its own minimalist library for such computations since not all c++ compilers provide it (e.g. Microsoft compiler). Meanwhile, some other c++ compilers do implement 128-bits integer arithmetics (e.g. gcc). It might be of interest for users aware of this that they modify **CppRandLib** code by their side to take benefit of this. Conditional code is currently not implemented in **CppRandLib** for this purpose.
+
+
+---
+## What's new in release 2.1.2
+
+Sub-version 2.1.2 of release 2.1 brings HTML documentation to the library, build via doxygen utility.
+
+HTML documentation is available in directories `html-documentation/c++11` and `html-documentation/c++20`.  
+There, file `index.html` is the entry point of the related documentation. If your operating system allows for it, double-click this file to open it in your favourite web browser.
 
 
 ---
@@ -188,17 +700,21 @@ Notice also: some of the PRNG algorithms involve 128-bits integer artihmetics. *
 
 Release **2.1** is an enhancement of release 2.0:
 
-* Tests on float values for the initialization of `SplitMixXX` instances have been fixed: value `1.0` is now accepted as it is a correct value;
+* Tests on float values for the initialization of `SplitMixXX` instances have been fixed: value `1.0` is now accepted since it is a correct value;
 * Fixed also the same test of the initialization float value for all `seed()` methods;
-* Fixed a bug in method `Pcg1024_32.next()`: release 2.0 is not removed but **should no more be used**;
+* Fixed a bug in method `Pcg1024_32.next()`: release 2.0 is not removed from this repository but **it should no more be used**;
 * Augmented unitary tests on `utils::UInt128`;
 * Augmented unitary tests on every `MELGxxx` tests;
 * Fixed typos in doxygen comments in nearly all header files;
-* Added two documents references at end of file `README.md`.
+* Added two documents references at end of file `README.md`;
+* Tables are now described as HTML code in this `README.md` document: this way, those tables are now displayed correctly in the CppRandLib web pages (v2.1.2, 2025/10);
+* Fixed or modified a few paragraphs in `README.md` (v2.1.2, 2025/10).
 
 
 ---
 ## What's new in release 2.0
+*Release 2.1 important notice: release 2.0 embeds a bug in method `Pcg1024_32.next()` that has been fixed in release 2.1. Users should no more use release 2.0 of CppRandLib.*
+
 First of all, Release 1.0 (2022/09) is NO MORE available. Release 2.0 implements now far more PRNG algorithms than release 1.0, with **fully validated code**. 
 
 This is available starting at version 2.0 of **CppRandLib**:

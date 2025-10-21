@@ -25,6 +25,29 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @defgroup MRG-algorithms algos: MRG - Multiple Recursive Generators
+ *
+ *  This is the group for all the CppRandLib implementations of the Multiple
+ *  Recursive pseudorandom Generators (MRG) algorithm.
+ *
+ *  Multiple Recursive Generators (MRGs) use recurrence to evaluate  pseudo-
+ *  random numbers suites. Recurrence is of the form:
+ * @code
+ *      x(i) = A * SUM[ x(i-k) ]  mod M
+ * @endcode
+ *  for 2 to more k different values.
+ *
+ *  MRGs offer very large  periods  with  the  best  known  results  in  the
+ *  evaluation  of  their  randomness,  as  stated in the evaluation done by
+ *  by Pierre L'Ecuyer  and  Richard  Simard  (Universite  de  Montreal)  in 
+ *  "TestU01:  A C Library for Empirical Testing of Random Number Generators
+ *  - ACM Transactions on Mathematical Software, vol.33 n.4, pp.22-40, August
+ *  2007".
+ *
+ *  @{
+ */
+
 
 //===========================================================================
 #include <cstdint>
@@ -35,7 +58,7 @@ SOFTWARE.
 
 
 //===========================================================================
-/** @brief The base support for 32-bits MRG Pseudo Random Number Generators.
+/** @brief The base support for 31-bits MRG Pseudo Random Number Generators.
 *
 *   Multiple Recursive Generators (MRGs)  use  recurrence  to  evaluate  pseudo-random
 *   numbers suites. Recurrence is of the form:
@@ -324,3 +347,5 @@ inline void BaseMRG31<SIZE>::_setstate(const utils::UInt128& seed_) noexcept
 {
     MyBaseClass::_internal_state.state.seed(seed_.lo);
 }
+
+/** @}*/

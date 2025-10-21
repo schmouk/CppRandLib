@@ -25,6 +25,22 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @defgroup Squares-algorithms algos: Squares - Squares counter-based pseudorandom generators
+ *
+ *  This is the group for all the CppRandLib  implementations  of  the
+ *  Squares counter-based pseudorandom Generators (Squares) algorithm.
+ *
+ *  Squares models are based on an incremented counter and a key.  The
+ *  algorithm squares a combination of the counter and the key values,
+ *  and exchanges the upper and lower bits  of  the  combination,  the
+ *  whole  repeated  a number of times (4 to 5 rounds).  Output values
+ *  are provided on 32-bits or on 64-bits according to the model.
+ *
+ *  @{
+ */
+
+
 
 //===========================================================================
 #include <cstdint>
@@ -318,3 +334,5 @@ inline void BaseSquares<OutputT>::_setstate(const utils::UInt128& seed_) noexcep
     MyBaseClass::_internal_state.state.seed(seed_.lo);
     MyBaseClass::_internal_state.state.counter = 0;
 }
+
+/** @}*/

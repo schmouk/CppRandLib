@@ -25,6 +25,15 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/** \defgroup utils utils: CppRandLib Utilities
+ *
+ * Internal CppRandLib utilities are embedded in namespace 'utils'.  This
+ * namespace group together definitions of classes and functions that are
+ * useful in multiple places of the library.
+ *
+ *  @{
+ */
+
 
 //===========================================================================
 #include "balanced_bits_generation.h"
@@ -34,3 +43,5 @@ SOFTWARE.
 #include "time.h"
 #include "type_traits.h"
 #include "uint128.h"
+
+/** @}*/

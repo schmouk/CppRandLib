@@ -25,6 +25,9 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/** \addtogroup utils
+ *  @{
+ */
 
 //===========================================================================
 #include <cassert>
@@ -37,6 +40,11 @@ SOFTWARE.
 //===========================================================================
 namespace utils
 {
+    /** \defgroup balanced_bits_generation utils: Generation of balanced bits patterns in integers
+    *
+    * @{
+    */
+
     //=======================================================================
     /** @brief Generates balanced bits patterns in integers.
     *
@@ -99,4 +107,8 @@ namespace utils
 
         return balanced_value;
     }
+
+    /** @}*/
 }
+
+/** @}*/

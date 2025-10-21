@@ -25,6 +25,12 @@ OUT  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * @addtogroup MRG-algorithms
+ *
+ *  @{
+ */
+
 
 //===========================================================================
 #include <cstdint>
@@ -324,3 +330,5 @@ inline void BaseMRG32<SIZE>::_setstate(const utils::UInt128& seed_) noexcept
 {
     MyBaseClass::_internal_state.state.seed(seed_.lo);
 }
+
+/** @}*/

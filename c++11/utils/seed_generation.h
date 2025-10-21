@@ -40,6 +40,16 @@ SOFTWARE.
 //===========================================================================
 namespace utils
 {
+    /** \defgroup seed_generation utils: Random seeds default generation
+    *
+    * These utilities return 64-, 63-, 32- and 31-bits integers set with the
+    * xored and shuffled value of current system time. They are used to seed
+    * PRNGs with a pseudo-randomized initialization value when  no  explicit 
+    * seed value is provided at their instantiation time.
+    * 
+    * @{
+    */
+
     //=======================================================================
     /** @brief Generates a 64-bits random seed for PRNGs, based on the current system time.
     * 
@@ -99,6 +109,7 @@ namespace utils
         return set_random_seed64() >> 33ull;  // & 0x7fff'fffful;
     }
 
+    /** @} */
 }
 
 /** @} */
