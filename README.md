@@ -691,7 +691,7 @@ Notice also: some of the PRNG algorithms involve 128-bits integer artihmetics. *
 
 Sub-version 2.1.2 of release 2.1 brings HTML documentation to the library, build via doxygen utility.
 
-HTML documentation is available in directories `html-documentation/c++11` and `html-documentation/c++20`.  
+HTML documentation is available in directories `documentation/c++11` and `documentation/c++20`.  
 There, file `index.html` is the entry point of the related documentation. If your operating system allows for it, double-click this file to open it in your favourite web browser.
 
 
