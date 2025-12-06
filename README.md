@@ -687,6 +687,16 @@ Notice also: some of the PRNG algorithms involve 128-bits integer artihmetics. *
 
 
 ---
+## What's new in release 2.1.3
+
+Sub-version 2.1.3 of release 2.1 fixes one implementation error and fixes CWG algorithms period values in documentation.
+
+Thanks to great comments from Tomasz Działa, the author of the **CWG** algorithm (see ref. [8] - *Collatz-Weyl Generators: High Quality and High Throughput Parameterized Pseudorandom Number Generators. Published at arXiv, December 2023*):
+* an implementation error in `Cwg128_64.next()` method has been fixed, and
+* the values of the minimal periods of the three implemented versions of the algorithm have been fixed also.
+
+
+---
 ## What's new in release 2.1.2
 
 Sub-version 2.1.2 of release 2.1 brings HTML documentation to the library, build via doxygen utility.
