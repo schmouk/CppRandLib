@@ -107,7 +107,7 @@ const Cwg128_64::output_type Cwg128_64::next() noexcept
     _internal_state.state.state = ((_internal_state.state.state | 1) * (_internal_state.state.a >> 1)) ^ _internal_state.state.weyl;
 
     // returns the xored - shifted output value
-    return (_internal_state.state.state ^ (_internal_state.state.a >> 48)).lo;
+    return _internal_state.state.state ^ (_internal_state.state.a >> 48);
 }
 
 //---------------------------------------------------------------------------
