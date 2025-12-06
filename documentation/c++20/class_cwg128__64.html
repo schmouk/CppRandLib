@@ -90,7 +90,7 @@ $(function(){initNavTree('class_cwg128__64.html','','class_cwg128__64-members');
 </div><!--header-->
 <div class="contents">
 
-<p>A 128-/64- bits Collatz-Weyl pseudorandom Generator with a short period (1.18e+21).  
+<p>A 128-/64- bits Collatz-Weyl pseudorandom Generator with a short period (1.84e+19).  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;cwg128_64.h&gt;</code></p>
@@ -465,13 +465,13 @@ static const double&#160;</td><td class="memItemRight" valign="bottom"><b>SG_MAG
 static constexpr double&#160;</td><td class="memItemRight" valign="bottom"><b>TWO_PI</b> { 2.0 * PI }</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A 128-/64- bits Collatz-Weyl pseudorandom Generator with a short period (1.18e+21). </p>
-<p>Pseudo-random numbers generator - Collatz-Weyl pseudorandom Generator dedicated to 128-bits calculations and 64-bits output values with small period (min 2^71, i.e. 2.36e+21) but short computation time. All CWG algorithms offer multi streams features, by simply using different initial settings for control value 's' - see below.</p>
+<div class="textblock"><p>A 128-/64- bits Collatz-Weyl pseudorandom Generator with a short period (1.84e+19). </p>
+<p>Pseudo-random numbers generator - Collatz-Weyl pseudorandom Generator dedicated to 128-bits calculations and 64-bits output values with small period (min 2^64, i.e. 1.84e+19) but short computation time. All CWG algorithms offer multi streams features, by simply using different initial settings for control value 's' - see below.</p>
 <p>This CWG model evaluates pseudo-random numbers suites x(i) as a simple mathematical function of </p><pre class="fragment">x(i+1) = (x(i) | 1) * ((a += x(i)) &gt;&gt; 1) ^ (weyl += s)
 </pre><p>and returns as the output value the xored shifted: a &gt;&gt; 48 ^ x(i+1)</p>
 <p>where a, weyl and s are the control values and x the internal state of the PRNG. 's' must be initally odd. 'a', 'weyl' and initial state 'x' may be initialized each with any 64-bits value.</p>
-<p>See <a class="el" href="class_cwg64.html" title="A 64-bits Collatz-Weyl pseudorandom Generator with a long period (1.18e+21).">Cwg64</a> for a minimum 2^70 (i.e. about 1.18e+21) period CW-Generator with very low computation time, medium period, 64- bits output values and very good randomness characteristics.</p>
-<p>See <a class="el" href="class_cwg128__64.html" title="A 128-/64- bits Collatz-Weyl pseudorandom Generator with a short period (1.18e+21).">Cwg128_64</a> for a minimum 2^135 (i.e. about 4.36e+40) period CW-generator with very low computation time, medium period, 128-bits output values and very good randomness characteristics.</p>
+<p>See <a class="el" href="class_cwg64.html" title="A 64-bits Collatz-Weyl pseudorandom Generator with a long period (1.84e+19).">Cwg64</a> for a minimum 2^64 (i.e. about 1.84e+19) period CW-Generator with very low computation time, medium period, 64- bits output values and very good randomness characteristics.</p>
+<p>See <a class="el" href="class_cwg128__64.html" title="A 128-/64- bits Collatz-Weyl pseudorandom Generator with a short period (1.84e+19).">Cwg128_64</a> for a minimum 2^128 (i.e. about 6.81e+38) period CW-generator with very low computation time, medium period, 128-bits output values and very good randomness characteristics.</p>
 <p>Furthermore this class is callable: </p><div class="fragment"><div class="line"><a class="code hl_function" href="#a780bfeef0cfef60b63143a31343f11a6">Cwg128_64</a> rand();</div>
 <div class="line">std::cout &lt;&lt; rand() &lt;&lt; std::endl;    <span class="comment">// prints a uniform pseudo-random value within [0.0, 1.0)</span></div>
 <div class="line">std::cout &lt;&lt; rand(b) &lt;&lt; std::endl;   <span class="comment">// prints a uniform pseudo-random value within [0.0, b)</span></div>
@@ -484,11 +484,11 @@ static constexpr double&#160;</td><td class="memItemRight" valign="bottom"><b>TW
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">CppRandLib class  </th><th class="markdownTableHeadNone">[8] generator name  </th><th class="markdownTableHeadNone">Memory Usage  </th><th class="markdownTableHeadNone">Period  </th><th class="markdownTableHeadNone">time-32bits  </th><th class="markdownTableHeadNone">time-64 bits  </th><th class="markdownTableHeadNone">SmallCrush fails  </th><th class="markdownTableHeadNone">Crush fails  </th><th class="markdownTableHeadNone">BigCrush fails  </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><a class="el" href="class_cwg64.html" title="A 64-bits Collatz-Weyl pseudorandom Generator with a long period (1.18e+21).">Cwg64</a>  </td><td class="markdownTableBodyNone">CWG64  </td><td class="markdownTableBodyNone">8 x 4-bytes  </td><td class="markdownTableBodyNone">&gt;= 2^70  </td><td class="markdownTableBodyNone">n.a.  </td><td class="markdownTableBodyNone">n.a.  </td><td class="markdownTableBodyNone">0  </td><td class="markdownTableBodyNone">0  </td><td class="markdownTableBodyNone">0  </td></tr>
+<td class="markdownTableBodyNone"><a class="el" href="class_cwg64.html" title="A 64-bits Collatz-Weyl pseudorandom Generator with a long period (1.84e+19).">Cwg64</a>  </td><td class="markdownTableBodyNone">CWG64  </td><td class="markdownTableBodyNone">8 x 4-bytes  </td><td class="markdownTableBodyNone">&gt;= 2^64  </td><td class="markdownTableBodyNone">n.a.  </td><td class="markdownTableBodyNone">n.a.  </td><td class="markdownTableBodyNone">0  </td><td class="markdownTableBodyNone">0  </td><td class="markdownTableBodyNone">0  </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><a class="el" href="class_cwg128__64.html" title="A 128-/64- bits Collatz-Weyl pseudorandom Generator with a short period (1.18e+21).">Cwg128_64</a>  </td><td class="markdownTableBodyNone">CWG128_64  </td><td class="markdownTableBodyNone">10 x 4-bytes  </td><td class="markdownTableBodyNone">&gt;= 2^71  </td><td class="markdownTableBodyNone">n.a.  </td><td class="markdownTableBodyNone">n.a.  </td><td class="markdownTableBodyNone">0  </td><td class="markdownTableBodyNone">0  </td><td class="markdownTableBodyNone">0  </td></tr>
+<td class="markdownTableBodyNone"><a class="el" href="class_cwg128__64.html" title="A 128-/64- bits Collatz-Weyl pseudorandom Generator with a short period (1.84e+19).">Cwg128_64</a>  </td><td class="markdownTableBodyNone">CWG128_64  </td><td class="markdownTableBodyNone">10 x 4-bytes  </td><td class="markdownTableBodyNone">&gt;= 2^64  </td><td class="markdownTableBodyNone">n.a.  </td><td class="markdownTableBodyNone">n.a.  </td><td class="markdownTableBodyNone">0  </td><td class="markdownTableBodyNone">0  </td><td class="markdownTableBodyNone">0  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><a class="el" href="class_cwg128.html" title="A 128-bits Collatz-Weyl pseudorandom Generator with a short period (4.36e+40).">Cwg128</a>  </td><td class="markdownTableBodyNone">CWG128  </td><td class="markdownTableBodyNone">16 x 4-bytes  </td><td class="markdownTableBodyNone">&gt;= 2^135  </td><td class="markdownTableBodyNone">n.a.  </td><td class="markdownTableBodyNone">n.a.  </td><td class="markdownTableBodyNone">0  </td><td class="markdownTableBodyNone">0  </td><td class="markdownTableBodyNone">0  </td></tr>
+<td class="markdownTableBodyNone"><a class="el" href="class_cwg128.html" title="A 128-bits Collatz-Weyl pseudorandom Generator with a short period (6.81e+38).">Cwg128</a>  </td><td class="markdownTableBodyNone">CWG128  </td><td class="markdownTableBodyNone">16 x 4-bytes  </td><td class="markdownTableBodyNone">&gt;= 2^128  </td><td class="markdownTableBodyNone">n.a.  </td><td class="markdownTableBodyNone">n.a.  </td><td class="markdownTableBodyNone">0  </td><td class="markdownTableBodyNone">0  </td><td class="markdownTableBodyNone">0  </td></tr>
 </table>
 <p>+---------------------------------------------------------------------------------------------------------------------------------------------&mdash;+</p>
 <ul>

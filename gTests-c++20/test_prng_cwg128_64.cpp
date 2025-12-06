@@ -67,8 +67,14 @@ namespace tests_prng
             EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0xfe58a46deb3255a3, 0xff5247d888e1f6f9, 0xc8edfbc5db97fbd8, 0x1477776d4bcda574, 0x6b67ce70627acf91 };
-            for (std::uint64_t v : expected)
+            const utils::UInt128 expected[]{
+                utils::UInt128(0x46ccf3223a782b85, 0xfe58a46deb3255a3),
+                utils::UInt128(0x62e7cfb01016a2f1, 0xff5247d888e1f6f9),
+                utils::UInt128(0x418c6a8911ced7d2, 0xc8edfbc5db97fbd8),
+                utils::UInt128(0x418253ce692904bb, 0x1477776d4bcda574),
+                utils::UInt128(0xc87203002bed33bb, 0x6b67ce70627acf91)
+            };
+            for (utils::UInt128 v : expected)
                 EXPECT_EQ(v, cwg128_64.next());
 
             EXPECT_EQ(0xd3a4026896aa2ae1, cwg128_64._internal_state.state.a);
@@ -90,8 +96,14 @@ namespace tests_prng
             EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0xc53b94975ba3603a, 0x4da619774c2acf70, 0x78f8cdb9d76a8b3b, 0xbb9d5d0194c7b4f, 0x9d5ea8e0805c3da8 };
-            for (std::uint64_t v : expected)
+            const utils::UInt128 expected[]{
+                utils::UInt128(0x2dd4b7e7a6f49803, 0xc53b94975ba3603a),
+                utils::UInt128(0x6ec42845f0568b05, 0x4da619774c2acf70),
+                utils::UInt128(0x302b16979fa4f2ab, 0x78f8cdb9d76a8b3b),
+                utils::UInt128(0x80b331250de1c703, 0x0bb9d5d0194c7b4f),
+                utils::UInt128(0x6df3d55f219736e5, 0x9d5ea8e0805c3da8)
+            };
+            for (utils::UInt128 v : expected)
                 EXPECT_EQ(v, cwg128_64.next());
 
             EXPECT_EQ(0x686964132f6d73c9, cwg128_64._internal_state.state.a);
@@ -113,8 +125,14 @@ namespace tests_prng
             EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0x9bd3024c4362c804, 0x48c45b1c35f22412, 0xca3ebfc43e0172d, 0x354149d905250477, 0xb3c1a04b68f90bf5 };
-            for (std::uint64_t v : expected)
+            const utils::UInt128 expected[]{
+                utils::UInt128(0x53b31bfca97ecd70, 0x9bd3024c4362c804),
+                utils::UInt128(0xe641706dfded0032, 0x48c45b1c35f22412),
+                utils::UInt128(0x4487bfe23bafaa39, 0x0ca3ebfc43e0172d),
+                utils::UInt128(0x8f2199ea79411ff3, 0x354149d905250477),
+                utils::UInt128(0x19969ac656420dca, 0xb3c1a04b68f90bf5)
+            };
+            for (utils::UInt128 v : expected)
                 EXPECT_EQ(v, cwg128_64.next());
 
             EXPECT_EQ(0x6a68bf2307108249, cwg128_64._internal_state.state.a);
@@ -137,8 +155,14 @@ namespace tests_prng
             EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0x999c0206b0d4d040, 0x1bdd1db256ffa0ed, 0x9759261c1b791502, 0xe456bb324834aa01, 0xbe7e8dc4c69739d };
-            for (std::uint64_t v : expected)
+            const utils::UInt128 expected[]{
+                utils::UInt128(0x799e8d5ecae7aace, 0x999c0206b0d4d040),
+                utils::UInt128(0x3ca2a3e604a32365, 0x1bdd1db256ffa0ed),
+                utils::UInt128(0x1f4ac131c828c838, 0x9759261c1b791502),
+                utils::UInt128(0x9a6bcd198b3aa299, 0xe456bb324834aa01),
+                utils::UInt128(0x033667bbc9639ab1, 0x0be7e8dc4c69739d)
+            };
+            for (utils::UInt128 v : expected)
                 EXPECT_EQ(v, cwg128_64.next());
 
             EXPECT_EQ(0x77fd0c97cdac6d72, cwg128_64._internal_state.state.a);
@@ -160,8 +184,14 @@ namespace tests_prng
             EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0x97d3c4b544365f60, 0x4a86605ebe6192eb, 0x5b9f7057972b0545, 0xd5e866042850db7d, 0x98437e88fbb8c1f5 };
-            for (std::uint64_t v : expected)
+            const utils::UInt128 expected[]{
+                utils::UInt128(0x4653e4b7ac5d8590, 0x97d3c4b544365f60),
+                utils::UInt128(0x81f54ad6919c3429, 0x4a86605ebe6192eb),
+                utils::UInt128(0x4fedccd889e205a4, 0x5b9f7057972b0545),
+                utils::UInt128(0x9f7d39e1e2c1a76f, 0xd5e866042850db7d),
+                utils::UInt128(0x493c0adf7baea455, 0x98437e88fbb8c1f5)
+            };
+            for (utils::UInt128 v : expected)
                 EXPECT_EQ(v, cwg128_64.next());
 
             EXPECT_EQ(0x67ef67a6c4e71c9f, cwg128_64._internal_state.state.a);
@@ -183,8 +213,14 @@ namespace tests_prng
             EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0x74c316a37df311ec, 0xef317b6dbb8bb2c0, 0x1ede53528e8f1440, 0xadc9d06765afa5ba, 0x6afa7b40ecc40951 };
-            for (std::uint64_t v : expected)
+            const utils::UInt128 expected[]{
+                utils::UInt128(0x5cd41015afddc2d2, 0x74c316a37df311ec),
+                utils::UInt128(0x02db2872975a0dc2, 0xef317b6dbb8bb2c0),
+                utils::UInt128(0xe9ae077275c3945f, 0x1ede53528e8f1440),
+                utils::UInt128(0xfb7e4d1728411ef0, 0xadc9d06765afa5ba),
+                utils::UInt128(0x29303b5b41b2417d, 0x6afa7b40ecc40951)
+            };
+            for (utils::UInt128 v : expected)
                 EXPECT_EQ(v, cwg128_64.next());
 
             EXPECT_EQ(0x602d6cf9c72ac16b, cwg128_64._internal_state.state.a);
@@ -206,8 +242,14 @@ namespace tests_prng
             EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0xbd0a3fdebf4785b4, 0xe2653e1169475b6a, 0x462c74dc8286f3a3, 0xda25d5e2da77cc6a, 0xdf58233d77e91d2c };
-            for (std::uint64_t v : expected)
+            const utils::UInt128 expected[]{
+                utils::UInt128(0xf6c724125f857c6d, 0xbd0a3fdebf4785b4),
+                utils::UInt128(0xe521ce43fe0cdc36, 0xe2653e1169475b6a),
+                utils::UInt128(0x2e110175df284269, 0x462c74dc8286f3a3),
+                utils::UInt128(0x3778c4aa3b2a0d46, 0xda25d5e2da77cc6a),
+                utils::UInt128(0x9c342dd376a3f762, 0xdf58233d77e91d2c)
+            };
+            for (utils::UInt128 v : expected)
                 EXPECT_EQ(v, cwg128_64.next());
 
             EXPECT_EQ(0x468fe250bb8832a8, cwg128_64._internal_state.state.a);
@@ -229,8 +271,14 @@ namespace tests_prng
             EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0x5d0507d668842c81, 0xd331042444b7ec46, 0xa0e197d6293600d7, 0x72ec7391e58463ed, 0x4b87429035bd3cca };
-            for (std::uint64_t v : expected)
+            const utils::UInt128 expected[]{
+                utils::UInt128(0x3b1a6c785f7bec5e, 0x5d0507d668842c81),
+                utils::UInt128(0xac48c695ba43de23, 0xd331042444b7ec46),
+                utils::UInt128(0x8f1264811c610a73, 0xa0e197d6293600d7),
+                utils::UInt128(0xc691aa49d39aa948, 0x72ec7391e58463ed),
+                utils::UInt128(0x60d4562e4fdab52a, 0x4b87429035bd3cca)
+            };
+            for (utils::UInt128 v : expected)
                 EXPECT_EQ(v, cwg128_64.next());
 
             EXPECT_EQ(0x864ae3146242bc3e, cwg128_64._internal_state.state.a);
@@ -252,8 +300,14 @@ namespace tests_prng
             EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0xc528f6001bce6f6c, 0x2074ad4a7283a9ae, 0x25b7e72bb5a6037d, 0x40ca44afd9b64e2c, 0xebe74cd080e7675d };
-            for (std::uint64_t v : expected)
+            const utils::UInt128 expected[]{
+                utils::UInt128(0xea77e6c672a15ed7, 0xc528f6001bce6f6c),
+                utils::UInt128(0x1630b0d1e130934f, 0x2074ad4a7283a9ae),
+                utils::UInt128(0x0793d8c735b47196, 0x25b7e72bb5a6037d),
+                utils::UInt128(0x890a8f609f65cd18, 0x40ca44afd9b64e2c),
+                utils::UInt128(0xdd6604a0ba2e09b3, 0xebe74cd080e7675d)
+            };
+            for (utils::UInt128 v : expected)
                 EXPECT_EQ(v, cwg128_64.next());
 
             EXPECT_EQ(0xf5a51580680fdb82, cwg128_64._internal_state.state.a);
@@ -275,8 +329,14 @@ namespace tests_prng
             EXPECT_FALSE(cwg128_64._internal_state.gauss_valid);
             EXPECT_DOUBLE_EQ(0.0, cwg128_64._internal_state.gauss_next);
 
-            const std::uint64_t expected[]{ 0xec288dd0f1298f2a, 0x4e26f7747cde7909, 0x3137387601cab2ab, 0xa1faef3817023fcf, 0xbfa5bbb9b880621a };
-            for (std::uint64_t v : expected)
+            const utils::UInt128 expected[]{
+                utils::UInt128(0xf5a9f1439499bd9f, 0xec288dd0f1298f2a),
+                utils::UInt128(0x14be0cf83b066fd0, 0x4e26f7747cde7909),
+                utils::UInt128(0x90fb5b4080f29a42, 0x3137387601cab2ab),
+                utils::UInt128(0x75d35c56e5d992a7, 0xa1faef3817023fcf),
+                utils::UInt128(0xaa642445fb13ed6e, 0xbfa5bbb9b880621a)
+            };
+            for (utils::UInt128 v : expected)
                 EXPECT_EQ(v, cwg128_64.next());
 
             EXPECT_EQ(0xf9f9492a1acd86a4, cwg128_64._internal_state.state.a);

@@ -116,7 +116,7 @@ Notice: a comparison of the computation times for all implemented PRNGs in **Cpp
       <td>Cwg64</td>
       <td>*CWG64*</td>
       <td>8 x 4-bytes</td>
-      <td>&gt;= 2^70</td>
+      <td>&gt;= 2^64</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
@@ -127,7 +127,7 @@ Notice: a comparison of the computation times for all implemented PRNGs in **Cpp
       <td>Cwg128_64</td>
       <td>*CWG128-64*</td>
       <td>10 x 4-bytes</td>
-      <td>&gt;= 2^71</td>
+      <td>&gt;= 2^64</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
@@ -138,7 +138,7 @@ Notice: a comparison of the computation times for all implemented PRNGs in **Cpp
       <td>Cwg128</td>
       <td>*CWG128*</td>
       <td>16 x 4-bytes</td>
-      <td>&gt;= 2^135</td>
+      <td>&gt;= 2^128</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
@@ -835,22 +835,9 @@ Since version **2.0** of **CppRandLib** also, the newly implemented method `getr
 
 
 ---
-### Cwg64  --  minimum 2^70 period
+### Cwg64  --  minimum 2^64 period
 
-**Cwg64** implements the full 64 bits version of the Collatz-Weyl Generator algorithm: computations are done on 64-bits, the output generated value is coded on 64-bits also. It provides a medium period which is at minimum 2^70 (i.e. about 1.18e+21), short computation time and a four 64-bits integers internal state (x, a, weyl, s).
-
-This version of the CGW algorithm evaluates pseudo-random suites *output(i)* as the combination of the next instructions applied to *state(i-1)*:
-
-    a(i)      = a(i-1) + x(i-1)
-    weyl(i)   = weyl(i-1) + s  // s is constant over time and must be odd, this is the value to modify to get multi-streams
-    x(i)      = ((x(i-1) >> 1) * ((a(i)) | 1)) ^ (weyl(i)))
-    output(i) = (a(i) >> 48) ^ x(i)
-
-
-
-### Cwg64  --  minimum 2^70 period
-
-**Cwg64** implements the full 64 bits version of the Collatz-Weyl Generator algorithm: computations are done on 64-bits. The output generated value is coded on 64-bits also. It provides a medium period which is at minimum 2^70 (i.e. about 1.18e+21), short computation time and a four 64-bits integers internal state (x, a, weyl, s).
+**Cwg64** implements the full 64 bits version of the Collatz-Weyl Generator algorithm: computations are done on 64-bits, the output generated value is coded on 64-bits also. It provides a medium period which is at minimum 2^64 (i.e. about 1.84e+19), short computation time and a four 64-bits integers internal state (x, a, weyl, s).
 
 This version of the CGW algorithm evaluates pseudo-random suites *output(i)* as the combination of the next instructions applied to *state(i-1)*:
 
@@ -860,9 +847,10 @@ This version of the CGW algorithm evaluates pseudo-random suites *output(i)* as 
     output(i) = (a(i) >> 48) ^ x(i)
 
 
-### Cwg128_64  --  minimum 2^71 period
 
-**Cwg128_64** implements the mixed 128/64 bits version of the Collatz-Weyl Generator algorithm: computations are done on 128- and 64- bits. The output generated value is coded on 64-bits also. It provides a medium period which is at minimum 2^71 (i.e. about 2.36e+21), short computation time and a three 64-bits (a, weyl, s) plus one 128-bits integer internal state (x). 
+### Cwg128_64  --  minimum 2^64 period
+
+**Cwg128_64** implements the mixed 128/64 bits version of the Collatz-Weyl Generator algorithm: computations are done on 128- and 64- bits. The output generated value is coded on 64-bits also. It provides a medium period which is at minimum 2^64 (i.e. about 1.84e+19), short computation time and a three 64-bits (a, weyl, s) plus one 128-bits integer internal state (x). 
 
 This version of the CGW algorithm evaluates pseudo-random suites *output(i)* as the combination of the next instructions applied to *state(i-1)*:
 
@@ -873,9 +861,9 @@ This version of the CGW algorithm evaluates pseudo-random suites *output(i)* as 
 
 
 
-### Cwg128  --  minimum 2^135 period
+### Cwg128  --  minimum 2^128 period
 
-**Cwg128** implements the full 128 bits version of the Collatz-Weyl Generator algorithm: computations are done on 128-bits. The output generated value is coded on 128-bits also. It provides a medium period which is at minimum 2^135 (i.e. about 4.36e+40), short computation time and a four 128-bits integers internal state (x, a, weyl, s).
+**Cwg128** implements the full 128 bits version of the Collatz-Weyl Generator algorithm: computations are done on 128-bits. The output generated value is coded on 128-bits also. It provides a medium period which is at minimum 2^128 (i.e. about 6.81e+38), short computation time and a four 128-bits integers internal state (x, a, weyl, s).
 
 This version of the CGW algorithm evaluates pseudo-random suites *output(i)* as the combination of the next instructions applied to *state(i-1)*:
 
