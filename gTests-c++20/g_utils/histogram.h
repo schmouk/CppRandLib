@@ -2,7 +2,7 @@
 /*
 MIT License
 
-Copyright (c) 2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2025-2026 Philippe Schmouker, ph.schmouker (at) gmail.com
 
 This file is provided with library CppRandLib.
 

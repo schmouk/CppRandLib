@@ -1,6 +1,6 @@
 /*!
  Cookie helper functions
- Copyright (c) 2023 Dimitri van Heesch
+ Copyright (c) 2023-2026 Dimitri van Heesch
  Released under MIT license.
 */
 let Cookie = {

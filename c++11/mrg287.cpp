@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2022-2025 Philippe Schmouker, ph.schmouker (at) gmail.com
+Copyright (c) 2022-2026 Philippe Schmouker, ph.schmouker (at) gmail.com
 
 This file is part of library CppRandLib.
 

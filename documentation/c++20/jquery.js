@@ -131,7 +131,7 @@ i=e.containerElement.get(0)===e.element.parent().get(0),n=/relative|absolute/.te
 function(t,e){var i=(s[e]||0)+(h[e]||0);i&&0<=i&&(n[e]=i||null)}),t.css(n)})},stop:function(){y(this).removeData("ui-resizable-alsoresize")}}),y.ui.plugin.add("resizable","ghost",{start:function(){var t=y(this).resizable("instance"),e=t.size;t.ghost=t.originalElement.clone(),t.ghost.css({opacity:.25,display:"block",position:"relative",height:e.height,width:e.width,margin:0,left:0,top:0}),t._addClass(t.ghost,"ui-resizable-ghost"),!1!==y.uiBackCompat&&"string"==typeof t.options.ghost&&t.ghost.addClass(this.options.ghost),t.ghost.appendTo(t.helper)},resize:function(){var t=y(this).resizable("instance");t.ghost&&t.ghost.css({position:"relative",height:t.size.height,width:t.size.width})},stop:function(){var t=y(this).resizable("instance");t.ghost&&t.helper&&t.helper.get(0).removeChild(t.ghost.get(0))}}),y.ui.plugin.add("resizable","grid",{resize:function(){var t,e=y(this).resizable("instance"),i=e.options,s=e.size,n=e.originalSize,o=e.originalPosition,h=e.axis,a="number"==typeof i.grid?[i.grid,i.grid]:i.grid,r=a[0
 ]||1,l=a[1]||1,u=Math.round((s.width-n.width)/r)*r,p=Math.round((s.height-n.height)/l)*l,d=n.width+u,c=n.height+p,f=i.maxWidth&&i.maxWidth<d,g=i.maxHeight&&i.maxHeight<c,m=i.minWidth&&i.minWidth>d,s=i.minHeight&&i.minHeight>c;i.grid=a,m&&(d+=r),s&&(c+=l),f&&(d-=r),g&&(c-=l),/^(se|s|e)$/.test(h)?(e.size.width=d,e.size.height=c):/^(ne)$/.test(h)?(e.size.width=d,e.size.height=c,e.position.top=o.top-p):/^(sw)$/.test(h)?(e.size.width=d,e.size.height=c,e.position.left=o.left-u):((c-l<=0||d-r<=0)&&(t=e._getPaddingPlusBorderDimensions(this)),0<c-l?(e.size.height=c,e.position.top=o.top-p):(c=l-t.height,e.size.height=c,e.position.top=o.top+n.height-c),0<d-r?(e.size.width=d,e.position.left=o.left-u):(d=r-t.width,e.size.width=d,e.position.left=o.left+n.width-d))}});y.ui.resizable});
 /**
- * Copyright (c) 2007 Ariel Flesler - aflesler ○ gmail • com | https://github.com/flesler
+ * Copyright (c) 2007-2026 Ariel Flesler - aflesler ○ gmail • com | https://github.com/flesler
  * Licensed under MIT
  * @author Ariel Flesler
  * @version 2.1.2
@@ -141,7 +141,7 @@ $.Tween.propHooks.scrollLeft=$.Tween.propHooks.scrollTop={get:function(a){return
 /*!
  PowerTip v1.3.1 (2018-04-15)
  https://stevenbenner.github.io/jquery-powertip/
- Copyright (c) 2018 Steven Benner (http://stevenbenner.com/).
+ Copyright (c) 2018-2026 Steven Benner (http://stevenbenner.com/).
  Released under MIT license.
  https://raw.github.com/stevenbenner/jquery-powertip/master/LICENSE.txt
 */
@@ -167,7 +167,7 @@ viewportRight=viewportLeft+session.windowWidth,collisions=Collision.none;if(coor
 /*!
  * jQuery UI Touch Punch 0.2.3
  *
- * Copyright 2011–2014, Dave Furfero
+ * Copyright 2011–2026, Dave Furfero
  * Dual licensed under the MIT or GPL Version 2 licenses.
  *
  * Depends:
