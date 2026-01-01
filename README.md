@@ -15,7 +15,7 @@ CppRandLib github web pages are here: [https://schmouk.github.io/CppRandLib/](ht
 If you decide to use this library, please mention it and add the copyright notice to your software as stated in the LICENSE file.
 
 ```
-Copyright (c) 2022-2025 Philippe Schmouker, <ph.schmouker (at) gmail.com>
+Copyright (c) 2022-2026 Philippe Schmouker, <ph.schmouker (at) gmail.com>
 
 Permission is hereby granted,  free of charge,  to any person obtaining a copy
 of this software and associated documentation files (the "Software"),  to deal
